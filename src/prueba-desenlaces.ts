@@ -99,6 +99,19 @@ async function main() {
     }
   }
 
+  // ── El bug que dejó a un jugador real sin el quinto final ─────────────────
+  // La pista del retardo abre «Lo que devuelve la mirada», y se entregaba sólo
+  // si la PRIMERA tirada de POD acertaba: el código miraba cuántas veces se
+  // había intentado, no si ya se había descubierto. Con la primera fallada, la
+  // pista quedaba inalcanzable por muchos éxitos extremos que vinieran después.
+  console.log('\nLA PISTA DEL RETARDO NO DEPENDE DE ACERTAR AL PRIMER INTENTO');
+  const mirarOchoVeces = Array(8).fill('Me asomo al aljibe y miro el reflejo un rato largo');
+  for (const semilla of ['3', '4', '5', '6']) {
+    const s = await jugar(`RETARDO ${semilla}`, semilla, mirarOchoVeces);
+    const tiene = s.board.clues.some((c) => c.description.includes('retardo perceptible'));
+    check(`semilla ${semilla}: ocho miradas dan la pista`, tiene, `${s.board.clues.length} pistas`);
+  }
+
   console.log('\nCOBERTURA');
   const faltan = AGUA_QUIETA.endings.filter((e) => !alcanzados.has(e.id));
   check(

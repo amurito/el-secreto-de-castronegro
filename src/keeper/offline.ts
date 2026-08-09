@@ -652,7 +652,6 @@ function lookAtWater(turn: Turn, i: Intent, out: string[], run: Runner): void {
     return;
   }
 
-  const veces = timesTried(s, 'reflejo', 'agua', 'aljibe');
   const roll = run('request_roll', {
     skill: 'POW', difficulty: 'regular',
     reason: i.sustained ? 'sostener la mirada sobre el agua quieta' : 'asomarte al agua y observar el reflejo',
@@ -676,24 +675,35 @@ function lookAtWater(turn: Turn, i: Intent, out: string[], run: Runner): void {
     ]));
 
     if (ok) {
-      out.push(veces === 0
-        ? 'Y entonces lo notás, porque estabas atento: cuando ladeás la cabeza, la cara del agua ladea la cabeza una fracción de segundo después. Poco. Lo que tarda un vidrio de tren. Pero un vidrio de tren tiene una excusa.'
-        : pickVariant(s, [
-            'El retardo sigue ahí. Lo medís contra tu propio pulso: uno, y la cara de abajo llega en el uno y medio.',
-            'Probás a moverte rápido, a ver si el retraso se agranda. Se agranda. La cara del agua completa el gesto que vos ya dejaste de hacer.',
-            'Cerrás los ojos y contás hasta cinco. Cuando los abrís, la cara del agua todavía los tiene cerrados. No mucho tiempo. El suficiente.',
-          ]));
-      if (veces === 0) {
+      // Lo que se descubre depende de lo que TODAVÍA NO SE DESCUBRIÓ, no de
+      // cuántas veces se intentó. `timesTried` cuenta intentos, no aciertos:
+      // atado a él, si la primera tirada fallaba, la pista del retardo —que es
+      // la que abre el desenlace de la mirada— quedaba fuera de alcance para
+      // siempre, por bien que salieran todas las tiradas siguientes.
+      const tieneRetardo = hasClue(s, 'retardo perceptible');
+      const tieneVelocidad = hasClue(s, 'aumenta con la velocidad');
+
+      if (!tieneRetardo) {
+        out.push('Y entonces lo notás, porque estabas atento: cuando ladeás la cabeza, la cara del agua ladea la cabeza una fracción de segundo después. Poco. Lo que tarda un vidrio de tren. Pero un vidrio de tren tiene una excusa.');
         run('add_clue', {
           description: 'El reflejo del aljibe imita al observador con un retardo perceptible, constante, de una fracción de segundo.',
           kind: 'experiential', source: 'observación directa del aljibe', reliability: 'reliable',
         });
-      } else if (veces === 2) {
+      } else if (!tieneVelocidad) {
+        out.push(pickVariant(s, [
+          'El retardo sigue ahí. Lo medís contra tu propio pulso: uno, y la cara de abajo llega en el uno y medio.',
+          'Probás a moverte rápido, a ver si el retraso se agranda. Se agranda. La cara del agua completa el gesto que vos ya dejaste de hacer.',
+        ]));
         run('add_clue', {
           description: 'El retardo del reflejo aumenta con la velocidad del movimiento: no es un efecto óptico constante.',
           kind: 'experiential', source: 'observación repetida del aljibe', reliability: 'reliable',
         });
         run('apply_stability_shift', { amount: -5, cause: 'comprobar que el retardo responde al movimiento' });
+      } else {
+        out.push(pickVariant(s, [
+          'Cerrás los ojos y contás hasta cinco. Cuando los abrís, la cara del agua todavía los tiene cerrados. No mucho tiempo. El suficiente.',
+          'Todo sigue igual que la última vez, y eso ya no es un consuelo: significa que es estable, y las cosas estables se pueden estudiar, y algo que se puede estudiar existe.',
+        ]));
       }
     } else {
       out.push(pickVariant(s, [
