@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.env
+partidas/
+*.log
+
+# ─────────────────────────────────────────────────────────────────────────────
+# MATERIAL DE TERCEROS — nunca va al repositorio.
+#
+# Los manuales de Call of Cthulhu y la aventura publicada son de Chaosium y de
+# sus autores. El repo es público (GitHub Pages gratis lo exige), así que
+# subirlos sería distribuirlos. El código implementa la MECÁNICA del sistema;
+# ninguna tabla propietaria se transcribe.
+# ─────────────────────────────────────────────────────────────────────────────
+*.pdf
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DOCUMENTOS DE DISEÑO — fuera del repo público a propósito.
+#
+# Las biblias v0.7–v1.0 contienen el canon completo: la identidad del Primer
+# Rostro, qué es Puddock, qué es el Archivista, la cosmología entera. En un
+# repositorio público quedarían al lado del juego cuya protección contra
+# spoilers está construida a propósito (ver README → "Una limitación honesta").
+#
+# Si los querés versionar, lo natural es un repo privado aparte.
+# ─────────────────────────────────────────────────────────────────────────────
+*.docx
