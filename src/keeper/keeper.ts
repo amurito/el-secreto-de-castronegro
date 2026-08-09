@@ -21,6 +21,7 @@ import { systemPrompt } from './prompt.ts';
 import { buildVolatileContext, recentNarrative } from './context.ts';
 import { validateNarration, correctionMessage } from './validate.ts';
 import type { KeeperEmit, KeeperResult } from './types.ts';
+import { accionesDisponibles } from '../scenario/acciones.ts';
 
 export type { KeeperEmit, KeeperResult } from './types.ts';
 
@@ -111,7 +112,9 @@ export async function runKeeperTurn(
         narration:
           'El Keeper no puede narrar esta escena tal como quedó planteada. ' +
           'Probá describir la acción de otra manera, o cambiá de rumbo: el mundo sigue donde estaba.',
-        options: ['Describir la acción de otro modo', 'Hacer otra cosa'],
+        // Aun en un rechazo, las acciones disponibles siguen siendo las del
+        // estado: el mundo no cambió porque el modelo no quisiera narrar.
+        options: accionesDisponibles(turn.state),
         usedModel: true,
         cost: usage,
       };
@@ -182,11 +185,8 @@ export async function runKeeperTurn(
     narration = 'Pasa un momento en el que no ocurre nada que valga la pena contar. El patio sigue igual.';
   }
 
-  const options = extractOptions(narration);
-  return { narration, options, usedModel: true, cost: usage };
-}
-
-/** Opciones sugeridas por defecto cuando el modelo no las ofreció. */
-function extractOptions(_narration: string): string[] {
-  return [];
+  // Las opciones las calcula el MOTOR desde el estado, igual que en modo motor.
+  // El modelo no las inventa: así nunca ofrece algo ya hecho ni algo que el
+  // estado no permite todavía.
+  return { narration, options: accionesDisponibles(turn.state), usedModel: true, cost: usage };
 }

@@ -56,6 +56,11 @@ export function canDiscoverProperty(
   const inv = state.investigators[investigatorId];
   if (!inv) return { allowed: false, reason: 'Investigador inexistente.' };
 
+  // No se puede descubrir nada de un objeto que no está al alcance.
+  if (!isReachable(state, item, investigatorId)) {
+    return { allowed: false, reason: `«${item.name}» no está al alcance del investigador.` };
+  }
+
   switch (cond.kind) {
     case 'never':
       return { allowed: false, reason: 'Propiedad no descubrible por diseño del escenario.' };

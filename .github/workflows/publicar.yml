@@ -1,0 +1,65 @@
+# Publica el juego en GitHub Pages en cada push a main.
+#
+# El sitio resultante es 100% estático: el motor corre en el navegador del
+# jugador, el log vive en su IndexedDB, y no hay servidor ni clave de API.
+# Alojarlo no cuesta nada y jugarlo tampoco.
+#
+# Para activarlo: Settings → Pages → Source: GitHub Actions.
+
+name: Publicar
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # Si el motor está roto, no se publica. El juego no se rompe en silencio.
+      - name: Verificar criptografía
+        run: npm run prueba:cripto
+      - name: Verificar motor
+        run: npm run prueba
+      - name: Verificar acción libre
+        run: npm run prueba:libre
+
+      - name: Construir
+        run: npm run build
+
+      # Impide publicar un bundle que filtre la solución de la aventura.
+      - name: Auditar el bundle público
+        run: npm run revisar:bundle
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/web
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

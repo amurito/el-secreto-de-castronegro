@@ -15,17 +15,21 @@ npm run dev
 
 Abrí **http://localhost:5173**. **Es gratis y no necesita clave de API.**
 
-### Publicarlo en la web, gratis
+### Publicado
+
+**https://amurito.github.io/el-secreto-de-castronegro/**
 
 ```bash
-npm run build      # deja el sitio en dist/web
+npm run desplegar
 ```
 
-El resultado es **100% estático**: el motor corre en el navegador del jugador y el log de eventos vive en su IndexedDB. No hay servidor, no hay clave, no hay costo de alojamiento. Subilo a GitHub Pages, Netlify, Cloudflare Pages o un pendrive.
+Un comando: corre las pruebas, construye, audita el bundle y publica. **Si algo falla, no publica nada.**
 
-Para GitHub Pages ya está el workflow en `.github/workflows/publicar.yml`: activá **Settings → Pages → Source: GitHub Actions** y cada push a `main` publica. El workflow corre las pruebas antes de publicar y **aborta si el bundle filtra la solución de la aventura**.
+El sitio es **100% estático**: el motor corre en el navegador del jugador y el log de eventos vive en su IndexedDB. No hay servidor, no hay clave, no hay costo de alojamiento.
 
-Para probar el build estático localmente: `npm run preview` → http://localhost:4173
+Para probarlo localmente antes de publicar: `npm run preview` → http://localhost:4173
+
+> El despliegue no usa GitHub Actions porque el token de `gh` no tiene el permiso `workflow`. El workflow está escrito en `.github/workflows/publicar.yml` por si querés pasarlo a CI: `gh auth refresh -s workflow`, commiteá el archivo, y poné **Settings → Pages → Source: GitHub Actions**.
 
 El juego corre por defecto en **MODO MOTOR**: dados reales, estado real, reglas reales, gates reales, consecuencias reales, guardado real — y el propio motor clasifica la acción libre y compone la narración. No es un modo degradado: es el motor arbitrando solo. Si el juego no funcionara sin la IA, el modelo sería dueño del estado y la arquitectura estaría mal.
 

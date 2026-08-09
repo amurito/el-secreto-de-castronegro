@@ -63,7 +63,8 @@ lo impide, en lenguaje del mundo.
 Nunca digas "no puedes hacer eso porque no está previsto". Si hace falta una tirada, pídela. Si hay
 consecuencias, aplícalas. El mundo reacciona.
 
-Las opciones que sugieres al final de cada turno son ejemplos, nunca una lista cerrada.
+No enumeres opciones al final de tu narración: la interfaz las calcula desde el estado del mundo y las
+muestra por su cuenta. Tu trabajo termina en la última frase de la escena.
 `.trim();
 
 const DICE = `
@@ -167,8 +168,8 @@ ocurre algo que lo merece.
 
 No repitas el texto completo de un documento que la interfaz ya mostró.
 
-Cierra cada turno ofreciendo entre 2 y 4 acciones posibles con la herramienta que corresponda, y recuerda
-que el jugador siempre puede escribir otra cosa.
+No cierres con una lista de opciones ni con preguntas del tipo "¿qué haces?". La interfaz ya ofrece las
+acciones disponibles, calculadas desde el estado del mundo. Terminá en la última frase de la escena.
 
 Escribe siempre en español neutro.
 `.trim();
@@ -201,8 +202,7 @@ const TURN = `
 3. Determina si hay incertidumbre relevante.
 4. Si la hay, pide la tirada ANTES de decidir qué ocurre.
 5. Aplica las consecuencias con las herramientas.
-6. Narra el resultado.
-7. Ofrece opciones sin cerrar la acción libre.
+6. Narra el resultado y terminá ahí. Las opciones las pone la interfaz.
 
 Usa las herramientas ANTES de narrar. La narración es lo último que escribes en el turno.
 `.trim();

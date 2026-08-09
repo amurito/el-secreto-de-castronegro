@@ -16,6 +16,7 @@ import { browserStore } from '../engine/store.browser.ts';
 import { verifyRollChain } from '../engine/rng.ts';
 import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
+import { accionesDisponibles } from '../scenario/acciones.ts';
 import { sanitizeForClient } from '../server/sanitize.ts';
 import type { GameApi, StatusInfo, TurnEvent } from './api.ts';
 
@@ -51,13 +52,19 @@ export function createLocalApi(): GameApi {
       if (!scenario) throw new Error(`Escenario desconocido: ${scenarioId}`);
       const campaignId = await createCampaign(scenario);
       const { state } = await loadState(campaignId);
-      return { campaignId, opening: scenario.opening, state: sanitizeForClient(state) };
+      return {
+        campaignId, opening: scenario.opening,
+        state: sanitizeForClient(state), options: accionesDisponibles(state),
+      };
     },
 
     async getCampaign(id) {
       const { state } = await loadState(id);
       const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
-      return { state: sanitizeForClient(state), opening: scenario?.opening ?? '' };
+      return {
+        state: sanitizeForClient(state), opening: scenario?.opening ?? '',
+        options: accionesDisponibles(state),
+      };
     },
 
     async submitIntent(id, action, onEvent) {

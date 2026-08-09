@@ -54,12 +54,22 @@ async function main() {
     `exposición ${t.investigator.umbral.exposure}, estabilidad ${t.investigator.umbral.stability}`);
 
   log('\n2. GATE — revelar propiedad oculta sin cumplir la condición');
+  // (a) El objeto ni siquiera está al alcance: el retrato está en la cocina.
   t = await Turn.open(id);
-  const bad = t.executeTool('discover_property', {
+  const lejos = t.executeTool('discover_property', {
     item_id: 'it-foto1897', property_id: 'p-1897-rostro', how: 'porque sí', compared_with: '',
   });
-  check('el motor rechaza la revelación', !bad.ok);
-  check('explica por qué', bad.message.includes('comparar'), bad.message.slice(0, 90) + '…');
+  check('rechaza si el objeto no está al alcance', !lejos.ok && lejos.message.includes('alcance'),
+    lejos.message.slice(0, 80) + '…');
+
+  // (b) Al alcance, pero sin cumplir la condición de comparación.
+  await act('Entro a la casa');
+  t = await Turn.open(id);
+  const sinCumplir = t.executeTool('discover_property', {
+    item_id: 'it-foto1897', property_id: 'p-1897-rostro', how: 'porque sí', compared_with: '',
+  });
+  check('rechaza si no se cumple la condición', !sinCumplir.ok && sinCumplir.message.includes('comparar'),
+    sinCumplir.message.slice(0, 80) + '…');
 
   log('\n3. GATE — promover hipótesis sin evidencia');
   const bad2 = t.executeTool('propose_fact', { hypothesis_id: 'inexistente', statement: 'X' });

@@ -201,8 +201,9 @@ export class Turn {
     this.ctx.exposureThisTurn = 0;
   }
 
-  narrate(text: string, options: string[]) {
-    this.emit('NARRATION_EMITTED', { text, options });
+  /** Las opciones se guardan en el log como etiquetas: es lo que vio el jugador. */
+  narrate(text: string, options: Array<{ etiqueta: string }> = []) {
+    this.emit('NARRATION_EMITTED', { text, options: options.map((o) => o.etiqueta) });
   }
 
   async commit(): Promise<void> {

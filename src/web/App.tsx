@@ -3,10 +3,13 @@ import { Sheet, RollCard, Board, Inventory, Documents, RollHistory } from './com
 import type { GameApi, StatusInfo } from '../app/api.ts';
 import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
+import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
 
 interface Line { id: string; kind: string; text: string }
+
+const ORDEN_GRUPOS: GrupoAccion[] = ['observar', 'hablar', 'usar', 'mover', 'decidir'];
 
 /**
  * Elige dónde corre el motor.
@@ -39,7 +42,10 @@ export function App() {
   const [streaming, setStreaming] = useState('');
   const [busy, setBusy] = useState(false);
   const [action, setAction] = useState('');
-  const [options, setOptions] = useState<string[]>([]);
+  const [options, setOptions] = useState<Opcion[]>([]);
+  /** Opciones ya vistas, para marcar las que se acaban de desbloquear. */
+  const [vistas, setVistas] = useState<Set<string>>(new Set());
+  const [nuevas, setNuevas] = useState<Set<string>>(new Set());
   const [lastRoll, setLastRoll] = useState<any>(null);
   const [tab, setTab] = useState<Tab>('tablero');
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +64,23 @@ export function App() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [lines, streaming]);
 
+  /**
+   * Marca las opciones recién desbloqueadas. Se calcula en el cliente a
+   * propósito: es información de presentación, no del mundo, y no tiene por
+   * qué ensuciar el log de eventos.
+   */
+  function aplicarOpciones(nuevasOpciones: Opcion[], primeraCarga = false) {
+    setOptions(nuevasOpciones);
+    const ids = new Set(nuevasOpciones.map((o) => o.id));
+    if (primeraCarga) {
+      setVistas(ids);
+      setNuevas(new Set());
+      return;
+    }
+    setNuevas(new Set([...ids].filter((id) => !vistas.has(id))));
+    setVistas((prev) => new Set([...prev, ...ids]));
+  }
+
   async function newCampaign() {
     if (!api) return;
     setBusy(true); setError(null);
@@ -66,9 +89,8 @@ export function App() {
       setCampaignId(data.campaignId);
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
-      setOptions(['Mirar el aljibe', 'Hablar con la mujer', 'Entrar a la casa']);
+      aplicarOpciones(data.options ?? [], true);
       setLastRoll(null); setStreaming('');
-      setTimeout(() => inputRef.current?.focus(), 100);
     } catch (e) {
       setError(`No se pudo crear la partida: ${(e as Error).message}`);
     } finally {
@@ -88,6 +110,7 @@ export function App() {
         ...data.state.narrative.map((n: any) => ({ id: n.id, kind: n.kind, text: n.text })),
       ]);
       setLastRoll(data.state.rolls[data.state.rolls.length - 1] ?? null);
+      aplicarOpciones(data.options ?? [], true);
     } catch (e) {
       setError(`No se pudo abrir la partida: ${(e as Error).message}`);
     } finally {
@@ -109,7 +132,7 @@ export function App() {
           case 'narration_replace': acc = msg.data as string; setStreaming(acc); break;
           case 'roll': setLastRoll(msg.data); break;
           case 'state': setState(msg.data); break;
-          case 'options': setOptions((msg.data as string[]) ?? []); break;
+          case 'options': aplicarOpciones((msg.data as Opcion[]) ?? []); break;
           case 'cost': setCost(msg.data); break;
           case 'error': setError(String(msg.data)); break;
           default: break;
@@ -159,8 +182,14 @@ export function App() {
               y cerró el asunto. Alguien tiene que ir a mirar.
             </p>
             <div className="scenario-meta">1924 · Una hora aproximadamente · Muerte permanente</div>
-            <button className="primary" onClick={newCampaign} disabled={busy || !api}>Empezar</button>
+            <button className="primary" onClick={newCampaign} disabled={busy || !api}>
+              {busy ? 'Abriendo…' : 'Empezar'}
+            </button>
           </div>
+
+          {/* Sin esto, un fallo del almacenamiento dejaba el botón muerto y sin
+              explicación: el jugador clickeaba y no pasaba nada. */}
+          {error && <div className="error error-inicio">{error}</div>}
           {api && <PreviousCampaigns api={api} onLoad={loadCampaign} />}
         </div>
       </div>
@@ -218,30 +247,31 @@ export function App() {
           </div>
         ) : (
           <div className="input-area">
-            {options.length > 0 && (
-              <div className="options">
-                {options.map((o, i) => (
-                  <button key={i} className="option" onClick={() => send(o)} disabled={busy}>{o}</button>
-                ))}
+            <Acciones options={options} nuevas={nuevas} busy={busy} onPick={send} />
+
+            {/* La escritura libre sólo aparece con Claude narrando: es el único
+                modo donde una frase cualquiera se resuelve bien. En modo motor
+                el repertorio es acotado y prometer libertad total mentiría. */}
+            {status?.keeperMode === 'ia' && (
+              <div className="input-row">
+                <textarea
+                  ref={inputRef}
+                  className="action-input"
+                  placeholder="O escribí lo que quieras hacer."
+                  value={action}
+                  rows={2}
+                  disabled={busy}
+                  onChange={(e) => setAction(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(action); }
+                  }}
+                />
+                <button className="primary send" onClick={() => send(action)} disabled={busy || !action.trim()}>
+                  {busy ? '…' : 'Actuar'}
+                </button>
               </div>
             )}
-            <div className="input-row">
-              <textarea
-                ref={inputRef}
-                className="action-input"
-                placeholder="¿Qué hacés? Escribí cualquier cosa: las opciones son sugerencias, no una lista cerrada."
-                value={action}
-                rows={2}
-                disabled={busy}
-                onChange={(e) => setAction(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(action); }
-                }}
-              />
-              <button className="primary send" onClick={() => send(action)} disabled={busy || !action.trim()}>
-                {busy ? '…' : 'Actuar'}
-              </button>
-            </div>
+
             {cost && (
               <div className="cost">
                 caché leído {cost.cacheRead} · escrito {cost.cacheWrite} · entrada {cost.inputTokens} · salida {cost.outputTokens} tokens
@@ -274,6 +304,51 @@ export function App() {
           </div>
         )}
       </aside>
+    </div>
+  );
+}
+
+/**
+ * Panel de acciones. Las agrupa por tipo y marca las recién desbloqueadas.
+ *
+ * La lista viene del motor y ya está filtrada: lo que se ve acá es lo que se
+ * puede hacer ahora, nunca algo ya hecho.
+ */
+function Acciones({
+  options, nuevas, busy, onPick,
+}: {
+  options: Opcion[];
+  nuevas: Set<string>;
+  busy: boolean;
+  onPick: (intencion: string) => void;
+}) {
+  if (options.length === 0) {
+    return <div className="sin-acciones">No queda nada por hacer acá.</div>;
+  }
+  const porGrupo = ORDEN_GRUPOS
+    .map((g) => [g, options.filter((o) => o.grupo === g)] as const)
+    .filter(([, list]) => list.length > 0);
+
+  return (
+    <div className="acciones">
+      {porGrupo.map(([grupo, lista]) => (
+        <div key={grupo} className="grupo-acciones">
+          <div className="grupo-titulo">{ETIQUETA_GRUPO[grupo]}</div>
+          <div className="grupo-botones">
+            {lista.map((o) => (
+              <button
+                key={o.id}
+                className={`option option-${grupo} ${nuevas.has(o.id) ? 'option-nueva' : ''}`}
+                onClick={() => onPick(o.intencion)}
+                disabled={busy}
+              >
+                {nuevas.has(o.id) && <span className="chispa">◆</span>}
+                {o.etiqueta}
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

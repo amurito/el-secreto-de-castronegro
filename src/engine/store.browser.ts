@@ -25,10 +25,41 @@ const EVENTOS = 'eventos';
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
+/**
+ * `indexedDB.open` puede no resolver NUNCA: si otra pestaña del mismo sitio
+ * tiene una conexión abierta y hay un borrado o una migración pendiente, la
+ * petición queda esperando en silencio. Sin plazo, el juego se cuelga sin
+ * decir nada y el botón de empezar no hace absolutamente nada.
+ *
+ * Con plazo, falla con un mensaje que explica qué pasó y qué hacer.
+ */
+const PLAZO_APERTURA_MS = 8000;
+
 function openDb(): Promise<IDBDatabase> {
   if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+  dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
+    let resuelto = false;
+    const listo = (fn: () => void) => { if (!resuelto) { resuelto = true; clearTimeout(reloj); fn(); } };
+
+    const reloj = setTimeout(() => {
+      listo(() => reject(new Error(
+        'El almacenamiento del navegador no responde. Suele pasar cuando el juego está ' +
+        'abierto en otra pestaña: cerrá las demás y recargá.',
+      )));
+    }, PLAZO_APERTURA_MS);
+
+    let req: IDBOpenDBRequest;
+    try {
+      req = indexedDB.open(DB_NAME, DB_VERSION);
+    } catch (e) {
+      listo(() => reject(new Error(
+        'Este navegador no permite guardar partidas (¿modo privado?). ' +
+        `Detalle: ${(e as Error).message}`,
+      )));
+      return;
+    }
+
     req.onupgradeneeded = () => {
       const db = req.result;
       if (!db.objectStoreNames.contains(CAMPANAS)) {
@@ -38,9 +69,20 @@ function openDb(): Promise<IDBDatabase> {
         db.createObjectStore(EVENTOS, { keyPath: ['campaignId', 'seq'] });
       }
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error ?? new Error('No se pudo abrir IndexedDB'));
+    req.onsuccess = () => listo(() => {
+      // Si otra pestaña pide una versión nueva, soltamos la conexión en vez de
+      // bloquearla: es la cortesía que evita el cuelgue del otro lado.
+      req.result.onversionchange = () => { req.result.close(); dbPromise = null; };
+      resolve(req.result);
+    });
+    req.onerror = () => listo(() => reject(req.error ?? new Error('No se pudo abrir el almacenamiento.')));
+    req.onblocked = () => listo(() => reject(new Error(
+      'El juego está abierto en otra pestaña y bloquea el guardado. Cerrá las demás y recargá.',
+    )));
   });
+
+  // Un fallo no debe dejar la promesa fallida cacheada para siempre.
+  dbPromise.catch(() => { dbPromise = null; });
   return dbPromise;
 }
 

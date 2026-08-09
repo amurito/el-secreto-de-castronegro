@@ -126,15 +126,22 @@ const LOCATIONS: Array<[LocationId, string[]]> = [
   ['orilla', ['laguna', 'orilla', 'costa', 'pastizal']],
 ];
 
+/**
+ * El ORDEN importa: gana el primero que coincide.
+ *
+ * Va de más específico a más general. "Le pregunto por la deuda de Ignacio"
+ * contiene "ignacio", así que si el tema genérico fuera primero, nunca se
+ * llegaría al tema de la deuda. Lo mismo con el hermano y con lo que vio ella.
+ */
 const TOPICS: Array<[string, string[]]> = [
   ['soga', ['soga', 'roldana', 'cuerda', 'polea']],
-  ['ignacio', ['ignacio', 'desaparic', 'esa noche', 'ultima vez', 'que paso', 'el marido', 'el hombre']],
-  ['aljibe', ['aljibe', 'agua', 'pozo', 'reflejo']],
-  ['reloj', ['reloj', 'cuatro y veinte', 'hora']],
-  ['1897', ['1897', 'foto vieja', 'fotografia vieja', 'la familia', 'antes', 'los viejos']],
-  ['hermano', ['hermano', 'familia de ignacio', 'pariente']],
-  ['ella', ['usted', 'vos que', 'que vio', 'lo que vio', 'tiene miedo', 'por que no sale']],
+  ['hermano', ['hermano', 'pariente']],
   ['deuda', ['plata', 'deuda', 'debia', 'dinero']],
+  ['reloj', ['reloj', 'cuatro y veinte']],
+  ['1897', ['1897', 'foto vieja', 'fotografia vieja', 'los viejos', 'los patrones']],
+  ['ella', ['que vio ella', 'lo que vio', 'vio usted', 'insisto', 'tiene miedo', 'por que no sale']],
+  ['ignacio', ['ignacio', 'desaparic', 'esa noche', 'ultima vez', 'que paso', 'el marido']],
+  ['aljibe', ['aljibe', 'agua', 'pozo', 'reflejo']],
 ];
 
 export function classify(state: GameState, raw: string): Intent {

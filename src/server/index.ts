@@ -13,6 +13,7 @@ import { useStore, store } from '../engine/store.ts';
 import { fileStore } from '../engine/store.node.ts';
 import { verifyRollChain } from '../engine/rng.ts';
 import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
+import { accionesDisponibles } from '../scenario/acciones.ts';
 // Sólo el servidor importa el briefing: en el build estático nadie lo hace y
 // el empaquetador lo descarta, así que la solución de la aventura no viaja al
 // navegador. Ver scenario/types.ts → KeeperBriefing.
@@ -64,13 +65,19 @@ app.post<{ Body: { scenarioId?: string } }>('/api/campaigns', async (req) => {
   if (!scenario) throw new Error(`Escenario desconocido: ${scenarioId}`);
   const campaignId = await createCampaign(scenario);
   const { state } = await loadState(campaignId);
-  return { campaignId, opening: scenario.opening, state: sanitizeForClient(state) };
+  return {
+    campaignId, opening: scenario.opening,
+    state: sanitizeForClient(state), options: accionesDisponibles(state),
+  };
 });
 
 app.get<{ Params: { id: string } }>('/api/campaigns/:id', async (req) => {
   const { state } = await loadState(req.params.id);
   const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
-  return { state: sanitizeForClient(state), opening: scenario?.opening ?? '' };
+  return {
+    state: sanitizeForClient(state), opening: scenario?.opening ?? '',
+    options: accionesDisponibles(state),
+  };
 });
 
 /** Auditoría: revela la semilla sólo si la campaña llegó a un final. */

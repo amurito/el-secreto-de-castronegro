@@ -24,6 +24,7 @@ import {
   pickVariant, timesTried, describeScene, umbralFlavour,
   needsClarification, isNight, lightNote,
 } from './narrator.ts';
+import { accionesDisponibles, detalleExaminado } from '../scenario/acciones.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
 
@@ -46,7 +47,8 @@ export async function runOfflineTurn(
 
   const narration = out.filter(Boolean).join('\n\n');
   emit({ kind: 'narration_delta', data: narration });
-  return { narration, options: optionsFor(turn.state), usedModel: false };
+  // Las opciones las calcula el motor desde el estado ya actualizado.
+  return { narration, options: accionesDisponibles(turn.state), usedModel: false };
 }
 
 /** ¿La tirada que acaba de ejecutarse superó la dificultad? */
@@ -203,7 +205,7 @@ function examine(turn: Turn, i: Intent, out: string[], run: Runner): void {
   out.push(describeScene(s, false));
 
   if (succeeded(roll.message)) {
-    const pending = (loc.features ?? []).filter((f) => !alreadyExamined(s, f));
+    const pending = (loc.features ?? []).filter((f) => !detalleExaminado(s, f));
     if (pending.length) {
       const f = pending[0]!;
       out.push(`Y algo más, porque estabas mirando: ${lowerFirst(f.description)}`);
@@ -224,7 +226,7 @@ function examine(turn: Turn, i: Intent, out: string[], run: Runner): void {
 function examineFeature(turn: Turn, f: LocationFeature, i: Intent, out: string[], run: Runner): void {
   const s = turn.state;
 
-  if (alreadyExamined(s, f)) {
+  if (detalleExaminado(s, f)) {
     out.push(`${f.description}\n\n${f.closerLook ?? ''}`.trim());
     out.push(pickVariant(s, [
       'Ya lo miraste con todo el cuidado que da mirar.',
@@ -269,12 +271,6 @@ function examineFeature(turn: Turn, f: LocationFeature, i: Intent, out: string[]
   }
 }
 
-/** Un detalle se considera examinado si su texto de detalle ya se narró. */
-function alreadyExamined(s: GameState, f: LocationFeature): boolean {
-  if (!f.closerLook) return false;
-  const head = f.closerLook.slice(0, 50);
-  return s.narrative.some((n) => n.kind === 'keeper' && n.text.includes(head));
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SENTIDOS
@@ -953,8 +949,10 @@ function talkTo(turn: Turn, i: Intent, out: string[], run: Runner): void {
       return;
     }
     case 'ella': {
-      if (attitude >= 40) { revealRosaSecret(turn, out, run); return; }
-      bump(2, 'preguntarle por ella y no por Ignacio');
+      // Con confianza suficiente confiesa. Si no, esquiva — y esquivar
+      // desbloquea la acción de insistir, que es otra cosa.
+      if (attitude >= 40 || hasClue(s, 'dos luces')) { revealRosaSecret(turn, out, run); return; }
+      bump(4, 'preguntarle por ella y no por Ignacio');
       out.push('Rosa se queda quieta con el repasador en las manos.\n\n—Yo no vi nada —dice, y es la primera cosa que dice que suena ensayada—. Yo estaba durmiendo.\n\nDespués, más bajo, casi para ella:\n\n—Y desde entonces duermo con la luz prendida, que es un gasto.');
       return;
     }
@@ -1084,35 +1082,3 @@ function lowerFirst(s: string): string {
   return s.charAt(0).toLowerCase() + s.slice(1);
 }
 
-/** Opciones sugeridas, calculadas desde el estado y no desde una tabla fija. */
-function optionsFor(s: GameState): string[] {
-  if (s.ending) return [];
-  const loc = s.world.locations[s.world.currentLocation]!;
-  const opts: string[] = [];
-
-  const pending = (loc.features ?? []).filter((f) => f.closerLook && !alreadyExamined(s, f));
-  for (const f of pending.slice(0, 2)) opts.push(`Mirar ${f.names[0]} de cerca`);
-
-  if (loc.id === 'patio') {
-    if (!s.items['it-reloj']!.discoveredProperties.length) opts.push('Sostener el reloj sobre el agua');
-    else opts.push('Asomarte al aljibe otra vez');
-  }
-  if (loc.id === 'cuarto') {
-    if (!s.documents['doc-cuaderno']!.obtainedAt) opts.push('Leer el cuaderno de Ignacio');
-    else if (!s.documents['doc-carta']!.obtainedAt) opts.push('Revisar el cuaderno hoja por hoja');
-    if (!s.items['it-fotoreciente']!.discoveredProperties.length) opts.push('Examinar la placa fotográfica');
-  }
-  if (Object.values(s.npcs).some((n) => n.present)) {
-    const askedSoga = s.narrative.some((n) => n.kind === 'player' && /soga|roldana/i.test(n.text));
-    opts.push(askedSoga ? 'Preguntarle a Rosa qué vio ella' : 'Preguntarle a Rosa por la soga');
-  }
-  if (s.items['it-fotoreciente']!.discoveredProperties.length && !s.items['it-foto1897']!.discoveredProperties.length) {
-    opts.push('Comparar las dos fotografías');
-  }
-
-  for (const c of loc.connections) {
-    const l = s.world.locations[c];
-    if (l && opts.length < 4) opts.push(`Ir a ${l.name.toLowerCase()}`);
-  }
-  return opts.slice(0, 4);
-}

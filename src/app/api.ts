@@ -9,6 +9,7 @@
  */
 
 import type { ClientState } from '../server/sanitize.ts';
+import type { Opcion } from '../scenario/acciones.ts';
 
 export interface StatusInfo {
   /** 'ia' = narra Claude · 'motor' = narra el motor */
@@ -45,8 +46,10 @@ export interface TurnEvent {
 export interface GameApi {
   status(): Promise<StatusInfo>;
   listCampaigns(): Promise<CampaignSummary[]>;
-  createCampaign(scenarioId: string): Promise<{ campaignId: string; opening: string; state: ClientState }>;
-  getCampaign(id: string): Promise<{ state: ClientState; opening: string }>;
+  createCampaign(scenarioId: string): Promise<{
+    campaignId: string; opening: string; state: ClientState; options: Opcion[];
+  }>;
+  getCampaign(id: string): Promise<{ state: ClientState; opening: string; options: Opcion[] }>;
   /** Resuelve un turno. Los eventos llegan por callback, en vivo. */
   submitIntent(id: string, action: string, onEvent: (e: TurnEvent) => void): Promise<void>;
   introduceInvestigator(id: string, investigatorId: string): Promise<{ state: ClientState }>;
