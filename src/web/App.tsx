@@ -121,7 +121,11 @@ export function App() {
 
   async function send(text: string) {
     if (!api || !campaignId || !text.trim() || busy) return;
-    setBusy(true); setError(null); setStreaming(''); setOptions([]);
+    // Limpiar la tirada anterior es obligatorio, no cosmético. La mayoría de
+    // las acciones no tiran dados —hablar, agarrar, caminar—, y sin esto la
+    // ficha de la tirada anterior seguía en pantalla debajo de la narración
+    // nueva. Se lee como si esa tirada hubiera resuelto también esta acción.
+    setBusy(true); setError(null); setStreaming(''); setOptions([]); setLastRoll(null);
     setLines((l) => [...l, { id: `p-${Date.now()}`, kind: 'player', text }]);
     setAction('');
 
