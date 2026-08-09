@@ -49,7 +49,8 @@ export function temasDisponibles(s: GameState, npc: Npc, temas: TemaConversacion
 
 /** Aplica lo que deja un tema: prosa, actitud, pista, pregunta, secreto. */
 function aplicar(
-  turn: Turn, npc: Npc, efecto: EfectoTema, out: string[], run: Runner, causa: string,
+  turn: Turn, npc: Npc, efecto: EfectoTema, out: string[], run: Runner,
+  causa: string, temaId: string,
 ): void {
   out.push(pickVariant(turn.state, efecto.texto));
 
@@ -72,7 +73,12 @@ function aplicar(
   }
   if (efecto.pregunta) run('raise_question', { question: efecto.pregunta });
   if (efecto.exposicion) {
-    run('apply_umbral_exposure', { amount: efecto.exposicion, cause: `lo que dijo ${npc.name}` });
+    run('apply_umbral_exposure', {
+      amount: efecto.exposicion, cause: `lo que dijo ${npc.name}`,
+      // Por NPC y por tema: dos revelaciones distintas de la misma persona son
+      // dos contactos distintos, y volver sobre la misma no vuelve a tocar.
+      source: `testimonio:${npc.id}:${temaId}`,
+    });
   }
   if (efecto.revelaSecreto) {
     // OJO: no se imprime `secret.content`. Ese texto está escrito para el
@@ -121,7 +127,7 @@ export function resolverTema(
   const piso = tema.prueba?.actitudMinima ?? -100;
   if (actitud < piso) {
     gastar(run, npc, COSTO.cerrado, `preguntar por «${tema.id}» antes de tiempo`);
-    if (tema.cerrado) aplicar(turn, npc, tema.cerrado, out, run, `tema cerrado: ${tema.id}`);
+    if (tema.cerrado) aplicar(turn, npc, tema.cerrado, out, run, `tema cerrado: ${tema.id}`, tema.id);
     else out.push(`—De eso no hablo —dice ${npc.name.split(' ')[0]}, y no agrega nada más.`);
     avisarSiSeAgota(turn, npc, out, run);
     return;
@@ -130,7 +136,7 @@ export function resolverTema(
   // ── 3. Sin resistencia: contesta y listo ─────────────────────────────────
   if (!tema.prueba) {
     gastar(run, npc, COSTO.tema, `conversación: ${tema.id}`);
-    aplicar(turn, npc, tema.cede, out, run, `tema: ${tema.id}`);
+    aplicar(turn, npc, tema.cede, out, run, `tema: ${tema.id}`, tema.id);
     avisarSiSeAgota(turn, npc, out, run);
     return;
   }
@@ -164,14 +170,14 @@ export function resolverTema(
   });
 
   if (exito(tirada.message)) {
-    aplicar(turn, npc, tema.cede, out, run, `cedió en: ${tema.id}`);
+    aplicar(turn, npc, tema.cede, out, run, `cedió en: ${tema.id}`, tema.id);
   } else {
     run('change_npc_state', {
       npc_id: npc.id, status: 'unchanged', present: 'unchanged',
       attitude_delta: 0, patience_delta: 0, dodged_topic: tema.id,
       cause: `esquivó la pregunta sobre ${tema.id}`,
     });
-    if (tema.esquiva) aplicar(turn, npc, tema.esquiva, out, run, `esquivó: ${tema.id}`);
+    if (tema.esquiva) aplicar(turn, npc, tema.esquiva, out, run, `esquivó: ${tema.id}`, tema.id);
     else {
       out.push(pickVariant(s, [
         `${npc.name.split(' ')[0]} contesta al lado de la pregunta, y se nota que es a propósito.`,

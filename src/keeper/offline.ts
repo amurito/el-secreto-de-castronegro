@@ -24,7 +24,7 @@ import {
   pickVariant, timesTried, describeScene, umbralFlavour,
   needsClarification, isNight, lightNote,
 } from './narrator.ts';
-import { accionesDisponibles, detalleExaminado } from '../scenario/acciones.ts';
+import { accionesDisponibles, detalleExaminado, listoParaSostener } from '../scenario/acciones.ts';
 import { resolverTema, temasDisponibles } from './social.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
@@ -74,9 +74,12 @@ function resolve(turn: Turn, i: Intent, out: string[], run: Runner, scenario: Sc
   // verbo desconocido sobre un objetivo real y lo resolvía mirando algo, así
   // que el final quedaba declarado en el escenario y era inalcanzable.
   if (/sosten[eg]/.test(i.norm) && /mirada|vista|reflejo/.test(i.norm)) {
-    // Con poca exposición no es un desenlace: el reflejo no le contesta a
-    // cualquiera. Es asomarse fuerte, y cae en la observación sostenida.
-    if (exposureOf(s) >= 30) return endStare(turn, out, run);
+    // Mismos tres caminos que abren el botón en el catálogo. Si acá pidiera
+    // otra cosa, la opción se ofrecería y no haría lo que promete — que es la
+    // peor mentira que puede decir una interfaz.
+    if (listoParaSostener(s)) return endStare(turn, out, run);
+    // Sin eso no es un desenlace: el reflejo no le contesta a cualquiera. Es
+    // asomarse fuerte, y cae en la observación sostenida.
     return lookAtWater(turn, { ...i, sustained: true }, out, run);
   }
   if (/me quedo|quedarme|paso la noche|pasar la noche/.test(i.norm)) {
@@ -258,7 +261,7 @@ function examineFeature(turn: Turn, f: LocationFeature, i: Intent, out: string[]
   out.push(f.description);
 
   if (!f.closerLook) {
-    if (f.exposure) run('apply_umbral_exposure', { amount: f.exposure, cause: `atención sostenida en ${f.names[0]}` });
+    if (f.exposure) run('apply_umbral_exposure', { amount: f.exposure, cause: `atención sostenida en ${f.names[0]}`, source: `detalle:${f.id}` });
     return;
   }
 
@@ -275,7 +278,7 @@ function examineFeature(turn: Turn, f: LocationFeature, i: Intent, out: string[]
 
   if (succeeded(roll.message)) {
     out.push(f.closerLook);
-    if (f.exposure) run('apply_umbral_exposure', { amount: f.exposure, cause: `mirar de cerca ${f.names[0]}` });
+    if (f.exposure) run('apply_umbral_exposure', { amount: f.exposure, cause: `mirar de cerca ${f.names[0]}`, source: `detalle:${f.id}` });
     if (f.clue) {
       run('add_clue', {
         description: f.clue.description, kind: f.clue.kind,
@@ -312,7 +315,7 @@ function sense(turn: Turn, i: Intent, out: string[], run: Runner, which: 'sound'
     if (succeeded(roll.message) && pool.length) {
       out.push(pickVariant(s, pool));
       if (loc.umbralIntensity >= 5) {
-        run('apply_umbral_exposure', { amount: 2, cause: 'escuchar el silencio del agua' });
+        run('apply_umbral_exposure', { amount: 2, cause: 'escuchar el silencio del agua', source: 'aljibe:escuchar' });
       }
     } else {
       out.push(pickVariant(s, [
@@ -329,7 +332,7 @@ function sense(turn: Turn, i: Intent, out: string[], run: Runner, which: 'sound'
     : 'Frío, seco, lo esperable.');
 
   if (which === 'touch' && i.target.kind === 'water') {
-    run('apply_umbral_exposure', { amount: 5, cause: 'contacto físico con el agua quieta' });
+    run('apply_umbral_exposure', { amount: 5, cause: 'contacto físico con el agua quieta', source: 'aljibe:tocar' });
     out.push('El agua no opone nada. Ni frío de más, ni corriente, ni el tironeo mínimo que tiene siempre el agua de un pozo. Sacás la mano seca antes de darte cuenta de que la sacaste seca.');
     run('apply_stability_shift', { amount: -4, cause: 'sacar la mano seca del agua' });
   }
@@ -440,7 +443,7 @@ function useItem(turn: Turn, i: Intent, out: string[], run: Runner): void {
         description: 'El retardo del reflejo se hace evidente al comparar el aljibe con un espejo. El agua parece no registrar a quien no la mira de frente.',
         kind: 'experiential', source: 'experimento con el espejo de mano', reliability: 'reliable',
       });
-      run('apply_umbral_exposure', { amount: 2, cause: 'observar el aljibe de forma indirecta' });
+      run('apply_umbral_exposure', { amount: 2, cause: 'observar el aljibe de forma indirecta', source: 'aljibe:espejo' });
     } else out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
     return;
   }
@@ -473,7 +476,7 @@ function wait(turn: Turn, i: Intent, out: string[], run: Runner): void {
   ]));
 
   if (loc.umbralIntensity >= 5) {
-    run('apply_umbral_exposure', { amount: 2, cause: 'permanecer junto al agua sin hacer nada' });
+    run('apply_umbral_exposure', { amount: 2, cause: 'permanecer junto al agua sin hacer nada', source: 'aljibe:presencia' });
     out.push(pickVariant(s, [
       'En algún momento te das cuenta de que estuviste mirando el agua sin decidir mirarla.',
       'El agua sigue sin moverse. Vos sí te moviste, aunque no te acordás de haberlo hecho.',
@@ -493,7 +496,7 @@ function shout(turn: Turn, i: Intent, out: string[], run: Runner): void {
       'Gritás el nombre hacia el aljibe. La voz sale, cruza el patio y se va al campo.\n\nEl aljibe no devuelve eco. Un pozo de dos metros con agua abajo devuelve eco. Este no.',
       'Volvés a llamar. Nada. Ni siquiera el eco que te devolvió la primera vez, que tampoco fue.',
     ]));
-    run('apply_umbral_exposure', { amount: 3, cause: 'gritar hacia el aljibe y no recibir eco' });
+    run('apply_umbral_exposure', { amount: 3, cause: 'gritar hacia el aljibe y no recibir eco', source: 'aljibe:llamar' });
     if (timesTried(s, 'grit', 'llam') <= 1) {
       run('add_clue', {
         description: 'El aljibe no devuelve eco, aunque tiene la profundidad y el agua para hacerlo.',
@@ -550,7 +553,7 @@ function breakThing(turn: Turn, i: Intent, out: string[], run: Runner): void {
     });
     run('change_npc_state', { npc_id: 'npc-rosa', status: 'unchanged', present: 'unchanged', attitude_delta: -15, cause: 'le rompieron el espejo' });
     out.push('El espejo se parte contra el ladrillo. Los pedazos quedan boca arriba en la tierra, cada uno con su porción de cielo, y todos con la misma fracción de segundo de retraso.');
-    run('apply_umbral_exposure', { amount: 4, cause: 'ver el fenómeno multiplicado en los fragmentos' });
+    run('apply_umbral_exposure', { amount: 4, cause: 'ver el fenómeno multiplicado en los fragmentos', source: 'espejo-roto' });
     return;
   }
 
@@ -595,7 +598,7 @@ function dig(turn: Turn, out: string[], run: Runner): void {
       description: 'La napa está a sesenta centímetros y el agua se queda inmóvil apenas aflora, incluso en un pozo recién cavado.',
       kind: 'physical', source: 'excavación en el patio', reliability: 'reliable',
     });
-    run('apply_umbral_exposure', { amount: 5, cause: 'ver el fenómeno en agua recién descubierta' });
+    run('apply_umbral_exposure', { amount: 5, cause: 'ver el fenómeno en agua recién descubierta', source: 'napa-cavada' });
   } else {
     out.push('Cuarenta y cinco minutos de pala para nada. Tierra apisonada, un pedazo de loza, la ampolla del pulgar.');
   }
@@ -612,7 +615,7 @@ function sleep(turn: Turn, out: string[], run: Runner): void {
         'con tablas que todavía no pusiste. Te despertás con la certeza de haberlo visto, no de haberlo soñado.'
       : 'Dormís unas horas en el catre del cuarto de al lado. Sin sueños que valga la pena contar.',
   );
-  if (exposure >= 20) run('apply_umbral_exposure', { amount: 3, cause: 'un sueño con contenido que no le pertenece' });
+  if (exposure >= 20) run('apply_umbral_exposure', { amount: 3, cause: 'un sueño con contenido que no le pertenece', source: 'sueno' });
 }
 
 function climb(turn: Turn, i: Intent, out: string[], run: Runner): void {
@@ -720,6 +723,10 @@ function lookAtWater(turn: Turn, i: Intent, out: string[], run: Runner): void {
     run('apply_umbral_exposure', {
       amount: i.sustained ? 6 : 3,
       cause: i.sustained ? 'observación deliberada y sostenida del agua del aljibe' : 'asomarse al agua del aljibe',
+      // Asomarse y asomarse sostenidamente son la MISMA fuente. Si fueran dos,
+      // alternar entre las dos variantes esquivaría el decaimiento, que es
+      // justo la fuga que esto viene a tapar.
+      source: 'aljibe:mirar',
     });
   } else {
     out.push(pickVariant(s, [
@@ -728,7 +735,7 @@ function lookAtWater(turn: Turn, i: Intent, out: string[], run: Runner): void {
       'Es la misma quietud del aljibe, pero repartida en cien hectáreas: más grande, y por eso más fácil de no ver.',
       'Volvés a mirar la laguna. Sigue sin tener olas. Cien hectáreas de agua sin una sola onda es una cosa que uno mira dos veces y sigue sin poder sostener.',
     ]));
-    run('apply_umbral_exposure', { amount: i.sustained ? 3 : 2, cause: 'observar la superficie de la Laguna Mansa' });
+    run('apply_umbral_exposure', { amount: i.sustained ? 3 : 2, cause: 'observar la superficie de la Laguna Mansa', source: 'laguna:mirar' });
   }
 }
 
@@ -758,7 +765,7 @@ function examinePlate(turn: Turn, out: string[], run: Runner): void {
         description: 'En la placa que tomó Ignacio hay un hombre reflejado en el agua del aljibe, mirando hacia la cámara. No había nadie en el patio.',
         kind: 'physical', source: 'placa fotográfica de Ignacio Vera', reliability: 'reliable',
       });
-      run('apply_umbral_exposure', { amount: 4, cause: 'ver la figura en el reflejo de la placa' });
+      run('apply_umbral_exposure', { amount: 4, cause: 'ver la figura en el reflejo de la placa', source: 'placa-figura' });
     }
   } else {
     out.push(pickVariant(s, [
@@ -790,7 +797,7 @@ function comparePhotos(turn: Turn, out: string[], run: Runner): void {
     kind: 'physical', source: 'comparación de las dos fotografías', reliability: 'reliable',
   });
   run('apply_stability_shift', { amount: -8, cause: 'dos imágenes separadas por veintisiete años que no pueden mostrar a la misma persona' });
-  run('apply_umbral_exposure', { amount: 4, cause: 'reconocer el rostro repetido' });
+  run('apply_umbral_exposure', { amount: 4, cause: 'reconocer el rostro repetido', source: 'rostro-repetido' });
   run('note_contradiction', {
     description: 'La misma persona aparece en dos fotografías separadas por veintisiete años, sin haber envejecido.',
     between: 'Fotografía de 1897 | Placa de Ignacio, octubre de 1924',
@@ -816,7 +823,7 @@ function clockOverWater(turn: Turn, out: string[], run: Runner): void {
     kind: 'experiential', source: 'experimento directo sobre el aljibe', reliability: 'reliable',
   });
   run('apply_stability_shift', { amount: -8, cause: 'un mecanismo que retrocede sobre el agua y no fuera de ella' });
-  run('apply_umbral_exposure', { amount: 6, cause: 'presenciar una anomalía inequívoca en el aljibe' });
+  run('apply_umbral_exposure', { amount: 6, cause: 'presenciar una anomalía inequívoca en el aljibe', source: 'reloj-sobre-agua' });
   run('raise_question', { question: '¿Por qué las cuatro y veinte, y por qué siempre el mismo tramo?' });
 }
 
@@ -985,7 +992,7 @@ function descendWell(turn: Turn, out: string[], run: Runner): void {
     run('apply_damage', { amount: 3, cause: 'caída de dos metros contra el fondo del aljibe' });
     out.push('El musgo cede. Caés los dos metros de golpe y el agua no amortigua casi nada.');
   }
-  run('apply_umbral_exposure', { amount: 12, cause: 'entrar en contacto físico con el agua del aljibe' });
+  run('apply_umbral_exposure', { amount: 12, cause: 'entrar en contacto físico con el agua del aljibe', source: 'aljibe:dentro' });
   run('apply_stability_shift', { amount: -10, cause: 'estar dentro del agua quieta' });
   run('record_consequence', {
     description: 'El investigador bajó al aljibe de Los Álamos.', scope: 'campaign', permanent: 'true',
@@ -1068,7 +1075,7 @@ function endStare(turn: Turn, out: string[], run: Runner): void {
   });
   const firme = succeeded(roll.message);
 
-  run('apply_umbral_exposure', { amount: 18, cause: 'sostener la mirada hasta que el reflejo respondió' });
+  run('apply_umbral_exposure', { amount: 18, cause: 'sostener la mirada hasta que el reflejo respondió', source: 'aljibe:respuesta' });
   run('apply_stability_shift', { amount: firme ? -12 : -22, cause: 'que el reflejo dejara de imitar' });
   run('add_clue', {
     description: 'El reflejo del aljibe dejó de imitar y se movió por su cuenta. No es un efecto óptico: hay algo que usa el agua para mirar.',
@@ -1111,7 +1118,7 @@ function endStare(turn: Turn, out: string[], run: Runner): void {
  */
 function endStay(turn: Turn, out: string[], run: Runner): void {
   run('advance_time', { minutes: 8 * 60, reason: 'pasar la noche en Los Álamos' });
-  run('apply_umbral_exposure', { amount: 14, cause: 'dormir a veinte metros del aljibe' });
+  run('apply_umbral_exposure', { amount: 14, cause: 'dormir a veinte metros del aljibe', source: 'noche-en-la-casa' });
   run('apply_stability_shift', { amount: -15, cause: 'una noche entera de agua quieta al lado' });
   run('record_consequence', {
     description: 'El investigador pasó la noche en Los Álamos. Rosa Quintana no estaba a la mañana.',

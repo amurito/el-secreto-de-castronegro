@@ -110,7 +110,14 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
         exposure: p.to,
         exposureEvents: [
           ...inv.umbral.exposureEvents,
-          { at: ev.id, amount: p.amount, cause: p.cause, worldTime: ev.worldTime },
+          {
+            at: ev.id,
+            amount: p.amount,
+            cause: p.cause,
+            source: p.source,
+            amountBeforeDecay: p.amountBeforeDecay,
+            worldTime: ev.worldTime,
+          },
         ],
       };
       break;

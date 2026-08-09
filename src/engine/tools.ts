@@ -91,8 +91,14 @@ export const KEEPER_TOOLS: ToolDef[] = [
       properties: {
         amount: int('Puntos de exposición (1-20).', 1, 20),
         cause: str('Qué contacto con el Umbral lo produjo.'),
+        source: str(
+          'Identificador ESTABLE del origen, en minúsculas y sin espacios: "agua-aljibe", ' +
+          '"feature:f-alamos", "testimonio-rosa". La misma fuente rinde cada vez menos, así que ' +
+          'dos contactos con la misma cosa tienen que usar el mismo identificador, y dos cosas ' +
+          'distintas nunca el mismo.',
+        ),
       },
-      required: ['amount', 'cause'],
+      required: ['amount', 'cause', 'source'],
       additionalProperties: false,
     },
   },

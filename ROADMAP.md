@@ -64,7 +64,30 @@ accidente, no por criterio.
 
 ## 2. Decisiones tuyas
 
-### 2.1 Escalas del Umbral ★ bloquea el resto del balance
+### 2.1 Escalas del Umbral ✔ HECHO (la fuga, no la escala)
+
+Medido: jugando a lo ancho, 40 turnos, Exposición 26. Asomándose al aljibe
+veinte veces, Exposición 100 y los cuatro umbrales. **La escala no era corta:
+una acción repetible entregaba exposición completa cada vez.**
+
+Ahora cada fuente rinde 100% / 50% / 25% / 0% según cuántas veces ya te tocó,
+con un piso de 1 mientras siga rindiendo. Las fuentes se identifican con un id
+estable (`aljibe:mirar`, `detalle:f-alamos`, `testimonio:npc-rosa:ella`), y el
+motor rechaza una exposición sin fuente en vez de tragarla.
+
+Los umbrales quedan en 10/30/55/80: con la fuga tapada no hizo falta moverlos.
+
+Números en `src/rules/umbral.config.ts`. Verificado por `prueba-umbral.ts`, que
+juega las tres partidas —estrecha, ancha, exhaustiva— y falla si la estrecha
+vuelve a ganarle a la ancha.
+
+**Lo que queda por observar jugando:** una partida exhaustiva da entre 21 y 37
+de Exposición según cómo salgan los dados, porque casi todas las fuentes están
+detrás de una tirada. Es mucha varianza. Si al jugar se siente arbitrario, la
+salida es dar algo de exposición también al fallar —el contacto ocurrió
+igual— y no subir los números.
+
+### 2.1-bis Escalas afinadas con más partidas
 
 `src/rules/umbral.config.ts`. Todas las constantes en un archivo, a propósito,
 porque dijiste "escalas no lo sé aún".
@@ -154,7 +177,7 @@ Tres columnas fijas. En un teléfono no entra. No es difícil, es trabajo.
 ## Orden sugerido
 
 1. ~~1.1 tiradas sociales~~ ✔
-2. **2.1 escalas del Umbral** — ya tenés los datos para decidir
+2. ~~2.1 escalas del Umbral~~ ✔
 3. **1.2 auditoría de alcanzabilidad** — evita el próximo bug de esta familia
 4. **3.2 segunda aventura** — dice si la arquitectura sirve
 5. **3.1 creación de personaje**

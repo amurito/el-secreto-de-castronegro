@@ -174,6 +174,16 @@ export interface ExposureRecord {
   at: EventId;
   amount: number;
   cause: string;
+  /**
+   * De DÓNDE vino el contacto, como identificador estable.
+   *
+   * Es distinto de `cause`, que es prosa para el registro y cambia de una vez
+   * a la otra. La fuente es lo que permite contar repeticiones: sin ella, el
+   * motor no puede saber que ésta es la décima vez que mirás la misma agua.
+   */
+  source: string;
+  /** Lo que habría dado sin rendimientos decrecientes. Para auditar. */
+  amountBeforeDecay?: number;
   worldTime: WorldTime;
 }
 

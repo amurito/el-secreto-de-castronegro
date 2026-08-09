@@ -119,6 +119,21 @@ const detalleVisto = (s: GameState, lugar: LocationId, featureId: string): boole
   return f ? detalleExaminado(s, f) : false;
 };
 
+/**
+ * ¿Se puede sostenerle la mirada al reflejo hasta que responda?
+ *
+ * Vive acá, exportada, y la usan TANTO el catálogo —para mostrar el botón—
+ * COMO el resolvedor —para decidir si es un desenlace—. Si cada uno tuviera su
+ * copia, tarde o temprano se separarían y la opción se ofrecería sin hacer lo
+ * que promete. Ya nos pasó con la lista de temas de conversación duplicada.
+ */
+export function listoParaSostener(s: GameState): boolean {
+  if (!pista(s, 'retardo perceptible')) return false;
+  return exposicion(s) >= 25
+    || propiedad(s, 'it-fotoreciente', 'p-rec-figura')
+    || pista(s, 'dos luces');
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // CATÁLOGO
 // ─────────────────────────────────────────────────────────────────────────────
@@ -265,8 +280,19 @@ export const ACCIONES: AccionDef[] = [
     id: 'sostener', grupo: 'decidir', lugar: 'patio', orden: 93, final: true,
     etiqueta: 'Sostenerle la mirada al reflejo hasta que responda',
     intencion: 'Le sostengo la mirada al reflejo del aljibe hasta el final',
-    visible: (s) =>
-      exposicion(s) >= 30 && pista(s, 'retardo perceptible'),
+    // Tres caminos, no uno.
+    //
+    // Antes pedía sólo exposición >= 30, y eso se conseguía asomándose muchas
+    // veces. Desde que las fuentes rinden cada vez menos, la exposición de una
+    // partida a fondo va de 21 a 37 según cómo salgan los dados — casi todas
+    // las fuentes están detrás de una tirada. Con una sola puerta, el final más
+    // profundo de la aventura pasaba a depender de la suerte, que es el mismo
+    // problema que ya dejó a un jugador sin poder llegar.
+    //
+    // Lo que el desenlace pide de verdad no es un número: es SABER que el
+    // fenómeno devuelve la mirada. A eso se llega por exposición acumulada, por
+    // la figura de la placa, o porque Rosa contó lo de las dos luces.
+    visible: (s) => listoParaSostener(s),
   },
   {
     id: 'quedarse', grupo: 'decidir', orden: 94, final: true,

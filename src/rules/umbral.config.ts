@@ -91,6 +91,44 @@ export const EXPOSURE_GAIN = {
 export const MAX_EXPOSURE_PER_TURN = 20;
 
 // ─────────────────────────────────────────────────────────────────────────────
+// RENDIMIENTOS DECRECIENTES POR FUENTE
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * La misma fuente rinde cada vez menos.
+ *
+ * EL PROBLEMA QUE RESUELVE. Medido sobre dos partidas del mismo motor:
+ *
+ *   jugando a lo ancho, cada acción una vez, 40 turnos → Exposición 26
+ *   asomándose al aljibe veinte veces y nada más       → Exposición 100
+ *
+ * La escala no era corta: una acción repetible entregaba exposición completa
+ * cada vez, sin tope y para siempre. El que investigaba a fondo terminaba en
+ * 26 y el que apretaba el mismo botón terminaba en 100, que es exactamente al
+ * revés de lo que un juego de investigación quiere premiar.
+ *
+ * POR QUÉ ESTO Y NO BAJAR LOS NÚMEROS. La justificación no es de balance sino
+ * de qué mide la variable. La Exposición mide cuánto te TOCÓ el fenómeno, y la
+ * décima mirada al mismo reflejo no te toca más que la segunda. Mirar otra
+ * cosa, sí. Bajar la escala habría castigado por igual al que explora.
+ *
+ * No contradice el canon: el canon dice que la Exposición no baja con
+ * descanso, y esto no la baja. Sólo deja de subir por lo mismo.
+ *
+ * El índice es la cantidad de veces que ESA fuente ya dio exposición. Pasado
+ * el final del array se aplica el último valor.
+ */
+export const RENDIMIENTO_POR_REPETICION = [1, 0.5, 0.25, 0];
+
+/**
+ * Piso: si la fuente todavía rinde algo, rinde al menos esto. Sin el piso, una
+ * fuente de 2 puntos se apagaría en la segunda repetición por redondeo, y las
+ * fuentes chicas dejarían de existir antes que las grandes sin que eso lo haya
+ * decidido nadie.
+ */
+export const RENDIMIENTO_MINIMO = 1;
+
+// ─────────────────────────────────────────────────────────────────────────────
 // ESTABILIDAD — pérdida y recuperación
 // ─────────────────────────────────────────────────────────────────────────────
 

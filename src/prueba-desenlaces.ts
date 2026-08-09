@@ -70,11 +70,26 @@ async function main() {
     { id: 'llevarse', semilla: 'f', guion: [...INVESTIGAR, 'Me voy de Los Álamos'] },
     {
       id: 'mirar', semilla: '1',
-      // Hace falta exposición alta: el reflejo no le contesta a cualquiera.
+      // Pide exposición >= 30, y desde que las fuentes rinden cada vez menos
+      // eso ya NO se consigue asomándose veinte veces: hace falta haber tocado
+      // el fenómeno por varios lados. Antes este guión eran tres miradas más;
+      // funcionaba porque repetir era gratis, que era justamente la fuga.
       guion: [
         ...INVESTIGAR,
-        'Me asomo al aljibe y miro el reflejo un rato largo',
-        'Me asomo al aljibe y miro el reflejo un rato largo',
+        // Asomarse hasta que la tirada de POD salga: la pista del retardo es
+        // requisito y depende de un dado. Repetir ya casi no da exposición
+        // —para eso está el decaimiento— pero sí sigue dando la pista, que es
+        // exactamente la distinción que queremos.
+        ...Array(6).fill('Me asomo al aljibe y miro el reflejo un rato largo'),
+        'Escucho el aljibe con atención',
+        'Toco el agua del aljibe',
+        'Grito el nombre de Ignacio hacia el aljibe',
+        'Examino el brocal de cerca',
+        'Examino los álamos de cerca',
+        'Cavo al lado del aljibe',
+        'Voy a la orilla de la laguna mansa',
+        'Miro la laguna un rato largo',
+        'Voy al patio',
         'Le sostengo la mirada al reflejo del aljibe hasta el final',
       ],
     },

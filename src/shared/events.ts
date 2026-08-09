@@ -142,10 +142,15 @@ export interface StatChangedPayload {
 
 export interface UmbralExposurePayload {
   investigatorId: InvestigatorId;
+  /** Lo aplicado de verdad, ya con rendimientos decrecientes. Puede ser 0. */
   amount: number;
   from: number;
   to: number;
   cause: string;
+  /** Identificador estable del origen. Es lo que permite contar repeticiones. */
+  source: string;
+  /** Lo que habría dado la primera vez. Para auditar el decaimiento. */
+  amountBeforeDecay: number;
 }
 
 export interface StabilityShiftPayload {

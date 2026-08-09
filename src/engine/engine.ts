@@ -445,15 +445,41 @@ export class Turn {
   private toolApplyExposure(raw: Record<string, unknown>): ToolOutcome {
     const amount = Math.abs(Number(raw.amount ?? 0));
     const cause = String(raw.cause ?? '');
+    const source = String(raw.source ?? '').trim();
     const inv = this.investigator;
 
-    const res = applyExposure(inv.umbral, amount);
+    // Sin fuente no hay manera de contar repeticiones, y sin contar
+    // repeticiones vuelve la fuga: asomarse veinte veces al mismo aljibe daba
+    // exposición completa las veinte. Se rechaza en vez de inventar una fuente
+    // a partir de la prosa, que cambia de una vez a la otra y no agruparía.
+    if (!source) {
+      return this.reject('apply_umbral_exposure', raw,
+        'Falta `source`: el identificador estable de DÓNDE viene el contacto ' +
+        '(por ejemplo "agua-aljibe" o "feature:f-alamos"). Sin él no se pueden ' +
+        'aplicar rendimientos decrecientes y repetir la misma acción rendiría siempre igual.');
+    }
+
+    const res = applyExposure(inv.umbral, amount, source);
     this.ctx.exposureThisTurn += res.applied;
     this.emit('UMBRAL_EXPOSURE', {
       investigatorId: inv.id, amount: res.applied, from: res.from, to: res.to, cause,
+      source, amountBeforeDecay: res.beforeDecay,
     });
 
+    if (res.applied === 0) {
+      return {
+        ok: true,
+        message:
+          `Exposición sin cambio: ${res.from} de 100. Es la vez ${res.timesBefore + 1} que ` +
+          `«${source}» produce contacto, y esa fuente ya no aporta nada nuevo. ` +
+          'No lo narres como que no pasó nada: narralo como que ya no le hace mella.',
+      };
+    }
+
     let msg = `Exposición al Umbral ${res.from} → ${res.to} de 100.`;
+    if (res.applied < res.beforeDecay) {
+      msg += ` (${res.beforeDecay} reducidos a ${res.applied}: «${source}» ya produjo contacto ${res.timesBefore} vez/veces.)`;
+    }
     for (const t of res.newThresholds) {
       this.emit('THRESHOLD_CROSSED', { investigatorId: inv.id, threshold: t, atExposure: res.to });
       const info = thresholdInfo(t);

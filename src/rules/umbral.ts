@@ -11,6 +11,8 @@ import {
   STABILITY_PENALTY_TIERS,
   STABILITY_AFFECTED_SKILLS,
   SAN_EXTRA_LOSS_BY_EXPOSURE,
+  RENDIMIENTO_POR_REPETICION,
+  RENDIMIENTO_MINIMO,
 } from './umbral.config.ts';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -19,12 +21,43 @@ export interface ExposureResult {
   from: number;
   to: number;
   applied: number;
+  /** Lo que habría dado sin rendimientos decrecientes. */
+  beforeDecay: number;
+  /** Cuántas veces esta fuente ya había dado exposición antes de ésta. */
+  timesBefore: number;
   /** Umbrales cruzados por este incremento. Irreversibles. */
   newThresholds: UmbralThreshold[];
 }
 
-export function applyExposure(state: UmbralState, amount: number): ExposureResult {
-  const applied = clamp(amount, 0, MAX_EXPOSURE_PER_TURN);
+/** Cuántas veces esta fuente ya rindió exposición. */
+export function timesExposedTo(state: UmbralState, source: string): number {
+  return state.exposureEvents.filter((e) => e.source === source).length;
+}
+
+/**
+ * Cuánto rinde una fuente que ya rindió `veces` veces.
+ *
+ * Redondea hacia arriba y respeta un piso mientras el factor no sea cero: si
+ * la fuente todavía cuenta, cuenta al menos un punto. Sin eso, una fuente de 2
+ * se apagaría antes que una de 18 sólo por redondeo, y ese orden no lo habría
+ * decidido nadie.
+ */
+export function decayedAmount(amount: number, veces: number): number {
+  const tabla = RENDIMIENTO_POR_REPETICION;
+  const factor = tabla[Math.min(veces, tabla.length - 1)] ?? 0;
+  if (factor <= 0) return 0;
+  return Math.max(RENDIMIENTO_MINIMO, Math.ceil(amount * factor));
+}
+
+export function applyExposure(
+  state: UmbralState,
+  amount: number,
+  source: string,
+): ExposureResult {
+  const beforeDecay = clamp(amount, 0, MAX_EXPOSURE_PER_TURN);
+  const timesBefore = timesExposedTo(state, source);
+  const applied = clamp(decayedAmount(beforeDecay, timesBefore), 0, MAX_EXPOSURE_PER_TURN);
+
   const from = state.exposure;
   const to = clamp(from + applied, 0, 100);
 
@@ -32,7 +65,7 @@ export function applyExposure(state: UmbralState, amount: number): ExposureResul
     (t) => to >= t.at && from < t.at && !state.thresholdsCrossed.includes(t.threshold),
   ).map((t) => t.threshold);
 
-  return { from, to, applied, newThresholds };
+  return { from, to, applied, beforeDecay, timesBefore, newThresholds };
 }
 
 export interface StabilityResult {
