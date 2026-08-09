@@ -63,6 +63,21 @@ function succeeded(msg: string): boolean {
 function resolve(turn: Turn, i: Intent, out: string[], run: Runner): void {
   const s = turn.state;
 
+  // ── Desenlaces por frase ─────────────────────────────────────────────────
+  // Van ANTES que cualquier otra lectura, y no dependen del verbo. El
+  // clasificador no tiene verbo para "me quedo a pasar la noche": lo leía como
+  // verbo desconocido sobre un objetivo real y lo resolvía mirando algo, así
+  // que el final quedaba declarado en el escenario y era inalcanzable.
+  if (/sosten[eg]/.test(i.norm) && /mirada|vista|reflejo/.test(i.norm)) {
+    // Con poca exposición no es un desenlace: el reflejo no le contesta a
+    // cualquiera. Es asomarse fuerte, y cae en la observación sostenida.
+    if (exposureOf(s) >= 30) return endStare(turn, out, run);
+    return lookAtWater(turn, { ...i, sustained: true }, out, run);
+  }
+  if (/me quedo|quedarme|paso la noche|pasar la noche/.test(i.norm)) {
+    return endStay(turn, out, run);
+  }
+
   // ── Acción rara sobre algo real ──────────────────────────────────────────
   // El jugador escribió un verbo que el motor no tiene, apuntando a algo que
   // sí existe. No lo movemos ni lo ignoramos: se lo reconoce y se resuelve
@@ -993,6 +1008,8 @@ function revealRosaSecret(turn: Turn, out: string[], run: Runner): void {
   });
 }
 
+const exposureOf = (s: GameState) => s.investigators[s.activeInvestigator]?.umbral.exposure ?? 0;
+
 const hasClue = (s: GameState, fragment: string) =>
   s.board.clues.some((c) => c.description.includes(fragment));
 
@@ -1073,6 +1090,103 @@ function endLeave(turn: Turn, out: string[], run: Runner): void {
       'como si se sacara algo de encima.\n\n' +
       'A los seis meses vas a volver a abrir la carpeta, y las fotografías van a seguir mostrando lo mismo. ' +
       'Esa es la parte que no te vas a poder explicar: que sigan mostrando lo mismo.',
+  });
+}
+
+/**
+ * «Lo que devuelve la mirada». El desenlace que el escenario declaraba y el
+ * motor no ofrecía: mirar sostenidamente hasta que el fenómeno responde.
+ *
+ * Pide exposición alta porque el reflejo no le responde a cualquiera: le
+ * responde a quien ya se asomó lo suficiente como para que haya algo del otro
+ * lado que lo reconozca.
+ */
+function endStare(turn: Turn, out: string[], run: Runner): void {
+  const s = turn.state;
+  if (s.world.currentLocation !== 'patio') { out.push('El aljibe está en el patio.'); return; }
+
+  out.push(
+    'Apoyás los codos en el brocal y decidís no apartar la vista. Es una decisión, no un descuido: ' +
+    'las dos cosas se parecen desde afuera y no se parecen en nada por dentro.\n\n' +
+    'El primer minuto no pasa nada. El segundo tampoco.',
+  );
+
+  const roll = run('request_roll', {
+    skill: 'POW', difficulty: 'dificil',
+    reason: 'sostener la mirada sobre el agua hasta que el agua conteste',
+    stakes_success: 'seguís siendo quien mira cuando termina',
+    stakes_failure: 'para cuando termina, ya no está claro quién miraba a quién',
+    bonus_dice: 0, penalty_dice: 1, modifier_reason: 'nadie sostiene esto sin pagarlo',
+  });
+  const firme = succeeded(roll.message);
+
+  run('apply_umbral_exposure', { amount: 18, cause: 'sostener la mirada hasta que el reflejo respondió' });
+  run('apply_stability_shift', { amount: firme ? -12 : -22, cause: 'que el reflejo dejara de imitar' });
+  run('add_clue', {
+    description: 'El reflejo del aljibe dejó de imitar y se movió por su cuenta. No es un efecto óptico: hay algo que usa el agua para mirar.',
+    kind: 'experiential', source: 'observación sostenida hasta la respuesta', reliability: 'reliable',
+  });
+  run('record_consequence', {
+    description: 'El investigador sostuvo la mirada hasta que el fenómeno del aljibe respondió.',
+    scope: 'campaign', permanent: 'true',
+    world_reminder: 'El agua respondió a este investigador. Lo que sea que mira desde el aljibe ahora sabe qué cara tiene.',
+  });
+
+  out.push(
+    'En algún momento del tercero, la cara del agua deja de copiarte.\n\n' +
+    'No hace nada espectacular. Simplemente sigue ahí, con tu cara, quieta, mientras vos parpadeás. ' +
+    'Y después, sin apuro, ladea la cabeza hacia un lado al que vos no la ladeaste.',
+  );
+
+  run('reach_ending', {
+    ending_id: 'mirar', title: 'Lo que devuelve la mirada',
+    text: firme
+      ? 'Te apartás del brocal por decisión propia, que es más de lo que la mayoría podría decir.\n\n' +
+        'Rosa está en la puerta de la cocina con el repasador en las manos y no pregunta nada, porque te vio la cara ' +
+        'y ya sabe. Adentro pone la pava, y las dos toman mate sin hablar hasta que se hace de noche.\n\n' +
+        'Vos entendiste qué es el aljibe. No lo vas a poder escribir en el informe de una manera que sirva, ' +
+        'y vas a volver a Buenos Aires con eso adentro.\n\n' +
+        'Lo que no vas a saber nunca es si el aljibe entendió qué sos vos, o si le alcanzó con verte.'
+      : 'No sabés cómo llegaste al suelo del patio. Rosa te está sacudiendo el hombro y el sol está en otro lado del cielo, ' +
+        'mucho más abajo, y ella dice que estuviste tres horas asomada sin contestarle.\n\n' +
+        'Te levantás. Te lavás la cara en el balde, no en el aljibe, y esa distinción te parece la cosa más importante ' +
+        'que decidiste en tu vida.\n\n' +
+        'Entendiste qué es el aljibe. También entendiste, con la misma claridad, que el aljibe tuvo tres horas ' +
+        'para entenderte a vos, y que vos no te acordás de ninguna.',
+  });
+}
+
+/**
+ * «Lo que se queda». Quedarse a pasar la noche en Los Álamos.
+ * El escenario lo marca como consecuencia grave y lo es: acá el precio no es
+ * la cordura del investigador, es Rosa.
+ */
+function endStay(turn: Turn, out: string[], run: Runner): void {
+  run('advance_time', { minutes: 8 * 60, reason: 'pasar la noche en Los Álamos' });
+  run('apply_umbral_exposure', { amount: 14, cause: 'dormir a veinte metros del aljibe' });
+  run('apply_stability_shift', { amount: -15, cause: 'una noche entera de agua quieta al lado' });
+  run('record_consequence', {
+    description: 'El investigador pasó la noche en Los Álamos. Rosa Quintana no estaba a la mañana.',
+    scope: 'world', permanent: 'true',
+    world_reminder: 'Rosa Quintana desapareció la noche que el investigador se quedó en la casa. El aljibe quedó abierto.',
+  });
+
+  out.push(
+    'Rosa te arma el catre en la cocina, que es el cuarto más lejos del patio, y no dice que lo eligió por eso.\n\n' +
+    'Te dormís tarde. Un aljibe hace ruido y este no hace ninguno, y resulta que el silencio de una cosa que ' +
+    'debería sonar es más difícil de tolerar que el ruido.',
+  );
+
+  run('reach_ending', {
+    ending_id: 'quedarse', title: 'Lo que se queda',
+    text:
+      'A las cuatro y veinte de la mañana te despierta el frío, porque la puerta de la cocina está abierta de par en par.\n\n' +
+      'El catre de Rosa está hecho. Sus zapatos están al lado de la cama, los dos, prolijos.\n\n' +
+      'En el patio no hay nadie. El brocal está mojado en todo el borde, como si alguien se hubiera apoyado con ' +
+      'las dos manos y después con todo el cuerpo, y el agua abajo está perfectamente quieta.\n\n' +
+      'Gritás el nombre de ella hasta que se te va la voz. El aljibe no devuelve eco. Eso ya lo sabías.\n\n' +
+      'La chata del correo pasa a las siete. Subís sola, con el cuaderno y las fotografías en el bolso, y ' +
+      'con dos desaparecidos donde antes había uno.',
   });
 }
 

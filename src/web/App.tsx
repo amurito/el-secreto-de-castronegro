@@ -4,6 +4,7 @@ import type { GameApi, StatusInfo } from '../app/api.ts';
 import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
+import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
 
@@ -229,6 +230,7 @@ export function App() {
           <div className="ending">
             <div className="ending-title">{state.ending.title}</div>
             <div className="ending-text">{state.ending.text}</div>
+            <Epilogo ending={state.ending} board={state.board} />
             <button className="primary" onClick={() => setTab('tiradas')}>Ver la auditoría del azar</button>
             <button className="ghost" onClick={() => { setCampaignId(null); setState(null); }}>Nueva partida</button>
           </div>
@@ -314,6 +316,36 @@ export function App() {
  * La lista viene del motor y ya está filtrada: lo que se ve acá es lo que se
  * puede hacer ahora, nunca algo ya hecho.
  */
+/**
+ * Cierre de partida. Existe porque un desenlace de Cthulhu se parece a perder
+ * si el juego no dice lo contrario: no hay final feliz, hay finales distintos.
+ * Mostrar los cinco convierte «perdí» en «llegué a uno de cinco».
+ */
+function Epilogo({ ending, board }: { ending: { id: string; title: string }; board: any }) {
+  const todos = AGUA_QUIETA.endings;
+  const n = todos.findIndex((e) => e.id === ending.id) + 1;
+  const pistas = board?.clues?.length ?? 0;
+
+  return (
+    <div className="epilogo">
+      <div className="epilogo-linea">
+        Desenlace {n > 0 ? n : '—'} de {todos.length} · {pistas} pista{pistas === 1 ? '' : 's'} reunida
+        {pistas === 1 ? '' : 's'}
+      </div>
+      <div className="epilogo-lista">
+        {todos.map((e) => (
+          <div key={e.id} className={`epilogo-final ${e.id === ending.id ? 'epilogo-final-on' : ''}`}>
+            {e.id === ending.id ? '● ' : '○ '}{e.title}
+          </div>
+        ))}
+      </div>
+      <p className="epilogo-nota">
+        Ninguno de los cinco es ganar y ninguno es perder. Los Álamos sigue ahí en todos.
+      </p>
+    </div>
+  );
+}
+
 function Acciones({
   options, nuevas, busy, onPick,
 }: {
@@ -322,11 +354,18 @@ function Acciones({
   busy: boolean;
   onPick: (intencion: string) => void;
 }) {
+  // Un desenlace cierra la aventura y no hay rebobinado. Elegirlo sin saber
+  // que lo era es la peor sorpresa posible, así que van aparte y piden un
+  // segundo click. No es un diálogo modal: es la misma decisión, dos veces.
+  const [confirmando, setConfirmando] = useState<string | null>(null);
+
   if (options.length === 0) {
     return <div className="sin-acciones">No queda nada por hacer acá.</div>;
   }
+  const corrientes = options.filter((o) => !o.final);
+  const finales = options.filter((o) => o.final);
   const porGrupo = ORDEN_GRUPOS
-    .map((g) => [g, options.filter((o) => o.grupo === g)] as const)
+    .map((g) => [g, corrientes.filter((o) => o.grupo === g)] as const)
     .filter(([, list]) => list.length > 0);
 
   return (
@@ -349,6 +388,34 @@ function Acciones({
           </div>
         </div>
       ))}
+
+      {finales.length > 0 && (
+        <div className="grupo-acciones grupo-final">
+          <div className="grupo-titulo grupo-titulo-final">
+            Desenlace <span className="aviso-final">— cierran la aventura</span>
+          </div>
+          <div className="grupo-botones">
+            {finales.map((o) => (
+              <button
+                key={o.id}
+                className={`option option-final ${confirmando === o.id ? 'option-confirmar' : ''} ${nuevas.has(o.id) ? 'option-nueva' : ''}`}
+                onClick={() => {
+                  if (confirmando === o.id) { setConfirmando(null); onPick(o.intencion); }
+                  else setConfirmando(o.id);
+                }}
+                onBlur={() => setConfirmando((c) => (c === o.id ? null : c))}
+                disabled={busy}
+              >
+                {nuevas.has(o.id) && <span className="chispa">◆</span>}
+                {confirmando === o.id ? `${o.etiqueta} — confirmar` : o.etiqueta}
+              </button>
+            ))}
+          </div>
+          <div className="nota-final">
+            Hay cinco desenlaces. Ninguno es perder: son cinco maneras distintas de que esto termine.
+          </div>
+        </div>
+      )}
     </div>
   );
 }

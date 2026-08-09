@@ -256,6 +256,30 @@ button { font-family: inherit; cursor: pointer; }
   padding: 0.8rem 0;
 }
 
+/* ── DESENLACES ───────────────────────────────────────────────────────────
+   Separados del resto y con doble click, porque cierran la aventura y no hay
+   rebobinado. Un desenlace elegido sin querer no se puede deshacer.          */
+
+.grupo-final {
+  flex-direction: column; gap: 0.3rem;
+  border-top: 1px solid var(--line); padding-top: 0.6rem; margin-top: 0.3rem;
+}
+.grupo-titulo-final { min-width: 0; text-align: left; padding-top: 0; }
+.aviso-final { text-transform: none; letter-spacing: 0; color: var(--text-faint); }
+
+.option-final {
+  border-color: var(--accent-dim); color: var(--text-dim);
+  border-left: 2px solid var(--accent);
+}
+.option-final:hover:not(:disabled) { border-color: var(--accent); color: var(--text); }
+.option-confirmar {
+  border-color: var(--accent); color: var(--accent);
+  animation: latir 1.4s ease-in-out infinite;
+}
+.nota-final {
+  font-size: 0.72rem; color: var(--text-faint); font-style: italic; margin-top: 0.15rem;
+}
+
 .input-row { display: flex; gap: 0.6rem; }
 .action-input {
   flex: 1; background: var(--bg-panel); border: 1px solid var(--line);
@@ -280,6 +304,22 @@ button { font-family: inherit; cursor: pointer; }
 .death-title, .ending-title { font-size: 1.3rem; color: var(--accent); margin-bottom: 0.6rem; }
 .death p, .ending-text { color: var(--text-dim); margin-bottom: 1.2rem; white-space: pre-wrap; }
 .death .primary { display: block; margin-bottom: 0.5rem; width: 100%; }
+
+.epilogo {
+  border: 1px solid var(--line); border-radius: 3px;
+  padding: 0.9rem 1.1rem; margin-bottom: 1.2rem;
+}
+.epilogo-linea {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+  color: var(--text-faint); margin-bottom: 0.7rem;
+}
+.epilogo-lista { display: flex; flex-direction: column; gap: 0.2rem; }
+.epilogo-final { font-size: 0.85rem; color: var(--text-faint); }
+.epilogo-final-on { color: var(--accent); }
+.epilogo-nota {
+  font-size: 0.78rem; color: var(--text-faint); font-style: italic;
+  margin: 0.7rem 0 0; line-height: 1.5;
+}
 
 /* ── PANEL DERECHO ──────────────────────────────────────────────────────── */
 

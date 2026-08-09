@@ -45,6 +45,12 @@ export interface AccionDef {
   visible?: (s: GameState) => boolean;
   /** Ya realizada: deja de ofrecerse. Sin esto, se puede repetir siempre. */
   hecha?: (s: GameState) => boolean;
+  /**
+   * Cierra la aventura. La interfaz las separa y pide confirmación: elegir un
+   * desenlace sin saber que lo era es la peor sorpresa que puede dar un juego
+   * sin rebobinado.
+   */
+  final?: true;
   orden?: number;
 }
 
@@ -54,6 +60,7 @@ export interface Opcion {
   etiqueta: string;
   intencion: string;
   grupo: GrupoAccion;
+  final?: true;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -87,6 +94,11 @@ const alcanzable = (s: GameState, item: string) => {
 const actitud = (s: GameState, npc: string) => s.npcs[npc]?.attitude[s.activeInvestigator] ?? 0;
 
 const pistas = (s: GameState) => s.board.clues.length;
+
+const exposicion = (s: GameState) => s.investigators[s.activeInvestigator]?.umbral.exposure ?? 0;
+
+// Local a propósito: el catálogo del escenario no debe depender del narrador.
+const horaDe = (s: GameState) => Number(s.world.time.iso.slice(11, 13));
 
 /**
  * Rosa presente ACÁ. `npc.present` es una bandera global; sin cruzarla con la
@@ -288,23 +300,42 @@ export const ACCIONES: AccionDef[] = [
   },
 
   // ── DESENLACES ─────────────────────────────────────────────────────────────
+  // Los cinco cierran la aventura. Ninguno es «perder»: son cinco maneras
+  // distintas de que termine, y tres de ellas requieren haber entendido algo
+  // que las otras dos no piden.
   {
-    id: 'bajar', grupo: 'decidir', lugar: 'patio', orden: 90,
+    id: 'bajar', grupo: 'decidir', lugar: 'patio', orden: 90, final: true,
     etiqueta: 'Bajar al aljibe',
     intencion: 'Bajo al aljibe',
     visible: (s) => pistas(s) >= 4,
   },
   {
-    id: 'sellar', grupo: 'decidir', lugar: 'patio', orden: 91,
+    id: 'sellar', grupo: 'decidir', lugar: 'patio', orden: 91, final: true,
     etiqueta: 'Sellar el aljibe con las tablas del galpón',
     intencion: 'Sello el aljibe con las tablas del galpón',
     visible: (s) => pistas(s) >= 5 && detalleVisto(s, 'patio', 'f-galpon'),
   },
   {
-    id: 'irse', grupo: 'decidir', orden: 92,
+    id: 'irse', grupo: 'decidir', orden: 92, final: true,
     etiqueta: 'Irte de Los Álamos con lo que tenés',
     intencion: 'Me voy de Los Álamos',
     visible: (s) => pistas(s) >= 4,
+  },
+  {
+    // El desenlace que la aventura declaraba y el motor no ofrecía. Es el
+    // único que llega hasta el fondo, y por eso pide exposición alta: hay que
+    // haberse asomado bastante para que el fenómeno tenga a quién responderle.
+    id: 'sostener', grupo: 'decidir', lugar: 'patio', orden: 93, final: true,
+    etiqueta: 'Sostenerle la mirada al reflejo hasta que responda',
+    intencion: 'Le sostengo la mirada al reflejo del aljibe hasta el final',
+    visible: (s) =>
+      exposicion(s) >= 30 && pista(s, 'retardo perceptible'),
+  },
+  {
+    id: 'quedarse', grupo: 'decidir', orden: 94, final: true,
+    etiqueta: 'Quedarte en la casa a pasar la noche',
+    intencion: 'Me quedo en Los Álamos a pasar la noche',
+    visible: (s) => pistas(s) >= 4 && horaDe(s) >= 18,
   },
 ];
 
@@ -341,6 +372,7 @@ export function accionesDisponibles(s: GameState): Opcion[] {
       etiqueta: typeof a.etiqueta === 'function' ? a.etiqueta(s) : a.etiqueta,
       intencion: a.intencion,
       grupo: a.grupo,
+      ...(a.final ? { final: a.final } : {}),
       orden: a.orden ?? 40,
     });
   }

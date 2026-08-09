@@ -15,9 +15,10 @@
     "prueba:libre": "tsx src/prueba-libre.ts",
     "prueba:cripto": "tsx src/prueba-cripto.ts",
     "prueba:opciones": "tsx src/prueba-opciones.ts",
+    "prueba:desenlaces": "tsx src/prueba-desenlaces.ts",
     "revisar:bundle": "tsx src/revisar-bundle.ts",
     "desplegar": "tsx src/desplegar.ts",
-    "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run build && npm run revisar:bundle"
+    "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run prueba:desenlaces && npm run build && npm run revisar:bundle"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",
