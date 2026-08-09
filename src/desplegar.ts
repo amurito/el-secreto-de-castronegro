@@ -50,7 +50,8 @@ try {
   node(TSX, ['src/prueba-libre.ts']);
   node(TSX, ['src/prueba-opciones.ts']);
   node(TSX, ['src/prueba-desenlaces.ts']);
-  console.log('      motor, acción libre, opciones y los cinco desenlaces en verde');
+  node(TSX, ['src/prueba-social.ts']);
+  console.log('      motor, acción libre, opciones, desenlaces y sistema social en verde');
 
   paso(2, 'Construyendo…');
   if (existsSync(join(RAIZ, 'dist'))) rmSync(join(RAIZ, 'dist'), { recursive: true, force: true });

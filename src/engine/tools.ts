@@ -226,6 +226,8 @@ export const KEEPER_TOOLS: ToolDef[] = [
         status: enumOf(['alive', 'dead', 'missing', 'unknown', 'unchanged'], 'Nuevo estado vital.'),
         present: enumOf(['true', 'false', 'unchanged'], '¿Sigue en la escena?'),
         attitude_delta: int('Cambio de actitud hacia el investigador activo (-50 a 50). 0 si no cambia.', -50, 50),
+        patience_delta: int('Cambio de paciencia: negativo si la conversación lo cansó. 0 si no cambia.', -10, 10),
+        dodged_topic: str('ID del tema que acaba de esquivar, si esquivó alguno. Vacío si no.'),
         cause: str('Qué lo provocó.'),
       },
       required: ['npc_id', 'status', 'present', 'attitude_delta', 'cause'],

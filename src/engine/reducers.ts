@@ -13,6 +13,7 @@ import type {
   Clue, Fact, InvestigationBoard, ContinuityLedger, NarrativeEntry,
 } from '../shared/types.ts';
 import { thresholdInfo } from '../rules/umbral.ts';
+import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA } from '../rules/social.config.ts';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
@@ -265,10 +266,22 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       const p = ev.payload as P.NpcStateChangedPayload;
       const npc = s.npcs[p.npcId];
       if (!npc) break;
-      const next: Npc = { ...npc, ...p.changes, attitude: { ...npc.attitude } };
+      const next: Npc = {
+        ...npc, ...p.changes,
+        attitude: { ...npc.attitude },
+        dodgedTopics: [...(npc.dodgedTopics ?? [])],
+      };
       if (p.attitudeDelta) {
         const cur = next.attitude[p.attitudeDelta.investigatorId] ?? 0;
         next.attitude[p.attitudeDelta.investigatorId] = clamp(cur + p.attitudeDelta.delta, -100, 100);
+      }
+      if (p.patienceDelta) {
+        next.patience = clamp((npc.patience ?? PACIENCIA_INICIAL) + p.patienceDelta, 0, PACIENCIA_MAXIMA);
+      }
+      // Insistir en un tema esquivado cuesta más, así que hay que recordar
+      // cuáles esquivó. Sin duplicados: esquivar dos veces no cuenta doble.
+      if (p.dodgedTopic && !next.dodgedTopics.includes(p.dodgedTopic)) {
+        next.dodgedTopics.push(p.dodgedTopic);
       }
       s.npcs[p.npcId] = next;
       break;
@@ -422,7 +435,16 @@ function initFromCreation(ev: GameEvent): GameState {
   const items: Record<string, Item> = {};
   for (const it of p.items) items[it.id] = it;
   const npcs: Record<string, Npc> = {};
-  for (const n of p.npcs) npcs[n.id] = n;
+  // La paciencia se rellena acá y no en cada escenario: es una regla del
+  // sistema, no una decisión de la aventura. Un escenario puede pisarla si un
+  // personaje concreto aguanta más o menos que el resto.
+  for (const n of p.npcs) {
+    npcs[n.id] = {
+      ...n,
+      patience: n.patience ?? PACIENCIA_INICIAL,
+      dodgedTopics: n.dodgedTopics ?? [],
+    };
+  }
   const documents: Record<string, DiegeticDocument> = {};
   for (const d of p.documents) documents[d.id] = d;
 

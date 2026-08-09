@@ -14,13 +14,14 @@ import { createCampaign, loadState, Turn } from '../engine/engine.ts';
 import { useStore, store } from '../engine/store.ts';
 import { browserStore } from '../engine/store.browser.ts';
 import { verifyRollChain } from '../engine/rng.ts';
-import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
+import { ESCENARIOS } from '../scenario/catalogo.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 import { sanitizeForClient } from '../server/sanitize.ts';
 import type { GameApi, StatusInfo, TurnEvent } from './api.ts';
 
-const SCENARIOS = { 'agua-quieta': AGUA_QUIETA };
+// El catálogo es la única fuente. Agregar una aventura es sumarla allá.
+const SCENARIOS = ESCENARIOS;
 
 /** Un turno por vez, igual que el lock del servidor. */
 const enCurso = new Set<string>();
@@ -54,7 +55,7 @@ export function createLocalApi(): GameApi {
       const { state } = await loadState(campaignId);
       return {
         campaignId, opening: scenario.opening,
-        state: sanitizeForClient(state), options: accionesDisponibles(state),
+        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario.conversations),
       };
     },
 
@@ -63,7 +64,7 @@ export function createLocalApi(): GameApi {
       const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
       return {
         state: sanitizeForClient(state), opening: scenario?.opening ?? '',
-        options: accionesDisponibles(state),
+        options: accionesDisponibles(state, scenario?.conversations ?? []),
       };
     },
 

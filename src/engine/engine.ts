@@ -28,6 +28,7 @@ import {
   applyExposure, applyStabilityLoss, applyStabilityRecovery,
   stabilityPenaltyDice, extraSanLossFromExposure, thresholdInfo,
 } from '../rules/umbral.ts';
+import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
 import { canDiscoverProperty, canPromoteHypothesis } from './gates.ts';
 import { toClientRoll } from '../shared/protocol.ts';
 import type { Scenario } from '../scenario/types.ts';
@@ -256,8 +257,19 @@ export class Turn {
 
   private toolRequestRoll(raw: Record<string, unknown>): ToolOutcome {
     const skill = String(raw.skill ?? '');
-    const difficulty = String(raw.difficulty ?? 'regular') as Difficulty;
+    const difficultyRaw = String(raw.difficulty ?? 'regular');
     const reason = String(raw.reason ?? '');
+
+    // Una dificultad mal escrita NO puede pasar en silencio. `meetsDifficulty`
+    // compara contra un rango indefinido y da siempre falso: la tirada se
+    // ejecuta, se registra, se audita, y falla pase lo que pase. Un ÉXITO
+    // EXTREMO sale como fracaso y nada en la pantalla lo delata.
+    // Pasó de verdad: `dificil` en vez de `hard` en el desenlace de la mirada.
+    if (!['regular', 'hard', 'extreme'].includes(difficultyRaw)) {
+      return this.reject('request_roll', raw,
+        `Dificultad desconocida: «${difficultyRaw}». Las válidas son regular, hard y extreme.`);
+    }
+    const difficulty = difficultyRaw as Difficulty;
 
     if (this.ctx.rollsThisIntent >= 1) {
       return this.reject('request_roll', raw,
@@ -629,6 +641,8 @@ export class Turn {
       secrets: [],
       relationships: [],
       attitude: { [this.investigator.id]: 0 },
+      patience: PACIENCIA_INICIAL,
+      dodgedTopics: [],
       present: true,
       isCompanion: false,
       createdAt: this.pending[this.pending.length - 1]?.id ?? 'inicio',
@@ -659,13 +673,22 @@ export class Turn {
     if (present !== 'unchanged') changes.present = present === 'true';
 
     const delta = Number(raw.attitude_delta ?? 0);
+    const paciencia = Number(raw.patience_delta ?? 0);
+    const esquivado = String(raw.dodged_topic ?? '').trim();
     this.emit('NPC_STATE_CHANGED', {
       npcId, changes,
       attitudeDelta: delta !== 0 ? { investigatorId: this.investigator.id, delta } : undefined,
+      patienceDelta: paciencia !== 0 ? paciencia : undefined,
+      dodgedTopic: esquivado || undefined,
       cause: String(raw.cause ?? ''),
     });
     const now = this.state.npcs[npcId]!;
-    return { ok: true, message: `${now.name}: estado ${now.status}, presente ${now.present}, actitud ${now.attitude[this.investigator.id] ?? 0}.` };
+    return {
+      ok: true,
+      message:
+        `${now.name}: estado ${now.status}, presente ${now.present}, ` +
+        `actitud ${now.attitude[this.investigator.id] ?? 0}, paciencia ${now.patience}.`,
+    };
   }
 
   private toolRevealDocument(raw: Record<string, unknown>): ToolOutcome {
@@ -728,6 +751,28 @@ export class Turn {
     const mm = String(d.getMinutes()).padStart(2, '0');
     const to: WorldTime = { iso, precision: 'minute', display: `${hh}:${mm}` };
     this.emit('TIME_ADVANCED', { from, to, minutes, reason });
+    this.recoverPatience(minutes);
+  }
+
+  /**
+   * La paciencia vuelve con el tiempo del MUNDO, no con el del jugador.
+   *
+   * Es la diferencia entre un recurso y un temporizador: no se espera mirando
+   * la pantalla, se recupera yendo a hacer otra cosa y volviendo más tarde.
+   * Que sea lo mismo que haría cualquiera en la mesa es la señal de que la
+   * mecánica está bien puesta.
+   */
+  private recoverPatience(minutes: number) {
+    const puntos = Math.floor(minutes / RECUPERACION.minutosPorPunto);
+    if (puntos <= 0) return;
+    for (const npc of Object.values(this.state.npcs)) {
+      if (npc.patience >= PACIENCIA_MAXIMA) continue;
+      this.emit('NPC_STATE_CHANGED', {
+        npcId: npc.id, changes: {},
+        patienceDelta: puntos,
+        cause: 'pasó el tiempo y se le fue el fastidio',
+      });
+    }
   }
 
   private toolRecordConsequence(raw: Record<string, unknown>): ToolOutcome {

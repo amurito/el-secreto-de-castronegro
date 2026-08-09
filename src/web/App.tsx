@@ -255,6 +255,17 @@ export function App() {
           <div className="input-area">
             <Acciones options={options} nuevas={nuevas} busy={busy} onPick={send} />
 
+            {/* Sin esto, los temas desaparecían de golpe y parecía un bug.
+                Ahora la interfaz dice lo que la prosa ya dijo: no es que no
+                quede nada que preguntar, es que ahora no quiere hablar. */}
+            {(state?.npcs ?? []).filter((n: any) => n.aqui && n.sinPaciencia && n.status === 'alive')
+              .map((n: any) => (
+                <div key={n.id} className="nota-social">
+                  {n.name.split(' ')[0]} no quiere hablar más por ahora. Dale tiempo: andá a hacer otra
+                  cosa y volvé.
+                </div>
+              ))}
+
             {/* La escritura libre sólo aparece con Claude narrando: es el único
                 modo donde una frase cualquiera se resuelve bien. En modo motor
                 el repertorio es acotado y prometer libertad total mentiría. */}

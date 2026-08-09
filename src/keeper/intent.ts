@@ -45,8 +45,10 @@ export interface Intent {
   verbExplicit: boolean;
   /** El jugador pidió hacerlo de forma sostenida, insistente o cuidadosa. */
   sustained: boolean;
-  /** Tema de conversación detectado. */
-  topic: string | null;
+  // El tema de conversación ya no se detecta acá. Lo detecta el catálogo de
+  // conversación de la aventura, que es quien sabe qué temas existen. Tener la
+  // lista en dos lugares fue lo que hizo que «la deuda de Ignacio» se leyera
+  // como una pregunta sobre Ignacio.
   /**
    * Destino, calculado aparte del objetivo. "Voy a la laguna" tiene como
    * objetivo el agua Y como destino la orilla: si sólo se guarda uno, el
@@ -133,16 +135,6 @@ const LOCATIONS: Array<[LocationId, string[]]> = [
  * contiene "ignacio", así que si el tema genérico fuera primero, nunca se
  * llegaría al tema de la deuda. Lo mismo con el hermano y con lo que vio ella.
  */
-const TOPICS: Array<[string, string[]]> = [
-  ['soga', ['soga', 'roldana', 'cuerda', 'polea']],
-  ['hermano', ['hermano', 'pariente']],
-  ['deuda', ['plata', 'deuda', 'debia', 'dinero']],
-  ['reloj', ['reloj', 'cuatro y veinte']],
-  ['1897', ['1897', 'foto vieja', 'fotografia vieja', 'los viejos', 'los patrones']],
-  ['ella', ['que vio ella', 'lo que vio', 'vio usted', 'insisto', 'tiene miedo', 'por que no sale']],
-  ['ignacio', ['ignacio', 'desaparic', 'esa noche', 'ultima vez', 'que paso', 'el marido']],
-  ['aljibe', ['aljibe', 'agua', 'pozo', 'reflejo']],
-];
 
 export function classify(state: GameState, raw: string): Intent {
   const t = norm(raw);
@@ -228,10 +220,6 @@ export function classify(state: GameState, raw: string): Intent {
 
   // ── MATICES ──────────────────────────────────────────────────────────────
   const sustained = anyOf(t, SUSTAINED);
-  let topic: string | null = null;
-  for (const [id, keys] of TOPICS) {
-    if (anyOf(t, keys)) { topic = id; break; }
-  }
 
   // Verbo implícito según el objetivo, cuando no se reconoció ninguno.
   const verbExplicit = verb !== 'desconocido';
@@ -241,5 +229,5 @@ export function classify(state: GameState, raw: string): Intent {
     else if (target.kind === 'feature' || target.kind === 'item' || target.kind === 'water') verb = 'mirar';
   }
 
-  return { raw, norm: t, verb, verbExplicit, target, sustained, topic, destination };
+  return { raw, norm: t, verb, verbExplicit, target, sustained, destination };
 }

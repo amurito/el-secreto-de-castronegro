@@ -19,8 +19,9 @@
  */
 
 import type { Scenario } from './types.ts';
-import type { Item, Npc, DiegeticDocument, GameLocation, TemporalEvent } from '../shared/types.ts';
+import type { Item, NpcSeed, DiegeticDocument, GameLocation, TemporalEvent } from '../shared/types.ts';
 import { ELENA, TOMAS } from './pregens.ts';
+import { ROSA_TEMAS } from './aguaquieta.dialogo.ts';
 
 const SET = { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' } as const;
 
@@ -435,7 +436,7 @@ const items: Item[] = [
 // NPC COMPAÑERA — con miedos y límites propios (v1.0 §11)
 // ─────────────────────────────────────────────────────────────────────────────
 
-const npcs: Npc[] = [
+const npcs: NpcSeed[] = [
   {
     id: 'npc-rosa',
     name: 'Rosa Quintana',
@@ -626,6 +627,8 @@ export const AGUA_QUIETA: Scenario = {
   },
   startUmbralPermeability: 12,
   timeline,
+
+  conversations: ROSA_TEMAS,
 
   endings: [
     { id: 'sellar', title: 'Lo que se tapa', condition: 'El investigador sella, tapa o llena el aljibe sin haber mirado hasta el final.' },

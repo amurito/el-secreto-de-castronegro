@@ -114,7 +114,7 @@ export async function runKeeperTurn(
           'Probá describir la acción de otra manera, o cambiá de rumbo: el mundo sigue donde estaba.',
         // Aun en un rechazo, las acciones disponibles siguen siendo las del
         // estado: el mundo no cambió porque el modelo no quisiera narrar.
-        options: accionesDisponibles(turn.state),
+        options: accionesDisponibles(turn.state, scenario.conversations),
         usedModel: true,
         cost: usage,
       };
@@ -188,5 +188,5 @@ export async function runKeeperTurn(
   // Las opciones las calcula el MOTOR desde el estado, igual que en modo motor.
   // El modelo no las inventa: así nunca ofrece algo ya hecho ni algo que el
   // estado no permite todavía.
-  return { narration, options: accionesDisponibles(turn.state), usedModel: true, cost: usage };
+  return { narration, options: accionesDisponibles(turn.state, scenario.conversations), usedModel: true, cost: usage };
 }

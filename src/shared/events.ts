@@ -12,7 +12,7 @@ import type {
   ConsequenceId, TemporalEventId, SkillId, CharacteristicId,
   WorldTime, RollRecord, TemporalCategory, UmbralThreshold,
   Condition, KnowledgeEntry, SuccessDegree, Difficulty, RollModifier,
-  RollVisibility, CanonRef, Secret, DiegeticDocument, Npc, Item,
+  RollVisibility, CanonRef, Secret, DiegeticDocument, Npc, NpcSeed, Item,
   Investigator, Clue,
 } from './types.ts';
 
@@ -94,7 +94,7 @@ export interface CampaignCreatedPayload {
   activeInvestigator: InvestigatorId;
   reserveInvestigators: InvestigatorId[];
   items: Item[];
-  npcs: Npc[];
+  npcs: NpcSeed[];
   documents: DiegeticDocument[];
   locations: Record<LocationId, import('./types.ts').GameLocation>;
   startLocation: LocationId;
@@ -195,6 +195,10 @@ export interface NpcStateChangedPayload {
   npcId: NpcId;
   changes: Partial<Pick<Npc, 'status' | 'present' | 'motivation'>>;
   attitudeDelta?: { investigatorId: InvestigatorId; delta: number };
+  /** Gasto o recuperación de paciencia. Negativo cansa. */
+  patienceDelta?: number;
+  /** Tema que el NPC acaba de esquivar: insistir después cuesta más. */
+  dodgedTopic?: string;
   cause: string;
 }
 

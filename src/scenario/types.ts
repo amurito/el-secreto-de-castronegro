@@ -1,7 +1,8 @@
 import type {
-  Investigator, Item, Npc, DiegeticDocument, GameLocation,
+  Investigator, Item, NpcSeed, DiegeticDocument, GameLocation,
   WorldTime, TemporalEvent, LocationId,
 } from '../shared/types.ts';
+import type { Conversaciones } from './conversacion.ts';
 
 export interface ScenarioEnding {
   id: string;
@@ -38,13 +39,19 @@ export interface Scenario {
   surfacePremise: string;
   investigators: Investigator[];
   items: Item[];
-  npcs: Npc[];
+  npcs: NpcSeed[];
   documents: DiegeticDocument[];
   locations: Record<LocationId, GameLocation>;
   startLocation: LocationId;
   startTime: WorldTime;
   startUmbralPermeability: number;
   timeline: TemporalEvent[];
+  /**
+   * Lo que se le puede preguntar a cada NPC. Es dato, no código: el motor
+   * resuelve temas sin saber de qué aventura son, así que una aventura nueva
+   * trae los suyos y funciona sin tocar el resolvedor.
+   */
+  conversations: Conversaciones;
   endings: ScenarioEnding[];
   /** Texto de apertura. Se muestra tal cual, sin pasar por el modelo. */
   opening: string;

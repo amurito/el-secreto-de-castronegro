@@ -22,18 +22,22 @@ eran inalcanzables, y nadie se había dado cuenta.
 
 ## 1. Deuda de credibilidad
 
-### 1.1 Hablar no tira dados ★ el más grande
+### 1.1 Hablar no tira dados ✔ HECHO
 
-Medido sobre una partida de 30 turnos: las ocho conversaciones con Rosa
-resolvieron **cero tiradas**. Preguntarle a una testigo que esconde algo es
-automático hoy. Persuasión, Psicología y Labia están en la ficha, con valores,
-y no se usan nunca.
+Cada tema declara su resistencia; la actitud modifica la tirada; insistir sobre
+algo esquivado penaliza y cuesta el doble. Un tema cuyo piso de actitud no se
+alcanza directamente no se ofrece — ofrecerlo era una trampa que sólo servía
+para cobrar paciencia.
 
-Esto rompe dos cosas a la vez: la mitad social del sistema no existe, y la
-actitud de Rosa sube por temporizador en vez de por lo que hacés.
+**Paciencia** es el presupuesto: preguntar cuesta, salga o no salga, y se
+recupera con el tiempo del mundo. Irse y volver más tarde es la manera, que es
+lo que haría cualquiera en la mesa.
 
-Alcance: tirada por tema según su resistencia, la actitud modifica la
-dificultad, fallar cierra el tema por un rato en vez de para siempre.
+La conversación pasó a ser **dato**: `src/scenario/aguaquieta.dialogo.ts`. El
+resolvedor no sabe quién es Rosa. Lo verifica `prueba-social.ts` armando una
+aventura falsa con un tema inventado.
+
+Escalas en `src/rules/social.config.ts`, para ajustar jugando.
 
 ### 1.2 Auditar todo lo que se ofrece contra lo que se puede alcanzar
 
@@ -149,11 +153,32 @@ Tres columnas fijas. En un teléfono no entra. No es difícil, es trabajo.
 
 ## Orden sugerido
 
-1. **1.1 tiradas sociales** — es la mitad del sistema que no existe
+1. ~~1.1 tiradas sociales~~ ✔
 2. **2.1 escalas del Umbral** — ya tenés los datos para decidir
 3. **1.2 auditoría de alcanzabilidad** — evita el próximo bug de esta familia
 4. **3.2 segunda aventura** — dice si la arquitectura sirve
-5. lo demás, según lo que salga de 4
+5. **3.1 creación de personaje**
+6. lo demás, según lo que salga de 4
+
+## Agregar una aventura, hoy
+
+Después del refactor social, el camino es:
+
+1. Escribir `src/scenario/<nombre>.ts` — un `Scenario`.
+2. Escribir `src/scenario/<nombre>.dialogo.ts` — los temas de sus NPC.
+3. Escribir `src/scenario/<nombre>.keeper.ts` — el briefing, que sólo importa
+   el servidor y por eso no entra al bundle público.
+4. Sumar una línea a `src/scenario/catalogo.ts` con su fecha diegética.
+
+El catálogo se ordena solo por fecha, así que una aventura escrita después
+puede transcurrir antes y encajar en su lugar sin renumerar nada. `requiere`
+está listo para encadenar cuando haya dos.
+
+Lo que **todavía** vive escrito a mano en `offline.ts` y habría que mover a
+datos cuando llegue la segunda aventura: los desenlaces, las escenas con prosa
+propia (mirar el agua, comparar las fotos) y la regla de que Rosa no habla en el
+patio de noche. Nada de eso bloquea escribir una aventura nueva — bloquea que la
+nueva tenga escenas igual de escritas.
 
 ## Cómo se mantiene
 

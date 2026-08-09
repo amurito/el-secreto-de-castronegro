@@ -13,6 +13,7 @@ import { useStore, store } from '../engine/store.ts';
 import { fileStore } from '../engine/store.node.ts';
 import { verifyRollChain } from '../engine/rng.ts';
 import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
+import { ESCENARIOS } from '../scenario/catalogo.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 // Sólo el servidor importa el briefing: en el build estático nadie lo hace y
 // el empaquetador lo descarta, así que la solución de la aventura no viaja al
@@ -34,7 +35,7 @@ if (existsSync(envPath)) {
 // En el servidor, el log vive en archivos JSONL.
 useStore(fileStore);
 
-const SCENARIOS = { 'agua-quieta': AGUA_QUIETA };
+const SCENARIOS = ESCENARIOS;
 const BRIEFINGS = { 'agua-quieta': AGUA_QUIETA_KEEPER };
 const app = Fastify({ logger: false });
 const locks = new Set<string>();
@@ -67,7 +68,7 @@ app.post<{ Body: { scenarioId?: string } }>('/api/campaigns', async (req) => {
   const { state } = await loadState(campaignId);
   return {
     campaignId, opening: scenario.opening,
-    state: sanitizeForClient(state), options: accionesDisponibles(state),
+    state: sanitizeForClient(state), options: accionesDisponibles(state, scenario.conversations),
   };
 });
 
@@ -76,7 +77,7 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id', async (req) => {
   const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
   return {
     state: sanitizeForClient(state), opening: scenario?.opening ?? '',
-    options: accionesDisponibles(state),
+    options: accionesDisponibles(state, scenario?.conversations ?? []),
   };
 });
 

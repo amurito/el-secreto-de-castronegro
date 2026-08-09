@@ -475,11 +475,35 @@ export interface Npc {
   secrets: Secret[];
   relationships: Relationship[];
   attitude: Record<InvestigatorId, number>;
+  /**
+   * Cuánto más aguanta que le pregunten ahora mismo. Es el presupuesto que
+   * hace que preguntar cueste: sin él, la estrategia óptima es agotar todos
+   * los temas en orden y reintentar cada tirada hasta que salga.
+   *
+   * No es actitud. Rosa puede confiar en usted y estar harta de usted al mismo
+   * tiempo, y eso es exactamente lo que pasa después de media hora de
+   * preguntas. Se recupera con el tiempo del mundo: irse y volver más tarde.
+   */
+  patience: number;
+  /** Temas que esquivó. Insistir cuesta más y tira con penalización. */
+  dodgedTopics: string[];
   present: boolean;
   isCompanion: boolean;
   stats?: { hp: number; skills: Record<SkillId, number> };
   createdAt: EventId;
 }
+
+/**
+ * Un NPC tal como lo escribe una aventura.
+ *
+ * `patience` y `dodgedTopics` son del sistema social, no de la ficción: quien
+ * escribe una aventura no tiene por qué conocerlos. El motor los rellena al
+ * crear la campaña, y un escenario puede fijarlos si un personaje concreto
+ * aguanta más o menos preguntas que el resto.
+ */
+export type NpcSeed =
+  Omit<Npc, 'patience' | 'dodgedTopics'>
+  & Partial<Pick<Npc, 'patience' | 'dodgedTopics'>>;
 
 export interface DiegeticDocument {
   id: DocumentId;

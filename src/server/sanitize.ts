@@ -26,7 +26,10 @@ export interface ClientState {
   investigator: unknown;
   reserveAvailable: Array<{ id: string; name: string; occupation: string }>;
   items: unknown[];
-  npcs: Array<{ id: string; name: string; description: string; present: boolean; status: string }>;
+  npcs: Array<{
+    id: string; name: string; description: string; present: boolean; status: string;
+    aqui: boolean; sinPaciencia: boolean;
+  }>;
   documents: unknown[];
   board: unknown;
   rolls: unknown[];
@@ -97,8 +100,14 @@ export function sanitizeForClient(state: GameState): ClientState {
         hasUndiscovered: i.hiddenProperties.length + i.conditionalProperties.length > i.discoveredProperties.length,
       })),
 
+    // Se expone SI está sin paciencia, no cuánta le queda. El número exacto
+    // convertiría la conversación en una barra que se administra; que ahora no
+    // quiera hablar es información que el jugador ya tiene por la prosa, y la
+    // interfaz sólo la confirma.
     npcs: Object.values(state.npcs).map((n) => ({
       id: n.id, name: n.name, description: n.description, present: n.present, status: n.status,
+      aqui: loc.npcsPresent.includes(n.id),
+      sinPaciencia: n.patience <= 0,
     })),
 
     documents: Object.values(state.documents)

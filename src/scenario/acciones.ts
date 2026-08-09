@@ -21,6 +21,9 @@
  */
 
 import type { GameState, LocationId, LocationFeature } from '../shared/types.ts';
+import type { Conversaciones } from './conversacion.ts';
+
+const lowerFirst = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
 
 export type GrupoAccion = 'observar' | 'hablar' | 'usar' | 'mover' | 'decidir';
 
@@ -176,75 +179,9 @@ export const ACCIONES: AccionDef[] = [
   },
 
   // ── ROSA ───────────────────────────────────────────────────────────────────
-  {
-    id: 'rosa-ignacio', grupo: 'hablar', orden: 10,
-    etiqueta: 'Preguntarle a Rosa qué pasó esa noche',
-    intencion: 'Le pregunto a Rosa qué pasó esa noche con Ignacio',
-    visible: rosaPresente,
-    hecha: (s) => pista(s, 'salió al patio a fumar'),
-  },
-  {
-    id: 'rosa-soga', grupo: 'hablar', orden: 11,
-    etiqueta: 'Preguntarle por la soga cortada',
-    intencion: 'Le pregunto a Rosa por la soga de la roldana',
-    visible: (s) => rosaPresente(s) && pista(s, 'cortada a cuchillo'),
-    hecha: (s) => pista(s, 'tres días DESPUÉS'),
-  },
-  {
-    id: 'rosa-aljibe', grupo: 'hablar', orden: 12,
-    etiqueta: 'Preguntarle por el aljibe',
-    intencion: 'Le pregunto a Rosa por el aljibe',
-    visible: rosaPresente,
-    hecha: (s) => narrado(s, 'El agua está buena') || narrado(s, '¿Otra vez el aljibe?'),
-  },
-  {
-    id: 'rosa-reloj', grupo: 'hablar', orden: 13,
-    etiqueta: 'Preguntarle por el reloj que apareció seco',
-    intencion: 'Le pregunto a Rosa por el reloj',
-    visible: (s) =>
-      rosaPresente(s) && (pista(s, 'cuatro y veinte') || propiedad(s, 'it-reloj', 'p-reloj-atras')),
-    hecha: (s) => pista(s, 'cerrada por dentro'),
-  },
-  {
-    id: 'rosa-1897', grupo: 'hablar', orden: 14,
-    etiqueta: 'Preguntarle por la fotografía vieja',
-    intencion: 'Le pregunto a Rosa por la fotografía de 1897',
-    visible: (s) => rosaPresente(s) && narrado(s, 'Nueve personas delante del aljibe'),
-    hecha: (s) => narrado(s, 'los patrones viejos') || narrado(s, 'Cosas de antes'),
-  },
-  {
-    // Sin "Ignacio" en la intención: el detector de temas lo leería como una
-    // pregunta sobre él y nunca llegaría al tema de la deuda.
-    id: 'rosa-deuda', grupo: 'hablar', orden: 15,
-    etiqueta: 'Preguntarle por la plata que se debía',
-    intencion: 'Le pregunto a Rosa por la plata que se debía',
-    visible: (s) => rosaPresente(s) && pista(s, 'salió al patio a fumar'),
-    hecha: (s) => narrado(s, 'Cuarenta pesos'),
-  },
-  {
-    id: 'rosa-hermano', grupo: 'hablar', orden: 16,
-    etiqueta: 'Preguntarle por el hermano',
-    intencion: 'Le pregunto a Rosa por el hermano',
-    visible: (s) => rosaPresente(s) && narrado(s, 'Cuarenta pesos'),
-    hecha: (s) => pista(s, 'vive en Rosario') || narrado(s, 'Del hermano no hablo'),
-  },
-  {
-    id: 'rosa-ella', grupo: 'hablar', orden: 17,
-    etiqueta: 'Preguntarle qué vio ella',
-    intencion: 'Le pregunto a Rosa qué vio ella',
-    visible: (s) => rosaPresente(s) && actitud(s, 'npc-rosa') >= 12,
-    // Se cierra tanto si confiesa como si esquiva: insistir es otra acción,
-    // que se desbloquea cuando la confianza alcanza.
-    hecha: (s) => pista(s, 'dos luces') || narrado(s, 'Yo no vi nada'),
-  },
-  {
-    id: 'rosa-insistir', grupo: 'hablar', orden: 18,
-    etiqueta: 'Insistirle a Rosa: ella vio algo esa noche',
-    intencion: 'Le insisto a Rosa con lo que vio ella',
-    visible: (s) =>
-      rosaPresente(s) && narrado(s, 'Yo no vi nada') && actitud(s, 'npc-rosa') >= 40,
-    hecha: (s) => pista(s, 'dos luces'),
-  },
+  // Ya no están acá. Las ocho preguntas escritas a mano se generan ahora desde
+  // `scenario.conversations`, en `accionesDisponibles`. Una aventura nueva trae
+  // sus temas y sus botones aparecen solos.
 
   // ── CUARTO ─────────────────────────────────────────────────────────────────
   {
@@ -353,12 +290,46 @@ export const ACCIONES: AccionDef[] = [
  *   · los objetos del lugar que se pueden levantar
  *   · las salidas
  */
-export function accionesDisponibles(s: GameState): Opcion[] {
+// `conversaciones` es obligatorio a propósito: con un valor por defecto, un
+// sitio que se olvidara de pasarlo se quedaría sin botones de hablar y sin
+// error. Exigirlo hace que el compilador señale cada lugar que hay que decidir.
+export function accionesDisponibles(s: GameState, conversaciones: Conversaciones): Opcion[] {
   if (s.ending) return [];
   if (s.investigators[s.activeInvestigator]?.status !== 'alive') return [];
 
   const aqui = s.world.currentLocation;
   const out: Array<Opcion & { orden: number }> = [];
+
+  // ── Preguntas, desde el catálogo de conversación de la aventura ───────────
+  // Sólo de los NPC que están ACÁ y que todavía aguantan que les pregunten.
+  // Cuando alguien se queda sin paciencia sus temas desaparecen enteros: es el
+  // mismo principio que el resto de las opciones, aplicado a las personas.
+  for (const npc of Object.values(s.npcs)) {
+    if (npc.status !== 'alive' || !npc.present) continue;
+    if (!s.world.locations[aqui]?.npcsPresent.includes(npc.id)) continue;
+    if (npc.patience <= 0) continue;
+    for (const tema of conversaciones) {
+      if (tema.npc !== npc.id) continue;
+      if (tema.disponible && !tema.disponible(s)) continue;
+      if (tema.agotado?.(s)) continue;
+      // Un tema cuyo piso de actitud no se alcanza NO se ofrece. Ofrecerlo lo
+      // convertía en una trampa: el botón seguía ahí, la respuesta era siempre
+      // «de eso no hablo», y cada intento cobraba paciencia. La lista tiene que
+      // ser lo que se puede hacer, no lo que se puede intentar en vano.
+      const piso = tema.prueba?.actitudMinima;
+      if (piso !== undefined && (npc.attitude[s.activeInvestigator] ?? 0) < piso) continue;
+      out.push({
+        id: `tema:${tema.id}`,
+        // Insistir sobre algo que ya esquivó es otra acción, y se dice.
+        etiqueta: npc.dodgedTopics.includes(tema.id)
+          ? `Insistirle: ${lowerFirst(tema.etiqueta.replace(/^Preguntarle /, ''))}`
+          : tema.etiqueta,
+        intencion: tema.intencion,
+        grupo: 'hablar',
+        orden: 10 + (tema.orden ?? 50) / 10,
+      });
+    }
+  }
 
   for (const a of ACCIONES) {
     if (a.lugar) {

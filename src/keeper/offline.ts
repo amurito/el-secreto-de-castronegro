@@ -25,12 +25,13 @@ import {
   needsClarification, isNight, lightNote,
 } from './narrator.ts';
 import { accionesDisponibles, detalleExaminado } from '../scenario/acciones.ts';
+import { resolverTema, temasDisponibles } from './social.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
 
 export async function runOfflineTurn(
   turn: Turn,
-  _scenario: Scenario,
+  scenario: Scenario,
   action: string,
   emit: KeeperEmit,
 ): Promise<KeeperResult> {
@@ -43,12 +44,16 @@ export async function runOfflineTurn(
   const intent = classify(turn.state, action);
   const out: string[] = [];
 
-  resolve(turn, intent, out, run);
+  resolve(turn, intent, out, run, scenario);
 
   const narration = out.filter(Boolean).join('\n\n');
   emit({ kind: 'narration_delta', data: narration });
   // Las opciones las calcula el motor desde el estado ya actualizado.
-  return { narration, options: accionesDisponibles(turn.state), usedModel: false };
+  return {
+    narration,
+    options: accionesDisponibles(turn.state, scenario.conversations),
+    usedModel: false,
+  };
 }
 
 /** ¿La tirada que acaba de ejecutarse superó la dificultad? */
@@ -60,7 +65,7 @@ function succeeded(msg: string): boolean {
 // ENRUTADO PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
 
-function resolve(turn: Turn, i: Intent, out: string[], run: Runner): void {
+function resolve(turn: Turn, i: Intent, out: string[], run: Runner, scenario: Scenario): void {
   const s = turn.state;
 
   // ── Desenlaces por frase ─────────────────────────────────────────────────
@@ -118,7 +123,7 @@ function resolve(turn: Turn, i: Intent, out: string[], run: Runner): void {
   if (i.target.kind === 'item' && i.target.item.id === 'it-fotoreciente' && ['mirar', 'examinar', 'buscar'].includes(i.verb)) {
     return examinePlate(turn, out, run);
   }
-  if (i.target.kind === 'npc') return talkTo(turn, i, out, run);
+  if (i.target.kind === 'npc') return talkTo(turn, i, out, run, scenario);
   if (['hablar', 'preguntar', 'mostrar', 'mentir'].includes(i.verb)) {
     out.push('No hay nadie acá a quien preguntarle eso.');
     return;
@@ -875,147 +880,80 @@ function searchPages(turn: Turn, out: string[], run: Runner): void {
 // ROSA
 // ─────────────────────────────────────────────────────────────────────────────
 
-function talkTo(turn: Turn, i: Intent, out: string[], run: Runner): void {
+function talkTo(turn: Turn, i: Intent, out: string[], run: Runner, scenario: Scenario): void {
   const s = turn.state;
-  const rosa = s.npcs['npc-rosa'];
-  if (!rosa || !rosa.present) { out.push('No hay nadie acá con quien hablar.'); return; }
+  if (i.target.kind !== 'npc') { out.push('No hay nadie acá con quien hablar.'); return; }
+  const npc = s.npcs[i.target.npc.id];
+  if (!npc || !npc.present || npc.status !== 'alive') {
+    out.push('No hay nadie acá con quien hablar.');
+    return;
+  }
 
-  const inv = s.investigators[s.activeInvestigator]!;
-  const attitude = rosa.attitude[inv.id] ?? 0;
-
-  if (s.world.currentLocation === 'patio' && isNight(s)) {
+  // Regla del escenario, no del motor: Rosa no habla en el patio de noche.
+  // Vive acá porque hoy es la única; cuando haya una segunda, pasa a ser un
+  // campo del NPC y deja de estar escrita a mano.
+  if (npc.id === 'npc-rosa' && s.world.currentLocation === 'patio' && isNight(s)) {
     out.push('—Adentro —dice Rosa desde el umbral, sin salir—. Yo acá afuera de noche no hablo.');
     return;
   }
 
-  const bump = (d: number, cause: string) =>
-    run('change_npc_state', { npc_id: 'npc-rosa', status: 'unchanged', present: 'unchanged', attitude_delta: d, cause });
-
-  switch (i.topic) {
-    case 'soga': {
-      bump(5, 'la pregunta correcta');
-      out.push('Rosa deja de doblar el repasador.\n\n—La saqué yo —dice—. Tres días después. —Y como no decís nada, agrega—: Antes no. Después.');
-      if (!hasClue(s, 'soga de la roldana tres días')) {
-        run('add_clue', {
-          description: 'Rosa retiró la soga de la roldana tres días DESPUÉS de la desaparición de Ignacio, no antes.',
-          kind: 'testimonial', source: 'Rosa Quintana', reliability: 'reliable',
-        });
-      }
-      const nueva = turn.state.npcs['npc-rosa']!.attitude[inv.id] ?? 0;
-      if (nueva >= 40) revealRosaSecret(turn, out, run);
-      else out.push('Se queda callada. Es evidente que hay una segunda parte y que todavía no se la ganaste.');
-      return;
-    }
-    case 'ignacio': {
-      bump(3, 'conversación');
-      out.push(pickVariant(s, [
-        '—Cenó. Guiso. Comió poco, que ya venía comiendo poco. —Rosa habla mirando la mesa—. Salió al patio a fumar, ' +
-        'como todas las noches. Yo levanté los platos, me acosté. A la mañana no estaba.\n\n' +
-        '—El reloj apareció ahí, en el brocal. Seco. Y esa noche llovió.\n\n' +
-        'Se queda un momento. Después dice, más rápido, como quien cierra un tema:\n\n—Debía plata en el pueblo. Eso es lo que pasó.',
-
-        '—Ya le conté todo lo que sé de esa noche. —Se seca las manos aunque las tiene secas—. No hay más.\n\n' +
-        'Pero no se va. Se queda parada al lado de la mesa, esperando otra pregunta que no sea esa.',
-      ]));
-      if (!hasClue(s, 'salió al patio a fumar')) {
-        run('add_clue', {
-          description: 'Ignacio salió al patio a fumar la noche del 15 y no volvió. El reloj apareció seco en el brocal a la mañana siguiente, después de una noche de lluvia.',
-          kind: 'testimonial', source: 'Rosa Quintana', reliability: 'reliable',
-        });
-      }
-      return;
-    }
-    case 'aljibe': {
-      bump(2, 'conversación');
-      out.push(pickVariant(s, [
-        'Rosa vuelve a doblar el repasador.\n\n—El agua está buena —dice—. Nunca se secó, ni en el veinte, que se secó todo. ' +
-        '—Una pausa—. Él la miraba mucho. Yo le decía que era el cansancio.\n\n' +
-        'Se levanta a mover una olla que no necesita que la muevan.\n\n—Yo de noche al patio no salgo. Por si le interesa.',
-
-        '—¿Otra vez el aljibe? —Rosa no levanta la vista—. Es un pozo con agua, doctora. Hay uno en cada casa de este campo.\n\n' +
-        'Y sin embargo no dice "vaya y mire". Nunca dice eso.',
-      ]));
-      return;
-    }
-    case 'reloj': {
-      bump(3, 'conversación');
-      out.push('—Estaba seco —dice—. Eso es lo que no me sale de la cabeza. Llovió toda la noche y el reloj estaba seco arriba del brocal, como si alguien lo hubiera puesto ahí a la mañana.\n\n—Y la casa estaba cerrada por dentro. Yo la cerré.');
-      if (!hasClue(s, 'casa estaba cerrada por dentro')) {
-        run('add_clue', {
-          description: 'La casa estaba cerrada por dentro esa noche, y el reloj apareció seco sobre el brocal tras una noche de lluvia.',
-          kind: 'testimonial', source: 'Rosa Quintana', reliability: 'reliable',
-        });
-      }
-      return;
-    }
-    case '1897': {
-      bump(2, 'conversación');
-      out.push('—Esa es de cuando hicieron el aljibe. Los patrones viejos, los Vera de antes. —Se acerca a mirarla ella también, y es la primera vez que se acerca a algo por su cuenta—.\n\n—Mi madre trabajó para ellos. Decía que a la señora se le murió el marido en el pozo y que después se le fue la cabeza.\n\nSe da vuelta y vuelve a la olla.\n\n—Cosas de antes.');
-      run('raise_question', { question: '¿Qué le pasó exactamente a la familia Vera en 1897?' });
-      return;
-    }
-    case 'hermano': {
-      if (attitude < 30) {
-        out.push('—Del hermano no hablo —dice, y es la primera vez que le sale cortante—. Eso es de familia y usted vino por otra cosa.');
-        bump(-3, 'preguntar por el hermano antes de tiempo');
-      } else {
-        bump(2, 'confianza suficiente');
-        out.push('—Se pelearon por el campo hace años. No se hablaban. —Se encoge de hombros—. Ya sé lo que está pensando, y no. El hermano está en Rosario y hace ocho años que no viene.\n\n—No todo lo raro de esta casa es de la familia, doctora.');
-        run('add_clue', {
-          description: 'El hermano de Ignacio vive en Rosario y no visita el campo hace ocho años. La disputa familiar no tiene relación con la desaparición.',
-          kind: 'testimonial', source: 'Rosa Quintana', reliability: 'reliable',
-        });
-      }
-      return;
-    }
-    case 'deuda': {
-      bump(1, 'conversación');
-      out.push('—Debía en el almacén, como todos. —Rosa lo dice rápido—. Cuarenta pesos, capaz sesenta.\n\nSesenta pesos no es una cifra por la que un hombre abandone un campo arrendado, un sombrero y un reloj. Ella lo sabe también, y por eso lo dijo rápido.');
-      return;
-    }
-    case 'ella': {
-      // Con confianza suficiente confiesa. Si no, esquiva — y esquivar
-      // desbloquea la acción de insistir, que es otra cosa.
-      if (attitude >= 40 || hasClue(s, 'dos luces')) { revealRosaSecret(turn, out, run); return; }
-      bump(4, 'preguntarle por ella y no por Ignacio');
-      out.push('Rosa se queda quieta con el repasador en las manos.\n\n—Yo no vi nada —dice, y es la primera cosa que dice que suena ensayada—. Yo estaba durmiendo.\n\nDespués, más bajo, casi para ella:\n\n—Y desde entonces duermo con la luz prendida, que es un gasto.');
-      return;
-    }
-    default: {
-      bump(1, 'conversación');
-      out.push(pickVariant(s, [
-        `Rosa contesta lo justo. ${attitude < 20 ? 'Todavía no confía en usted, y no lo disimula.' : 'Empieza a contestar sin medir tanto cada palabra.'}\n\n—Pregunte lo que tenga que preguntar, doctora. Yo tengo que hacer la cena igual.`,
-        '—Mmm —dice Rosa, que es lo que dice cuando no piensa contestar.\n\nSigue con lo suyo. Pero no se va de la cocina, que también es una forma de contestar.',
-        'Rosa te mira de frente por primera vez en un rato.\n\n—¿Usted qué cree que pasó? —pregunta—. Dígame usted, que vino de afuera.',
-      ]));
-      out.push('(Podés preguntarle por la soga, por Ignacio, por el aljibe, por el reloj, por la fotografía vieja, o por ella misma.)');
-      return;
-    }
-  }
-}
-
-function revealRosaSecret(turn: Turn, out: string[], run: Runner): void {
-  const s = turn.state;
-  if (hasClue(s, 'dos luces')) {
-    out.push('—Ya se lo dije —dice Rosa—. No me lo haga decir otra vez.');
+  const tema = temaPorFrase(scenario.conversations, npc.id, i.norm, s);
+  if (!tema) {
+    // Sin tema reconocido no se gasta paciencia: preguntar mal no cansa a nadie.
+    out.push(sinTema(turn, npc.id, scenario));
     return;
   }
-  out.push(
-    'Se queda callada un momento más largo de lo cómodo.\n\n' +
-    '—La noche siguiente vine con el farol. A llamarlo. —Se mira las manos—. El farol tarda en aparecer en el agua, ' +
-    '¿sabe? Uno se asoma y la luz llega después. Y cuando llegó… —se detiene—. Había dos luces. Yo tenía una sola.\n\n' +
-    '—Por eso saqué la soga.',
-  );
-  run('add_clue', {
-    description: 'Rosa vio dos luces reflejadas en el aljibe cuando bajó con un solo farol, la noche siguiente a la desaparición.',
-    kind: 'testimonial', source: 'Rosa Quintana', reliability: 'reliable',
-  });
-  run('apply_umbral_exposure', { amount: 3, cause: 'el testimonio de Rosa sobre las dos luces' });
-  run('record_consequence', {
-    description: 'Rosa contó lo que vio la noche siguiente a la desaparición.',
-    scope: 'campaign', permanent: 'false',
-    world_reminder: 'Rosa ya confesó lo de las dos luces. Habla con más franqueza a partir de ahora, y está más asustada.',
-  });
+  resolverTema(turn, npc, tema, out, run);
+}
+
+/**
+ * Qué tema es el que se preguntó.
+ *
+ * Gana la clave MÁS LARGA que coincida, no la primera. Con "la primera" el
+ * catálogo tenía que estar ordenado de específico a genérico a mano, y bastaba
+ * agregar un tema en el lugar equivocado para que "por la deuda de Ignacio"
+ * se leyera como una pregunta sobre Ignacio. Con la más larga, el orden del
+ * catálogo deja de importar — que es lo que hace falta para que una aventura
+ * nueva no tenga que conocer estas trampas.
+ */
+function temaPorFrase(
+  conversaciones: Scenario['conversations'], npcId: string, norm: string, s: GameState,
+) {
+  let mejor: { tema: (typeof conversaciones)[number]; largo: number } | null = null;
+  for (const tema of conversaciones) {
+    if (tema.npc !== npcId) continue;
+    if (tema.disponible && !tema.disponible(s)) continue;
+    if (tema.agotado?.(s)) continue;
+    for (const clave of tema.claves) {
+      if (norm.includes(clave) && (!mejor || clave.length > mejor.largo)) {
+        mejor = { tema, largo: clave.length };
+      }
+    }
+  }
+  return mejor?.tema ?? null;
+}
+
+/** Habló pero no se entendió por qué. Se le ofrece el repertorio real. */
+function sinTema(turn: Turn, npcId: string, scenario: Scenario): string {
+  const s = turn.state;
+  const npc = s.npcs[npcId]!;
+  if (npc.patience <= 0) {
+    return `${npc.name.split(' ')[0]} ya te contestó todo lo que le entra de una vez. Volvé más tarde.`;
+  }
+  const abiertos = temasDisponibles(s, npc, scenario.conversations);
+  const lista = abiertos.map((t) => `«${t.etiqueta.replace(/^Preguntarle /, '')}»`).join(', ');
+  return pickVariant(s, [
+    `${npc.name.split(' ')[0]} contesta lo justo.
+
+—Pregunte lo que tenga que preguntar, doctora. ` +
+    'Yo tengo que hacer la cena igual.',
+    `—Mmm —dice ${npc.name.split(' ')[0]}, que es lo que dice cuando no piensa contestar.
+
+` +
+    'Sigue con lo suyo. Pero no se va, que también es una forma de contestar.',
+  ]) + (lista ? `
+
+(Podés preguntarle por: ${lista}.)` : '');
 }
 
 const exposureOf = (s: GameState) => s.investigators[s.activeInvestigator]?.umbral.exposure ?? 0;
@@ -1122,7 +1060,7 @@ function endStare(turn: Turn, out: string[], run: Runner): void {
   );
 
   const roll = run('request_roll', {
-    skill: 'POW', difficulty: 'dificil',
+    skill: 'POW', difficulty: 'hard',
     reason: 'sostener la mirada sobre el agua hasta que el agua conteste',
     stakes_success: 'seguís siendo quien mira cuando termina',
     stakes_failure: 'para cuando termina, ya no está claro quién miraba a quién',

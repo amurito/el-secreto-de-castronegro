@@ -31,7 +31,7 @@ async function main() {
   const id = await createCampaign(AGUA_QUIETA, 'PRUEBA OPCIONES', 'c'.repeat(64));
 
   let t = await Turn.open(id);
-  const inicial = accionesDisponibles(t.state);
+  const inicial = accionesDisponibles(t.state, AGUA_QUIETA.conversations);
   console.log(`\nAl empezar: ${inicial.length} acciones`);
   for (const o of inicial) console.log(`   · [${o.grupo}] ${o.etiqueta}`);
 
@@ -44,7 +44,7 @@ async function main() {
 
   for (let turno = 1; turno <= 30; turno++) {
     t = await Turn.open(id);
-    const disponibles = accionesDisponibles(t.state);
+    const disponibles = accionesDisponibles(t.state, AGUA_QUIETA.conversations);
     if (disponibles.length === 0) break;
 
     // LA INVARIANTE: nunca ofrecer algo cuya condición de "hecha" ya se cumple.
