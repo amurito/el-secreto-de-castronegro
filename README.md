@@ -51,6 +51,8 @@ Comandos:
 | `npm run preview` | sirve el build estático, como quedaría publicado |
 | `npm run prueba` | prueba de humo del motor, sin servidor ni IA |
 | `npm run prueba:libre` | 40 acciones libres: ninguna sin respuesta, ninguna repetida |
+| `npm run prueba:opciones` | 30 turnos: nada ya hecho se reofrece, hay desbloqueos reales |
+| `npm run desplegar` | prueba, construye, audita y publica |
 | `npm run prueba:cripto` | SHA-256/HMAC propios contra `node:crypto` y vectores NIST |
 | `npm run revisar:bundle` | audita que el bundle público no filtre la aventura |
 | `npm run prueba:todo` | todo lo anterior |
@@ -114,6 +116,20 @@ Tres cambios lo hicieron posible, y ninguno es un parche:
 `truth_level` (qué tan verdadero) × `disclosure` (quién puede saberlo). Ejes independientes, porque un hecho puede ser **canon y secreto a la vez** — la existencia del Primer Rostro es exactamente eso.
 
 `SEALED` es la garantía dura: nunca entra al contexto del modelo. Lo que no está en la ventana no puede filtrarse, ni por prompt injection ni por presión del jugador.
+
+### Las acciones
+
+El juego se juega **eligiendo acciones**, no escribiendo. La lista sale del motor, no de una tabla fija por lugar, y responde a tres reglas ([`scenario/acciones.ts`](src/scenario/acciones.ts)):
+
+1. **Una acción que ya dio su resultado desaparece.** Si mirar el brocal reveló la marca de nivel, deja de ofrecerse. Pero si la tirada de Descubrir *falló*, la acción sigue ahí: reintentar es correcto, y es lo que haría cualquiera en la mesa.
+2. **Se desbloquean desde el estado.** Mirar la roldana abre preguntarle a Rosa por la soga. Ver la figura en la placa —y tener las dos fotografías a mano— abre compararlas. Examinar las pisadas abre bajar al aljibe. Las recién desbloqueadas se marcan con ◆.
+3. **Las repetibles cambian de etiqueta** según lo que ya descubriste, para que insistir se sienta como insistir.
+
+Tres familias se generan solas desde el estado —detalles sin mirar, objetos que se pueden levantar, salidas—, así que agregar un detalle al escenario alcanza para que aparezca como opción.
+
+Las opciones las calcula el motor **en los dos modos**. El modelo no las inventa: por eso nunca ofrece algo que el estado no permite todavía. La escritura libre sólo aparece con Claude narrando, que es el único modo donde una frase cualquiera se resuelve bien.
+
+`npm run prueba:opciones` juega 30 turnos y falla si alguna acción se ofrece con su condición de "hecha" ya cumplida, si no hay desbloqueos, o si la lista deja de cambiar.
 
 ### El modo gratuito: cómo narra el motor
 
