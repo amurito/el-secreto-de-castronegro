@@ -68,6 +68,13 @@ function aplicarEfecto(
   if (efecto.tiempo) {
     run('advance_time', { minutes: efecto.tiempo.minutes, reason: efecto.tiempo.reason });
   }
+  // Antes que `descubre`: si la propiedad se destraba por uso, el uso tiene
+  // que estar registrado cuando el gate lo consulte.
+  if (efecto.usa) {
+    run('use_item', {
+      item_id: efecto.usa.itemId, times: efecto.usa.times ?? 1, cause: efecto.usa.cause,
+    });
+  }
   if (efecto.descubre) {
     const r = run('discover_property', {
       item_id: efecto.descubre.itemId,
@@ -87,10 +94,18 @@ function aplicarEfecto(
     if (!r.ok) out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
   }
   if (efecto.contradiccion) {
-    run('note_contradiction', {
-      description: efecto.contradiccion.description,
-      between: efecto.contradiccion.between,
-    });
+    // Se deduplica igual que las pistas. Sin esto, reintentar una escena
+    // —que el motor permite, y que es lo que haría cualquiera si la tirada
+    // salió mal— llenaba el tablero con la misma contradicción tres veces.
+    const yaEsta = turn.state.board.contradictions.some(
+      (c) => c.description === efecto.contradiccion!.description,
+    );
+    if (!yaEsta) {
+      run('note_contradiction', {
+        description: efecto.contradiccion.description,
+        between: efecto.contradiccion.between,
+      });
+    }
   }
   for (const pista of efecto.pistas ?? []) {
     const yaEsta = turn.state.board.clues.some((c) => c.description === pista.description);

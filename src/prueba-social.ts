@@ -83,7 +83,7 @@ async function main() {
   // agotaría a nadie nunca.
   let estado = r1.estado;
   for (let n = 0; n < 12 && rosaDe(estado).patience > 0; n++) {
-    const tema = accionesDisponibles(estado, AGUA_QUIETA.conversations)
+    const tema = accionesDisponibles(estado, AGUA_QUIETA)
       .find((o) => o.id.startsWith('tema:'));
     if (!tema) break;
     estado = (await turno(id, AGUA_QUIETA, tema.intencion)).estado;
@@ -91,7 +91,7 @@ async function main() {
   check('se le puede agotar la paciencia a un NPC', rosaDe(estado).patience === 0,
     `paciencia ${rosaDe(estado).patience}`);
 
-  const opciones = accionesDisponibles(estado, AGUA_QUIETA.conversations);
+  const opciones = accionesDisponibles(estado, AGUA_QUIETA);
   const temasOfrecidos = opciones.filter((o) => o.id.startsWith('tema:'));
   check('agotado, no se le ofrece ningún tema', temasOfrecidos.length === 0,
     `${temasOfrecidos.length} temas`);
@@ -103,7 +103,7 @@ async function main() {
   const tras = await turno(id, AGUA_QUIETA, 'Espero un rato largo sin hacer nada');
   check('esperar le devuelve paciencia', rosaDe(tras.estado).patience > 0,
     `paciencia ${rosaDe(tras.estado).patience}`);
-  const luego = accionesDisponibles(tras.estado, AGUA_QUIETA.conversations)
+  const luego = accionesDisponibles(tras.estado, AGUA_QUIETA)
     .filter((o) => o.id.startsWith('tema:'));
   check('y vuelve a haber temas para preguntarle', luego.length > 0, `${luego.length} temas`);
 
@@ -134,7 +134,7 @@ async function main() {
   check('y tira dados como cualquier otro', inv.estado.rolls.length === 1,
     `${inv.estado.rolls.length} tiradas`);
 
-  const opcionesInv = accionesDisponibles(inv.estado, inventada.conversations);
+  const opcionesInv = accionesDisponibles(inv.estado, inventada);
   check('sus botones se generan solos',
     opcionesInv.some((o) => o.id === 'tema:tema-inventado')
       || inv.estado.npcs['npc-rosa']!.dodgedTopics.includes('tema-inventado'),
@@ -153,7 +153,7 @@ async function main() {
   const hermano = AGUA_QUIETA.conversations.find((t) => t.id === 'hermano')!;
   const piso = hermano.prueba!.actitudMinima!;
   const actitud = e3.npcs['npc-rosa']!.attitude[e3.activeInvestigator] ?? 0;
-  const ofrecido = accionesDisponibles(e3, AGUA_QUIETA.conversations)
+  const ofrecido = accionesDisponibles(e3, AGUA_QUIETA)
     .some((o) => o.id === 'tema:hermano');
   check('con la actitud por debajo del piso, el tema no aparece',
     actitud >= piso || !ofrecido, `actitud ${actitud}, piso ${piso}, ofrecido ${ofrecido}`);

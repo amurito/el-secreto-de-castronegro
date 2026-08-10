@@ -52,7 +52,7 @@ export async function runOfflineTurn(
   // Las opciones las calcula el motor desde el estado ya actualizado.
   return {
     narration,
-    options: accionesDisponibles(turn.state, scenario.conversations),
+    options: accionesDisponibles(turn.state, scenario),
     usedModel: false,
   };
 }

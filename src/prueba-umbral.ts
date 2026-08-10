@@ -81,7 +81,7 @@ async function main() {
   console.log('\nPARTIDA ANCHA — cada acción una vez, sin desenlaces');
   const usadas = new Set<string>();
   const ancha = await jugar('UMBRAL ANCHA', 'z', (s) => {
-    const disp = accionesDisponibles(s, AGUA_QUIETA.conversations).filter((o) => !o.final);
+    const disp = accionesDisponibles(s, AGUA_QUIETA).filter((o) => !o.final);
     const sig = disp.find((o) => !usadas.has(o.id)) ?? disp[0];
     if (!sig) return null;
     usadas.add(sig.id);

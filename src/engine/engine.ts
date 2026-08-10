@@ -484,6 +484,7 @@ export class Turn {
         case 'propose_fact': return this.toolProposeFact(raw);
         case 'create_npc': return this.toolCreateNpc(raw);
         case 'change_npc_state': return this.toolChangeNpcState(raw);
+        case 'use_item': return this.toolUseItem(raw);
         case 'reveal_document': return this.toolRevealDocument(raw);
         case 'transfer_item': return this.toolTransferItem(raw);
         case 'move_to_location': return this.toolMoveToLocation(raw);
@@ -961,6 +962,25 @@ export class Turn {
         `${now.name}: estado ${now.status}, presente ${now.present}, ` +
         `actitud ${now.attitude[this.investigator.id] ?? 0}, paciencia ${now.patience}.`,
     };
+  }
+
+  /**
+   * `ITEM_USED` existía en los eventos y en el reducer desde el principio, y
+   * NINGUNA herramienta lo emitía: `usageCount` no subía nunca, así que toda
+   * propiedad con condición de descubrimiento «usado N veces» era inalcanzable.
+   * Lo encontró la segunda aventura, que es exactamente para lo que sirve una
+   * segunda aventura.
+   */
+  private toolUseItem(raw: Record<string, unknown>): ToolOutcome {
+    const itemId = String(raw.item_id ?? '');
+    const item = this.state.items[itemId];
+    if (!item) {
+      return this.reject('use_item', raw, `No existe el objeto ${itemId}.`);
+    }
+    const times = clamp(Number(raw.times ?? 1), 1, 5);
+    for (let n = 0; n < times; n++) this.emit('ITEM_USED', { itemId });
+    const ahora = this.state.items[itemId]!;
+    return { ok: true, message: `${ahora.name}: ${ahora.usageCount} uso(s) registrado(s).` };
   }
 
   private toolRevealDocument(raw: Record<string, unknown>): ToolOutcome {

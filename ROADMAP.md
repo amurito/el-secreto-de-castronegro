@@ -144,7 +144,32 @@ Antes de construirla hay que decidir si es CoC 7e por el libro —tiradas de
 características, ocupaciones, puntos de habilidad— o algo más corto. La primera
 es varias veces más trabajo y trae la duda de derechos que ya conocés.
 
-### 3.2 Segunda aventura — LISTA PARA ESCRIBIR
+### 3.2 Segunda aventura ✔ HECHA — *La Legua Perdida*
+
+Marzo de 1925. Un campo que mide más por adentro que por afuera, tres personas
+que lo midieron, tres números, y ninguna miente. Cinco desenlaces.
+
+Se escribió **sin tocar el motor**, en cuatro archivos de escenario. Lo que sí
+hizo falta tocar fue lo que la aventura destapó, que es para lo que sirve una
+segunda aventura:
+
+- `ACCIONES` era el catálogo de Agua Quieta y vivía en el motor: la segunda
+  aventura arrancaba ofreciendo asomarse a un aljibe que no está en su mapa.
+  Ahora `Scenario.actions`.
+- `ITEM_USED` existía en los eventos y en el reducer y **ninguna herramienta lo
+  emitía**: `usageCount` no subía nunca, así que toda propiedad con condición
+  «usado N veces» era inalcanzable. Nueva herramienta `use_item`.
+- Las contradicciones no se deduplicaban (las pistas sí).
+- El epílogo mostraba siempre los desenlaces de Agua Quieta.
+
+**Lo que queda de la decisión «todo: es una campaña»:** el encadenado. Hoy las
+dos aventuras se eligen por separado desde la pantalla de inicio y Elena empieza
+la segunda de cero. Falta llevar de una a otra el investigador con sus
+habilidades mejoradas, su Cordura y sus cicatrices, más las consecuencias del
+desenlace alcanzado. El catálogo ya declara `requiere` y la fase de desarrollo
+ya deja al investigador listo; falta el puente.
+
+### 3.2-bis (referencia) Segunda aventura — cómo quedó
 
 El motor ya no conoce Agua Quieta. `prueba-desacople.ts` lo sostiene de dos
 maneras: busca ids de la aventura dentro de los archivos del motor, y arma una

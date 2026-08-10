@@ -17,6 +17,7 @@
 
 import type { Scenario } from './types.ts';
 import { AGUA_QUIETA } from './aguaquieta.ts';
+import { LA_LEGUA } from './legua.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -36,6 +37,15 @@ const ENTRADAS: EntradaCatalogo[] = [
     cuando: '1924-10-26',
     epoca: 'Octubre de 1924',
     duracion: 'Una hora aproximadamente',
+  },
+  {
+    scenario: LA_LEGUA,
+    cuando: '1925-03-11',
+    epoca: 'Marzo de 1925',
+    duracion: 'Una hora y media aproximadamente',
+    // No es un requisito duro: se puede jugar sola. Pero Elena llega distinta
+    // si ya vio el aljibe, y algunas cosas se leen de otra manera.
+    requiere: ['agua-quieta'],
   },
 ];
 

@@ -171,7 +171,7 @@ async function funcional() {
   check('su desenlace cierra la aventura', fin.estado.ending?.id === 'irse-inventado',
     fin.estado.ending?.title ?? 'sin final');
   check('después del final no quedan acciones',
-    accionesDisponibles(fin.estado, escenario.conversations).length === 0);
+    accionesDisponibles(fin.estado, escenario).length === 0);
 }
 
 async function todo() {

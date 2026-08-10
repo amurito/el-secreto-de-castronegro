@@ -55,7 +55,7 @@ export function createLocalApi(): GameApi {
       const { state } = await loadState(campaignId);
       return {
         campaignId, opening: scenario.opening,
-        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario.conversations),
+        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
       };
     },
 
@@ -64,7 +64,7 @@ export function createLocalApi(): GameApi {
       const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
       return {
         state: sanitizeForClient(state), opening: scenario?.opening ?? '',
-        options: accionesDisponibles(state, scenario?.conversations ?? []),
+        options: scenario ? accionesDisponibles(state, scenario) : [],
       };
     },
 

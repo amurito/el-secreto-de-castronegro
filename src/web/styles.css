@@ -280,6 +280,11 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 0.72rem; color: var(--text-faint); font-style: italic; margin-top: 0.15rem;
 }
 
+.scenario-antes {
+  font-size: 0.76rem; color: var(--text-faint); font-style: italic;
+  margin: 0.4rem 0 0.8rem; line-height: 1.5;
+}
+
 .nota-social {
   font-size: 0.78rem; color: var(--text-faint); font-style: italic;
   border-left: 2px solid var(--line); padding-left: 0.7rem; margin: 0.2rem 0 0.6rem;

@@ -4,6 +4,7 @@ import type {
 } from '../shared/types.ts';
 import type { Conversaciones } from './conversacion.ts';
 import type { Escenas } from './escena.ts';
+import type { AccionDef } from './acciones.ts';
 
 export interface ScenarioEnding {
   id: string;
@@ -58,6 +59,11 @@ export interface Scenario {
    * aventura. El motor las recorre sin saber de qué tratan.
    */
   scenes: Escenas;
+  /**
+   * Los botones que ofrece la aventura. También es dato: si viviera en el
+   * motor, cada aventura nueva heredaría los botones de la primera.
+   */
+  actions: AccionDef[];
   endings: ScenarioEnding[];
   /** Texto de apertura. Se muestra tal cual, sin pasar por el modelo. */
   opening: string;

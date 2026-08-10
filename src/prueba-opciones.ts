@@ -14,7 +14,8 @@
 import { createCampaign, Turn } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
-import { accionesDisponibles, ACCIONES } from './scenario/acciones.ts';
+import { accionesDisponibles } from './scenario/acciones.ts';
+import { AGUA_QUIETA_ACCIONES } from './scenario/aguaquieta.acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 
@@ -31,7 +32,7 @@ async function main() {
   const id = await createCampaign(AGUA_QUIETA, 'PRUEBA OPCIONES', 'c'.repeat(64));
 
   let t = await Turn.open(id);
-  const inicial = accionesDisponibles(t.state, AGUA_QUIETA.conversations);
+  const inicial = accionesDisponibles(t.state, AGUA_QUIETA);
   console.log(`\nAl empezar: ${inicial.length} acciones`);
   for (const o of inicial) console.log(`   · [${o.grupo}] ${o.etiqueta}`);
 
@@ -44,7 +45,7 @@ async function main() {
 
   for (let turno = 1; turno <= 30; turno++) {
     t = await Turn.open(id);
-    const disponibles = accionesDisponibles(t.state, AGUA_QUIETA.conversations);
+    const disponibles = accionesDisponibles(t.state, AGUA_QUIETA);
     if (disponibles.length === 0) break;
 
     // LA INVARIANTE: nunca ofrecer algo cuya condición de "hecha" ya se cumple.
@@ -53,7 +54,7 @@ async function main() {
     // falló, reintentar es correcto y es lo que haría cualquiera en la mesa.
     // El error es ofrecer algo que YA DIO su resultado.
     for (const o of disponibles) {
-      const def = ACCIONES.find((a) => a.id === o.id);
+      const def = AGUA_QUIETA_ACCIONES.find((a) => a.id === o.id);
       if (def?.hecha?.(t.state)) {
         repetidaYaHecha++;
         console.log(`   ⚠ turno ${turno}: ofrece "${o.etiqueta}" con su condición de hecha cumplida`);

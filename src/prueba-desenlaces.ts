@@ -109,7 +109,7 @@ async function main() {
       s.ending ? `${s.ending.id}` : 'sin final',
     );
     if (llego) {
-      check('  · después del final no quedan acciones', accionesDisponibles(s, AGUA_QUIETA.conversations).length === 0);
+      check('  · después del final no quedan acciones', accionesDisponibles(s, AGUA_QUIETA).length === 0);
       check('  · el final tiene texto', (s.ending?.text.length ?? 0) > 200);
     }
   }

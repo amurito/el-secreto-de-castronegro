@@ -4,7 +4,7 @@ import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
 import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
-import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
+import { CATALOGO, entradaDe } from '../scenario/catalogo.ts';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
 
@@ -82,11 +82,11 @@ export function App() {
     setVistas((prev) => new Set([...prev, ...ids]));
   }
 
-  async function newCampaign() {
+  async function newCampaign(scenarioId: string) {
     if (!api) return;
     setBusy(true); setError(null);
     try {
-      const data = await api.createCampaign('agua-quieta');
+      const data = await api.createCampaign(scenarioId);
       setCampaignId(data.campaignId);
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
@@ -179,18 +179,27 @@ export function App() {
                   : 'MODO MOTOR — sin clave de API. Dados reales, estado real, reglas reales; la narración la genera el motor. Poné ANTHROPIC_API_KEY en .env para que narre Claude.'}
             </div>
           )}
-          <div className="scenario-card">
-            <h2>Agua Quieta</h2>
-            <p>
-              Ignacio Vera, arrendatario de la estancia Los Álamos, desapareció hace once noches. No hay
-              cuerpo, no hay nota, no hay rastro. La policía de campaña anotó «se ausentó del domicilio»
-              y cerró el asunto. Alguien tiene que ir a mirar.
-            </p>
-            <div className="scenario-meta">1924 · Una hora aproximadamente · Muerte permanente</div>
-            <button className="primary" onClick={newCampaign} disabled={busy || !api}>
-              {busy ? 'Abriendo…' : 'Empezar'}
-            </button>
-          </div>
+          {/* Una tarjeta por aventura, en el orden cronológico del universo y
+              no en el orden en que se escribieron. Agregar una aventura al
+              catálogo la hace aparecer acá sin tocar la interfaz. */}
+          {CATALOGO.map((e) => (
+            <div className="scenario-card" key={e.scenario.id}>
+              <h2>{e.scenario.title}</h2>
+              <p>{e.scenario.surfacePremise}</p>
+              <div className="scenario-meta">
+                {e.epoca} · {e.duracion} · Muerte permanente
+              </div>
+              {e.requiere?.length ? (
+                <div className="scenario-antes">
+                  Se puede jugar sola. Se lee distinto después de{' '}
+                  {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.
+                </div>
+              ) : null}
+              <button className="primary" onClick={() => newCampaign(e.scenario.id)} disabled={busy || !api}>
+                {busy ? 'Abriendo…' : 'Empezar'}
+              </button>
+            </div>
+          ))}
 
           {/* Sin esto, un fallo del almacenamiento dejaba el botón muerto y sin
               explicación: el jugador clickeaba y no pasaba nada. */}
@@ -234,7 +243,7 @@ export function App() {
           <div className="ending">
             <div className="ending-title">{state.ending.title}</div>
             <div className="ending-text">{state.ending.text}</div>
-            <Epilogo ending={state.ending} board={state.board} />
+            <Epilogo ending={state.ending} board={state.board} scenarioId={state.scenarioId} />
             {api && campaignId && (
               <Desarrollo api={api} campaignId={campaignId} onEstado={setState} />
             )}
@@ -339,8 +348,13 @@ export function App() {
  * si el juego no dice lo contrario: no hay final feliz, hay finales distintos.
  * Mostrar los cinco convierte «perdí» en «llegué a uno de cinco».
  */
-function Epilogo({ ending, board }: { ending: { id: string; title: string }; board: any }) {
-  const todos = AGUA_QUIETA.endings;
+function Epilogo({
+  ending, board, scenarioId,
+}: { ending: { id: string; title: string }; board: any; scenarioId: string }) {
+  // Los desenlaces son los de LA AVENTURA QUE SE JUGÓ. Estaban fijos en los de
+  // Agua Quieta, así que la segunda aventura habría mostrado «Desenlace — de 5»
+  // con los títulos de la primera.
+  const todos = entradaDe(scenarioId)?.scenario.endings ?? [];
   const n = todos.findIndex((e) => e.id === ending.id) + 1;
   const pistas = board?.clues?.length ?? 0;
 

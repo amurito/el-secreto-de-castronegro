@@ -78,6 +78,8 @@ export interface EfectoEscena {
     how: string;
     comparedWith?: string;
   };
+  /** Registra que se usó un objeto. Destraba las propiedades por uso. */
+  usa?: { itemId: string; times?: number; cause: string };
   /** Entrega un documento diegético que ya existe en el escenario. */
   documento?: { id: string; how: string };
   contradiccion?: { description: string; between: string };

@@ -22,6 +22,7 @@ import type { Scenario } from './types.ts';
 import type { Item, NpcSeed, DiegeticDocument, GameLocation, TemporalEvent } from '../shared/types.ts';
 import { ELENA, TOMAS } from './pregens.ts';
 import { ROSA_TEMAS } from './aguaquieta.dialogo.ts';
+import { AGUA_QUIETA_ACCIONES } from './aguaquieta.acciones.ts';
 import { AGUA_QUIETA_ESCENAS } from './aguaquieta.escenas.ts';
 
 const SET = { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' } as const;
@@ -640,6 +641,7 @@ export const AGUA_QUIETA: Scenario = {
 
   conversations: ROSA_TEMAS,
   scenes: AGUA_QUIETA_ESCENAS,
+  actions: AGUA_QUIETA_ACCIONES,
 
   endings: [
     { id: 'sellar', title: 'Lo que se tapa', condition: 'El investigador sella, tapa o llena el aljibe sin haber mirado hasta el final.' },

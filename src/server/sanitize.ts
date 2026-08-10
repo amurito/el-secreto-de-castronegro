@@ -22,6 +22,7 @@ export interface ClientState {
   title: string;
   session: number;
   worldTime: { display: string };
+  scenarioId: string;
   location: { id: string; name: string; description: string; connections: string[] };
   investigator: unknown;
   reserveAvailable: Array<{ id: string; name: string; occupation: string }>;
@@ -50,6 +51,7 @@ export function sanitizeForClient(state: GameState): ClientState {
     title: state.title,
     session: state.session,
     worldTime: { display: state.world.time.display },
+    scenarioId: state.scenarioId,
     location: {
       id: loc.id,
       name: loc.name,

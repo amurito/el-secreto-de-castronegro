@@ -15,7 +15,7 @@
 
 import type { GameState } from '../shared/types.ts';
 import type { Escenas, IntencionLeida } from './escena.ts';
-import { listoParaSostener } from './acciones.ts';
+import { listoParaSostener } from './aguaquieta.acciones.ts';
 
 // ── AYUDAS ───────────────────────────────────────────────────────────────────
 

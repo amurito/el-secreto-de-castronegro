@@ -241,6 +241,22 @@ export const KEEPER_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'use_item',
+    description:
+      'Registra que el investigador USÓ un objeto para lo que sirve. Sube su contador de usos, que es lo que ' +
+      'destraba las propiedades cuya condición de descubrimiento es haberlo usado varias veces.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        item_id: str('ID del objeto.'),
+        times: int('Cuántos usos registrar de una vez (1-5).', 1, 5),
+        cause: str('Para qué se usó.'),
+      },
+      required: ['item_id', 'times', 'cause'],
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'reveal_document',
     description:
       'Entrega al investigador un documento del escenario que ya existe (diario, carta, recorte, fotografía). ' +

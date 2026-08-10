@@ -40,7 +40,7 @@ async function jugarHastaElFinal(id: string, turnos = 40) {
   for (let n = 0; n < turnos; n++) {
     const t = await Turn.open(id);
     if (t.state.ending) break;
-    const disp = accionesDisponibles(t.state, AGUA_QUIETA.conversations);
+    const disp = accionesDisponibles(t.state, AGUA_QUIETA);
     const sig = disp.find((o) => !o.final && !usadas.has(o.id))
       ?? disp.find((o) => o.final && o.id === 'irse')
       ?? disp[0];
