@@ -87,19 +87,16 @@ detrás de una tirada. Es mucha varianza. Si al jugar se siente arbitrario, la
 salida es dar algo de exposición también al fallar —el contacto ocurrió
 igual— y no subir los números.
 
-### 2.1-bis Escalas afinadas con más partidas
+### 2.1-bis Preguntas de escala que siguen abiertas
 
-`src/rules/umbral.config.ts`. Todas las constantes en un archivo, a propósito,
-porque dijiste "escalas no lo sé aún".
+Con la fuga tapada, las que quedan son de diseño y salen de jugar:
 
-Tu partida terminó en **Exposición 100/100 con los cuatro umbrales cruzados en
-una hora de juego**. O la escala es corta, o las ganancias son grandes, o
-asomarse al agua debería costar menos que bajar. Ahora tenés el dato para
-decidirlo; antes no.
-
-Preguntas abiertas: ¿100 es alcanzable en una aventura corta o debería ser el
-techo de una campaña? ¿La Estabilidad se recupera con descanso? ¿Cruzar
-Disolución debería tener consecuencia mecánica, no sólo narrativa?
+- ¿100 debería alcanzarse en una aventura corta, o ser el techo de una campaña
+  entera? Hoy una partida exhaustiva llega a ~37.
+- ¿La Estabilidad se recupera con descanso, y cuánto?
+- El arrastre entre aventuras: la Exposición no baja con descanso por canon,
+  pero cinco meses lejos de un Umbral no son descanso. Si se decide que baje,
+  es una ampliación de canon y hay que aprobarla.
 
 ### 2.2 Qué pasa después de Disolución
 
