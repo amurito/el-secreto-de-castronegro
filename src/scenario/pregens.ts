@@ -20,7 +20,6 @@ function buildSkills(overrides: Record<SkillId, number>): Record<SkillId, SkillV
     const value = overrides[def.id];
     out[def.id] = {
       base: value ?? def.defaultBase,
-      markedForGrowth: false,
       origin: value !== undefined ? 'occupation' : 'personal',
     };
   }
@@ -36,6 +35,7 @@ function make(
   ch: Characteristics,
   luck: number,
   skills: Record<SkillId, number>,
+  backstory: Investigator['backstory'],
 ): Investigator {
   const derived = computeDerived(ch, { luck });
   // Esquivar = DEX/2 salvo que la ocupación lo suba.
@@ -56,7 +56,8 @@ function make(
     conditions: [],
     knowledge: { investigator: [], withheld: [], playerObserved: [] },
     relationships: [],
-    experience: { markedSkills: [], sessionsSurvived: 0 },
+    backstory,
+    experience: { sessionsSurvived: 0, lastDevelopmentSeq: 0 },
     ringBond: null,
   };
 }
@@ -91,6 +92,23 @@ export const ELENA: Investigator = make(
     intimidar: 20,
     labia: 15,
   },
+  {
+    // Trasfondo. No es color: es de acá que sale la Cordura que se recupera
+    // entre aventuras, y cada fracaso de auto-ayuda obliga a reescribir uno.
+    aspects: [
+      { id: 'e-conexion', kind: 'personas',
+        text: 'Su hermana Amalia, en Rosario, que le escribe todas las semanas y a la que le contesta una de cada tres.' },
+      { id: 'e-ideologia', kind: 'ideologia',
+        text: 'Cree que casi todo lo que la gente llama misterio es una historia clínica mal tomada.' },
+      { id: 'e-lugar', kind: 'lugares',
+        text: 'El anfiteatro de la Facultad de Medicina, donde entendió por primera vez que un cuerpo se puede leer.' },
+      { id: 'e-posesion', kind: 'posesiones',
+        text: 'La libreta de tapas duras. Va por la novena; guarda las ocho anteriores.' },
+      { id: 'e-rasgo', kind: 'rasgos',
+        text: 'Escucha más de lo que habla, y anota antes de opinar.' },
+    ],
+    keyConnection: 'e-conexion',
+  },
 );
 
 export const TOMAS: Investigator = make(
@@ -120,5 +138,20 @@ export const TOMAS: Investigator = make(
     primeros_auxilios: 35,
     intimidar: 30,
     nadar: 30,
+  },
+  {
+    aspects: [
+      { id: 't-conexion', kind: 'personas',
+        text: 'Su editor en el diario, que le banca los viajes y le corta las notas a la mitad.' },
+      { id: 't-ideologia', kind: 'ideologia',
+        text: 'Cree que una fotografía es una prueba. No ha encontrado todavía el caso que lo desmienta.' },
+      { id: 't-lugar', kind: 'lugares',
+        text: 'El cuarto oscuro del diario, de noche, con la luz roja y nadie más en el edificio.' },
+      { id: 't-posesion', kind: 'posesiones',
+        text: 'Una cámara de placas heredada, más vieja que él y mejor que él.' },
+      { id: 't-rasgo', kind: 'rasgos',
+        text: 'Pregunta de más y anota de menos, porque confía en la imagen.' },
+    ],
+    keyConnection: 't-conexion',
   },
 );

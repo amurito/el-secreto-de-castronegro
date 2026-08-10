@@ -82,6 +82,32 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id', async (req) => {
 });
 
 /** Auditoría: revela la semilla sólo si la campaña llegó a un final. */
+/** Fase de desarrollo: lo que encontraría, sin ejecutar nada. */
+app.get<{ Params: { id: string } }>('/api/campaigns/:id/desarrollo', async (req) => {
+  const turn = await Turn.open(req.params.id);
+  const inv = turn.investigator;
+  return {
+    marcas: turn.developmentMarks(),
+    aspectos: inv.backstory.aspects.map((a) => ({
+      id: a.id, kind: a.kind, text: a.text,
+      esConexionClave: inv.backstory.keyConnection === a.id,
+    })),
+    cordura: inv.derived.san,
+    maxCordura: inv.derived.maxSan,
+  };
+});
+
+/** Ejecuta la fase. El modelo no participa: son reglas del libro. */
+app.post<{
+  Params: { id: string };
+  Body: { autoayuda?: { aspectId: string; usarConexionClave: boolean } };
+}>('/api/campaigns/:id/desarrollo', async (req) => {
+  const turn = await Turn.open(req.params.id);
+  const report = turn.runDevelopmentPhase(req.body?.autoayuda ? { autoayuda: req.body.autoayuda } : {});
+  await turn.commit();
+  return { report, state: sanitizeForClient(turn.state) };
+});
+
 app.get<{ Params: { id: string } }>('/api/campaigns/:id/auditoria', async (req) => {
   const { state, meta } = await loadState(req.params.id);
   if (!state.ending) {

@@ -10,6 +10,15 @@
 
 import type { ClientState } from '../server/sanitize.ts';
 import type { Opcion } from '../scenario/acciones.ts';
+import type { DevelopmentReport } from '../engine/engine.ts';
+import type { Marca } from '../rules/desarrollo.ts';
+
+export interface DevelopmentOffer {
+  marcas: Marca[];
+  aspectos: Array<{ id: string; kind: string; text: string; esConexionClave: boolean }>;
+  cordura: number;
+  maxCordura: number;
+}
 
 export interface StatusInfo {
   /** 'ia' = narra Claude · 'motor' = narra el motor */
@@ -53,6 +62,13 @@ export interface GameApi {
   /** Resuelve un turno. Los eventos llegan por callback, en vivo. */
   submitIntent(id: string, action: string, onEvent: (e: TurnEvent) => void): Promise<void>;
   introduceInvestigator(id: string, investigatorId: string): Promise<{ state: ClientState }>;
+  /** Qué encontraría la fase de desarrollo ahora. No ejecuta nada. */
+  developmentOffer(id: string): Promise<DevelopmentOffer>;
+  /** Ejecuta la fase. `autoayuda` es la única decisión del jugador. */
+  runDevelopment(
+    id: string,
+    autoayuda?: { aspectId: string; usarConexionClave: boolean },
+  ): Promise<{ report: DevelopmentReport; state: ClientState }>;
   audit(id: string): Promise<AuditInfo>;
   deleteCampaign(id: string): Promise<void>;
 }

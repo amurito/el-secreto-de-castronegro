@@ -29,9 +29,41 @@ import {
   stabilityPenaltyDice, extraSanLossFromExposure, thresholdInfo,
 } from '../rules/umbral.ts';
 import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
+import {
+  marcasDe, mejora, alcanzaMaestria, maxCordura, premioDelKeeper,
+  DADOS_SAN_POR_MAESTRIA, AUTOAYUDA, type Marca,
+} from '../rules/desarrollo.ts';
 import { canDiscoverProperty, canPromoteHypothesis } from './gates.ts';
 import { toClientRoll } from '../shared/protocol.ts';
 import type { Scenario } from '../scenario/types.ts';
+
+export interface SelfHelpResult {
+  aspectId: string;
+  texto: string;
+  exito: boolean;
+  sanDelta: number;
+  tirada: number;
+  objetivo: number;
+  usoConexionClave: boolean;
+  perdioConexionClave: boolean;
+  nota: string;
+}
+
+export interface DevelopmentReport {
+  mejoras: Array<{
+    skill: string; label: string;
+    antes: number; despues: number;
+    /** El 1D100 de la comprobación. Sube si supera el valor previo. */
+    check: number;
+    gain: number;
+  }>;
+  premio: { dados: number; caras: number; razon: string; total: number };
+  autoayuda: SelfHelpResult | null;
+  sanGanada: number;
+  sanFinal: number;
+  maxSan: number;
+  resumen: string;
+}
 
 export interface ToolOutcome {
   ok: boolean;
@@ -216,6 +248,220 @@ export class Turn {
 
   get pendingEvents(): readonly GameEvent[] {
     return this.pending;
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // FASE DE DESARROLLO — CoC 7e pp. 94-95, 167-169
+  //
+  // NO es una herramienta del Keeper. El modelo no participa: son reglas del
+  // libro aplicadas sobre el registro de tiradas, y las decisiones que quedan
+  // —qué hace el investigador con sus meses libres— las toma el jugador.
+  //
+  // Los dados salen de la MISMA cadena verificable que el resto de la partida.
+  // Una mejora de habilidad se audita igual que una tirada de Descubrir: si no,
+  // habría una parte del progreso que el jugador tendría que creer sin poder
+  // comprobar, que es justo lo que este proyecto no quiere.
+  // ───────────────────────────────────────────────────────────────────────────
+
+  /** Lo que la fase encontraría ahora mismo, sin ejecutar nada. */
+  developmentMarks(): Marca[] {
+    const inv = this.investigator;
+    return marcasDe(this.state, inv.id, inv.experience.lastDevelopmentSeq);
+  }
+
+  /** Un dado de N caras de la cadena determinista. */
+  private rollDie(faces: number): { value: number; proof: { index: number; hmac: string } } {
+    const index = this.state.rng.nextIndex;
+    const { dice, hmac } = dieValues(this.meta.seed, index, 2);
+    // Dos d10 combinados dan 0-99; se mapea al rango pedido. Alcanza para
+    // 1D3, 1D6, 1D10 y 1D100 sin sesgo perceptible.
+    const cruudo = dice[0]! * 10 + dice[1]!;
+    this.emit('ROLL_EXECUTED', {
+      roll: this.syntheticRoll(faces, cruudo, index, hmac),
+    });
+    return { value: (cruudo % faces) + 1, proof: { index, hmac } };
+  }
+
+  /**
+   * Un `RollRecord` para las tiradas de la fase.
+   *
+   * Van al mismo registro que las de la partida a propósito: si estuvieran
+   * aparte, el índice de la cadena se bifurcaría y la verificación contra la
+   * semilla dejaría de cerrar.
+   */
+  private syntheticRoll(faces: number, crudo: number, index: number, hmac: string): RollRecord {
+    return {
+      id: id(),
+      seq: this.state.rolls.length + 1,
+      investigatorId: this.investigator.id,
+      playerId: this.investigator.playerId,
+      commitment: {
+        reason: `fase de desarrollo — 1D${faces}`,
+        skill: 'desarrollo' as SkillId,
+        skillLabel: `1D${faces}`,
+        baseValue: faces,
+        difficulty: 'regular',
+        modifiers: [],
+        stakes: { onSuccess: '', onFailure: '' },
+        committedAt: new Date().toISOString(),
+      },
+      execution: {
+        dice: [crudo % 10, Math.floor(crudo / 10)],
+        rawResult: (crudo % faces) + 1,
+        // Un dado de desarrollo no tiene grado de éxito: la regla lo interpreta
+        // después. Marcarlo como fracaso lo contaría mal en el propio marcado.
+        degree: 'regular',
+        thresholds: { regular: faces, hard: faces, extreme: faces },
+        executedAt: new Date().toISOString(),
+        proof: { index, hmac },
+      },
+      visibility: 'public',
+      narratedIn: null,
+    };
+  }
+
+  private changeSanity(delta: number, cause: string): number {
+    const inv = this.investigator;
+    const from = inv.derived.san;
+    const to = clamp(from + delta, 0, maxCordura(inv));
+    if (to === from) return 0;
+    this.emit('STAT_CHANGED', { investigatorId: inv.id, stat: 'san', from, to, delta: to - from, cause });
+    return to - from;
+  }
+
+  /**
+   * Ejecuta la fase completa.
+   *
+   * `autoayuda` es la única decisión del jugador: qué aspecto del trasfondo
+   * usa el investigador en sus meses libres, y si se apoya en su conexión
+   * clave. Es la parte más interesante del libro y la que no se puede
+   * automatizar sin vaciarla.
+   */
+  runDevelopmentPhase(opciones: {
+    autoayuda?: { aspectId: string; usarConexionClave: boolean };
+  } = {}): DevelopmentReport {
+    const inv0 = this.investigator;
+    const marcas = this.developmentMarks();
+    const mejoras: DevelopmentReport['mejoras'] = [];
+    let sanGanada = 0;
+
+    // ── 1. Una comprobación por habilidad marcada ──────────────────────────
+    for (const marca of marcas) {
+      const antes = this.investigator.skills[marca.skill]?.base ?? 0;
+      const check = this.rollDie(100).value;
+      if (!mejora(antes, check)) {
+        mejoras.push({ skill: marca.skill, label: marca.label, antes, despues: antes, check, gain: 0 });
+        continue;
+      }
+      const gain = this.rollDie(10).value;
+      const despues = antes + gain;
+      this.emit('SKILL_IMPROVED', {
+        investigatorId: inv0.id, skill: marca.skill, label: marca.label,
+        from: antes, to: despues, check, gain,
+        proof: { index: this.state.rng.nextIndex - 1, hmac: '' },
+      });
+      mejoras.push({ skill: marca.skill, label: marca.label, antes, despues, check, gain });
+
+      // Llegar a 90% premia con Cordura (p. 94).
+      if (alcanzaMaestria(antes, despues)) {
+        let total = 0;
+        for (let d = 0; d < DADOS_SAN_POR_MAESTRIA.cantidad; d++) {
+          total += this.rollDie(DADOS_SAN_POR_MAESTRIA.caras).value;
+        }
+        sanGanada += this.changeSanity(total, `dominar ${marca.label} al ${despues}%`);
+      }
+    }
+
+    // ── 2. Premio del Keeper, proporcional al peligro ──────────────────────
+    const premio = premioDelKeeper(this.state);
+    let premioTotal = 0;
+    for (let d = 0; d < premio.dados; d++) premioTotal += this.rollDie(premio.caras).value;
+    if (premioTotal > 0) sanGanada += this.changeSanity(premioTotal, `fin de la aventura: ${premio.razon}`);
+
+    // ── 3. Auto-ayuda ──────────────────────────────────────────────────────
+    let autoayuda: DevelopmentReport['autoayuda'] = null;
+    if (opciones.autoayuda) {
+      autoayuda = this.runSelfHelp(opciones.autoayuda);
+      sanGanada += autoayuda.sanDelta;
+    }
+
+    const resumen =
+      `${marcas.length} habilidad(es) comprobada(s), ` +
+      `${mejoras.filter((m) => m.gain > 0).length} mejorada(s), ` +
+      `${sanGanada >= 0 ? '+' : ''}${sanGanada} de Cordura.`;
+
+    this.emit('DEVELOPMENT_PHASE_COMPLETED', {
+      investigatorId: inv0.id,
+      atRollSeq: this.state.rolls.length,
+      skillsChecked: marcas.length,
+      skillsImproved: mejoras.filter((m) => m.gain > 0).length,
+      sanityGained: sanGanada,
+      summary: resumen,
+    });
+
+    return {
+      mejoras,
+      premio: { ...premio, total: premioTotal },
+      autoayuda,
+      sanGanada,
+      sanFinal: this.investigator.derived.san,
+      maxSan: maxCordura(this.investigator),
+      resumen,
+    };
+  }
+
+  /**
+   * Auto-ayuda (p. 169): tirada de Cordura contra el propio trasfondo.
+   * Éxito: +1D6. Fallo: −1 y ese aspecto del trasfondo se revisa — el retiro
+   * espiritual termina en pérdida de fe, las vacaciones familiares en ruptura.
+   */
+  private runSelfHelp(op: { aspectId: string; usarConexionClave: boolean }): SelfHelpResult {
+    const inv = this.investigator;
+    const aspecto = inv.backstory.aspects.find((a) => a.id === op.aspectId);
+    if (!aspecto) {
+      return { aspectId: op.aspectId, texto: '', exito: false, sanDelta: 0, tirada: 0,
+        objetivo: 0, usoConexionClave: false, perdioConexionClave: false,
+        nota: 'Ese aspecto del trasfondo no existe.' };
+    }
+
+    const usaClave = op.usarConexionClave && inv.backstory.keyConnection === op.aspectId;
+    // La conexión clave da dado de bonificación: se tira dos veces y vale la
+    // mejor. Acá "mejor" es la más baja, porque se tira POR DEBAJO de Cordura.
+    const t1 = this.rollDie(100).value;
+    const t2 = usaClave ? this.rollDie(100).value : null;
+    const tirada = t2 === null ? t1 : Math.min(t1, t2);
+    const objetivo = inv.derived.san;
+    const exito = tirada <= objetivo;
+
+    let sanDelta = 0;
+    let perdioClave = false;
+
+    if (exito) {
+      let gana = 0;
+      for (let d = 0; d < AUTOAYUDA.ganaDados.cantidad; d++) {
+        gana += this.rollDie(AUTOAYUDA.ganaDados.caras).value;
+      }
+      sanDelta = this.changeSanity(gana, `auto-ayuda: ${aspecto.text.slice(0, 40)}`);
+    } else {
+      sanDelta = this.changeSanity(-AUTOAYUDA.pierdeSiFalla, 'auto-ayuda fallida');
+      perdioClave = usaClave;
+      this.emit('BACKSTORY_REVISED', {
+        investigatorId: inv.id,
+        aspectId: aspecto.id,
+        from: aspecto.text,
+        to: `${aspecto.text} — y eso se rompió en los meses que siguieron.`,
+        reason: 'la auto-ayuda falló',
+        lostKeyConnection: perdioClave,
+      });
+    }
+
+    return {
+      aspectId: aspecto.id, texto: aspecto.text, exito, sanDelta,
+      tirada, objetivo, usoConexionClave: usaClave, perdioConexionClave: perdioClave,
+      nota: exito
+        ? 'Los meses sirvieron.'
+        : 'No sirvieron, y algo del trasfondo quedó distinto.',
+    };
   }
 
   // ───────────────────────────────────────────────────────────────────────────

@@ -77,6 +77,9 @@ export type GameEventType =
   | 'VISION_RECEIVED'
   | 'INVESTIGATOR_DIED'
   | 'INVESTIGATOR_INTRODUCED'
+  | 'SKILL_IMPROVED'
+  | 'BACKSTORY_REVISED'
+  | 'DEVELOPMENT_PHASE_COMPLETED'
   | 'CONSEQUENCE_RECORDED'
   | 'CAMPAIGN_CANON_ADDED'
   | 'NARRATION_EMITTED'
@@ -282,6 +285,38 @@ export interface EventCategorizedPayload {
   temporalEventId: TemporalEventId;
   category: TemporalCategory;
   reason: string;
+}
+
+export interface SkillImprovedPayload {
+  investigatorId: InvestigatorId;
+  skill: SkillId;
+  label: string;
+  from: number;
+  to: number;
+  /** El 1D100 de la comprobación y el 1D10 de la subida. Auditable. */
+  check: number;
+  gain: number;
+  proof: { index: number; hmac: string };
+}
+
+export interface BackstoryRevisedPayload {
+  investigatorId: InvestigatorId;
+  aspectId: string;
+  from: string;
+  to: string;
+  reason: string;
+  /** Si además dejó de ser la conexión clave. */
+  lostKeyConnection?: boolean;
+}
+
+export interface DevelopmentPhaseCompletedPayload {
+  investigatorId: InvestigatorId;
+  /** Frontera nueva: las marcas anteriores a esto quedan borradas. */
+  atRollSeq: number;
+  skillsChecked: number;
+  skillsImproved: number;
+  sanityGained: number;
+  summary: string;
 }
 
 export interface EndingReachedPayload {

@@ -135,9 +135,32 @@ export interface DerivedStats {
 
 export interface SkillValue {
   base: number;
-  /** Marcada por éxito para desarrollo entre sesiones (CoC 7e). */
-  markedForGrowth: boolean;
   origin: 'occupation' | 'personal' | 'growth' | 'granted';
+}
+
+/**
+ * NO hay `markedForGrowth`.
+ *
+ * Lo hubo: un campo que existía desde el día uno y no escribía nadie —la misma
+ * familia que los desenlaces declarados sin camino—. Las marcas se derivan del
+ * registro de tiradas, que ya guarda grado de éxito y modificadores, así que
+ * la regla de CoC 7e «no se marca si usaste dado de bonificación» se aplica
+ * sola y no hay casilla que pueda desincronizarse de lo que de verdad pasó.
+ * Ver `src/rules/desarrollo.ts`.
+ */
+
+/** Una pieza del trasfondo. Es lo que la auto-ayuda usa para recuperar Cordura. */
+export interface BackstoryAspect {
+  id: string;
+  kind:
+    | 'ideologia' | 'personas' | 'lugares' | 'posesiones' | 'rasgos'
+    | 'heridas' | 'fobias' | 'encuentros';
+  text: string;
+  /**
+   * Las heridas, fobias y encuentros con entidades no se editan libremente
+   * (CoC 7e p. 95): son registro de lo que pasó, no decoración.
+   */
+  locked?: boolean;
 }
 
 /**
@@ -267,7 +290,23 @@ export interface Investigator {
   };
 
   relationships: Relationship[];
-  experience: { markedSkills: SkillId[]; sessionsSurvived: number };
+  /**
+   * Trasfondo. `keyConnection` apunta al id del aspecto que más le importa:
+   * usarlo en la auto-ayuda da dado de bonificación, y su éxito además cura la
+   * locura indefinida (p. 169).
+   */
+  backstory: { aspects: BackstoryAspect[]; keyConnection: string | null };
+
+  experience: {
+    sessionsSurvived: number;
+    /**
+     * Frontera de las marcas de habilidad. Cerrar una fase de desarrollo borra
+     * las marcas (p. 94); acá eso es «no mirar tiradas anteriores a este
+     * punto». Sin la frontera, lo hecho en la primera aventura seguiría
+     * contando en la segunda.
+     */
+    lastDevelopmentSeq: number;
+  };
   ringBond: RingBond | null;
 }
 

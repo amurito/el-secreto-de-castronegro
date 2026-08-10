@@ -108,6 +108,35 @@ export function createLocalApi(): GameApi {
       return { state: sanitizeForClient(turn.state) };
     },
 
+    async developmentOffer(id) {
+      const turn = await Turn.open(id);
+      const inv = turn.investigator;
+      return {
+        marcas: turn.developmentMarks(),
+        aspectos: inv.backstory.aspects.map((a) => ({
+          id: a.id, kind: a.kind, text: a.text,
+          esConexionClave: inv.backstory.keyConnection === a.id,
+        })),
+        cordura: inv.derived.san,
+        maxCordura: inv.derived.maxSan,
+      };
+    },
+
+    async runDevelopment(id, autoayuda) {
+      // Mismo candado que un turno: la fase escribe al log y no puede correr
+      // dos veces a la vez, o se duplicarían las mejoras.
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const report = turn.runDevelopmentPhase(autoayuda ? { autoayuda } : {});
+        await turn.commit();
+        return { report, state: sanitizeForClient(turn.state) };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
     async audit(id) {
       const { state, meta } = await loadState(id);
       if (!state.ending) {

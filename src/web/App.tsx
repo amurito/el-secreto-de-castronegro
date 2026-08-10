@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Sheet, RollCard, Board, Inventory, Documents, RollHistory } from './components.tsx';
-import type { GameApi, StatusInfo } from '../app/api.ts';
+import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
 import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
@@ -235,6 +235,9 @@ export function App() {
             <div className="ending-title">{state.ending.title}</div>
             <div className="ending-text">{state.ending.text}</div>
             <Epilogo ending={state.ending} board={state.board} />
+            {api && campaignId && (
+              <Desarrollo api={api} campaignId={campaignId} onEstado={setState} />
+            )}
             <button className="primary" onClick={() => setTab('tiradas')}>Ver la auditoría del azar</button>
             <button className="ghost" onClick={() => { setCampaignId(null); setState(null); }}>Nueva partida</button>
           </div>
@@ -357,6 +360,185 @@ function Epilogo({ ending, board }: { ending: { id: string; title: string }; boa
       <p className="epilogo-nota">
         Ninguno de los cinco es ganar y ninguno es perder. Los Álamos sigue ahí en todos.
       </p>
+    </div>
+  );
+}
+
+/**
+ * FASE DE DESARROLLO — CoC 7e pp. 94-95, 167-169.
+ *
+ * Es una escena, no una pantalla de estadísticas. Lo que se ve primero son las
+ * habilidades que se aprendieron usando —derivadas del registro de tiradas, no
+ * de una casilla— y la decisión de qué hace el investigador con sus meses
+ * libres. Los dados salen de la misma cadena verificable que el resto.
+ */
+function Desarrollo({
+  api, campaignId, onEstado,
+}: { api: GameApi; campaignId: string; onEstado: (s: any) => void }) {
+  const [oferta, setOferta] = useState<DevelopmentOffer | null>(null);
+  const [abierto, setAbierto] = useState(false);
+  const [elegido, setElegido] = useState<string | null>(null);
+  const [usarClave, setUsarClave] = useState(true);
+  const [informe, setInforme] = useState<any>(null);
+  const [ocupado, setOcupado] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!abierto || oferta) return;
+    api.developmentOffer(campaignId)
+      .then((o) => {
+        setOferta(o);
+        setElegido(o.aspectos.find((a) => a.esConexionClave)?.id ?? o.aspectos[0]?.id ?? null);
+      })
+      .catch((e) => setError((e as Error).message));
+  }, [abierto, oferta, api, campaignId]);
+
+  async function correr() {
+    if (!elegido) return;
+    setOcupado(true); setError(null);
+    try {
+      const r = await api.runDevelopment(campaignId, { aspectId: elegido, usarConexionClave: usarClave });
+      setInforme(r.report);
+      onEstado(r.state);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  if (!abierto) {
+    return (
+      <button className="primary" onClick={() => setAbierto(true)}>
+        Fase de desarrollo — qué aprendió, qué le costó
+      </button>
+    );
+  }
+
+  if (informe) {
+    const clave = oferta?.aspectos.find((a) => a.id === informe.autoayuda?.aspectId);
+    return (
+      <div className="desarrollo">
+        <div className="desarrollo-titulo">Los meses que siguieron</div>
+
+        <div className="desarrollo-bloque">
+          <div className="desarrollo-sub">Lo que aprendió usándolo</div>
+          {informe.mejoras.length === 0 && (
+            <div className="desarrollo-nada">
+              Nada se aprendió esta vez. Hace falta usar una habilidad con éxito —y sin ayuda— para tener
+              derecho a la comprobación.
+            </div>
+          )}
+          {informe.mejoras.map((m: any) => (
+            <div key={m.skill} className={`desarrollo-fila ${m.gain > 0 ? 'sube' : ''}`}>
+              <span className="d-label">{m.label}</span>
+              <span className="d-num">{m.antes}%</span>
+              <span className="d-dado">tirada {m.check}</span>
+              <span className="d-res">
+                {m.gain > 0 ? `+${m.gain} → ${m.despues}%` : 'ya lo sabía demasiado bien'}
+              </span>
+            </div>
+          ))}
+          <div className="desarrollo-regla">
+            Se mejora sacando POR ENCIMA del valor actual. Cuanto mejor sos en algo, menos te queda por
+            aprender de la experiencia.
+          </div>
+        </div>
+
+        <div className="desarrollo-bloque">
+          <div className="desarrollo-sub">Cordura</div>
+          <div className="desarrollo-fila">
+            <span className="d-label">Por lo que enfrentó</span>
+            <span className="d-dado">{informe.premio.dados}D{informe.premio.caras}</span>
+            <span className="d-res">+{informe.premio.total} · {informe.premio.razon}</span>
+          </div>
+          {informe.autoayuda && (
+            <div className={`desarrollo-fila ${informe.autoayuda.exito ? 'sube' : 'baja'}`}>
+              <span className="d-label">{informe.autoayuda.exito ? 'Los meses sirvieron' : 'No sirvieron'}</span>
+              <span className="d-dado">
+                {informe.autoayuda.tirada} vs {informe.autoayuda.objetivo}
+                {informe.autoayuda.usoConexionClave ? ' (con su conexión)' : ''}
+              </span>
+              <span className="d-res">
+                {informe.autoayuda.sanDelta >= 0 ? '+' : ''}{informe.autoayuda.sanDelta}
+              </span>
+            </div>
+          )}
+          <div className="desarrollo-total">
+            Cordura {informe.sanFinal} de {informe.maxSan}
+          </div>
+        </div>
+
+        {informe.autoayuda && !informe.autoayuda.exito && (
+          <div className="desarrollo-revision">
+            «{clave?.text}» — y eso se rompió en los meses que siguieron.
+            {informe.autoayuda.perdioConexionClave && ' Ya no es lo que la sostiene.'}
+          </div>
+        )}
+
+        <div className="desarrollo-nota">
+          Todas estas tiradas están en la auditoría, con la misma cadena verificable que las de la partida.
+        </div>
+      </div>
+    );
+  }
+
+  if (error) return <div className="error">{error}</div>;
+  if (!oferta) return <div className="thinking">Contando los meses…</div>;
+
+  return (
+    <div className="desarrollo">
+      <div className="desarrollo-titulo">Los meses que siguieron</div>
+
+      <div className="desarrollo-bloque">
+        <div className="desarrollo-sub">
+          Habilidades que se ganaron el derecho a mejorar
+        </div>
+        {oferta.marcas.length === 0 ? (
+          <div className="desarrollo-nada">
+            Ninguna. Sólo cuenta usar una habilidad con éxito y sin dado de bonificación.
+          </div>
+        ) : (
+          oferta.marcas.map((m) => (
+            <div key={m.skill} className="desarrollo-fila">
+              <span className="d-label">{m.label}</span>
+              <span className="d-num">{m.valor}%</span>
+              <span className="d-res">{m.exitos === 1 ? 'un éxito' : `${m.exitos} éxitos`}</span>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="desarrollo-bloque">
+        <div className="desarrollo-sub">¿A qué dedica estos meses?</div>
+        <div className="desarrollo-explica">
+          Se tira Cordura. Si sale, recupera; si no sale, esa parte de su vida queda distinta.
+        </div>
+        {oferta.aspectos.map((a) => (
+          <label key={a.id} className={`aspecto ${elegido === a.id ? 'aspecto-on' : ''}`}>
+            <input
+              type="radio" name="aspecto" checked={elegido === a.id}
+              onChange={() => setElegido(a.id)}
+            />
+            <span>
+              {a.text}
+              {a.esConexionClave && <em className="aspecto-clave"> — lo que la sostiene</em>}
+            </span>
+          </label>
+        ))}
+        {oferta.aspectos.find((a) => a.id === elegido)?.esConexionClave && (
+          <label className="aspecto-check">
+            <input type="checkbox" checked={usarClave} onChange={(e) => setUsarClave(e.target.checked)} />
+            <span>
+              Apoyarse en ello — dado de bonificación, pero si falla deja de ser lo que la sostiene.
+            </span>
+          </label>
+        )}
+      </div>
+
+      <button className="primary" onClick={correr} disabled={ocupado || !elegido}>
+        {ocupado ? 'Pasando los meses…' : 'Dejar pasar los meses'}
+      </button>
     </div>
   );
 }

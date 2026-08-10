@@ -123,6 +123,39 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'SKILL_IMPROVED': {
+      const p = ev.payload as P.SkillImprovedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      inv.skills = { ...inv.skills, [p.skill]: { base: p.to, origin: 'growth' } };
+      break;
+    }
+
+    case 'BACKSTORY_REVISED': {
+      const p = ev.payload as P.BackstoryRevisedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      inv.backstory = {
+        aspects: inv.backstory.aspects.map((a) =>
+          a.id === p.aspectId ? { ...a, text: p.to } : a),
+        keyConnection: p.lostKeyConnection ? null : inv.backstory.keyConnection,
+      };
+      break;
+    }
+
+    case 'DEVELOPMENT_PHASE_COMPLETED': {
+      const p = ev.payload as P.DevelopmentPhaseCompletedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      // Mover la frontera ES borrar las marcas: de acá en adelante, sólo
+      // cuentan las tiradas nuevas.
+      inv.experience = {
+        sessionsSurvived: inv.experience.sessionsSurvived + 1,
+        lastDevelopmentSeq: p.atRollSeq,
+      };
+      break;
+    }
+
     case 'STABILITY_SHIFT': {
       const p = ev.payload as P.StabilityShiftPayload;
       const inv = cloneInvestigator(s, p.investigatorId);
@@ -426,6 +459,9 @@ function cloneInvestigator(s: GameState, id: string): Investigator | null {
       playerObserved: [...cur.knowledge.playerObserved],
     },
     relationships: [...cur.relationships],
+    skills: { ...cur.skills },
+    backstory: { ...cur.backstory, aspects: [...cur.backstory.aspects] },
+    experience: { ...cur.experience },
   };
   s.investigators[id] = copy;
   return copy;

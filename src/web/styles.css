@@ -322,6 +322,76 @@ button { font-family: inherit; cursor: pointer; }
 .epilogo-lista { display: flex; flex-direction: column; gap: 0.2rem; }
 .epilogo-final { font-size: 0.85rem; color: var(--text-faint); }
 .epilogo-final-on { color: var(--accent); }
+/* Un dado de la fase no es una tirada de habilidad: sin porcentaje, sin
+   dificultad, sin grado de éxito. Va compacto y en una línea.               */
+.roll-dev {
+  display: flex; gap: 0.55rem; align-items: baseline; flex-wrap: wrap;
+  padding: 0.4rem 0.7rem; border-left-color: var(--line);
+}
+.roll-result-inline {
+  font-family: var(--mono); font-size: 0.9rem; color: var(--text);
+}
+.roll-reason-inline {
+  font-size: 0.74rem; color: var(--text-faint); font-style: italic;
+  flex: 1; min-width: 8rem;
+}
+
+/* ── FASE DE DESARROLLO ───────────────────────────────────────────────────
+   Es una escena, no una planilla: primero lo que aprendió, después qué hizo
+   con los meses. Los dados van a la vista porque son auditables.            */
+
+.desarrollo {
+  border: 1px solid var(--line); border-radius: 3px;
+  padding: 1rem 1.1rem; margin: 1.2rem 0;
+}
+.desarrollo-titulo {
+  font-size: 1.05rem; color: var(--accent); margin-bottom: 0.9rem;
+}
+.desarrollo-bloque { margin-bottom: 1.1rem; }
+.desarrollo-sub {
+  font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.13em;
+  text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.5rem;
+}
+.desarrollo-fila {
+  display: flex; gap: 0.7rem; align-items: baseline; flex-wrap: wrap;
+  padding: 0.28rem 0; border-bottom: 1px solid var(--line); font-size: 0.86rem;
+  color: var(--text-dim);
+}
+.desarrollo-fila.sube { color: var(--text); }
+.desarrollo-fila.sube .d-res { color: var(--stability); }
+.desarrollo-fila.baja .d-res { color: var(--accent); }
+.d-label { flex: 1; min-width: 9rem; }
+.d-num, .d-dado { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); }
+.d-res { font-family: var(--mono); font-size: 0.76rem; }
+
+.desarrollo-regla, .desarrollo-explica, .desarrollo-nota, .desarrollo-nada {
+  font-size: 0.76rem; color: var(--text-faint); font-style: italic;
+  line-height: 1.55; margin-top: 0.5rem;
+}
+.desarrollo-total {
+  font-family: var(--mono); font-size: 0.8rem; color: var(--text);
+  margin-top: 0.6rem;
+}
+.desarrollo-revision {
+  border-left: 2px solid var(--accent); padding-left: 0.8rem;
+  font-size: 0.86rem; color: var(--text-dim); line-height: 1.55; margin: 0.8rem 0;
+}
+
+.aspecto {
+  display: flex; gap: 0.6rem; align-items: flex-start;
+  padding: 0.45rem 0.5rem; border: 1px solid transparent; border-radius: 3px;
+  font-size: 0.86rem; color: var(--text-dim); cursor: pointer; line-height: 1.45;
+}
+.aspecto:hover { border-color: var(--line); }
+.aspecto-on { border-color: var(--accent-dim); color: var(--text); }
+.aspecto input { margin-top: 0.28rem; flex-shrink: 0; }
+.aspecto-clave { color: var(--accent); font-style: italic; }
+.aspecto-check {
+  display: flex; gap: 0.6rem; align-items: flex-start; margin: 0.5rem 0 0 0.5rem;
+  font-size: 0.78rem; color: var(--text-faint); cursor: pointer; line-height: 1.45;
+}
+.desarrollo .primary { margin-top: 0.4rem; }
+
 .epilogo-nota {
   font-size: 0.78rem; color: var(--text-faint); font-style: italic;
   margin: 0.7rem 0 0; line-height: 1.5;

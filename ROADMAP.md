@@ -113,6 +113,28 @@ no. Está listo para cuando decidas si querés esa capa y con qué aviso previo.
 
 ## 3. Contenido
 
+### 3.0 Fase de desarrollo ✔ HECHO
+
+CoC 7e pp. 94-95 y 167-169, verificado contra tu manual. Se abre al terminar
+la aventura, con pantalla propia.
+
+El **marcado sale del registro de tiradas**, no de una casilla: una habilidad
+se gana el derecho a mejorar si se usó con éxito y **sin dado de bonificación**,
+y esa última regla —la que en la mesa se olvida siempre— no se puede olvidar
+porque el log guarda los modificadores. De paso murió `markedForGrowth`, otro
+campo declarado que no escribía nadie.
+
+Los dados de la fase salen de la **misma cadena verificable** que los de la
+partida: el progreso se audita igual que el azar.
+
+La única decisión del jugador es la **auto-ayuda**: a qué dedica el
+investigador sus meses. Si sale, recupera Cordura; si no sale, esa parte de su
+vida queda escrita distinta, y si se apoyó en su conexión clave, la pierde.
+
+Falta, para cuando haya segunda aventura: psicoterapia (1D100 contra
+Psicoanálisis, una vez por mes), entrenamiento (1D10 cada cuatro meses de
+tiempo diegético) y «acostumbrarse a lo horrible».
+
 ### 3.1 Creación de personaje
 
 Dijiste "por ahora pregenerado, luego va a haber creación". Elena y Tomás están

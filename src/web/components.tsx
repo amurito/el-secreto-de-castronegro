@@ -114,10 +114,30 @@ const DEGREE_LABEL: Record<string, string> = {
 
 const DIFF_LABEL: Record<string, string> = { regular: 'Regular', hard: 'Difícil', extreme: 'Extrema' };
 
+/**
+ * Los dados de la fase de desarrollo van al mismo registro que las tiradas de
+ * habilidad —tienen que ir, o la cadena verificable se bifurca— pero no son lo
+ * mismo. Un 1D6 no tiene porcentaje ni dificultad, y mostrarle al jugador
+ * «1D6 · 6% · Dificultad Regular» se lee como un error del programa.
+ */
+const esDadoDeDesarrollo = (roll: any) => /^1D\d+$/.test(String(roll?.skill ?? ''));
+
 export function RollCard({ roll, big }: { roll: any; big?: boolean }) {
   // Una tirada mal formada no puede tumbar la partida entera: la interfaz
   // degrada, el motor sigue teniendo el registro correcto.
   if (!roll || !Array.isArray(roll.dice) || !roll.thresholds) return null;
+
+  if (esDadoDeDesarrollo(roll)) {
+    return (
+      <div className="roll roll-dev">
+        <span className="roll-dice-icon">🎲</span>
+        <span className="roll-skill">{roll.skill}</span>
+        <span className="roll-result-inline">{roll.result}</span>
+        <span className="roll-reason-inline">{roll.reason}</span>
+      </div>
+    );
+  }
+
   const good = ['critical', 'extreme', 'hard', 'regular'].includes(roll.degree);
   return (
     <div className={`roll ${big ? 'roll-big' : ''} ${good ? 'roll-ok' : 'roll-bad'}`}>
