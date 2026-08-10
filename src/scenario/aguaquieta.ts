@@ -386,7 +386,11 @@ const items: Item[] = [
           'Sostenido sobre el agua del aljibe, el segundero se mueve. Va hacia atrás, seis o siete segundos, ' +
           'y se detiene otra vez en las cuatro y veinte. Repite el mismo tramo cada vez. Retirado del brocal, ' +
           'vuelve a estar parado y nada indica que se haya movido nunca.',
-        discoveryCondition: { kind: 'location', at: 'patio' },
+        // Estar en el patio no alcanza: el reloj retrocede seis o siete
+        // segundos y hay que notarlo, con el brazo estirado sobre un pozo.
+        // Antes era gratis, y era el descubrimiento más importante de la
+        // aventura. Ver `rules/cuando-tirar.ts`.
+        discoveryCondition: { kind: 'skill_check', skill: 'descubrir', difficulty: 'regular' },
         disclosure: 'DISCOVERABLE',
       },
     ],
@@ -415,7 +419,8 @@ const items: Item[] = [
           'Mirando el aljibe a través del espejo, en lugar de asomarse, el retardo del reflejo se vuelve evidente: ' +
           'lo que devuelve el agua llega tarde respecto de lo que devuelve el espejo. Ver el fenómeno de esta ' +
           'manera protege: el agua no parece registrar a quien no la mira de frente.',
-        trigger: { kind: 'location', at: 'patio' },
+        // Igual que el reloj: el fenómeno está ahí, verlo es otra cosa.
+        trigger: { kind: 'skill_check', skill: 'descubrir', difficulty: 'regular' },
         active: false,
         disclosure: 'DISCOVERABLE',
       },

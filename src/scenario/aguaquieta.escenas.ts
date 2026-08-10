@@ -274,13 +274,31 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
     id: 'reloj-sobre-agua', prioridad: 78,
     cuando: (s, i) =>
       dice(i, /reloj/) && dice(i, /agua|aljibe|sobre|encima|pozo/) && aqui(s) === 'patio',
-    resolver: ({ estado }) => {
+    antes: (s) => propiedadVista(s, 'it-reloj') ? null : ({
+      texto: ['Te asomás lo justo y extendés el brazo con el reloj colgando de la cadena, encima del círculo de agua.'],
+    }),
+    prueba: (s) => propiedadVista(s, 'it-reloj') ? null : ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'seguir el segundero de un reloj a un metro de distancia, sobre el agua',
+      stakes_success: 'notás lo que hace',
+      stakes_failure: 'un reloj parado sobre un pozo, y el brazo cansado',
+    }),
+    resolver: ({ estado, tirada, variante }) => {
       if (propiedadVista(estado, 'it-reloj')) {
         return { texto: [`Volvés a sostenerlo sobre el agua. ${oculta(estado, 'it-reloj')}`] };
       }
+      if (!tirada?.exito) {
+        return {
+          texto: [variante([
+            'Lo sostenés un buen rato con el brazo estirado. Está parado a las cuatro y veinte, como siempre. ' +
+            'Se te cansa el hombro antes de que pase nada que puedas jurar.',
+            'Otra vez, con más paciencia. El segundero no se mueve, o se mueve tan poco que no lo podés sostener ' +
+            'como observación. Podés volver a intentarlo.',
+          ])],
+        };
+      }
       return [
         {
-          texto: ['Te asomás lo justo y extendés el brazo con el reloj colgando de la cadena, encima del círculo de agua.'],
           descubre: {
             itemId: 'it-reloj', propertyId: 'p-reloj-atras',
             how: 'sosteniendo el reloj sobre la boca del aljibe',
@@ -529,12 +547,29 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
     cuando: (s, i) =>
       i.objetivo.id === 'it-espejo' && aqui(s) === 'patio'
       && ['usar', 'mirar', 'examinar'].includes(i.verb),
-    resolver: ({ estado }) => {
+    antes: (s) => propiedadVista(s, 'it-espejo') ? null : ({
+      texto: ['Te parás de espaldas al brocal y levantás el espejo hasta que el agua aparece adentro del marco.'],
+    }),
+    prueba: (s) => propiedadVista(s, 'it-espejo') ? null : ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'comparar dos reflejos del mismo gesto al mismo tiempo',
+      stakes_success: 'ves cuál de los dos llega tarde',
+      stakes_failure: 'dos reflejos, y el cuello torcido',
+    }),
+    resolver: ({ estado, tirada, variante }) => {
       const texto = estado.items['it-espejo']?.conditionalProperties[0]?.description ?? '';
       if (propiedadVista(estado, 'it-espejo')) return { texto: [texto] };
+      if (!tirada?.exito) {
+        return {
+          texto: [variante([
+            'Sostenés el espejo un rato largo, buscando el ángulo. Ves tu cara dos veces y las dos te miran igual. ' +
+            'Puede ser que no haya nada. Puede ser que no lo estés viendo.',
+            'Probás de nuevo, con el brazo más alto. Nada concluyente todavía.',
+          ])],
+        };
+      }
       return [
         {
-          texto: ['Te parás de espaldas al brocal y levantás el espejo hasta que el agua aparece adentro del marco.'],
           descubre: {
             itemId: 'it-espejo', propertyId: 'p-espejo-indirecto',
             how: 'mirando el aljibe a través del espejo en vez de asomarse',

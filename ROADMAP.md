@@ -50,15 +50,30 @@ atada al primer intento— eran el mismo error de fondo: **algo declarado en los
 datos sin camino real en el código.** Una prueba genérica los habría encontrado
 a los dos antes que vos.
 
-### 1.3 Repaso de las tiradas que no existen
+### 1.3 Repaso de las tiradas que no existen ✔ HECHO
 
-Hoy tiran dados: mirar de cerca, registrar un lugar, mirar el agua, examinar la
-placa, comparar fotos, trepar, cavar. No tiran: hablar, usar objetos sobre
-otros, gritar, escuchar en algunos casos.
+Medido sobre las dos aventuras: 57 acciones ofrecidas, 27 con tirada y 30 sin.
+Entre las que NO tiraban estaban los dos descubrimientos centrales de Agua
+Quieta —el reloj sobre el agua y el espejo—, que se conseguían con sólo estar
+parado en el patio, mientras examinar una fotografía pedía Descubrir.
 
-Hay que decidir caso por caso cuál merece dado. No todo lo merece —pedir una
-tirada para algo que no puede fallar es ruido— pero hoy la línea está puesta por
-accidente, no por criterio.
+**El criterio está escrito en `src/rules/cuando-tirar.ts`:** se tira cuando el
+resultado es incierto **y fallar es interesante**. La segunda mitad es la que
+se olvida: un fracaso que no deja nada no es un fracaso, es una demora.
+
+Qué cambió:
+- El reloj y el espejo piden Descubrir. Ya no alcanza con estar en el lugar.
+- Examinar un objeto que esconde algo tras una tirada la pide solo, sin que la
+  aventura tenga que escribir una escena. Antes esa propiedad quedaba declarada
+  y sin camino — la familia de bug que este proyecto encontró seis veces.
+- **Agarrar un objeto ya no dispara la escena de usarlo.** «Leo la libreta» y
+  «agarro la libreta» comparten la palabra que importa, así que levantarla del
+  suelo disparaba la lectura, con tirada y todo, y el jugador se enteraba de lo
+  que decía sin haberla abierto.
+
+Lo que sigue sin tirar, y con razón: agarrar, caminar, esperar, anotar, repasar
+el propio tablero, medir con una rueda de agrimensor, preguntar algo que
+cualquiera contesta, y gritar hacia un pozo que no devuelve eco.
 
 ---
 

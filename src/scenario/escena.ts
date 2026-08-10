@@ -121,6 +121,20 @@ export interface EscenaAutoral {
   prioridad?: number;
   /** ¿Esta escena responde a esta intención, en este estado? */
   cuando: (s: GameState, i: IntencionLeida) => boolean;
+  /**
+   * Por defecto una escena NO se dispara al agarrar o soltar un objeto,
+   * aunque su `cuando` coincida.
+   *
+   * Agarrar algo y usarlo son actos distintos, y las escenas suelen
+   * reconocerse por palabras: «leo la libreta» y «agarro la libreta» comparten
+   * la palabra que importa. Sin esta regla, levantar un objeto del suelo
+   * disparaba la escena de leerlo —con su tirada y todo— y el jugador se
+   * enteraba de lo que decía sin haberlo abierto.
+   *
+   * Una aventura que quiera una escena AL agarrar algo —un objeto que no se
+   * puede soltar, por ejemplo— la pide explícitamente.
+   */
+  tambienAlAgarrar?: true;
   /** Prosa antes de la tirada: lo que se ve mientras se decide. */
   antes?: (s: GameState, i: IntencionLeida) => EfectoEscena | null;
   /** La tirada. Devolver `null` es no pedir ninguna. */

@@ -56,7 +56,17 @@ export function escenaPara(
   s: GameState,
   i: IntencionLeida,
 ): EscenaAutoral | null {
-  return [...escenas].sort(porPrioridad).find((e) => e.cuando(s, i)) ?? null;
+  // Sólo cuando se agarra UN OBJETO CONCRETO. El clasificador lee «levanto
+  // acta» como el verbo agarrar —«levanto» es raíz de tomar— y sin la
+  // condición del objetivo esa frase dejaba de encontrar su escena, que además
+  // era un desenlace. La regla existe para que agarrar la libreta no dispare
+  // la escena de leerla; no para vetar toda frase que contenga un verbo de
+  // tomar.
+  const agarrando = (i.verb === 'tomar' || i.verb === 'soltar')
+    && i.objetivo.kind === 'item';
+  return [...escenas].sort(porPrioridad).find(
+    (e) => (!agarrando || e.tambienAlAgarrar) && e.cuando(s, i),
+  ) ?? null;
 }
 
 /** Aplica un efecto declarado. Todo pasa por herramientas validadas. */

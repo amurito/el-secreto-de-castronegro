@@ -26,6 +26,7 @@ import {
 } from './narrator.ts';
 import { accionesDisponibles, detalleExaminado } from '../scenario/acciones.ts';
 import { resolverTema, temasDisponibles } from './social.ts';
+import { propiedadPorTirada, tieneAlgoMas } from '../rules/cuando-tirar.ts';
 import { escenaPara, ejecutarEscena, leerIntencion } from './escenas.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
@@ -167,7 +168,38 @@ function examine(turn: Turn, i: Intent, out: string[], run: Runner): void {
       .map((d) => [...item.hiddenProperties, ...item.conditionalProperties].find((p) => p.id === d.propertyId)?.description)
       .filter(Boolean);
     out.push(`${known}${found.length ? '\n\n' + found.join('\n\n') : ''}`);
-    if (!found.length && (item.hiddenProperties.length || item.conditionalProperties.length)) {
+
+    // Si el objeto esconde algo que se destraba con una tirada, se tira ACÁ.
+    // Antes esa propiedad quedaba declarada y sin camino salvo que la aventura
+    // escribiera una escena a mano — la familia de bug que este proyecto ya
+    // encontró cinco veces. El criterio está en `rules/cuando-tirar.ts`.
+    const porTirada = propiedadPorTirada(item);
+    const cond = porTirada?.discoveryCondition;
+    if (porTirada && cond?.kind === 'skill_check') {
+      const roll = run('request_roll', {
+        skill: cond.skill, difficulty: cond.difficulty,
+        reason: `examinar ${item.name.toLowerCase()} con atención`,
+        stakes_success: 'notás lo que no salta a la vista',
+        stakes_failure: 'nada que no hayas visto ya',
+        bonus_dice: i.sustained ? 1 : 0, penalty_dice: 0,
+        modifier_reason: i.sustained ? 'te tomás el tiempo de mirarlo bien' : '',
+      });
+      if (succeeded(roll.message)) {
+        const r = run('discover_property', {
+          item_id: item.id, property_id: porTirada.id,
+          how: 'examinándolo con atención', compared_with: '',
+        });
+        out.push(r.ok ? porTirada.description : r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+        return;
+      }
+      out.push(pickVariant(s, [
+        'Lo mirás por todos lados. La sensación de que falta algo no se va.',
+        'Nada nuevo esta vez. Podés volver a intentarlo con más calma.',
+      ]));
+      return;
+    }
+
+    if (!found.length && tieneAlgoMas(item)) {
       out.push(pickVariant(s, [
         'Hay algo en este objeto que todavía no terminaste de ver. Quizá no acá, o no así.',
         'Lo mirás por todos lados. La sensación de que falta algo no se va.',
