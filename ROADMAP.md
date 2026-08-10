@@ -144,15 +144,15 @@ Antes de construirla hay que decidir si es CoC 7e por el libro —tiradas de
 características, ocupaciones, puntos de habilidad— o algo más corto. La primera
 es varias veces más trabajo y trae la duda de derechos que ya conocés.
 
-### 3.2 Segunda aventura
+### 3.2 Segunda aventura — LISTA PARA ESCRIBIR
 
-La prueba de fuego de la arquitectura. Si escribir otra aventura es sobre todo
-llenar un `Scenario` y un `KeeperBriefing`, el motor sirve. Si hay que tocar
-`offline.ts` en veinte lugares, el motor está acoplado a Agua Quieta y conviene
-saberlo pronto.
+El motor ya no conoce Agua Quieta. `prueba-desacople.ts` lo sostiene de dos
+maneras: busca ids de la aventura dentro de los archivos del motor, y arma una
+aventura inventada de cero —«El campanario»— y la juega hasta su desenlace.
 
-Recomendación: hacer esto **antes** que creación de personaje. Es el que más
-información devuelve por lo que cuesta.
+Sigue siendo la prueba de fuego, pero ahora de la ESCRITURA, no de la
+arquitectura: cuánto cuesta escribir una aventura buena, no cuánto cuesta
+hacerla funcionar.
 
 ### 3.3 La aventura original publicada
 
@@ -216,11 +216,9 @@ El catálogo se ordena solo por fecha, así que una aventura escrita después
 puede transcurrir antes y encajar en su lugar sin renumerar nada. `requiere`
 está listo para encadenar cuando haya dos.
 
-Lo que **todavía** vive escrito a mano en `offline.ts` y habría que mover a
-datos cuando llegue la segunda aventura: los desenlaces, las escenas con prosa
-propia (mirar el agua, comparar las fotos) y la regla de que Rosa no habla en el
-patio de noche. Nada de eso bloquea escribir una aventura nueva — bloquea que la
-nueva tenga escenas igual de escritas.
+Ya no queda nada de Agua Quieta en el motor: los desenlaces, las escenas con
+prosa propia y hasta la regla de que Rosa no habla de noche en el patio viven
+en `aguaquieta.escenas.ts`. `offline.ts` pasó de 1153 a 599 líneas.
 
 ## Cómo se mantiene
 

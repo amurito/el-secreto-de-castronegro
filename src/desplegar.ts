@@ -53,7 +53,8 @@ try {
   node(TSX, ['src/prueba-social.ts']);
   node(TSX, ['src/prueba-umbral.ts']);
   node(TSX, ['src/prueba-desarrollo.ts']);
-  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral y fase de desarrollo en verde');
+  node(TSX, ['src/prueba-desacople.ts']);
+  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo y desacople del motor en verde');
 
   paso(2, 'Construyendo…');
   if (existsSync(join(RAIZ, 'dist'))) rmSync(join(RAIZ, 'dist'), { recursive: true, force: true });

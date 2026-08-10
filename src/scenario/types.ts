@@ -3,6 +3,7 @@ import type {
   WorldTime, TemporalEvent, LocationId,
 } from '../shared/types.ts';
 import type { Conversaciones } from './conversacion.ts';
+import type { Escenas } from './escena.ts';
 
 export interface ScenarioEnding {
   id: string;
@@ -52,6 +53,11 @@ export interface Scenario {
    * trae los suyos y funciona sin tocar el resolvedor.
    */
   conversations: Conversaciones;
+  /**
+   * Las escenas escritas a mano: la prosa y las ramas propias de esta
+   * aventura. El motor las recorre sin saber de qué tratan.
+   */
+  scenes: Escenas;
   endings: ScenarioEnding[];
   /** Texto de apertura. Se muestra tal cual, sin pasar por el modelo. */
   opening: string;

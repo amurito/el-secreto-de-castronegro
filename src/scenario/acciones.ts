@@ -25,6 +25,19 @@ import type { Conversaciones } from './conversacion.ts';
 
 const lowerFirst = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
 
+/**
+ * «Voy a el patio» → «Voy al patio».
+ *
+ * Los nombres de las localizaciones llevan artículo («El patio y el aljibe»),
+ * así que pegarles una preposición delante produce castellano roto. En un
+ * juego cuya prosa es el punto, eso se lee peor que un bug.
+ */
+const conA = (nombre: string) => {
+  const n = nombre.toLowerCase();
+  if (n.startsWith('el ')) return `al ${n.slice(3)}`;
+  return `a ${n}`;
+};
+
 export type GrupoAccion = 'observar' | 'hablar' | 'usar' | 'mover' | 'decidir';
 
 export const ETIQUETA_GRUPO: Record<GrupoAccion, string> = {
@@ -404,8 +417,8 @@ export function accionesDisponibles(s: GameState, conversaciones: Conversaciones
     if (!d) continue;
     out.push({
       id: `ir:${destino}`,
-      etiqueta: d.visited ? `Volver a ${d.name.toLowerCase()}` : `Ir a ${d.name.toLowerCase()}`,
-      intencion: `Voy a ${d.name.toLowerCase()}`,
+      etiqueta: `${d.visited ? 'Volver' : 'Ir'} ${conA(d.name)}`,
+      intencion: `Voy ${conA(d.name)}`,
       grupo: 'mover',
       orden: 80,
     });

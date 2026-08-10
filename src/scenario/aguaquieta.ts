@@ -22,6 +22,7 @@ import type { Scenario } from './types.ts';
 import type { Item, NpcSeed, DiegeticDocument, GameLocation, TemporalEvent } from '../shared/types.ts';
 import { ELENA, TOMAS } from './pregens.ts';
 import { ROSA_TEMAS } from './aguaquieta.dialogo.ts';
+import { AGUA_QUIETA_ESCENAS } from './aguaquieta.escenas.ts';
 
 const SET = { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' } as const;
 
@@ -33,6 +34,7 @@ const locations: Record<string, GameLocation> = {
   patio: {
     id: 'patio',
     name: 'El patio y el aljibe',
+    aliases: ['afuera', 'pozo', 'brocal'],
     description:
       'Un patio de tierra apisonada entre la casa y el galpón. En el centro, un aljibe de ladrillo ' +
       'con brocal de piedra y una roldana sin soga. Tres álamos flacos dan una sombra que no alcanza.',
@@ -110,6 +112,7 @@ const locations: Record<string, GameLocation> = {
   casa: {
     id: 'casa',
     name: 'La casa',
+    aliases: ['cocina', 'adentro', 'comedor'],
     description:
       'Cocina de piso de ladrillo, una mesa larga, un aparador con loza desparejada. Huele a humedad y a ' +
       'yerba vieja. Del gancho de la pared cuelga un sombrero de hombre que nadie descolgó en once días.',
@@ -168,6 +171,7 @@ const locations: Record<string, GameLocation> = {
   cuarto: {
     id: 'cuarto',
     name: 'El cuarto de Ignacio',
+    aliases: ['habitacion', 'pieza', 'dormitorio'],
     description:
       'Un catre, una silla, un cajón de manzanas dado vuelta que hace de mesa. Sobre el cajón, un cuaderno ' +
       'de tapas de hule y una fotografía apoyada contra la pared, cara al revés.',
@@ -225,6 +229,7 @@ const locations: Record<string, GameLocation> = {
   orilla: {
     id: 'orilla',
     name: 'La orilla de la Laguna Mansa',
+    aliases: ['costa', 'pastizal'],
     description:
       'Doscientos metros de pastizal y después el agua, ancha y baja, del color del cielo cuando el cielo ' +
       'no tiene nada que decir. La laguna se llama Mansa porque nunca tiene olas. Nadie recuerda un día con olas.',
@@ -293,6 +298,7 @@ const items: Item[] = [
   {
     id: 'it-foto1897',
     name: 'Fotografía enmarcada (1897)',
+    aliases: ['retrato', 'foto vieja', 'fotografia vieja', 'fotografia enmarcada', '1897', 'foto de la familia'],
     shortDescription: 'Una familia posando delante del aljibe recién construido. Al dorso, a lápiz: "Los Álamos, 1897".',
     owner: 'casa',
     carried: false,
@@ -325,6 +331,7 @@ const items: Item[] = [
   {
     id: 'it-fotoreciente',
     name: 'Fotografía del aljibe (tomada por Ignacio)',
+    aliases: ['placa', 'fotografia de ignacio', 'foto de ignacio', 'foto dada vuelta', 'fotografia dada vuelta', 'foto', 'fotografia', 'imagen'],
     shortDescription: 'Una placa reciente del brocal del aljibe, a plena luz. Estaba apoyada contra la pared, cara al revés.',
     owner: 'cuarto',
     carried: false,
@@ -357,6 +364,7 @@ const items: Item[] = [
   {
     id: 'it-reloj',
     name: 'Reloj de bolsillo',
+    aliases: ['reloj'],
     shortDescription: 'De níquel, con la tapa abollada. Apareció en el brocal del aljibe. Estaba seco.',
     owner: 'patio',
     carried: false,
@@ -390,6 +398,7 @@ const items: Item[] = [
   {
     id: 'it-espejo',
     name: 'Espejo de mano',
+    aliases: ['espejo'],
     shortDescription: 'De Rosa. Marco de hojalata, azogue picado en un borde.',
     owner: 'casa',
     carried: false,
@@ -417,6 +426,7 @@ const items: Item[] = [
   {
     id: 'it-farol',
     name: 'Farol de querosén',
+    aliases: ['farol', 'lampara', 'lámpara'],
     shortDescription: 'Con combustible para unas cuantas horas.',
     owner: 'casa',
     carried: false,
@@ -629,6 +639,7 @@ export const AGUA_QUIETA: Scenario = {
   timeline,
 
   conversations: ROSA_TEMAS,
+  scenes: AGUA_QUIETA_ESCENAS,
 
   endings: [
     { id: 'sellar', title: 'Lo que se tapa', condition: 'El investigador sella, tapa o llena el aljibe sin haber mirado hasta el final.' },

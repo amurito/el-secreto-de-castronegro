@@ -1,0 +1,187 @@
+/**
+ * APLICADOR DE ESCENAS — genérico.
+ *
+ * Recorre las escenas que declara la aventura, encuentra la que responde a la
+ * intención, pide su tirada y aplica sus efectos con las mismas herramientas
+ * validadas que usa todo lo demás.
+ *
+ * No conoce Agua Quieta. No sabe qué es un aljibe, una placa fotográfica ni un
+ * desenlace concreto. Si alguna vez hace falta tocar este archivo para agregar
+ * una aventura, el contrato de `EscenaAutoral` se quedó corto y hay que
+ * ampliarlo ahí, no acá.
+ */
+
+import type { Turn } from '../engine/engine.ts';
+import type { GameState } from '../shared/types.ts';
+import type {
+  EscenaAutoral, EfectoEscena, IntencionLeida, ContextoEscena,
+} from '../scenario/escena.ts';
+import { porPrioridad } from '../scenario/escena.ts';
+import { pickVariant } from './narrator.ts';
+import type { Intent } from './intent.ts';
+
+type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
+
+const exito = (msg: string) => /SUPERA la dificultad/.test(msg) && !/NO SUPERA/.test(msg);
+
+/**
+ * Traduce lo que entendió el clasificador a lo que ve la aventura.
+ *
+ * Existe para que el contenido NO dependa de los internos del keeper: si
+ * mañana el clasificador cambia de forma, se arregla esta función y ninguna
+ * aventura se entera.
+ */
+export function leerIntencion(i: Intent): IntencionLeida {
+  const t = i.target;
+  const id =
+    t.kind === 'item' ? t.item.id
+      : t.kind === 'feature' ? t.feature.id
+        : t.kind === 'npc' ? t.npc.id
+          : t.kind === 'location' ? t.id
+            : null;
+  return {
+    raw: i.raw,
+    norm: i.norm,
+    verb: i.verb,
+    verbExplicit: i.verbExplicit,
+    sustained: i.sustained,
+    objetivo: { kind: t.kind, id },
+    destino: i.destination,
+  };
+}
+
+/** La escena que responde ahora, si hay alguna. */
+export function escenaPara(
+  escenas: EscenaAutoral[],
+  s: GameState,
+  i: IntencionLeida,
+): EscenaAutoral | null {
+  return [...escenas].sort(porPrioridad).find((e) => e.cuando(s, i)) ?? null;
+}
+
+/** Aplica un efecto declarado. Todo pasa por herramientas validadas. */
+function aplicarEfecto(
+  turn: Turn, efecto: EfectoEscena, out: string[], run: Runner,
+): void {
+  if (efecto.texto) for (const p of efecto.texto) if (p) out.push(p);
+
+  if (efecto.tiempo) {
+    run('advance_time', { minutes: efecto.tiempo.minutes, reason: efecto.tiempo.reason });
+  }
+  if (efecto.descubre) {
+    const r = run('discover_property', {
+      item_id: efecto.descubre.itemId,
+      property_id: efecto.descubre.propertyId,
+      how: efecto.descubre.how,
+      compared_with: efecto.descubre.comparedWith ?? '',
+    });
+    // Si el gate lo rechaza, el jugador tiene que enterarse: un descubrimiento
+    // que el motor bloqueó y la prosa da por hecho es la peor incoherencia
+    // posible, porque el juego se contradice a sí mismo en la misma pantalla.
+    if (!r.ok) out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+  }
+  if (efecto.documento) {
+    const r = run('reveal_document', {
+      document_id: efecto.documento.id, how: efecto.documento.how,
+    });
+    if (!r.ok) out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+  }
+  if (efecto.contradiccion) {
+    run('note_contradiction', {
+      description: efecto.contradiccion.description,
+      between: efecto.contradiccion.between,
+    });
+  }
+  for (const pista of efecto.pistas ?? []) {
+    const yaEsta = turn.state.board.clues.some((c) => c.description === pista.description);
+    if (!yaEsta) {
+      run('add_clue', {
+        description: pista.description, kind: pista.kind,
+        source: pista.source, reliability: pista.reliability,
+      });
+    }
+  }
+  if (efecto.exposicion) {
+    run('apply_umbral_exposure', {
+      amount: efecto.exposicion.amount,
+      source: efecto.exposicion.source,
+      cause: efecto.exposicion.cause,
+    });
+  }
+  if (efecto.estabilidad) {
+    run('apply_stability_shift', {
+      amount: efecto.estabilidad.amount, cause: efecto.estabilidad.cause,
+    });
+  }
+  if (efecto.dano) {
+    run('apply_damage', { amount: efecto.dano.amount, cause: efecto.dano.cause });
+  }
+  if (efecto.pregunta) run('raise_question', { question: efecto.pregunta });
+  if (efecto.npc) {
+    run('change_npc_state', {
+      npc_id: efecto.npc.id, status: 'unchanged', present: 'unchanged',
+      attitude_delta: efecto.npc.attitudeDelta ?? 0,
+      patience_delta: efecto.npc.patienceDelta ?? 0,
+      dodged_topic: '', cause: efecto.npc.cause,
+    });
+  }
+  if (efecto.consecuencia) {
+    run('record_consequence', {
+      description: efecto.consecuencia.description,
+      scope: efecto.consecuencia.scope,
+      permanent: String(efecto.consecuencia.permanent),
+      world_reminder: efecto.consecuencia.worldReminder,
+    });
+  }
+  // El desenlace va ÚLTIMO: cierra la aventura, y lo que se aplicara después
+  // caería sobre una partida ya terminada.
+  if (efecto.desenlace) {
+    run('reach_ending', {
+      ending_id: efecto.desenlace.id,
+      title: efecto.desenlace.title,
+      text: efecto.desenlace.text,
+    });
+  }
+}
+
+/**
+ * Ejecuta una escena entera: prosa previa, tirada, efectos.
+ *
+ * El orden importa y es el de la mesa: primero se ve la situación, después se
+ * tira, después se sabe. Invertirlo dejaría al jugador leyendo el resultado
+ * antes de entender qué estaba en juego.
+ */
+export function ejecutarEscena(
+  turn: Turn, escena: EscenaAutoral, i: IntencionLeida, out: string[], run: Runner,
+): void {
+  const antes = escena.antes?.(turn.state, i);
+  if (antes) aplicarEfecto(turn, antes, out, run);
+
+  let tirada: ContextoEscena['tirada'] = null;
+  const prueba = escena.prueba?.(turn.state, i);
+  if (prueba) {
+    const r = run('request_roll', {
+      skill: prueba.skill,
+      difficulty: prueba.difficulty,
+      reason: prueba.reason,
+      stakes_success: prueba.stakes_success,
+      stakes_failure: prueba.stakes_failure,
+      bonus_dice: prueba.bonus_dice ?? 0,
+      penalty_dice: prueba.penalty_dice ?? 0,
+      modifier_reason: prueba.modifier_reason ?? '',
+    });
+    tirada = { exito: exito(r.message), mensaje: r.message };
+  }
+
+  const ctx: ContextoEscena = {
+    estado: turn.state,
+    intencion: i,
+    tirada,
+    variante: (opciones) => pickVariant(turn.state, opciones),
+  };
+
+  const efectos = escena.resolver(ctx);
+  for (const e of Array.isArray(efectos) ? efectos : [efectos]) {
+    aplicarEfecto(turn, e, out, run);
+  }
+}

@@ -121,20 +121,23 @@ const SUSTAINED = ['minuto', 'rato', 'largo', 'fijamente', 'sostenid', 'un buen'
 
 const WATER = ['agua', 'reflejo', 'aljibe', 'pozo', 'laguna', 'superficie', 'espejo de agua'];
 
-const LOCATIONS: Array<[LocationId, string[]]> = [
-  ['patio', ['patio', 'afuera', 'aljibe', 'pozo', 'brocal']],
-  ['casa', ['casa', 'cocina', 'adentro', 'comedor']],
-  ['cuarto', ['cuarto', 'habitacion', 'pieza', 'dormitorio']],
-  ['orilla', ['laguna', 'orilla', 'costa', 'pastizal']],
-];
-
 /**
- * El ORDEN importa: gana el primero que coincide.
+ * Los nombres con que se puede llamar a una localización salen del ESTADO, no
+ * de una lista escrita acá.
  *
- * Va de más específico a más general. "Le pregunto por la deuda de Ignacio"
- * contiene "ignacio", así que si el tema genérico fuera primero, nunca se
- * llegaría al tema de la deuda. Lo mismo con el hermano y con lo que vio ella.
+ * Antes estaban a mano —patio, casa, cuarto, orilla— y con los alias de Agua
+ * Quieta adentro. Así el clasificador conocía una aventura concreta, y la
+ * segunda habría necesitado su propia lista al lado de la primera.
  */
+function nombresDe(loc: { id: string; name: string; aliases?: string[] }): string[] {
+  return [
+    loc.id,
+    // El nombre completo y también sus palabras largas: «El patio y el aljibe»
+    // se puede nombrar como «patio» o como «aljibe».
+    ...norm(loc.name).split(/[^a-z0-9]+/).filter((w) => w.length >= 4),
+    ...(loc.aliases ?? []).map(norm),
+  ];
+}
 
 export function classify(state: GameState, raw: string): Intent {
   const t = norm(raw);
@@ -148,8 +151,14 @@ export function classify(state: GameState, raw: string): Intent {
 
   // ── DESTINO (independiente del objetivo) ─────────────────────────────────
   let destination: LocationId | null = null;
-  for (const [id, names] of LOCATIONS) {
-    if (id !== state.world.currentLocation && anyOf(t, names)) { destination = id; break; }
+  // Gana el nombre MÁS LARGO que coincida, no el primero: así el orden en que
+  // el escenario declara sus localizaciones deja de importar.
+  let mejorLargo = 0;
+  for (const l of Object.values(state.world.locations)) {
+    if (l.id === state.world.currentLocation) continue;
+    for (const n of nombresDe(l)) {
+      if (t.includes(n) && n.length > mejorLargo) { destination = l.id; mejorLargo = n.length; }
+    }
   }
 
   // ── OBJETIVO ─────────────────────────────────────────────────────────────
@@ -175,24 +184,19 @@ export function classify(state: GameState, raw: string): Intent {
   if (target.kind === 'none') {
     const inv = state.investigators[state.activeInvestigator]!;
     const reachable = Object.values(state.items).filter((i) => i.owner === loc.id || i.owner === inv.id);
-    const byName: Array<[string[], string]> = [
-      [['reloj de bolsillo', 'reloj'], 'it-reloj'],
-      [['espejo de mano', 'espejo'], 'it-espejo'],
-      [['farol', 'lampara', 'lámpara'], 'it-farol'],
-      [['placa', 'fotografia de ignacio', 'foto de ignacio', 'foto dada vuelta', 'fotografia dada vuelta'], 'it-fotoreciente'],
-      [['retrato', 'foto vieja', 'fotografia vieja', 'fotografia enmarcada', '1897', 'foto de la familia'], 'it-foto1897'],
-    ];
-    for (const [names, id] of byName) {
-      if (names.some((n) => t.includes(norm(n)))) {
-        const item = reachable.find((i) => i.id === id) ?? state.items[id];
-        if (item) { target = { kind: 'item', item }; break; }
+    // Los nombres salen del objeto, no de una tabla escrita acá. Gana el
+    // alias MÁS LARGO que coincida: «foto dada vuelta» le gana a «foto», sin
+    // que el escenario tenga que ordenarlos de específico a genérico.
+    let mejor: { item: typeof reachable[number]; largo: number } | null = null;
+    const candidatos = reachable.length ? reachable : Object.values(state.items);
+    for (const item of candidatos) {
+      for (const n of [norm(item.name), ...(item.aliases ?? []).map(norm)]) {
+        if (n.length >= 3 && t.includes(n) && (!mejor || n.length > mejor.largo)) {
+          mejor = { item, largo: n.length };
+        }
       }
     }
-    // Genérico: "fotografía" a secas.
-    if (target.kind === 'none' && anyOf(t, ['foto', 'fotografia', 'imagen'])) {
-      const item = state.items['it-fotoreciente'];
-      if (item) target = { kind: 'item', item };
-    }
+    if (mejor) target = { kind: 'item', item: mejor.item };
   }
 
   // 3. Personajes presentes.

@@ -346,6 +346,15 @@ export interface TemporalProperty extends ItemProperty {
 export interface Item {
   id: ItemId;
   name: string;
+  /**
+   * Cómo lo puede nombrar el jugador, además del nombre.
+   *
+   * Lo declara la aventura porque es la aventura la que sabe que a su placa
+   * fotográfica se la puede llamar «la foto dada vuelta». Antes esta lista
+   * estaba escrita a mano dentro del clasificador, que es como el motor
+   * terminaba conociendo los objetos de una aventura concreta.
+   */
+  aliases?: string[];
   shortDescription: string;
   /** null = perdido o destruido. */
   owner: InvestigatorId | NpcId | LocationId | null;
@@ -623,6 +632,8 @@ export interface LocationFeature {
 export interface GameLocation {
   id: LocationId;
   name: string;
+  /** Cómo la puede nombrar el jugador. Ver `Item.aliases`. */
+  aliases?: string[];
   description: string;
   /** Descripción que cambia según el estado del mundo. */
   atmosphere: string[];

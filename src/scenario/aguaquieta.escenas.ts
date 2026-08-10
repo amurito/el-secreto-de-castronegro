@@ -1,0 +1,684 @@
+/**
+ * LAS ESCENAS ESCRITAS A MANO DE AGUA QUIETA.
+ *
+ * Todo esto vivía dentro del resolvedor del motor: mirar el agua, la placa, las
+ * dos fotografías, el reloj sobre el aljibe, el cuaderno, y los cinco
+ * desenlaces. Funcionaba para una aventura y sólo para una.
+ *
+ * Ahora vive con la aventura. El motor recorre estas escenas sin saber qué es
+ * un aljibe; la prosa y las ramas están acá, donde se escriben.
+ *
+ * Cada escena declara CUÁNDO responde, qué tirada pide y qué deja. Lo que deja
+ * es declarativo: la escena no toca el estado, lo propone, y el motor lo
+ * ejecuta con las herramientas que valida.
+ */
+
+import type { GameState } from '../shared/types.ts';
+import type { Escenas, IntencionLeida } from './escena.ts';
+import { listoParaSostener } from './acciones.ts';
+
+// ── AYUDAS ───────────────────────────────────────────────────────────────────
+
+const pista = (s: GameState, frag: string) =>
+  s.board.clues.some((c) => c.description.includes(frag));
+
+const propiedadVista = (s: GameState, item: string) =>
+  (s.items[item]?.discoveredProperties.length ?? 0) > 0;
+
+const oculta = (s: GameState, item: string) =>
+  s.items[item]?.hiddenProperties[0]?.description ?? '';
+
+const aqui = (s: GameState) => s.world.currentLocation;
+const hora = (s: GameState) => Number(s.world.time.iso.slice(11, 13));
+const esDeNoche = (s: GameState) => hora(s) >= 19 || hora(s) < 6;
+
+const dice = (i: IntencionLeida, re: RegExp) => re.test(i.norm);
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const AGUA_QUIETA_ESCENAS: Escenas = [
+  // ══ DESENLACES ════════════════════════════════════════════════════════════
+  // Prioridad alta: cierran la aventura, así que se comprueban antes que
+  // cualquier lectura más suave de la misma frase.
+
+  {
+    id: 'fin-sostener', prioridad: 95,
+    cuando: (s, i) =>
+      dice(i, /sosten[eg]/) && dice(i, /mirada|vista|reflejo/) && listoParaSostener(s),
+    antes: (s) => aqui(s) !== 'patio' ? null : ({
+      texto: [
+        'Apoyás los codos en el brocal y decidís no apartar la vista. Es una decisión, no un descuido: ' +
+        'las dos cosas se parecen desde afuera y no se parecen en nada por dentro.\n\n' +
+        'El primer minuto no pasa nada. El segundo tampoco.',
+      ],
+    }),
+    prueba: (s) => aqui(s) !== 'patio' ? null : ({
+      skill: 'POW', difficulty: 'hard',
+      reason: 'sostener la mirada sobre el agua hasta que el agua conteste',
+      stakes_success: 'seguís siendo quien mira cuando termina',
+      stakes_failure: 'para cuando termina, ya no está claro quién miraba a quién',
+      penalty_dice: 1, modifier_reason: 'nadie sostiene esto sin pagarlo',
+    }),
+    resolver: ({ estado, tirada }) => {
+      if (aqui(estado) !== 'patio') return { texto: ['El aljibe está en el patio.'] };
+      const firme = tirada?.exito ?? false;
+      return [
+        {
+          exposicion: { amount: 18, source: 'aljibe:respuesta', cause: 'sostener la mirada hasta que el reflejo respondió' },
+          estabilidad: { amount: firme ? -12 : -22, cause: 'que el reflejo dejara de imitar' },
+          pistas: [{
+            description: 'El reflejo del aljibe dejó de imitar y se movió por su cuenta. No es un efecto óptico: hay algo que usa el agua para mirar.',
+            kind: 'experiential', source: 'observación sostenida hasta la respuesta', reliability: 'reliable',
+          }],
+          consecuencia: {
+            description: 'El investigador sostuvo la mirada hasta que el fenómeno del aljibe respondió.',
+            scope: 'campaign', permanent: true,
+            worldReminder: 'El agua respondió a este investigador. Lo que sea que mira desde el aljibe ahora sabe qué cara tiene.',
+          },
+          texto: [
+            'En algún momento del tercero, la cara del agua deja de copiarte.\n\n' +
+            'No hace nada espectacular. Simplemente sigue ahí, con tu cara, quieta, mientras vos parpadeás. ' +
+            'Y después, sin apuro, ladea la cabeza hacia un lado al que vos no la ladeaste.',
+          ],
+          desenlace: {
+            id: 'mirar', title: 'Lo que devuelve la mirada',
+            text: firme
+              ? 'Te apartás del brocal por decisión propia, que es más de lo que la mayoría podría decir.\n\n' +
+                'Rosa está en la puerta de la cocina con el repasador en las manos y no pregunta nada, porque te vio la cara ' +
+                'y ya sabe. Adentro pone la pava, y las dos toman mate sin hablar hasta que se hace de noche.\n\n' +
+                'Vos entendiste qué es el aljibe. No lo vas a poder escribir en el informe de una manera que sirva, ' +
+                'y vas a volver a Buenos Aires con eso adentro.\n\n' +
+                'Lo que no vas a saber nunca es si el aljibe entendió qué sos vos, o si le alcanzó con verte.'
+              : 'No sabés cómo llegaste al suelo del patio. Rosa te está sacudiendo el hombro y el sol está en otro lado del cielo, ' +
+                'mucho más abajo, y ella dice que estuviste tres horas asomada sin contestarle.\n\n' +
+                'Te levantás. Te lavás la cara en el balde, no en el aljibe, y esa distinción te parece la cosa más importante ' +
+                'que decidiste en tu vida.\n\n' +
+                'Entendiste qué es el aljibe. También entendiste, con la misma claridad, que el aljibe tuvo tres horas ' +
+                'para entenderte a vos, y que vos no te acordás de ninguna.',
+          },
+        },
+      ];
+    },
+  },
+
+  {
+    id: 'fin-quedarse', prioridad: 94,
+    cuando: (_s, i) => dice(i, /me quedo|quedarme|paso la noche|pasar la noche/),
+    resolver: () => ({
+      tiempo: { minutes: 8 * 60, reason: 'pasar la noche en Los Álamos' },
+      exposicion: { amount: 14, source: 'noche-en-la-casa', cause: 'dormir a veinte metros del aljibe' },
+      estabilidad: { amount: -15, cause: 'una noche entera de agua quieta al lado' },
+      consecuencia: {
+        description: 'El investigador pasó la noche en Los Álamos. Rosa Quintana no estaba a la mañana.',
+        scope: 'world', permanent: true,
+        worldReminder: 'Rosa Quintana desapareció la noche que el investigador se quedó en la casa. El aljibe quedó abierto.',
+      },
+      texto: [
+        'Rosa te arma el catre en la cocina, que es el cuarto más lejos del patio, y no dice que lo eligió por eso.\n\n' +
+        'Te dormís tarde. Un aljibe hace ruido y este no hace ninguno, y resulta que el silencio de una cosa que ' +
+        'debería sonar es más difícil de tolerar que el ruido.',
+      ],
+      desenlace: {
+        id: 'quedarse', title: 'Lo que se queda',
+        text:
+          'A las cuatro y veinte de la mañana te despierta el frío, porque la puerta de la cocina está abierta de par en par.\n\n' +
+          'El catre de Rosa está hecho. Sus zapatos están al lado de la cama, los dos, prolijos.\n\n' +
+          'En el patio no hay nadie. El brocal está mojado en todo el borde, como si alguien se hubiera apoyado con ' +
+          'las dos manos y después con todo el cuerpo, y el agua abajo está perfectamente quieta.\n\n' +
+          'Gritás el nombre de ella hasta que se te va la voz. El aljibe no devuelve eco. Eso ya lo sabías.\n\n' +
+          'La chata del correo pasa a las siete. Subís sola, con el cuaderno y las fotografías en el bolso, y ' +
+          'con dos desaparecidos donde antes había uno.',
+      },
+    }),
+  },
+
+  {
+    id: 'fin-sellar', prioridad: 93,
+    cuando: (_s, i) => i.verb === 'tapar' && (i.objetivo.kind === 'water' || dice(i, /aljibe/)),
+    resolver: () => ({
+      consecuencia: {
+        description: 'El aljibe de Los Álamos quedó sellado.', scope: 'world', permanent: true,
+        worldReminder: 'El aljibe de Los Álamos está sellado por decisión del investigador. Nadie volvió a mirar esa agua. Lo que estuviera ahí sigue estando.',
+      },
+      desenlace: {
+        id: 'sellar', title: 'Lo que se tapa',
+        text:
+          'Tablas del galpón, los clavos que había, y encima las piedras del cerco viejo. Rosa te alcanza las cosas sin ' +
+          'que se lo pidas y no dice una palabra en las dos horas que lleva.\n\n' +
+          'Cuando terminás ya es de noche. El patio se ve más grande sin el brocal a la vista.\n\n' +
+          'Rosa se queda mirando el montón de tablas un rato largo. Después dice: «¿Y si él está ahí?».\n\n' +
+          'No es una pregunta que quiera respuesta. Es una pregunta que se va a quedar en la casa después de que usted ' +
+          'se vaya, y también después de que se vaya ella.',
+      },
+    }),
+  },
+
+  {
+    id: 'fin-irse', prioridad: 93,
+    cuando: (_s, i) => i.verb === 'irse',
+    resolver: () => ({
+      consecuencia: {
+        description: 'El investigador se fue de Los Álamos sin resolver la desaparición.', scope: 'world', permanent: true,
+        worldReminder: 'El aljibe de Los Álamos quedó abierto y sin vigilancia. Rosa Quintana se quedó sola en la casa.',
+      },
+      desenlace: {
+        id: 'llevarse', title: 'Lo que se lleva',
+        text:
+          'La chata del correo pasa a las siete. Rosa no sale a despedirla.\n\n' +
+          'En el bolso llevás el cuaderno, la carta de Rausch y las dos fotografías, que Rosa te dio sin discutir, ' +
+          'como si se sacara algo de encima.\n\n' +
+          'A los seis meses vas a volver a abrir la carpeta, y las fotografías van a seguir mostrando lo mismo. ' +
+          'Esa es la parte que no te vas a poder explicar: que sigan mostrando lo mismo.',
+      },
+    }),
+  },
+
+  {
+    id: 'fin-bajar', prioridad: 92,
+    cuando: (_s, i) =>
+      i.verb === 'bajar' && (i.objetivo.kind === 'water' || dice(i, /aljibe|pozo/)),
+    antes: (s) => aqui(s) !== 'patio' ? null : ({
+      texto: [
+        'Apoyás las manos en el brocal. La roldana no tiene soga: Rosa la sacó, y ya sabés por qué o estás por saberlo.\n\n' +
+        'Son poco más de dos metros hasta el agua, y el agua tiene menos de un metro. Se puede bajar. ' +
+        'Bajar es fácil. Lo que no está claro es lo otro.',
+      ],
+    }),
+    prueba: (s) => aqui(s) !== 'patio' ? null : ({
+      skill: 'trepar', difficulty: 'regular',
+      reason: 'descolgarte por el brocal sin soga',
+      stakes_success: 'bajás controlando el descenso',
+      stakes_failure: 'te resbalás en el ladrillo húmedo',
+      penalty_dice: 1, modifier_reason: 'sin soga y con ladrillo húmedo',
+    }),
+    resolver: ({ estado, tirada }) => {
+      if (aqui(estado) !== 'patio') return { texto: ['El aljibe está en el patio.'] };
+      const caida = tirada && !tirada.exito
+        ? {
+            dano: { amount: 3, cause: 'caída de dos metros contra el fondo del aljibe' },
+            texto: ['El musgo cede. Caés los dos metros de golpe y el agua no amortigua casi nada.'],
+          }
+        : {};
+      return [
+        caida,
+        {
+          exposicion: { amount: 12, source: 'aljibe:dentro', cause: 'entrar en contacto físico con el agua del aljibe' },
+          estabilidad: { amount: -10, cause: 'estar dentro del agua quieta' },
+          consecuencia: {
+            description: 'El investigador bajó al aljibe de Los Álamos.', scope: 'campaign', permanent: true,
+            worldReminder: 'El investigador estuvo dentro del agua del aljibe. Sea lo que sea que el agua registra, lo registró a él.',
+          },
+          texto: [
+            'El agua te llega a la cintura y está más fría de lo que corresponde a octubre. Desde acá abajo, el círculo de ' +
+            'cielo en la boca del aljibe se ve chico y muy lejos.\n\n' +
+            'No hay cuerpo. No hay ropa. No hay nada más que ladrillo, musgo y una moneda vieja.\n\n' +
+            'Y sin embargo el agua alrededor de tus piernas sigue completamente quieta.',
+          ],
+          desenlace: {
+            id: 'bajar', title: 'Lo que está abajo',
+            text:
+              'Salís sola, con las manos peladas de agarrarte del ladrillo, y Rosa está arriba con el farol aunque es de día ' +
+              'y aunque juró que no se acercaba.\n\n' +
+              'Te ayuda a pasar la pierna por el brocal. Cuando estás afuera te mira la ropa mojada y no dice nada de la ropa.\n\n' +
+              '—¿Se vio? —pregunta.\n\n' +
+              'Y es una pregunta rarísima, y las dos entienden perfectamente lo que quiere decir.',
+          },
+        },
+      ];
+    },
+  },
+
+  // ══ ESCENAS DE INVESTIGACIÓN ══════════════════════════════════════════════
+
+  {
+    // Comparar las dos fotografías. Antes que la placa: nombra las dos.
+    id: 'comparar-fotos', prioridad: 80,
+    cuando: (_s, i) => dice(i, /compar/) && dice(i, /foto|retrato|imagen|placa/),
+    resolver: ({ estado }) => {
+      if (!propiedadVista(estado, 'it-fotoreciente')) {
+        return {
+          texto: [
+            'Ponés las dos imágenes una al lado de la otra. La de 1897 muestra a la familia delante del aljibe recién ' +
+            'levantado. La de Ignacio muestra el mismo brocal, veintisiete años después, vacío.\n\n' +
+            'Vacío, salvo por el agua. Y en el agua todavía no viste nada, porque no miraste la placa con atención.',
+          ],
+        };
+      }
+      return [
+        {
+          texto: ['Acercás las dos imágenes hasta que se tocan por el borde y las inclinás para que les dé la misma luz.'],
+          descubre: {
+            itemId: 'it-foto1897', propertyId: 'p-1897-rostro',
+            how: 'comparando las dos fotografías bajo la misma luz',
+            comparedWith: 'it-fotoreciente',
+          },
+        },
+        {
+          texto: [oculta(estado, 'it-foto1897')],
+          pistas: [{
+            description: 'El hombre del fondo de la fotografía de 1897 y la figura reflejada en la placa de Ignacio son la misma persona.',
+            kind: 'physical', source: 'comparación de las dos fotografías', reliability: 'reliable',
+          }],
+          estabilidad: { amount: -8, cause: 'dos imágenes separadas por veintisiete años que no pueden mostrar a la misma persona' },
+          exposicion: { amount: 4, source: 'rostro-repetido', cause: 'reconocer el rostro repetido' },
+          contradiccion: {
+            description: 'La misma persona aparece en dos fotografías separadas por veintisiete años, sin haber envejecido.',
+            between: 'Fotografía de 1897 | Placa de Ignacio, octubre de 1924',
+          },
+        },
+      ];
+    },
+  },
+
+  {
+    id: 'reloj-sobre-agua', prioridad: 78,
+    cuando: (s, i) =>
+      dice(i, /reloj/) && dice(i, /agua|aljibe|sobre|encima|pozo/) && aqui(s) === 'patio',
+    resolver: ({ estado }) => {
+      if (propiedadVista(estado, 'it-reloj')) {
+        return { texto: [`Volvés a sostenerlo sobre el agua. ${oculta(estado, 'it-reloj')}`] };
+      }
+      return [
+        {
+          texto: ['Te asomás lo justo y extendés el brazo con el reloj colgando de la cadena, encima del círculo de agua.'],
+          descubre: {
+            itemId: 'it-reloj', propertyId: 'p-reloj-atras',
+            how: 'sosteniendo el reloj sobre la boca del aljibe',
+          },
+        },
+        {
+          texto: [oculta(estado, 'it-reloj')],
+          pistas: [{
+            description: 'El reloj de Ignacio retrocede seis o siete segundos cuando está sobre el agua del aljibe, y vuelve a detenerse en las cuatro y veinte.',
+            kind: 'experiential', source: 'experimento directo sobre el aljibe', reliability: 'reliable',
+          }],
+          estabilidad: { amount: -8, cause: 'un mecanismo que retrocede sobre el agua y no fuera de ella' },
+          exposicion: { amount: 6, source: 'reloj-sobre-agua', cause: 'presenciar una anomalía inequívoca en el aljibe' },
+          pregunta: '¿Por qué las cuatro y veinte, y por qué siempre el mismo tramo?',
+        },
+      ];
+    },
+  },
+
+  {
+    id: 'mirar-agua', prioridad: 70,
+    cuando: (s, i) =>
+      i.objetivo.kind === 'water' && ['mirar', 'examinar', 'usar', 'tocar'].includes(i.verb)
+      && !(dice(i, /reloj/) && aqui(s) === 'patio'),
+    prueba: (s, i) =>
+      aqui(s) !== 'patio' && aqui(s) !== 'orilla' ? null : ({
+        skill: 'POW', difficulty: 'regular',
+        reason: i.sustained ? 'sostener la mirada sobre el agua quieta' : 'asomarte al agua y observar el reflejo',
+        stakes_success: 'ves lo que hay que ver y podés apartar la vista cuando querés',
+        stakes_failure: 'la mirada se te va sola, y tardás en volver',
+        penalty_dice: i.sustained ? 1 : 0,
+        modifier_reason: i.sustained ? 'mirar sostenidamente es exponerse más' : '',
+      }),
+    resolver: ({ estado, intencion, tirada, variante }) => {
+      const donde = aqui(estado);
+      if (donde !== 'patio' && donde !== 'orilla') {
+        return { texto: ['Desde acá no ves el agua. El aljibe está en el patio; la laguna, más allá del pastizal.'] };
+      }
+
+      if (donde === 'orilla') {
+        return {
+          texto: [variante([
+            'La laguna es ancha y baja, y no tiene olas. Los pájaros de la orilla caminan paralelos al agua, nunca hacia ella. ' +
+            'El cielo está entero ahí adentro, del derecho, sin una arruga.\n\n' +
+            'Es la misma quietud del aljibe, pero repartida en cien hectáreas: más grande, y por eso más fácil de no ver.',
+            'Volvés a mirar la laguna. Sigue sin tener olas. Cien hectáreas de agua sin una sola onda es una cosa que uno mira dos veces y sigue sin poder sostener.',
+          ])],
+          exposicion: {
+            amount: intencion.sustained ? 3 : 2, source: 'laguna:mirar',
+            cause: 'observar la superficie de la Laguna Mansa',
+          },
+        };
+      }
+
+      const apertura = {
+        texto: [variante([
+          'Te inclinás sobre el brocal. El agua está a menos de dos metros y se ve el fondo, el musgo en los ladrillos, ' +
+          'una moneda vieja. No hay una sola onda. Ni siquiera donde debería haberla, alrededor de tu propio aliento.\n\n' +
+          'Tu cara está ahí abajo, mirándote.',
+          'Volvés al brocal. Ahí está tu cara otra vez, esperándote con la paciencia de quien no tiene otra cosa que hacer.',
+          'Te asomás de nuevo. A esta altura ya sabés qué vas a ver y lo ves igual, que es lo peor.',
+        ])],
+      };
+
+      const exposicion = {
+        exposicion: {
+          amount: intencion.sustained ? 6 : 3, source: 'aljibe:mirar',
+          cause: intencion.sustained
+            ? 'observación deliberada y sostenida del agua del aljibe'
+            : 'asomarse al agua del aljibe',
+        },
+      };
+
+      if (!tirada?.exito) {
+        return [apertura, {
+          texto: [variante([
+            'Pasa un rato. No sabrías decir cuánto. Cuando te enderezás tenés las manos frías y la sensación incómoda de haber estado por entender algo que se te fue.',
+            'Perdés el hilo. Volvés en vos con la nuca dura y el sol en otro lugar del cielo.',
+          ])],
+          estabilidad: { amount: -5, cause: 'perder la cuenta del tiempo sobre el agua' },
+        }, exposicion];
+      }
+
+      // Lo que se descubre depende de lo que TODAVÍA NO SE DESCUBRIÓ, no de
+      // cuántas veces se intentó. Atado a los intentos, si la primera tirada
+      // fallaba la pista del retardo quedaba fuera de alcance para siempre.
+      if (!pista(estado, 'retardo perceptible')) {
+        return [apertura, {
+          texto: ['Y entonces lo notás, porque estabas atento: cuando ladeás la cabeza, la cara del agua ladea la cabeza una fracción de segundo después. Poco. Lo que tarda un vidrio de tren. Pero un vidrio de tren tiene una excusa.'],
+          pistas: [{
+            description: 'El reflejo del aljibe imita al observador con un retardo perceptible, constante, de una fracción de segundo.',
+            kind: 'experiential', source: 'observación directa del aljibe', reliability: 'reliable',
+          }],
+        }, exposicion];
+      }
+
+      if (!pista(estado, 'aumenta con la velocidad')) {
+        return [apertura, {
+          texto: [variante([
+            'El retardo sigue ahí. Lo medís contra tu propio pulso: uno, y la cara de abajo llega en el uno y medio.',
+            'Probás a moverte rápido, a ver si el retraso se agranda. Se agranda. La cara del agua completa el gesto que vos ya dejaste de hacer.',
+          ])],
+          pistas: [{
+            description: 'El retardo del reflejo aumenta con la velocidad del movimiento: no es un efecto óptico constante.',
+            kind: 'experiential', source: 'observación repetida del aljibe', reliability: 'reliable',
+          }],
+          estabilidad: { amount: -5, cause: 'comprobar que el retardo responde al movimiento' },
+        }, exposicion];
+      }
+
+      return [apertura, {
+        texto: [variante([
+          'Cerrás los ojos y contás hasta cinco. Cuando los abrís, la cara del agua todavía los tiene cerrados. No mucho tiempo. El suficiente.',
+          'Todo sigue igual que la última vez, y eso ya no es un consuelo: significa que es estable, y las cosas estables se pueden estudiar, y algo que se puede estudiar existe.',
+        ])],
+      }, exposicion];
+    },
+  },
+
+  {
+    id: 'placa-fotografica', prioridad: 68,
+    cuando: (_s, i) =>
+      i.objetivo.id === 'it-fotoreciente' && ['mirar', 'examinar', 'buscar'].includes(i.verb),
+    prueba: (s) => propiedadVista(s, 'it-fotoreciente') ? null : ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'examinar la placa que Ignacio dejó dada vuelta',
+      stakes_success: 'notás lo que hay en el círculo de agua',
+      stakes_failure: 'sólo ves un aljibe fotografiado con demasiado cuidado',
+    }),
+    resolver: ({ estado, tirada, variante }) => {
+      if (propiedadVista(estado, 'it-fotoreciente')) {
+        return { texto: [`Volvés sobre la placa. ${oculta(estado, 'it-fotoreciente')}`] };
+      }
+      if (!tirada?.exito) {
+        return {
+          texto: [variante([
+            'La levantás contra la luz y la mirás un buen rato. Un aljibe. El brocal, la roldana sin soga, el círculo del agua abajo.\n\nAlguien se tomó el trabajo de encuadrar esto con mucho cuidado, y después de darla vuelta contra la pared.',
+            'La mirás otra vez. Sigue siendo un aljibe fotografiado con una atención que no le corresponde a un aljibe.',
+          ])],
+        };
+      }
+      return [
+        {
+          texto: ['Levantás la placa contra la ventana. El encuadre es de alguien que sabía exactamente qué quería fotografiar, y eso ya dice algo.'],
+          descubre: {
+            itemId: 'it-fotoreciente', propertyId: 'p-rec-figura',
+            how: 'estudiando la placa contra la luz',
+          },
+        },
+        {
+          texto: [oculta(estado, 'it-fotoreciente')],
+          pistas: [{
+            description: 'En la placa que tomó Ignacio hay un hombre reflejado en el agua del aljibe, mirando hacia la cámara. No había nadie en el patio.',
+            kind: 'physical', source: 'placa fotográfica de Ignacio Vera', reliability: 'reliable',
+          }],
+          exposicion: { amount: 4, source: 'placa-figura', cause: 'ver la figura en el reflejo de la placa' },
+        },
+      ];
+    },
+  },
+
+  {
+    id: 'revisar-paginas', prioridad: 66,
+    cuando: (s, i) =>
+      Boolean(s.documents['doc-cuaderno']?.obtainedAt) &&
+      (dice(i, /carta|sobre|papel doblado/) || dice(i, /hoja por hoja|pagina/)),
+    prueba: (s) => s.documents['doc-carta']?.obtainedAt ? null : ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'revisar el cuaderno hoja por hoja',
+      stakes_success: 'encontrás algo que Ignacio guardó entre las páginas',
+      stakes_failure: 'sólo cuentas de almacén y una lista de nombres de vacas',
+    }),
+    resolver: ({ estado, tirada, variante }) => {
+      if (estado.documents['doc-carta']?.obtainedAt) {
+        return { texto: ['Ya encontraste lo que había entre las hojas. Está en tus documentos.'] };
+      }
+      if (!tirada?.exito) {
+        return {
+          texto: [variante([
+            'Lo sacudís por el lomo y lo hojeás dos veces. Cuentas del almacén. Una lista de nombres de vacas. Nada más.',
+            'Otra pasada, hoja por hoja, con más paciencia. Nada todavía. Podés seguir intentando.',
+          ])],
+        };
+      }
+      return {
+        texto: ['Entre las últimas hojas hay un papel doblado en cuatro, de otro papel y de otra tinta.'],
+        documento: { id: 'doc-carta', how: 'estaba doblada en cuatro entre las últimas hojas' },
+        pistas: [{
+          description: 'En 1897 desapareció un hombre en el mismo aljibe. No hubo cuerpo. La viuda sostuvo que siguió viéndolo tres días, con la cara más vieja.',
+          kind: 'documentary', source: 'carta del Dr. Emilio Rausch, 1911', reliability: 'reliable',
+        }],
+        estabilidad: { amount: -5, cause: 'un testimonio de 1911 que describe lo mismo' },
+      };
+    },
+  },
+
+  {
+    id: 'leer-cuaderno', prioridad: 64,
+    cuando: (_s, i) =>
+      dice(i, /cuaderno|diario|anotacion|apunte/) && !dice(i, /hoja por hoja|entre las pagina|paginas/),
+    resolver: ({ estado }) => {
+      if (estado.documents['doc-cuaderno']?.obtainedAt) {
+        return { texto: ['Volvés sobre el cuaderno. Ya lo leíste entero; está en tus documentos.'] };
+      }
+      if (aqui(estado) !== 'cuarto') {
+        return { texto: ['El cuaderno estaba en el cuarto de Ignacio, sobre el cajón que le hacía de mesa.'] };
+      }
+      return {
+        texto: ['Es un cuaderno de tapas de hule, de los que se venden en el almacén. La letra empieza prolija y se va apurando. Lo leés entero de pie, sin sentarte.'],
+        documento: { id: 'doc-cuaderno', how: 'lo levantás del cajón y lo leés de principio a fin' },
+        pistas: [
+          {
+            description: 'Ignacio medía el nivel del aljibe y no bajaba, aunque sacara dos baldes por día durante diecinueve días.',
+            kind: 'documentary', source: 'cuaderno de Ignacio Vera', reliability: 'reliable',
+          },
+          {
+            description: 'Ignacio concluyó que el agua "guarda" como una placa fotográfica, por un fenómeno mineral de la napa.',
+            kind: 'documentary', source: 'cuaderno de Ignacio Vera', reliability: 'false',
+          },
+        ],
+        pregunta: '¿Qué quiso decir Ignacio con "tengo que ver si estoy"?',
+        estabilidad: { amount: -5, cause: 'la última entrada del cuaderno' },
+      };
+    },
+  },
+
+  {
+    // Regla de escenario, no del motor: Rosa no habla en el patio de noche.
+    // Vivía escrita a mano dentro del resolvedor social; acá es una escena más.
+    id: 'rosa-no-habla-de-noche', prioridad: 60,
+    cuando: (s, i) =>
+      i.objetivo.kind === 'npc' && i.objetivo.id === 'npc-rosa'
+      && aqui(s) === 'patio' && esDeNoche(s),
+    resolver: () => ({
+      texto: ['—Adentro —dice Rosa desde el umbral, sin salir—. Yo acá afuera de noche no hablo.'],
+    }),
+  },
+  // == RAMAS QUE VIVIAN DENTRO DE LOS VERBOS GENERICOS ======================
+  // El espejo, el farol, gritar, romper, cavar, dormir, tocar el agua. Cada
+  // una era un `if` de Agua Quieta dentro de un verbo del motor. Mientras
+  // estuvieran ahi, la segunda aventura no podia tener su propia version de
+  // "romper algo" sin editar el resolvedor.
+
+  {
+    id: 'espejo-sobre-aljibe', prioridad: 76,
+    cuando: (s, i) =>
+      i.objetivo.id === 'it-espejo' && aqui(s) === 'patio'
+      && ['usar', 'mirar', 'examinar'].includes(i.verb),
+    resolver: ({ estado }) => {
+      const texto = estado.items['it-espejo']?.conditionalProperties[0]?.description ?? '';
+      if (propiedadVista(estado, 'it-espejo')) return { texto: [texto] };
+      return [
+        {
+          texto: ['Te parás de espaldas al brocal y levantás el espejo hasta que el agua aparece adentro del marco.'],
+          descubre: {
+            itemId: 'it-espejo', propertyId: 'p-espejo-indirecto',
+            how: 'mirando el aljibe a través del espejo en vez de asomarse',
+          },
+        },
+        {
+          texto: [texto],
+          pistas: [{
+            description: 'El retardo del reflejo se hace evidente al comparar el aljibe con un espejo. El agua parece no registrar a quien no la mira de frente.',
+            kind: 'experiential', source: 'experimento con el espejo de mano', reliability: 'reliable',
+          }],
+          exposicion: { amount: 2, source: 'aljibe:espejo', cause: 'observar el aljibe de forma indirecta' },
+        },
+      ];
+    },
+  },
+
+  {
+    id: 'romper-espejo', prioridad: 75,
+    cuando: (_s, i) =>
+      i.objetivo.id === 'it-espejo' && ['romper', 'forzar', 'atacar'].includes(i.verb),
+    resolver: () => ({
+      texto: ['El espejo se parte contra el ladrillo. Los pedazos quedan boca arriba en la tierra, cada uno con su porción de cielo, y todos con la misma fracción de segundo de retraso.'],
+      exposicion: { amount: 4, source: 'espejo-roto', cause: 'ver el fenómeno multiplicado en los fragmentos' },
+      npc: { id: 'npc-rosa', attitudeDelta: -15, cause: 'le rompieron el espejo' },
+      consecuencia: {
+        description: 'El investigador rompió el espejo de mano de Rosa.', scope: 'location', permanent: true,
+        worldReminder: 'El espejo de Rosa está roto. Ella lo notó y no lo dijo.',
+      },
+    }),
+  },
+
+  {
+    id: 'encender-farol', prioridad: 74,
+    cuando: (_s, i) => i.objetivo.id === 'it-farol' && ['usar', 'encender'].includes(i.verb),
+    resolver: ({ estado }) => ({
+      tiempo: { minutes: 1, reason: 'encender el farol' },
+      texto: [esDeNoche(estado)
+        ? 'Encendés el farol. El círculo de luz llega hasta el brocal y ahí se detiene, más nítido de lo que la física recomienda.'
+        : 'Encendés el farol, aunque todavía hay luz. La llama se queda perfectamente vertical.'],
+    }),
+  },
+
+  {
+    id: 'gritar-al-aljibe', prioridad: 72,
+    cuando: (s, i) => ['gritar', 'llamar'].includes(i.verb) && aqui(s) === 'patio',
+    resolver: ({ estado, variante }) => {
+      const primeraVez = !pista(estado, 'no devuelve eco');
+      const rosaAca = Boolean(estado.npcs['npc-rosa']?.present)
+        && Boolean(estado.world.locations['patio']?.npcsPresent.includes('npc-rosa'));
+      return [
+        {
+          texto: [variante([
+            'Gritás el nombre hacia el aljibe. La voz sale, cruza el patio y se va al campo.\n\nEl aljibe no devuelve eco. Un pozo de dos metros con agua abajo devuelve eco. Este no.',
+            'Volvés a llamar. Nada. Ni siquiera el eco que te devolvió la primera vez, que tampoco fue.',
+          ])],
+          exposicion: { amount: 3, source: 'aljibe:llamar', cause: 'gritar hacia el aljibe y no recibir eco' },
+          pistas: primeraVez ? [{
+            description: 'El aljibe no devuelve eco, aunque tiene la profundidad y el agua para hacerlo.',
+            kind: 'experiential' as const, source: 'llamar hacia el aljibe', reliability: 'reliable' as const,
+          }] : [],
+        },
+        rosaAca ? {
+          texto: ['Rosa se mete en la casa sin decir nada y cierra la puerta con el hombro.'],
+          npc: { id: 'npc-rosa', attitudeDelta: -5, cause: 'gritarle al aljibe delante de ella' },
+        } : {},
+      ];
+    },
+  },
+
+  {
+    id: 'romper-el-brocal', prioridad: 71,
+    cuando: (_s, i) =>
+      ['romper', 'forzar', 'atacar'].includes(i.verb)
+      && (i.objetivo.kind === 'water' || dice(i, /brocal|aljibe/)),
+    prueba: () => ({
+      skill: 'STR', difficulty: 'hard',
+      reason: 'romper el brocal a golpes',
+      stakes_success: 'saltan lascas de piedra',
+      stakes_failure: 'la piedra aguanta y vos no',
+    }),
+    resolver: ({ tirada }) => ({
+      texto: [tirada?.exito
+        ? 'Saltan un par de lascas y se te va el brazo. El brocal tiene doscientos años de estar ahí y piensa quedarse.'
+        : 'La piedra no cede. Te queda la mano ardiendo y la sensación ridícula de haberle pegado a una pared.'],
+      dano: { amount: 1, cause: 'golpearse la mano contra la piedra' },
+    }),
+  },
+
+  {
+    id: 'cavar-junto-al-aljibe', prioridad: 70,
+    cuando: (s, i) => i.verb === 'cavar' && aqui(s) === 'patio',
+    antes: () => ({ tiempo: { minutes: 45, reason: 'cavar en el patio' } }),
+    prueba: () => ({
+      skill: 'STR', difficulty: 'regular',
+      reason: 'cavar junto al aljibe',
+      stakes_success: 'llegás a lo que hay abajo',
+      stakes_failure: 'tierra apisonada y nada más',
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? {
+          texto: [
+            'Cuarenta y cinco minutos de pala. A medio metro la tierra se pone húmeda, y a los sesenta centímetros ' +
+            'aparece agua: la misma napa. Se queda quieta en el pozo que acabás de hacer, en el acto, sin decantar.',
+          ],
+          pistas: [{
+            description: 'La napa está a sesenta centímetros y el agua se queda inmóvil apenas aflora, incluso en un pozo recién cavado.',
+            kind: 'physical' as const, source: 'excavación en el patio', reliability: 'reliable' as const,
+          }],
+          exposicion: { amount: 5, source: 'napa-cavada', cause: 'ver el fenómeno en agua recién descubierta' },
+        }
+      : { texto: ['Cuarenta y cinco minutos de pala para nada. Tierra apisonada, un pedazo de loza, la ampolla del pulgar.'] },
+  },
+
+  {
+    id: 'dormir', prioridad: 69,
+    cuando: (_s, i) => i.verb === 'dormir',
+    resolver: ({ estado }) => {
+      const exp = estado.investigators[estado.activeInvestigator]?.umbral.exposure ?? 0;
+      const base = {
+        tiempo: { minutes: 300, reason: 'dormir' },
+        estabilidad: { amount: 5, cause: 'descanso' },
+      };
+      if (exp < 20) {
+        return { ...base, texto: ['Dormís unas horas en el catre del cuarto de al lado. Sin sueños que valga la pena contar.'] };
+      }
+      return {
+        ...base,
+        texto: [
+          'Dormís mal. Soñás con el patio de día, con la luz exacta de esta tarde, y en el sueño el aljibe está tapado ' +
+          'con tablas que todavía no pusiste. Te despertás con la certeza de haberlo visto, no de haberlo soñado.',
+        ],
+        exposicion: { amount: 3, source: 'sueno', cause: 'un sueño con contenido que no le pertenece' },
+      };
+    },
+  },
+
+  {
+    id: 'tocar-el-agua', prioridad: 67,
+    cuando: (_s, i) => i.verb === 'tocar' && i.objetivo.kind === 'water',
+    resolver: () => ({
+      texto: ['El agua no opone nada. Ni frío de más, ni corriente, ni el tironeo mínimo que tiene siempre el agua de un pozo. Sacás la mano seca antes de darte cuenta de que la sacaste seca.'],
+      exposicion: { amount: 5, source: 'aljibe:tocar', cause: 'contacto físico con el agua quieta' },
+      estabilidad: { amount: -4, cause: 'sacar la mano seca del agua' },
+    }),
+  },
+];

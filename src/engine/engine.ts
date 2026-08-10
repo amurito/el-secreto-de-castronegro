@@ -701,7 +701,7 @@ export class Turn {
     if (!source) {
       return this.reject('apply_umbral_exposure', raw,
         'Falta `source`: el identificador estable de DÓNDE viene el contacto ' +
-        '(por ejemplo "agua-aljibe" o "feature:f-alamos"). Sin él no se pueden ' +
+        '(por ejemplo "fuente-principal" o "detalle:un-id"). Sin él no se pueden ' +
         'aplicar rendimientos decrecientes y repetir la misma acción rendiría siempre igual.');
     }
 
