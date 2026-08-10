@@ -4,7 +4,7 @@ import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
 import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
-import { CATALOGO, entradaDe } from '../scenario/catalogo.ts';
+import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
 
@@ -245,7 +245,19 @@ export function App() {
             <div className="ending-text">{state.ending.text}</div>
             <Epilogo ending={state.ending} board={state.board} scenarioId={state.scenarioId} />
             {api && campaignId && (
-              <Desarrollo api={api} campaignId={campaignId} onEstado={setState} />
+              <Desarrollo
+                api={api}
+                campaignId={campaignId}
+                scenarioId={state.scenarioId}
+                onEstado={setState}
+                onContinuar={(r) => {
+                  setCampaignId(r.campaignId);
+                  setState(r.state);
+                  setLines([{ id: 'opening', kind: 'keeper', text: r.opening }]);
+                  aplicarOpciones(r.options ?? [], true);
+                  setLastRoll(null); setStreaming(''); setTab('tablero');
+                }}
+              />
             )}
             <button className="primary" onClick={() => setTab('tiradas')}>Ver la auditoría del azar</button>
             <button className="ghost" onClick={() => { setCampaignId(null); setState(null); }}>Nueva partida</button>
@@ -387,8 +399,12 @@ function Epilogo({
  * libres. Los dados salen de la misma cadena verificable que el resto.
  */
 function Desarrollo({
-  api, campaignId, onEstado,
-}: { api: GameApi; campaignId: string; onEstado: (s: any) => void }) {
+  api, campaignId, scenarioId, onEstado, onContinuar,
+}: {
+  api: GameApi; campaignId: string; scenarioId: string;
+  onEstado: (s: any) => void;
+  onContinuar: (r: any) => void;
+}) {
   const [oferta, setOferta] = useState<DevelopmentOffer | null>(null);
   const [abierto, setAbierto] = useState(false);
   const [elegido, setElegido] = useState<string | null>(null);
@@ -493,6 +509,8 @@ function Desarrollo({
         <div className="desarrollo-nota">
           Todas estas tiradas están en la auditoría, con la misma cadena verificable que las de la partida.
         </div>
+
+        <Continuar api={api} campaignId={campaignId} scenarioId={scenarioId} onContinuar={onContinuar} />
       </div>
     );
   }
@@ -552,6 +570,59 @@ function Desarrollo({
 
       <button className="primary" onClick={correr} disabled={ocupado || !elegido}>
         {ocupado ? 'Pasando los meses…' : 'Dejar pasar los meses'}
+      </button>
+    </div>
+  );
+}
+
+/**
+ * El puente entre una aventura y la siguiente.
+ *
+ * Aparece recién DESPUÉS de la fase de desarrollo, y no antes: lo que cruza es
+ * el investigador que la fase acaba de dejar, con sus habilidades nuevas y su
+ * Cordura recuperada. Ofrecerlo antes haría que la fase no sirviera de nada.
+ */
+function Continuar({
+  api, campaignId, scenarioId, onContinuar,
+}: {
+  api: GameApi; campaignId: string; scenarioId: string;
+  onContinuar: (r: any) => void;
+}) {
+  const [ocupado, setOcupado] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const siguiente = siguienteDe(scenarioId);
+
+  if (!siguiente) {
+    return (
+      <div className="continuar-nada">
+        Hasta acá llega la línea de tiempo, por ahora. Lo que aprendió el investigador queda guardado
+        en esta partida.
+      </div>
+    );
+  }
+
+  async function ir() {
+    setOcupado(true); setError(null);
+    try {
+      onContinuar(await api.continuarCampana(campaignId, siguiente!.scenario.id));
+    } catch (e) {
+      setError((e as Error).message);
+      setOcupado(false);
+    }
+  }
+
+  return (
+    <div className="continuar">
+      <div className="continuar-titulo">{siguiente.epoca}</div>
+      <div className="continuar-nombre">{siguiente.scenario.title}</div>
+      <p className="continuar-premisa">{siguiente.scenario.surfacePremise}</p>
+      <div className="continuar-lleva">
+        Se lleva lo que aprendió, lo que le quedó encima y lo que el mundo recuerda. La Exposición al
+        Umbral no baja: cruzar un umbral es irreversible.
+      </div>
+      {error && <div className="error">{error}</div>}
+      <button className="primary" onClick={ir} disabled={ocupado}>
+        {ocupado ? 'Cruzando los meses…' : `Continuar a ${siguiente.scenario.title}`}
       </button>
     </div>
   );

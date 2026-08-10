@@ -14,7 +14,7 @@ import { createCampaign, loadState, Turn } from '../engine/engine.ts';
 import { useStore, store } from '../engine/store.ts';
 import { browserStore } from '../engine/store.browser.ts';
 import { verifyRollChain } from '../engine/rng.ts';
-import { ESCENARIOS } from '../scenario/catalogo.ts';
+import { ESCENARIOS, mesesEntre } from '../scenario/catalogo.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 import { sanitizeForClient } from '../server/sanitize.ts';
@@ -106,6 +106,24 @@ export function createLocalApi(): GameApi {
       turn.introduceInvestigator(investigatorId, 'jugador-local');
       await turn.commit();
       return { state: sanitizeForClient(turn.state) };
+    },
+
+    async continuarCampana(fromId, scenarioId) {
+      const scenario = SCENARIOS[scenarioId as keyof typeof SCENARIOS];
+      if (!scenario) throw new Error(`Escenario desconocido: ${scenarioId}`);
+      const { state: anterior } = await loadState(fromId);
+      if (!anterior.ending) {
+        throw new Error('La aventura anterior todavía no terminó.');
+      }
+      const campaignId = await createCampaign(scenario, undefined, undefined, {
+        estadoAnterior: anterior,
+        mesesTranscurridos: mesesEntre(anterior.scenarioId, scenarioId),
+      });
+      const { state } = await loadState(campaignId);
+      return {
+        campaignId, opening: scenario.opening,
+        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
+      };
     },
 
     async developmentOffer(id) {

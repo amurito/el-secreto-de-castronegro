@@ -13,7 +13,7 @@ import { useStore, store } from '../engine/store.ts';
 import { fileStore } from '../engine/store.node.ts';
 import { verifyRollChain } from '../engine/rng.ts';
 import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
-import { ESCENARIOS } from '../scenario/catalogo.ts';
+import { ESCENARIOS, mesesEntre } from '../scenario/catalogo.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 // Sólo el servidor importa el briefing: en el build estático nadie lo hace y
 // el empaquetador lo descarta, así que la solución de la aventura no viaja al
@@ -82,6 +82,26 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id', async (req) => {
 });
 
 /** Auditoría: revela la semilla sólo si la campaña llegó a un final. */
+/** Encadenado de campaña: la aventura siguiente hereda de la anterior. */
+app.post<{ Params: { id: string }; Body: { scenarioId: string } }>(
+  '/api/campaigns/:id/continuar',
+  async (req) => {
+    const scenario = SCENARIOS[req.body.scenarioId as keyof typeof SCENARIOS];
+    if (!scenario) throw new Error(`Escenario desconocido: ${req.body.scenarioId}`);
+    const { state: anterior } = await loadState(req.params.id);
+    if (!anterior.ending) throw new Error('La aventura anterior todavía no terminó.');
+    const campaignId = await createCampaign(scenario, undefined, undefined, {
+      estadoAnterior: anterior,
+      mesesTranscurridos: mesesEntre(anterior.scenarioId, req.body.scenarioId),
+    });
+    const { state } = await loadState(campaignId);
+    return {
+      campaignId, opening: scenario.opening,
+      state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
+    };
+  },
+);
+
 /** Fase de desarrollo: lo que encontraría, sin ejecutar nada. */
 app.get<{ Params: { id: string } }>('/api/campaigns/:id/desarrollo', async (req) => {
   const turn = await Turn.open(req.params.id);

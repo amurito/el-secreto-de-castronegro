@@ -55,7 +55,8 @@ try {
   node(TSX, ['src/prueba-desarrollo.ts']);
   node(TSX, ['src/prueba-desacople.ts']);
   node(TSX, ['src/prueba-legua.ts']);
-  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo, desacople y las dos aventuras en verde');
+  node(TSX, ['src/prueba-campana.ts']);
+  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo, desacople, las dos aventuras y el encadenado en verde');
 
   paso(2, 'Construyendo…');
   if (existsSync(join(RAIZ, 'dist'))) rmSync(join(RAIZ, 'dist'), { recursive: true, force: true });

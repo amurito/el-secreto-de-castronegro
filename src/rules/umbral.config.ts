@@ -156,6 +156,32 @@ export const STABILITY_RECOVERY = {
   betweenSessions: 10,
 } as const;
 
+/**
+ * TECHO DE ESTABILIDAD SEGÚN EXPOSICIÓN.
+ *
+ * Entre una aventura y la siguiente pasan meses, y meses de rutina recuperan
+ * Estabilidad: eso el canon lo permite —se recupera por anclaje— y es lo que
+ * hace jugable una campaña.
+ *
+ * Pero sin techo se recupera SIEMPRE al 100, y entonces ninguna de las dos
+ * variables del Umbral arrastra daño de una aventura a la otra: la Exposición
+ * porque no baja, la Estabilidad porque se restaura entera. La campaña dejaría
+ * de acumular, que es justamente lo que una campaña tiene que hacer.
+ *
+ * El techo baja con la exposición: cuanto más te tocó el fenómeno, menos podés
+ * volver a anclarte del todo. Un cuarto de la exposición, redondeado.
+ *
+ * Es una decisión de diseño sobre mecánica propia, no una ampliación de canon
+ * —el canon no dice nada del techo de la Estabilidad— y se revierte poniendo
+ * este divisor en 0.
+ */
+export const TECHO_ESTABILIDAD_POR_EXPOSICION: number = 4;
+
+export const techoDeEstabilidad = (exposicion: number): number =>
+  TECHO_ESTABILIDAD_POR_EXPOSICION === 0
+    ? 100
+    : Math.max(20, 100 - Math.round(exposicion / TECHO_ESTABILIDAD_POR_EXPOSICION));
+
 /** Tope de recuperación por escena. La estabilidad no se restaura de golpe. */
 export const MAX_STABILITY_RECOVERY_PER_SCENE = 10;
 

@@ -61,5 +61,26 @@ export const ESCENARIOS: Record<string, Scenario> = Object.fromEntries(
 export const entradaDe = (id: string): EntradaCatalogo | undefined =>
   CATALOGO.find((e) => e.scenario.id === id);
 
+/**
+ * La aventura que sigue a ésta en la línea del universo.
+ *
+ * Es lo que hace que una campaña sea una campaña y no una lista de partidas:
+ * al cerrar una aventura y pasar la fase de desarrollo, el juego sabe adónde
+ * sigue el investigador.
+ */
+export function siguienteDe(id: string): EntradaCatalogo | null {
+  const i = CATALOGO.findIndex((e) => e.scenario.id === id);
+  if (i < 0) return null;
+  return CATALOGO[i + 1] ?? null;
+}
+
+/** Meses diegéticos entre una aventura y la siguiente. */
+export function mesesEntre(desde: string, hasta: string): number {
+  const a = entradaDe(desde), b = entradaDe(hasta);
+  if (!a || !b) return 1;
+  const ms = new Date(b.cuando).getTime() - new Date(a.cuando).getTime();
+  return Math.max(1, Math.round(ms / (1000 * 60 * 60 * 24 * 30)));
+}
+
 /** El primero en la línea de tiempo: el que se ofrece por defecto. */
 export const ESCENARIO_INICIAL = CATALOGO[0]!.scenario;

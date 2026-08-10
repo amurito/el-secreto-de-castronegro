@@ -57,6 +57,9 @@ export function createHttpApi(): GameApi {
     introduceInvestigator: async (id, investigatorId) =>
       json(await post(`/api/campaigns/${id}/investigador`, { investigatorId })),
 
+    continuarCampana: async (fromId, scenarioId) =>
+      json(await post(`/api/campaigns/${fromId}/continuar`, { scenarioId })),
+
     developmentOffer: async (id) => json(await fetch(`/api/campaigns/${id}/desarrollo`)),
 
     runDevelopment: async (id, autoayuda) =>

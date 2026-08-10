@@ -14,7 +14,7 @@ import { uuid } from './crypto.ts';
 import type { GameEvent, Actor, GameEventType } from '../shared/events.ts';
 import type {
   GameState, InvestigatorId, RollRecord, RollModifier, Difficulty,
-  Clue, Npc, Condition, WorldTime, SkillId, CharacteristicId,
+  Clue, Npc, Condition, WorldTime, SkillId, CharacteristicId, Investigator,
 } from '../shared/types.ts';
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
@@ -29,6 +29,7 @@ import {
   stabilityPenaltyDice, extraSanLossFromExposure, thresholdInfo,
 } from '../rules/umbral.ts';
 import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
+import { STABILITY_RECOVERY, techoDeEstabilidad } from '../rules/umbral.config.ts';
 import {
   marcasDe, mejora, alcanzaMaestria, maxCordura, premioDelKeeper,
   DADOS_SAN_POR_MAESTRIA, AUTOAYUDA, type Marca,
@@ -86,10 +87,24 @@ const id = uuid;
  * NUNCA se pasa: la semilla tiene que ser impredecible para que el compromiso
  * criptográfico signifique algo.
  */
+/**
+ * Lo que una aventura le pasa a la siguiente.
+ *
+ * Es el estado final de la campaña anterior, entero. Acá se decide qué de eso
+ * cruza, y esa decisión es de diseño, no técnica — está documentada abajo, en
+ * `heredarInvestigador`.
+ */
+export interface Herencia {
+  estadoAnterior: GameState;
+  /** Meses diegéticos entre una aventura y la otra. */
+  mesesTranscurridos: number;
+}
+
 export async function createCampaign(
   scenario: Scenario,
   title?: string,
   seedOverride?: string,
+  herencia?: Herencia,
 ): Promise<string> {
   const campaignId = id();
   const seed = seedOverride ?? generateSeed();
@@ -123,9 +138,11 @@ export async function createCampaign(
       title: title ?? scenario.title,
       scenarioId: scenario.id,
       rngCommitment: commitment,
-      investigators: scenario.investigators,
-      activeInvestigator: scenario.investigators[0]!.id,
-      reserveInvestigators: scenario.investigators.slice(1).map((i) => i.id),
+      investigators: investigadoresDe(scenario, herencia),
+      activeInvestigator: activoDe(scenario, herencia),
+      reserveInvestigators: investigadoresDe(scenario, herencia)
+        .map((i) => i.id)
+        .filter((x) => x !== activoDe(scenario, herencia)),
       items: scenario.items,
       npcs: scenario.npcs,
       documents: scenario.documents,
@@ -137,7 +154,138 @@ export async function createCampaign(
     },
   };
   await store().append(campaignId, [creation]);
+
+  if (herencia) await sembrarHerencia(campaignId, scenario, herencia);
   return campaignId;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ENCADENADO DE CAMPAÑA
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * QUÉ CRUZA DE UNA AVENTURA A LA SIGUIENTE, Y POR QUÉ.
+ *
+ *   Habilidades, Cordura y trasfondo → SÍ. Son lo que la fase de desarrollo
+ *   acaba de producir; si no cruzaran, la fase no serviría para nada.
+ *
+ *   Cicatrices y trastornos → SÍ. El proyecto tiene muerte permanente; sería
+ *   incoherente que una fobia se curara al empezar capítulo.
+ *
+ *   EXPOSICIÓN AL UMBRAL → SÍ, ENTERA, y los umbrales cruzados también. El
+ *   canon dice que la exposición no baja con descanso (v0.9 §7) y que cruzar un
+ *   umbral es un hecho irreversible. Bajarla entre aventuras sería una
+ *   ampliación de canon, y ésa no se toma de contrabando dentro de un refactor.
+ *
+ *   ESTABILIDAD → se recupera. Es lo que el canon SÍ permite: se recupera por
+ *   anclaje, y meses de rutina son anclaje. Usa `STABILITY_RECOVERY.betweenSessions`,
+ *   que estaba declarado en la configuración y no lo usaba nadie.
+ *
+ *   Puntos de vida → se curan. Meses.
+ *
+ *   Objetos, pistas y tablero → NO. Son de la investigación anterior. Lo que
+ *   sobrevive de aquello es CONOCIMIENTO, que cruza como tal.
+ */
+function heredarInvestigador(inv: Investigator, meses: number): Investigator {
+  const tramos = Math.max(1, Math.floor(meses));
+  // El techo baja con la exposición: quien más contacto tuvo con el fenómeno
+  // menos puede volver a anclarse del todo. Sin techo, la Estabilidad se
+  // recupera siempre al 100 y la campaña deja de acumular daño.
+  const techo = techoDeEstabilidad(inv.umbral.exposure);
+  const estabilidad = clamp(
+    inv.umbral.stability + STABILITY_RECOVERY.betweenSessions * tramos,
+    0,
+    Math.max(inv.umbral.stability, techo),
+  );
+  return {
+    ...inv,
+    derived: { ...inv.derived, hp: inv.derived.maxHp },
+    umbral: {
+      ...inv.umbral,
+      stability: estabilidad,
+      // exposure y thresholdsCrossed intactos, a propósito.
+      exposureEvents: [...inv.umbral.exposureEvents],
+      thresholdsCrossed: [...inv.umbral.thresholdsCrossed],
+      perceptualAnomalies: [...inv.umbral.perceptualAnomalies],
+    },
+    // Las heridas temporales cierran; lo mental y lo permanente queda.
+    conditions: inv.conditions.filter((c) => !c.temporary || c.kind !== 'wound'),
+    knowledge: {
+      investigator: [...inv.knowledge.investigator],
+      withheld: [...inv.knowledge.withheld],
+      playerObserved: [...inv.knowledge.playerObserved],
+    },
+  };
+}
+
+function investigadoresDe(scenario: Scenario, herencia?: Herencia): Investigator[] {
+  if (!herencia) return scenario.investigators;
+  const previos = herencia.estadoAnterior.investigators;
+  return scenario.investigators.map((base) => {
+    const antes = previos[base.id];
+    // Sólo hereda quien sobrevivió. Un investigador muerto sigue muerto: es la
+    // regla más vieja del proyecto y el encadenado no la puede ablandar.
+    if (!antes || antes.status !== 'alive') return base;
+    return heredarInvestigador(antes, herencia.mesesTranscurridos);
+  });
+}
+
+function activoDe(scenario: Scenario, herencia?: Herencia): InvestigatorId {
+  const vivos = investigadoresDe(scenario, herencia).filter((i) => i.status === 'alive');
+  // El activo de la aventura anterior, si sigue vivo; si no, el primero que sí.
+  const preferido = herencia?.estadoAnterior.activeInvestigator;
+  return vivos.find((i) => i.id === preferido)?.id ?? vivos[0]?.id ?? scenario.investigators[0]!.id;
+}
+
+/**
+ * Siembra lo que el mundo recuerda: las consecuencias permanentes de la
+ * aventura anterior y el desenlace al que se llegó.
+ *
+ * Van como eventos normales, después de la creación, para que el estado siga
+ * siendo el pliegue del log y no haya un camino especial de «estado inicial
+ * distinto». El pasado de la campaña anterior entra como pasado de ésta.
+ */
+async function sembrarHerencia(
+  campaignId: string, scenario: Scenario, herencia: Herencia,
+): Promise<void> {
+  const previo = herencia.estadoAnterior;
+  const eventos: GameEvent[] = [];
+  let seq = 1;
+  const nuevo = (type: GameEventType, payload: unknown): void => {
+    eventos.push({
+      seq: ++seq, id: id(), campaignId, session: 1, type, payload,
+      actor: { type: 'system' },
+      occurredAt: new Date().toISOString(),
+      worldTime: scenario.startTime,
+      schemaVer: 1,
+    });
+  };
+
+  if (previo.ending) {
+    nuevo('CAMPAIGN_CANON_ADDED', {
+      id: id(),
+      statement: `Lo anterior terminó así: ${previo.ending.title}.`,
+      canon: { truth: 'CAMPAIGN_CANON', disclosure: 'PUBLIC', source: 'campaign' },
+    });
+  }
+
+  // Sólo lo permanente y de alcance campaña o mundo. Lo de escena murió con
+  // la escena, y arrastrarlo sería llenar la aventura nueva de ruido viejo.
+  const perduran = previo.consequences.filter(
+    (c) => c.permanent && (c.scope === 'campaign' || c.scope === 'world'),
+  );
+  for (const c of perduran) {
+    nuevo('CONSEQUENCE_RECORDED', {
+      id: id(),
+      description: c.description,
+      scope: c.scope,
+      permanent: true,
+      worldReminder: c.worldReminder,
+      investigatorId: activoDe(scenario, herencia),
+    });
+  }
+
+  if (eventos.length) await store().append(campaignId, eventos);
 }
 
 export async function loadState(

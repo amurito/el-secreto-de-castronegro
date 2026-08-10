@@ -62,6 +62,13 @@ export interface GameApi {
   /** Resuelve un turno. Los eventos llegan por callback, en vivo. */
   submitIntent(id: string, action: string, onEvent: (e: TurnEvent) => void): Promise<void>;
   introduceInvestigator(id: string, investigatorId: string): Promise<{ state: ClientState }>;
+  /**
+   * Encadena: crea la aventura siguiente heredando el investigador y lo que el
+   * mundo recuerda de la anterior. Sólo tiene sentido sobre una campaña cerrada.
+   */
+  continuarCampana(fromId: string, scenarioId: string): Promise<{
+    campaignId: string; opening: string; state: ClientState; options: Opcion[];
+  }>;
   /** Qué encontraría la fase de desarrollo ahora. No ejecuta nada. */
   developmentOffer(id: string): Promise<DevelopmentOffer>;
   /** Ejecuta la fase. `autoayuda` es la única decisión del jugador. */

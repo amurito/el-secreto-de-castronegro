@@ -162,12 +162,29 @@ segunda aventura:
 - Las contradicciones no se deduplicaban (las pistas sí).
 - El epílogo mostraba siempre los desenlaces de Agua Quieta.
 
-**Lo que queda de la decisión «todo: es una campaña»:** el encadenado. Hoy las
-dos aventuras se eligen por separado desde la pantalla de inicio y Elena empieza
-la segunda de cero. Falta llevar de una a otra el investigador con sus
-habilidades mejoradas, su Cordura y sus cicatrices, más las consecuencias del
-desenlace alcanzado. El catálogo ya declara `requiere` y la fase de desarrollo
-ya deja al investigador listo; falta el puente.
+### 3.2-ter Encadenado de campaña ✔ HECHO
+
+Al terminar la fase de desarrollo aparece la aventura siguiente. Qué cruza:
+
+| | |
+|---|---|
+| Habilidades mejoradas, Cordura, trasfondo | cruzan |
+| Exposición al Umbral y umbrales cruzados | cruzan **enteros** |
+| Fobias, manías, cicatrices mentales | cruzan |
+| Estabilidad | se recupera por anclaje, con techo |
+| Puntos de vida | se curan |
+| Objetos, pistas, tablero | no cruzan |
+| Consecuencias permanentes de alcance campaña o mundo | cruzan |
+| Un investigador muerto | **sigue muerto** |
+
+El techo de Estabilidad baja con la Exposición (`TECHO_ESTABILIDAD_POR_EXPOSICION`).
+Sin él la Estabilidad se recuperaba siempre al 100 y la campaña dejaba de
+acumular daño: la Exposición no baja, la Estabilidad volvía entera, y ninguna de
+las dos variables arrastraba nada. Es decisión de diseño sobre mecánica propia,
+no ampliación de canon, y se revierte poniendo ese divisor en 0.
+
+Lo verifica `prueba-campana.ts`, incluido el caso del investigador muerto y el
+de jugar la segunda aventura suelta.
 
 ### 3.2-bis (referencia) Segunda aventura — cómo quedó
 
