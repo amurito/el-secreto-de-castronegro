@@ -135,14 +135,31 @@ Falta, para cuando haya segunda aventura: psicoterapia (1D100 contra
 Psicoanálisis, una vez por mes), entrenamiento (1D10 cada cuatro meses de
 tiempo diegético) y «acostumbrarse a lo horrible».
 
-### 3.1 Creación de personaje
+### 3.1 Creación de personaje ✔ HECHA
 
-Dijiste "por ahora pregenerado, luego va a haber creación". Elena y Tomás están
-escritos a mano en `pregens.ts`.
+CoC 7e cap. 3, verificado contra el manual. Cuatro pasos: quién es → los dados →
+qué sabe → de qué se agarra. Elena y Tomás siguen como opción rápida y como
+reserva para la muerte permanente.
 
-Antes de construirla hay que decidir si es CoC 7e por el libro —tiradas de
-características, ocupaciones, puntos de habilidad— o algo más corto. La primera
-es varias veces más trabajo y trae la duda de derechos que ya conocés.
+**Las ocupaciones son nuestras.** La lista del manual es contenido de Chaosium y
+además está escrita para otro mundo: un piloto y un hacker no ayudan a jugar en
+la provincia de Buenos Aires en 1924. Se toma la estructura —ocho habilidades,
+puntos según características, rango de Crédito—, que es mecánica. Diez
+ocupaciones propias, en `src/scenario/ocupaciones.ts`.
+
+**La validación es del motor.** Es el único momento en que el jugador propone
+números y el juego los acepta; si la validación viviera en la interfaz,
+alcanzaría con abrir la consola para entrar con Medicina 95, y a partir de ahí
+ninguna garantía posterior significaría nada porque el punto de partida sería
+falso. `prueba-creacion.ts` ataca ocho maneras de hacer trampa.
+
+**Los dados de creación NO están en la cadena verificable**, y es a propósito: el
+manual permite repetir las tiradas de creación (p. 47), así que protegerlas
+criptográficamente sería teatro. Desde el primer turno de juego, todo vuelve a
+la cadena.
+
+Falta: armas y equipo (el juego no tiene combate todavía), y Crédito no se
+traduce a dinero porque no hay economía.
 
 ### 3.2 Segunda aventura ✔ HECHA — *La Legua Perdida*
 

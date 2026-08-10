@@ -105,6 +105,12 @@ export async function createCampaign(
   title?: string,
   seedOverride?: string,
   herencia?: Herencia,
+  /**
+   * Investigador creado por el jugador. Reemplaza al primero de los
+   * pregenerados; los demás quedan de reserva, porque el proyecto tiene muerte
+   * permanente y quedarse sin nadie a quien continuar sería un callejón.
+   */
+  propio?: Investigator,
 ): Promise<string> {
   const campaignId = id();
   const seed = seedOverride ?? generateSeed();
@@ -138,11 +144,15 @@ export async function createCampaign(
       title: title ?? scenario.title,
       scenarioId: scenario.id,
       rngCommitment: commitment,
-      investigators: investigadoresDe(scenario, herencia),
-      activeInvestigator: activoDe(scenario, herencia),
-      reserveInvestigators: investigadoresDe(scenario, herencia)
-        .map((i) => i.id)
-        .filter((x) => x !== activoDe(scenario, herencia)),
+      investigators: propio
+        ? [propio, ...scenario.investigators.slice(1)]
+        : investigadoresDe(scenario, herencia),
+      activeInvestigator: propio ? propio.id : activoDe(scenario, herencia),
+      reserveInvestigators: propio
+        ? scenario.investigators.slice(1).map((i) => i.id)
+        : investigadoresDe(scenario, herencia)
+            .map((i) => i.id)
+            .filter((x) => x !== activoDe(scenario, herencia)),
       items: scenario.items,
       npcs: scenario.npcs,
       documents: scenario.documents,

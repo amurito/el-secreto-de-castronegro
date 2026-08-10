@@ -82,6 +82,23 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id', async (req) => {
 });
 
 /** Auditoría: revela la semilla sólo si la campaña llegó a un final. */
+/** Crear campaña con un investigador armado por el jugador. */
+app.post<{ Body: { scenarioId: string; investigador: unknown } }>(
+  '/api/campaigns/ficha',
+  async (req) => {
+    const scenario = SCENARIOS[req.body.scenarioId as keyof typeof SCENARIOS];
+    if (!scenario) throw new Error(`Escenario desconocido: ${req.body.scenarioId}`);
+    const campaignId = await createCampaign(
+      scenario, undefined, undefined, undefined, req.body.investigador as never,
+    );
+    const { state } = await loadState(campaignId);
+    return {
+      campaignId, opening: scenario.opening,
+      state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
+    };
+  },
+);
+
 /** Encadenado de campaña: la aventura siguiente hereda de la anterior. */
 app.post<{ Params: { id: string }; Body: { scenarioId: string } }>(
   '/api/campaigns/:id/continuar',

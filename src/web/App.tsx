@@ -5,6 +5,7 @@ import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
 import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
+import { Creacion } from './Creacion.tsx';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
 
@@ -51,6 +52,8 @@ export function App() {
   const [tab, setTab] = useState<Tab>('tablero');
   const [error, setError] = useState<string | null>(null);
   const [cost, setCost] = useState<any>(null);
+  /** Escenario elegido para crear personaje propio. null = no estamos creando. */
+  const [creando, setCreando] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -87,6 +90,24 @@ export function App() {
     setBusy(true); setError(null);
     try {
       const data = await api.createCampaign(scenarioId);
+      setCampaignId(data.campaignId);
+      setState(data.state);
+      setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
+      aplicarOpciones(data.options ?? [], true);
+      setLastRoll(null); setStreaming('');
+    } catch (e) {
+      setError(`No se pudo crear la partida: ${(e as Error).message}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function newCampaignConFicha(scenarioId: string, investigador: unknown) {
+    if (!api) return;
+    setBusy(true); setError(null);
+    try {
+      const data = await api.createCampaignConFicha(scenarioId, investigador);
+      setCreando(null);
       setCampaignId(data.campaignId);
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
@@ -162,6 +183,23 @@ export function App() {
     }]);
   }
 
+  // ── PANTALLA DE CREACIÓN ───────────────────────────────────────────────────
+  if (!campaignId && creando) {
+    return (
+      <div className="start">
+        <div className="start-inner start-ancho">
+          <Creacion
+            scenarioTitulo={entradaDe(creando)?.scenario.title ?? ''}
+            ocupado={busy}
+            onCancelar={() => setCreando(null)}
+            onListo={(inv) => newCampaignConFicha(creando, inv)}
+          />
+          {error && <div className="error error-inicio">{error}</div>}
+        </div>
+      </div>
+    );
+  }
+
   // ── PANTALLA DE INICIO ─────────────────────────────────────────────────────
   if (!campaignId) {
     return (
@@ -195,9 +233,14 @@ export function App() {
                   {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.
                 </div>
               ) : null}
-              <button className="primary" onClick={() => newCampaign(e.scenario.id)} disabled={busy || !api}>
-                {busy ? 'Abriendo…' : 'Empezar'}
-              </button>
+              <div className="scenario-botones">
+                <button className="primary" onClick={() => newCampaign(e.scenario.id)} disabled={busy || !api}>
+                  {busy ? 'Abriendo…' : 'Empezar con Elena'}
+                </button>
+                <button className="ghost" onClick={() => setCreando(e.scenario.id)} disabled={busy || !api}>
+                  Crear investigador
+                </button>
+              </div>
             </div>
           ))}
 

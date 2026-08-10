@@ -58,6 +58,10 @@ export interface GameApi {
   createCampaign(scenarioId: string): Promise<{
     campaignId: string; opening: string; state: ClientState; options: Opcion[];
   }>;
+  /** Crea la campaña con un investigador armado por el jugador. */
+  createCampaignConFicha(scenarioId: string, investigador: unknown): Promise<{
+    campaignId: string; opening: string; state: ClientState; options: Opcion[];
+  }>;
   getCampaign(id: string): Promise<{ state: ClientState; opening: string; options: Opcion[] }>;
   /** Resuelve un turno. Los eventos llegan por callback, en vivo. */
   submitIntent(id: string, action: string, onEvent: (e: TurnEvent) => void): Promise<void>;

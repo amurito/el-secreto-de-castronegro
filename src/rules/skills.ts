@@ -41,6 +41,10 @@ export const SKILLS: SkillDef[] = [
   { id: 'orientarse', label: 'Orientarse', defaultBase: 10, useWhen: 'Ubicarse en el espacio o reconstruir un recorrido.' },
   { id: 'esquivar', label: 'Esquivar', defaultBase: 0, useWhen: 'Evitar un golpe o un peligro inmediato.' },
   { id: 'mitos', label: 'Mitos de Cthulhu', defaultBase: 0, useWhen: 'Reconocer lo que no debería poder reconocerse.' },
+  // Crédito es una habilidad rara: no se tira para hacer algo, se tiene. Mide
+  // de qué vive el investigador y qué puertas se le abren por eso. Entra acá
+  // porque la creación reparte puntos en ella como en cualquier otra.
+  { id: 'credito', label: 'Crédito', defaultBase: 0, useWhen: 'Que a uno le fíen, le abran una puerta o le crean la ocupación que dice tener.' },
 ];
 
 export const SKILL_BY_ID: Record<SkillId, SkillDef> = Object.fromEntries(
