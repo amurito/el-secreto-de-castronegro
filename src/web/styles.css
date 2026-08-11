@@ -583,7 +583,148 @@ button { font-family: inherit; cursor: pointer; }
 .cons-title { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
 .cons { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
 
-@media (max-width: 1100px) {
-  .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
-  .col-left, .col-right { max-height: 40vh; }
+/* La barra inferior no existe en pantalla grande. */
+.barra-movil { display: none; }
+
+/* ── PANTALLAS MEDIANAS ───────────────────────────────────────────────────
+   Tablet o ventana angosta: se sacrifica la ficha, que es consulta, y se
+   conservan la historia y el tablero, que son juego.                       */
+
+@media (max-width: 1100px) and (min-width: 721px) {
+  .app { grid-template-columns: 1fr 320px; }
+  .col-left { display: none; }
 }
+
+/* ── TELÉFONO ─────────────────────────────────────────────────────────────
+   Un panel por vez, con barra abajo. Apilar las tres columnas —lo que había
+   antes— dejaba la narración en 48 píxeles reales, con la ficha ocupando 325
+   arriba: el juego no se podía jugar, aunque técnicamente «entrara».         */
+
+@media (max-width: 720px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    height: 100dvh;
+  }
+
+  /* Todas las columnas ocupan la misma celda; se muestra la activa. */
+  .col-left, .col-center, .col-right {
+    grid-column: 1; grid-row: 1;
+    display: none; height: 100%; min-height: 0;
+    border: none;
+  }
+  .app[data-panel='ficha']    .col-left   { display: block; }
+  .app[data-panel='historia'] .col-center { display: flex; }
+  .app[data-panel='tablero']  .col-right  { display: flex; }
+
+  .scene-head { padding: 0.7rem 1rem; }
+  .scene-name { font-size: 0.95rem; }
+  .narrative {
+    padding: 1.1rem 1rem 0.8rem;
+    /* La historia manda: siempre al menos un tercio de la pantalla, pero sin
+       pasarse de 9rem — en horizontal, un tercio de 375 px reservado para el
+       texto más el cajón de acciones no entra, y quedaban CERO botones
+       visibles. Medido. */
+    min-height: min(34vh, 9rem);
+  }
+  .line { margin-bottom: 1.1rem; }
+
+  .input-area { padding: 0 1rem 0.8rem; }
+  /* Las acciones scrollean en su propio cajón en vez de empujar el texto
+     fuera de la pantalla. Con trece opciones ocupaban 550 píxeles. */
+  /* 42vh dejaba la narración en 163 píxeles cuando además había una ficha de
+     tirada en pantalla: el texto y el dado empatados en tamaño. La lista de
+     acciones scrollea, el texto no debería tener que hacerlo tanto. */
+  .acciones { max-height: 34vh; overflow-y: auto; }
+  /* La caja de acciones no puede empujar a la narrativa fuera de la pantalla:
+     encoge antes que ella. */
+  .input-area { flex-shrink: 1; min-height: 0; overflow-y: auto; }
+
+  /* La etiqueta del grupo arriba, no al costado: 3.6rem de margen izquierdo
+     sobre 375 de ancho es un décimo de la pantalla gastado en una palabra. */
+  .grupo-acciones { flex-direction: column; gap: 0.25rem; }
+  .grupo-titulo { min-width: 0; text-align: left; padding-top: 0; }
+  .option {
+    /* Área táctil: por debajo de esto se falla el toque. */
+    min-height: 2.6rem; padding: 0.55rem 0.85rem; font-size: 0.88rem;
+  }
+
+  /* La ficha de tirada medía 208 píxeles: más que la narración misma. En una
+     pantalla de teléfono el dado es un dato, no el espectáculo. */
+  .roll { margin: 0 1rem 0.6rem; padding: 0.55rem 0.8rem; }
+  .roll-big { margin: 0 1rem 0.6rem; width: calc(100% - 2rem); }
+  .roll-reason { margin: 0.2rem 0 0.4rem; font-size: 0.8rem; }
+  .roll-result { font-size: 1.6rem; }
+  .roll-detail { font-size: 0.66rem; line-height: 1.4; }
+  .roll-body { gap: 0.7rem; }
+  .roll-degree { margin-top: 0.3rem; font-size: 0.66rem; }
+  .error { margin: 0 1rem 0.8rem; }
+  .ending, .death { padding: 1.2rem 1rem 1.6rem; }
+
+  .panel { padding: 1rem; }
+  .tab-body { padding: 0 1rem 1rem; }
+
+  .barra-movil {
+    display: grid; grid-template-columns: repeat(3, 1fr); flex-shrink: 0;
+    grid-column: 1; grid-row: 2;
+    background: var(--bg-panel); border-top: 1px solid var(--line);
+    /* Respeta la franja del gesto de iOS. */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .barra-movil button {
+    background: none; border: none; color: var(--text-faint);
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.95rem 0.3rem; position: relative;
+    border-top: 2px solid transparent; min-height: 2.9rem;
+  }
+  .barra-movil button.on { color: var(--accent); border-top-color: var(--accent); }
+  /* Aviso de pistas nuevas: si el jugador está leyendo, tiene que enterarse
+     de que el tablero cambió sin tener que ir a mirar. */
+  .pip {
+    display: inline-block; margin-left: 0.35rem; background: var(--accent);
+    color: #f2ece4; border-radius: 999px; font-size: 0.6rem;
+    padding: 0.05rem 0.35rem; vertical-align: 1px;
+  }
+
+  /* Inicio y creación */
+  .start { padding: 1.5rem 1rem 2.5rem; }
+  .title { font-size: 1.9rem; }
+  .scenario-card { padding: 1.2rem; }
+  .scenario-botones { flex-direction: column; }
+  .scenario-botones button { width: 100%; }
+  .creacion { padding: 1.1rem; }
+  .ocupaciones { grid-template-columns: 1fr; }
+  .skills { grid-template-columns: 1fr; }
+  /* Área táctil. 32 píxeles es lo que se ve bien y lo que se falla al tocar;
+     la referencia de accesibilidad son 44, y estos botones se aprietan
+     cuarenta veces seguidas repartiendo puntos. */
+  .skill-grupo button { width: 2.75rem; height: 2.75rem; font-size: 1.1rem; }
+  .skill-grupo b { min-width: 2rem; }
+  .skill-fila { padding: 0.35rem 0; gap: 0.35rem; }
+  .skill-nombre { font-size: 0.86rem; }
+  .reparto-filas { gap: 0.5rem; }
+  .creacion-pie { flex-direction: column-reverse; }
+  .creacion-pie button { width: 100%; }
+  .creacion-pie .ghost { margin-left: 0; }
+  .desarrollo, .continuar { padding-left: 0; padding-right: 0; }
+  .desarrollo-fila { flex-wrap: wrap; }
+}
+
+/* ── PANTALLA BAJA ────────────────────────────────────────────────────────
+   Teléfono acostado, o ventana aplastada. Acá el alto es el recurso escaso y
+   todo lo que no es texto ni botón se achica.
+
+   VA AL FINAL DEL ARCHIVO A PROPÓSITO: comparte especificidad con el bloque de
+   teléfono, así que si fuera antes lo pisaría el otro. Puesto arriba, en
+   horizontal quedaban CERO botones visibles. Medido.                        */
+
+@media (max-height: 520px) and (max-width: 900px) {
+  .scene-head { padding: 0.4rem 1rem; }
+  .scene-name { font-size: 0.88rem; }
+  .narrative { padding: 0.7rem 1rem 0.5rem; min-height: 5rem; }
+  .line { margin-bottom: 0.8rem; }
+  .acciones { max-height: 55vh; }
+  .grupo-titulo { margin: 0; }
+  .barra-movil button { padding: 0.5rem 0.3rem; min-height: 0; }
+}
+

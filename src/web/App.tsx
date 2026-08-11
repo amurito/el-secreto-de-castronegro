@@ -49,11 +49,22 @@ export function App() {
   const [vistas, setVistas] = useState<Set<string>>(new Set());
   const [nuevas, setNuevas] = useState<Set<string>>(new Set());
   const [lastRoll, setLastRoll] = useState<any>(null);
+  /** Pistas que había la última vez que se miró el tablero. Para el aviso. */
+  const [pistasVistas, setPistasVistas] = useState(0);
   const [tab, setTab] = useState<Tab>('tablero');
   const [error, setError] = useState<string | null>(null);
   const [cost, setCost] = useState<any>(null);
   /** Escenario elegido para crear personaje propio. null = no estamos creando. */
   const [creando, setCreando] = useState<string | null>(null);
+  /**
+   * Qué panel se ve EN MÓVIL. En pantalla grande no se usa: las tres columnas
+   * están a la vista y este estado lo ignora el CSS.
+   *
+   * Un juego de texto en un teléfono tiene que ser texto a pantalla completa.
+   * Apilar las tres columnas dejaba la narración —el juego— en 48 píxeles,
+   * medidos, con la ficha del personaje ocupando 325 arriba.
+   */
+  const [panel, setPanel] = useState<'historia' | 'ficha' | 'tablero'>('historia');
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -147,6 +158,9 @@ export function App() {
     // ficha de la tirada anterior seguía en pantalla debajo de la narración
     // nueva. Se lee como si esa tirada hubiera resuelto también esta acción.
     setBusy(true); setError(null); setStreaming(''); setOptions([]); setLastRoll(null);
+    // En móvil la respuesta llega a la historia: si el jugador tocó una opción
+    // desde otro panel, hay que llevarlo a donde va a pasar algo.
+    setPanel('historia');
     setLines((l) => [...l, { id: `p-${Date.now()}`, kind: 'player', text }]);
     setAction('');
 
@@ -257,8 +271,16 @@ export function App() {
   const dead = inv && inv.status !== 'alive';
   const ended = Boolean(state?.ending);
 
+  const pistasAhora = state?.board?.clues?.length ?? 0;
+  const pistasNuevas = Math.max(0, pistasAhora - pistasVistas);
+
+  const irA = (p: 'historia' | 'ficha' | 'tablero') => {
+    setPanel(p);
+    if (p === 'tablero') setPistasVistas(pistasAhora);
+  };
+
   return (
-    <div className="app">
+    <div className="app" data-panel={panel}>
       <aside className="col col-left"><Sheet inv={inv} /></aside>
 
       <main className="col col-center">
@@ -388,6 +410,20 @@ export function App() {
           </div>
         )}
       </aside>
+
+      {/* Sólo en móvil: el CSS la esconde en pantalla grande. */}
+      <nav className="barra-movil">
+        <button className={panel === 'ficha' ? 'on' : ''} onClick={() => irA('ficha')}>
+          Ficha
+        </button>
+        <button className={panel === 'historia' ? 'on' : ''} onClick={() => irA('historia')}>
+          Historia
+        </button>
+        <button className={panel === 'tablero' ? 'on' : ''} onClick={() => irA('tablero')}>
+          Tablero
+          {pistasNuevas > 0 && panel !== 'tablero' && <span className="pip">{pistasNuevas}</span>}
+        </button>
+      </nav>
     </div>
   );
 }

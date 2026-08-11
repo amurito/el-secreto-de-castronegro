@@ -261,9 +261,29 @@ Marcadas con `⚠` en el código: bonificación de daño, Corpulencia, umbral de
 pifia, pérdidas de COR, locura. Están implementadas de memoria del sistema, no
 copiadas. Hay que verificarlas contra tu manual con licencia, una por una.
 
-### 4.4 Móvil
+### 4.4 Móvil ✔ HECHO
 
-Tres columnas fijas. En un teléfono no entra. No es difícil, es trabajo.
+Medido antes, en 375×812: la ficha ocupaba 325 píxeles arriba y **la narración
+—el juego— quedaba en 48.** Dos renglones. El media query que había apilaba las
+tres columnas, que es peor que no tener ninguno: entraba, y no se podía jugar.
+
+Ahora en teléfono se ve **un panel por vez**, con barra abajo: Ficha · Historia ·
+Tablero. La narración pasó de 48 a 228 píxeles con una ficha de tirada en
+pantalla, y a 330 sin ella.
+
+Lo que salió de medir y no de suponer:
+- La lista de acciones ocupaba 550 px con trece opciones. Ahora scrollea en su
+  propio cajón con tope de 34vh, y el texto no se va de la pantalla.
+- La ficha de tirada medía 208 px: **más que la narración**. Compactada.
+- En horizontal quedaban **cero** botones visibles. El bloque de altura corta
+  estaba antes del de teléfono en el archivo y lo pisaba la cascada: va al
+  final, y está comentado para que no vuelva a moverse.
+- Los botones ± de la creación medían 32 px. Ahora 44, que es la referencia de
+  área táctil, y se aprietan cuarenta veces seguidas repartiendo puntos.
+
+El tablero avisa con un contador cuando aparecen pistas nuevas y el jugador
+está leyendo, y tocar una acción devuelve a la historia — que es donde va a
+pasar algo.
 
 ---
 
