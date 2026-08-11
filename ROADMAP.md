@@ -14,9 +14,10 @@ Cuatro carriles, y el orden entre ellos importa:
 3. **Contenido** — más aventura.
 4. **Sistema** — lo que hace falta para que el contenido escale.
 
-Regla que ya nos sirvió tres veces: **nada entra sin una prueba que falle si se
-rompe.** `prueba-desenlaces.ts` existe porque dos finales estaban declarados y
-eran inalcanzables, y nadie se había dado cuenta.
+Regla del proyecto: **nada entra sin una prueba que falle si se rompe.**
+`prueba-desenlaces.ts` existe porque dos finales estaban declarados y eran
+inalcanzables. `prueba-auditoria.ts` existe porque eso pasó seis veces, y ahora
+recorre todo lo declarado en todas las aventuras buscando lo mismo.
 
 ---
 
@@ -39,16 +40,31 @@ aventura falsa con un tema inventado.
 
 Escalas en `src/rules/social.config.ts`, para ajustar jugando.
 
-### 1.2 Auditar todo lo que se ofrece contra lo que se puede alcanzar
+### 1.2 Auditoría de alcanzabilidad ✔ HECHA
 
-`prueba-desenlaces.ts` hace esto con los finales. Falta el mismo barrido para
-pistas, propiedades ocultas y documentos: recorrer el escenario y verificar que
-cada cosa declarada tiene al menos un camino que la entrega.
+`prueba-auditoria.ts` recorre **todo** lo que cada aventura declara y verifica
+que exista camino: pistas, propiedades ocultas, documentos, secretos,
+desenlaces, localizaciones y objetos. Corre sobre el catálogo entero, así que
+una aventura nueva queda auditada por existir.
 
-Los dos bugs que te bloquearon —el final inalcanzable y la pista del retardo
-atada al primer intento— eran el mismo error de fondo: **algo declarado en los
-datos sin camino real en el código.** Una prueba genérica los habría encontrado
-a los dos antes que vos.
+Cierra la fuente de la familia de bug que apareció seis veces —algo declarado
+en los datos sin camino real en el código— y de la que una la encontró el
+jugador.
+
+Tres capas:
+1. **Estática** sobre el mapa y los objetos. Certeza, instantánea.
+2. **Banco de escenas.** Las escenas son funciones, así que se las ejecuta con
+   la tirada en éxito y en fracaso, contra cada estado y **parado en cada
+   localización**, y se recolecta lo que devuelven. Se puede porque el contrato
+   de escenas obliga a que los efectos sean declarativos.
+3. **Recorrido real**, que agota lo que hay en cada lugar y después camina.
+
+**Y una prueba de la prueba.** Una auditoría que pasa a la primera no demostró
+nada: puede estar mirando para otro lado. Al final se le rompen siete cosas a
+propósito a una copia del escenario —un lugar sin acceso, una conexión sin
+vuelta, un objeto en ninguna parte, un documento huérfano, un desenlace
+declarado sin implementar, un secreto que nadie revela, una escena que
+explota— y se verifica que las encuentre todas.
 
 ### 1.3 Repaso de las tiradas que no existen ✔ HECHO
 
