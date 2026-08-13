@@ -20,6 +20,7 @@ import { runOfflineTurn } from './keeper/offline.ts';
 import { accionesDisponibles } from './scenario/acciones.ts';
 import { classify } from './keeper/intent.ts';
 import { propiedadPorTirada } from './rules/cuando-tirar.ts';
+import { resolveD100, combineD100 } from './rules/dice.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import type { Scenario } from './scenario/types.ts';
@@ -131,6 +132,46 @@ async function main() {
   for (const f of examinarSinDado) console.log(`   ⚠ ${f.aventura}: «${f.etiqueta}» sin tirada`);
   check('examinar algo siempre pide un dado, salvo lo que se resuelve comparando',
     examinarSinDado.length === 0, `${examinarSinDado.length}`);
+
+  // ── 4. Qué dado de decenas queda en pie ──────────────────────────────────
+  //
+  // La interfaz señala cuál de los dados de decenas ganó cuando hay
+  // bonificación o penalización. Si ese índice y el número que muestra el
+  // motor discreparan, el jugador vería un dado marcado y un resultado que no
+  // sale de él: exactamente la clase de incoherencia que este proyecto no se
+  // puede permitir, porque el registro es auditable y la contradicción sería
+  // visible. Se verifica que salgan del mismo cálculo.
+  console.log('\n4. EL DADO DE DECENAS QUE QUEDA EN PIE');
+  const casos: Array<[string, number, number[], 'none' | 'bonus' | 'penalty', number, number]> = [
+    // nombre                        unidades, decenas,   modo,       result, chosen
+    ['sin modificador usa el primero',      4, [5],        'none',        54, 0],
+    ['bonificación toma el más bajo',       3, [6, 4],     'bonus',       43, 1],
+    ['penalización toma el más alto',       3, [6, 4],     'penalty',     63, 0],
+    ['dos de bonificación, gana el menor',  0, [9, 3, 7],  'bonus',       30, 1],
+    ['dos de penalización, gana el mayor',  0, [9, 3, 7],  'penalty',     90, 0],
+    // 00 + 0 vale 100, y eso no puede romper la elección del ganador.
+    ['el cero doble vale 100 y se elige',   0, [0, 5],     'bonus',       50, 1],
+    ['el cero doble es el peor resultado',  0, [0, 5],     'penalty',    100, 0],
+  ];
+  for (const [nombre, u, decenas, modo, esperado, ganador] of casos) {
+    const r = resolveD100(u, decenas, modo);
+    check(nombre, r.result === esperado && r.chosen === ganador,
+      `${r.result} con el dado ${r.chosen} (${decenas[r.chosen]! * 10})`);
+  }
+  // Y que el atajo no se despegue nunca del cálculo completo.
+  let coinciden = true;
+  for (let u = 0; u <= 9; u++) {
+    for (let a = 0; a <= 9; a++) {
+      for (let b = 0; b <= 9; b++) {
+        for (const modo of ['none', 'bonus', 'penalty'] as const) {
+          const r = resolveD100(u, [a, b], modo);
+          if (combineD100(u, [a, b], modo) !== r.result) coinciden = false;
+          if (r.result !== (([a, b][r.chosen]! * 10 + u) || 100)) coinciden = false;
+        }
+      }
+    }
+  }
+  check('en las 3.000 combinaciones, el ganador explica el resultado', coinciden);
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

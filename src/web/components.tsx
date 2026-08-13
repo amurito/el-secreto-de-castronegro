@@ -1,4 +1,5 @@
 import React from 'react';
+import { DadosPercentiles, useRevelacionTardia } from './dados.tsx';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FICHA
@@ -122,7 +123,15 @@ const DIFF_LABEL: Record<string, string> = { regular: 'Regular', hard: 'Difícil
  */
 const esDadoDeDesarrollo = (roll: any) => /^1D\d+$/.test(String(roll?.skill ?? ''));
 
-export function RollCard({ roll, big }: { roll: any; big?: boolean }) {
+/**
+ * `animar` sólo lo enciende la tirada VIVA, la del turno que acaba de pasar.
+ * En el historial nunca: doce fichas girando a la vez cada vez que se abre la
+ * pestaña no es una animación, es una pantalla rota.
+ */
+export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; animar?: boolean }) {
+  // Antes de cualquier return: los hooks no admiten salidas anticipadas.
+  const revelado = useRevelacionTardia(!!animar, String(roll?.id ?? ''));
+
   // Una tirada mal formada no puede tumbar la partida entera: la interfaz
   // degrada, el motor sigue teniendo el registro correcto.
   if (!roll || !Array.isArray(roll.dice) || !roll.thresholds) return null;
@@ -139,6 +148,8 @@ export function RollCard({ roll, big }: { roll: any; big?: boolean }) {
   }
 
   const good = ['critical', 'extreme', 'hard', 'regular'].includes(roll.degree);
+  // Sin animación no se toca nada: ni tapado, ni fundido, ni clase de más.
+  const tardio = !animar ? '' : revelado ? ' roll-visible' : ' roll-tapado';
   return (
     <div className={`roll ${big ? 'roll-big' : ''} ${good ? 'roll-ok' : 'roll-bad'}`}>
       <div className="roll-head">
@@ -148,10 +159,13 @@ export function RollCard({ roll, big }: { roll: any; big?: boolean }) {
         <span className="roll-diff">Dificultad: {DIFF_LABEL[roll.difficulty] ?? roll.difficulty}</span>
       </div>
       <div className="roll-reason">{roll.reason}</div>
+      {animar && <DadosPercentiles roll={roll} />}
       <div className="roll-body">
-        <div className="roll-result">{roll.result}</div>
+        {/* Con animación, el número y el grado esperan a que los dados frenen:
+            verlos antes es saber el final mientras todavía giran. */}
+        <div className={`roll-result${tardio}`}>{roll.result}</div>
         <div className="roll-detail">
-          <div>dados: {roll.dice.join(' · ')}</div>
+          {!animar && <div>dados: {roll.dice.join(' · ')}</div>}
           <div>umbrales: ≤{roll.thresholds.regular} · ≤{roll.thresholds.hard} · ≤{roll.thresholds.extreme}</div>
           {roll.modifiers?.length > 0 && (
             <div className="roll-mods">
@@ -162,7 +176,9 @@ export function RollCard({ roll, big }: { roll: any; big?: boolean }) {
           )}
         </div>
       </div>
-      <div className={`roll-degree ${good ? 'deg-ok' : 'deg-bad'}`}>{DEGREE_LABEL[roll.degree] ?? roll.degree}</div>
+      <div className={`roll-degree ${good ? 'deg-ok' : 'deg-bad'}${tardio}`}>
+        {DEGREE_LABEL[roll.degree] ?? roll.degree}
+      </div>
     </div>
   );
 }

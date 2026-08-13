@@ -6,6 +6,7 @@ import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
 import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
 import { Creacion } from './Creacion.tsx';
+import { leerPreferenciaDados, guardarPreferenciaDados, prefiereMenosMovimiento } from './dados.tsx';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
 
@@ -108,6 +109,8 @@ export function App() {
    * medidos, con la ficha del personaje ocupando 325 arriba.
    */
   const [panel, setPanel] = useState<'historia' | 'ficha' | 'tablero'>('historia');
+  /** Animar los dados al tirar. Preferencia del jugador, no de la partida. */
+  const [animarDados, setAnimarDados] = useState(leerPreferenciaDados);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -377,7 +380,7 @@ export function App() {
           {busy && !streaming && <div className="thinking">El Keeper está resolviendo…</div>}
         </div>
 
-        {lastRoll && <RollCard roll={lastRoll} big />}
+        {lastRoll && <RollCard roll={lastRoll} big animar={animarDados} />}
 
         {error && <div className="error">{error}</div>}
 
@@ -475,7 +478,28 @@ export function App() {
           {tab === 'inventario' && <Inventory items={state?.items ?? []} />}
           {tab === 'documentos' && <Documents docs={state?.documents ?? []} />}
           {tab === 'tiradas' && (
-            <RollHistory rolls={state?.rolls ?? []} commitment={state?.rngCommitment ?? ''} seed={state?.seedRevealed ?? null} />
+            <>
+              {/* El interruptor vive acá porque acá es donde el jugador viene a
+                  mirar los dados. Al lado del compromiso de la semilla queda
+                  claro de qué es y de qué NO es: cambia cómo se ven, no lo que
+                  sale. */}
+              <label className="opcion-dados">
+                <input
+                  type="checkbox"
+                  checked={animarDados}
+                  onChange={(e) => { setAnimarDados(e.target.checked); guardarPreferenciaDados(e.target.checked); }}
+                />
+                <span>
+                  Animar los dados al tirar
+                  <em>
+                    Decenas y unidades, como en la mesa. Es sólo presentación: el resultado ya está
+                    firmado antes de que empiecen a girar.
+                    {prefiereMenosMovimiento() && ' Tu sistema pide menos movimiento, así que viene apagada.'}
+                  </em>
+                </span>
+              </label>
+              <RollHistory rolls={state?.rolls ?? []} commitment={state?.rngCommitment ?? ''} seed={state?.seedRevealed ?? null} />
+            </>
           )}
         </div>
         {state?.consequences?.length > 0 && (

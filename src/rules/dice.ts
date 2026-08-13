@@ -31,25 +31,48 @@ export function thresholdsFor(baseValue: number): Thresholds {
 }
 
 /**
- * Combina el dado de unidades con uno o más dados de decenas.
- * Bonificación → se toma el resultado más bajo. Penalización → el más alto.
+ * Combina el dado de unidades con uno o más dados de decenas, y dice ADEMÁS
+ * cuál de esos dados quedó en pie.
+ *
+ * El índice del elegido no lo necesita el motor —le alcanza con el número—
+ * pero sí la interfaz: cuando hay dados de bonificación o penalización sobre
+ * la mesa, señalar cuál ganó es la única manera de que se vea la regla en
+ * lugar de tener que leerla. Se calcula acá y no en la vista para que no
+ * existan dos versiones del mismo criterio.
  *
  * `unitsDie` y cada `tensDie` van de 0 a 9.
  * 0 decenas + 0 unidades = 100.
  */
+export function resolveD100(
+  unitsDie: number,
+  tensDice: number[],
+  mode: 'none' | 'bonus' | 'penalty',
+): { result: number; chosen: number } {
+  const candidates = tensDice.map((t) => {
+    const v = t * 10 + unitsDie;
+    return v === 0 ? 100 : v;
+  });
+  if (candidates.length === 0) return { result: unitsDie === 0 ? 100 : unitsDie, chosen: -1 };
+
+  let chosen = 0;
+  if (mode === 'bonus' || mode === 'penalty') {
+    for (let i = 1; i < candidates.length; i++) {
+      const mejor = mode === 'bonus'
+        ? candidates[i]! < candidates[chosen]!
+        : candidates[i]! > candidates[chosen]!;
+      if (mejor) chosen = i;
+    }
+  }
+  return { result: candidates[chosen]!, chosen };
+}
+
+/** El resultado a secas. Ver `resolveD100` para saber además cuál dado ganó. */
 export function combineD100(
   unitsDie: number,
   tensDice: number[],
   mode: 'none' | 'bonus' | 'penalty',
 ): number {
-  const candidates = tensDice.map((t) => {
-    const v = t * 10 + unitsDie;
-    return v === 0 ? 100 : v;
-  });
-  if (candidates.length === 0) return unitsDie === 0 ? 100 : unitsDie;
-  if (mode === 'bonus') return Math.min(...candidates);
-  if (mode === 'penalty') return Math.max(...candidates);
-  return candidates[0]!;
+  return resolveD100(unitsDie, tensDice, mode).result;
 }
 
 /** Cuántos dados de decenas hacen falta y en qué modo, según los modificadores. */

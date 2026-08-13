@@ -309,6 +309,87 @@ button { font-family: inherit; cursor: pointer; }
 .deg-ok { color: var(--ok); }
 .deg-bad { color: var(--bad); }
 
+/* ── LOS DADOS ──────────────────────────────────────────────────────────────
+   Percentiles de CoC 7e: un d10 de decenas (00-90) y uno de unidades (0-9).
+   El retardo de .roll-tardio lo pone el componente en línea, desde la misma
+   constante que temporiza la animación: ver web/dados.tsx.                   */
+
+.dados { display: flex; align-items: center; gap: 0.5rem; margin: 0.2rem 0 0.7rem; flex-wrap: wrap; }
+.dados-grupo { display: flex; gap: 0.35rem; }
+
+.dado {
+  width: 2.6rem; height: 2.6rem; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.95rem; border-radius: 5px;
+  background: var(--bg-raised); border: 1px solid var(--line); color: var(--text);
+  /* Sin ancho fijo tipográfico, 11 y 00 mueven el dado de lugar al girar. */
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.25s, color 0.25s, opacity 0.35s, transform 0.2s;
+}
+/* El de unidades es el que decide el dígito chico: se distingue, no compite. */
+.dado-unidades { border-style: dashed; color: var(--text-dim); }
+
+.dado-girando { animation: dado-tumbo 0.16s linear infinite; color: var(--text-faint); }
+@keyframes dado-tumbo {
+  0%   { transform: translateY(0) rotate(-3deg); }
+  50%  { transform: translateY(-3px) rotate(3deg); }
+  100% { transform: translateY(0) rotate(-3deg); }
+}
+/* El golpe seco al frenar: es lo que hace que se lea como un dado y no como
+   un contador que se detuvo. */
+.dado-quieto { animation: dado-asienta 0.22s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+@keyframes dado-asienta {
+  0%   { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* Con bonificación o penalización hay más de un dado de decenas y sólo uno
+   cuenta. Apagar los otros muestra la regla sin explicarla. */
+.dado-elegido { border-color: var(--exposure); color: var(--text); }
+.dado-descartado { opacity: 0.28; }
+.dados-nota {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+  color: var(--exposure); text-transform: uppercase;
+}
+
+/* El resultado esperando a que los dados frenen.
+ *
+ * Acá hay dos decisiones que parecen quisquillosas y no lo son. Un número de
+ * tirada que no aparece es peor que cualquier animación fea, así que el
+ * estado «visible» tiene que ser inalcanzable por accidente:
+ *
+ *   · Se tapa con `visibility`, no con `opacity`. Una opacidad en transición
+ *     se queda a mitad de camino si el navegador no produce cuadros —pestaña
+ *     en segundo plano, ventana sin componer— y el número no se ve nunca.
+ *   · El fundido de entrada es una animación SIN `fill`. Sin fill, el estado
+ *     de reposo del elemento es el suyo propio: visible. Si la animación no
+ *     corre, el número simplemente aparece de golpe, que es el fallo correcto.
+ *     Con `fill: both` se congelaría en el primer fotograma, opacidad 0.
+ *
+ * Quién decide el momento es un temporizador de JS, no el CSS: ver dados.tsx. */
+.roll-tapado { visibility: hidden; }
+.roll-visible { animation: aparecer 0.3s ease; }
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+
+/* NO hay bloque `prefers-reduced-motion` acá, y es deliberado: la preferencia
+   del sistema decide el valor INICIAL del interruptor (ver dados.tsx), no lo
+   que pasa después. Apagar la animación por CSS dejaría el interruptor
+   encendido y sin efecto, que es peor que no tenerlo. Quien lo prende a mano
+   ya dijo lo que quiere, y su elección explícita gana sobre el valor por
+   defecto que le puso el sistema operativo. */
+
+/* El interruptor, en la pestaña de tiradas. */
+.opcion-dados {
+  display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer;
+  background: var(--bg-panel); border: 1px solid var(--line); border-radius: 3px;
+  padding: 0.7rem 0.8rem; margin-bottom: 0.9rem; font-size: 0.8rem; color: var(--text-dim);
+}
+.opcion-dados:hover { border-color: var(--accent-dim); }
+.opcion-dados input { margin-top: 0.15rem; width: 1rem; height: 1rem; flex-shrink: 0; accent-color: var(--accent); }
+.opcion-dados em {
+  display: block; margin-top: 0.25rem; font-style: normal;
+  font-size: 0.68rem; line-height: 1.5; color: var(--text-faint);
+}
+
 /* ── ENTRADA ────────────────────────────────────────────────────────────── */
 
 .input-area { padding: 1rem 2rem 1.5rem; max-width: 42rem; width: 100%; margin: 0 auto; }

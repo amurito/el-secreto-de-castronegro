@@ -415,7 +415,7 @@ export interface RollRecord {
 
   /** EJECUCIÓN — del RNG del motor, nunca del modelo. */
   execution: {
-    /** Todos los d10 lanzados: [decenas..., unidades] */
+    /** Todos los d10 lanzados: [unidades, decenas...]. El orden importa. */
     dice: number[];
     rawResult: number;
     degree: SuccessDegree;
