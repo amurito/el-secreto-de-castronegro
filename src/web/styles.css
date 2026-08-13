@@ -339,11 +339,16 @@ button { font-family: inherit; cursor: pointer; }
 .option-hablar { border-left: 2px solid var(--stability); }
 .option-decidir { border-left: 2px solid var(--accent-dim); }
 
-/* Recién desbloqueada por lo que acabás de descubrir. */
+/* Desbloqueada y todavía sin tocar. La marca dura hasta que la usan, no hasta
+   el turno siguiente: una opción nueva que aparece mientras el jugador está
+   leyendo otra cosa no tiene por qué perder el resalte por no mirarla a
+   tiempo. El latido, en cambio, es finito: llama la atención cuando aparece y
+   después se queda quieto, porque con la marca persistente puede haber varias
+   a la vez y una pantalla parpadeando entera no señala nada. */
 .option-nueva { border-color: var(--exposure); color: var(--text); }
 .chispa {
   color: var(--exposure); font-size: 0.6rem; margin-right: 0.4rem;
-  vertical-align: 1px; animation: latir 2.4s ease-in-out infinite;
+  vertical-align: 1px; animation: latir 2.4s ease-in-out 3;
 }
 @keyframes latir { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 

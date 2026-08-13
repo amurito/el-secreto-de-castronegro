@@ -35,6 +35,40 @@ async function elegirApi(): Promise<GameApi> {
   return createLocalApi();
 }
 
+/** Qué opciones vio el jugador y cuáles todavía no tocó. Ver `aplicarOpciones`. */
+interface Marcas { vistas: Set<string>; pendientes: Set<string> }
+
+/**
+ * El resalte de las opciones nuevas vive en localStorage, no en el log de
+ * eventos: es información de presentación, no del mundo. Si se pierde —otro
+ * navegador, modo privado, el jugador limpió el almacenamiento— se pierde el
+ * resalte y nada más; la partida está entera en IndexedDB.
+ *
+ * Por campaña, porque «nueva» significa nueva en esta partida.
+ */
+const claveMarcas = (campaignId: string) => `castronegro:opciones-nuevas:${campaignId}`;
+
+function leerMarcas(campaignId: string): { vistas: string[]; pendientes: string[] } {
+  try {
+    const crudo = localStorage.getItem(claveMarcas(campaignId));
+    if (!crudo) return { vistas: [], pendientes: [] };
+    const datos = JSON.parse(crudo) as { vistas?: string[]; pendientes?: string[] };
+    return { vistas: datos.vistas ?? [], pendientes: datos.pendientes ?? [] };
+  } catch {
+    return { vistas: [], pendientes: [] };
+  }
+}
+
+function guardarMarcas(campaignId: string, m: Marcas): void {
+  try {
+    localStorage.setItem(claveMarcas(campaignId), JSON.stringify({
+      vistas: [...m.vistas], pendientes: [...m.pendientes],
+    }));
+  } catch {
+    // Sin almacenamiento el juego funciona igual. No vale interrumpir por esto.
+  }
+}
+
 export function App() {
   const [api, setApi] = useState<GameApi | null>(null);
   const [status, setStatus] = useState<StatusInfo | null>(null);
@@ -45,9 +79,18 @@ export function App() {
   const [busy, setBusy] = useState(false);
   const [action, setAction] = useState('');
   const [options, setOptions] = useState<Opcion[]>([]);
-  /** Opciones ya vistas, para marcar las que se acaban de desbloquear. */
-  const [vistas, setVistas] = useState<Set<string>>(new Set());
-  const [nuevas, setNuevas] = useState<Set<string>>(new Set());
+  /**
+   * Marcado de opciones nuevas. Dos conjuntos:
+   *
+   *   vistas     — todo id que alguna vez se ofreció. Distingue «recién
+   *                desbloqueada» de «estaba desde el principio».
+   *   pendientes — las desbloqueadas que el jugador todavía no tocó.
+   *
+   * Antes el resalte duraba un turno, y eso castigaba al que se detenía a
+   * leer: una opción nueva podía aparecer y apagarse sin que la registrara.
+   * Ahora dura hasta que la usa.
+   */
+  const [marcas, setMarcas] = useState<Marcas>({ vistas: new Set(), pendientes: new Set() });
   const [lastRoll, setLastRoll] = useState<any>(null);
   /** Pistas que había la última vez que se miró el tablero. Para el aviso. */
   const [pistasVistas, setPistasVistas] = useState(0);
@@ -83,17 +126,50 @@ export function App() {
    * Marca las opciones recién desbloqueadas. Se calcula en el cliente a
    * propósito: es información de presentación, no del mundo, y no tiene por
    * qué ensuciar el log de eventos.
+   *
+   * `cargaDe` es el id de campaña cuando esta llamada es la apertura de una
+   * partida. Va explícito porque `setCampaignId` acaba de correr y el estado
+   * de React todavía no lo refleja.
    */
-  function aplicarOpciones(nuevasOpciones: Opcion[], primeraCarga = false) {
-    setOptions(nuevasOpciones);
-    const ids = new Set(nuevasOpciones.map((o) => o.id));
-    if (primeraCarga) {
-      setVistas(ids);
-      setNuevas(new Set());
+  function aplicarOpciones(opciones: Opcion[], cargaDe?: string) {
+    setOptions(opciones);
+    const ids = opciones.map((o) => o.id);
+
+    if (cargaDe) {
+      const guardado = leerMarcas(cargaDe);
+      // Partida nueva: lo que hay ahora es el punto de partida, así que nada
+      // está «recién desbloqueado». Partida que se retoma: se recupera lo que
+      // quedó sin tocar, y si el motor ofrece algo que no estaba, se suma.
+      const arranca = guardado.vistas.length === 0;
+      const m: Marcas = arranca
+        ? { vistas: new Set(ids), pendientes: new Set() }
+        : { vistas: new Set(guardado.vistas), pendientes: new Set(guardado.pendientes) };
+      if (!arranca) {
+        for (const id of ids) if (!m.vistas.has(id)) { m.vistas.add(id); m.pendientes.add(id); }
+      }
+      setMarcas(m);
+      guardarMarcas(cargaDe, m);
       return;
     }
-    setNuevas(new Set([...ids].filter((id) => !vistas.has(id))));
-    setVistas((prev) => new Set([...prev, ...ids]));
+
+    setMarcas((prev) => {
+      const m: Marcas = { vistas: new Set(prev.vistas), pendientes: new Set(prev.pendientes) };
+      for (const id of ids) if (!m.vistas.has(id)) { m.vistas.add(id); m.pendientes.add(id); }
+      if (campaignId) guardarMarcas(campaignId, m);
+      return m;
+    });
+  }
+
+  /** El jugador usó una opción: deja de estar resaltada, para siempre. */
+  function tocar(id: string) {
+    setMarcas((prev) => {
+      if (!prev.pendientes.has(id)) return prev;
+      const pendientes = new Set(prev.pendientes);
+      pendientes.delete(id);
+      const m: Marcas = { vistas: prev.vistas, pendientes };
+      if (campaignId) guardarMarcas(campaignId, m);
+      return m;
+    });
   }
 
   async function newCampaign(scenarioId: string) {
@@ -104,7 +180,7 @@ export function App() {
       setCampaignId(data.campaignId);
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
-      aplicarOpciones(data.options ?? [], true);
+      aplicarOpciones(data.options ?? [], data.campaignId);
       setLastRoll(null); setStreaming('');
     } catch (e) {
       setError(`No se pudo crear la partida: ${(e as Error).message}`);
@@ -122,7 +198,7 @@ export function App() {
       setCampaignId(data.campaignId);
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
-      aplicarOpciones(data.options ?? [], true);
+      aplicarOpciones(data.options ?? [], data.campaignId);
       setLastRoll(null); setStreaming('');
     } catch (e) {
       setError(`No se pudo crear la partida: ${(e as Error).message}`);
@@ -143,7 +219,7 @@ export function App() {
         ...data.state.narrative.map((n: any) => ({ id: n.id, kind: n.kind, text: n.text })),
       ]);
       setLastRoll(data.state.rolls[data.state.rolls.length - 1] ?? null);
-      aplicarOpciones(data.options ?? [], true);
+      aplicarOpciones(data.options ?? [], id);
     } catch (e) {
       setError(`No se pudo abrir la partida: ${(e as Error).message}`);
     } finally {
@@ -151,8 +227,9 @@ export function App() {
     }
   }
 
-  async function send(text: string) {
+  async function send(text: string, idOpcion?: string) {
     if (!api || !campaignId || !text.trim() || busy) return;
+    if (idOpcion) tocar(idOpcion);
     // Limpiar la tirada anterior es obligatorio, no cosmético. La mayoría de
     // las acciones no tiran dados —hablar, agarrar, caminar—, y sin esto la
     // ficha de la tirada anterior seguía en pantalla debajo de la narración
@@ -319,7 +396,7 @@ export function App() {
                   setCampaignId(r.campaignId);
                   setState(r.state);
                   setLines([{ id: 'opening', kind: 'keeper', text: r.opening }]);
-                  aplicarOpciones(r.options ?? [], true);
+                  aplicarOpciones(r.options ?? [], r.campaignId);
                   setLastRoll(null); setStreaming(''); setTab('tablero');
                 }}
               />
@@ -342,7 +419,7 @@ export function App() {
           </div>
         ) : (
           <div className="input-area">
-            <Acciones options={options} nuevas={nuevas} busy={busy} onPick={send} />
+            <Acciones options={options} nuevas={marcas.pendientes} busy={busy} onPick={send} />
 
             {/* Sin esto, los temas desaparecían de golpe y parecía un bug.
                 Ahora la interfaz dice lo que la prosa ya dijo: no es que no
@@ -713,7 +790,7 @@ function Acciones({
   options: Opcion[];
   nuevas: Set<string>;
   busy: boolean;
-  onPick: (intencion: string) => void;
+  onPick: (intencion: string, id: string) => void;
 }) {
   // Un desenlace cierra la aventura y no hay rebobinado. Elegirlo sin saber
   // que lo era es la peor sorpresa posible, así que van aparte y piden un
@@ -739,7 +816,7 @@ function Acciones({
               <button
                 key={o.id}
                 className={`option option-${grupo} ${nuevas.has(o.id) ? 'option-nueva' : ''}`}
-                onClick={() => onPick(o.intencion)}
+                onClick={() => onPick(o.intencion, o.id)}
                 disabled={busy}
               >
                 {nuevas.has(o.id) && <span className="chispa">◆</span>}
@@ -761,7 +838,7 @@ function Acciones({
                 key={o.id}
                 className={`option option-final ${confirmando === o.id ? 'option-confirmar' : ''} ${nuevas.has(o.id) ? 'option-nueva' : ''}`}
                 onClick={() => {
-                  if (confirmando === o.id) { setConfirmando(null); onPick(o.intencion); }
+                  if (confirmando === o.id) { setConfirmando(null); onPick(o.intencion, o.id); }
                   else setConfirmando(o.id);
                 }}
                 onBlur={() => setConfirmando((c) => (c === o.id ? null : c))}
