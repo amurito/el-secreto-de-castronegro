@@ -35,13 +35,13 @@ const ENTRADAS: EntradaCatalogo[] = [
   {
     scenario: AGUA_QUIETA,
     cuando: '1924-10-26',
-    epoca: 'Octubre de 1924',
+    epoca: 'Octubre de 1924 · partido de Castronegro',
     duracion: 'Una hora aproximadamente',
   },
   {
     scenario: LA_LEGUA,
     cuando: '1925-03-11',
-    epoca: 'Marzo de 1925',
+    epoca: 'Marzo de 1925 · lejos de Castronegro',
     duracion: 'Una hora y media aproximadamente',
     // No es un requisito duro: se puede jugar sola. Pero Elena llega distinta
     // si ya vio el aljibe, y algunas cosas se leen de otra manera.

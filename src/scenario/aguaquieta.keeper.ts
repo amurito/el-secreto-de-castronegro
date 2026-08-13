@@ -49,8 +49,14 @@ export const AGUA_QUIETA_KEEPER: KeeperBriefing = {
     'es familiar, no siniestro.\n\n' +
     'LO QUE NO PODÉS HACER:\n' +
     '  · Explicar qué es el reflejo. Nadie lo sabe. Vos tampoco.\n' +
-    '  · Nombrar a Yog-Sothoth, el Umbral, Agua Blanca (el lugar), Castronegro, Bernardo o el anillo. ' +
-    'La única aparición permitida del nombre es la del registro catastral en el cuaderno, y ahí significa otra cosa.\n' +
+    '  · Nombrar a Yog-Sothoth, el Umbral, Bernardo o el anillo.\n' +
+    '  · Castronegro SÍ se puede nombrar: es el pueblo, a cuatro leguas, de donde vienen el correo, el ' +
+    'juzgado de paz y el médico. Es geografía, no revelación. Trátalo como cualquier pueblo de campo.\n' +
+    '  · «Agua Blanca» NO. La única aparición permitida es el asiento catastral que Ignacio copia en el ' +
+    'cuaderno, donde ya está escrito y donde el escribiente lo explica como un mineral. Si el jugador ' +
+    'pregunta qué es Agua Blanca, los NPC no saben: el nombre no está en la boca de nadie, está en un ' +
+    'papel de 1874 que a su vez copia uno más viejo que se perdió. No lo desarrolles, no lo confirmes y ' +
+    'no lo conectes con nada.\n' +
     '  · Resolver dónde está Ignacio.\n' +
     '  · Hacer que el fenómeno ataque. No es una criatura. No persigue. Sólo devuelve, y tarde.\n\n' +
     'CONSECUENCIA PERSISTENTE — registrala SIEMPRE, sea cual sea el final. El mundo tiene que recordar ' +

@@ -2,18 +2,31 @@
  * AGUA QUIETA — miniaventura de prueba del motor. ~1 hora.
  *
  * Conexión con el universo: INDIRECTA y deliberadamente incompleta.
- * v0.7 §1.3 dice que Agua Blanca es el primer punto CONOCIDO donde el Umbral
- * se manifiesta de forma natural — "conocido" deja lugar para otros. Este
- * escenario usa ese margen: un agua que se comporta de la misma manera, en otro
- * sitio, sin que nadie pueda todavía explicar por qué.
+ *
+ * DÓNDE PASA: Los Álamos es una fracción del partido de Castronegro, campo
+ * afuera. No es el pueblo y no es el obelisco: es el borde. La aventura sucede
+ * dentro del alcance del Umbral de Castronegro sin tocar nunca su centro.
+ *
+ * POR QUÉ ACÁ Y NO EN OTRO LADO: v0.7 §11 asigna a Agua Blanca / Castronegro
+ * el eje «tiempo, observación y memoria». Eso es exactamente esta aventura —
+ * un nivel de agua que no baja en dos meses, dos relojes parados a la misma
+ * hora, un reflejo que llega tarde. Ponerla en otro punto sería usar el
+ * fenómeno equivocado. El Segundo Umbral, el del espacio, es La Legua Perdida,
+ * y por eso pasa lejos de acá.
  *
  * NO revela, por diseño:
  *   · la identidad del Primer Rostro
  *   · la verdad completa del Umbral
  *   · la naturaleza de Yog-Sothoth
  *   · la historia del anillo
- * El nombre "agua blanca" aparece UNA vez, en un registro catastral viejo, y
- * quien lo escribió creía que hablaba de un mineral. Esa es toda la conexión.
+ *
+ * EL NOMBRE VIEJO: v0.7 §12 fija que «Agua Blanca» es como figura el lugar en
+ * los registros coloniales, y que Castronegro es lo que Bernardo funda encima
+ * en 1680. En 1924 nadie dice Agua Blanca: está escrito en el papel y nada
+ * más. Aparece UNA vez, en el asiento catastral que copia Ignacio, y el
+ * escribiente que se lo explica cree que habla de un mineral. Esa es toda la
+ * conexión, y es de sólo lectura: ningún NPC lo pronuncia y el Keeper no puede
+ * desarrollarlo.
  *
  * Nivel de canon: CANON_SETTING. No modifica el canon del universo.
  */
@@ -520,10 +533,12 @@ const documents: DiegeticDocument[] = [
       '2 de septiembre.\n' +
       'La marca sigue donde la puse. Diecinueve días. Es imposible.\n\n' +
       '19 de septiembre.\n' +
-      'Fui al juzgado de paz por lo del arriendo y aproveché para pedir los papeles viejos del campo. ' +
-      'En el registro de 1874 la fracción figura como «Los Álamos, aguada blanca». Le pregunté al escribiente ' +
-      'y me dijo que se le decía así a las aguadas con sales, que dejan el borde blanco al secarse. ' +
-      'Acá el borde no queda blanco. Nunca quedó. Pero el nombre está escrito.\n\n' +
+      'Fui al juzgado de paz de Castronegro por lo del arriendo y aproveché para pedir los papeles viejos ' +
+      'del campo. El asiento de 1874 no dice Castronegro. Dice que la fracción está «en el paraje de Agua ' +
+      'Blanca», y anota al margen que copia un título anterior que no está. Le pregunté al escribiente y ' +
+      'me dijo que antes se le decía así a todo esto, por las aguadas con sales, que dejan el borde blanco ' +
+      'al secarse. Acá el borde no queda blanco. Nunca quedó. Pero el nombre está escrito, y es más viejo ' +
+      'que el pueblo.\n\n' +
       '30 de septiembre.\n' +
       'Es el reflejo. Tarda. No es mucho, es como cuando uno se ve en un vidrio de tren, que la cara va un ' +
       'poco atrás. Se lo mostré a Rosa y me dijo que era el cansancio.\n\n' +
@@ -554,7 +569,8 @@ const documents: DiegeticDocument[] = [
     kind: 'letter',
     content:
       'Estimado colega:\n\n' +
-      'Respondo a su consulta sobre el caso de Los Álamos. Atendí a la señora Vera en el 97 y puedo ' +
+      'Respondo a su consulta sobre el caso de Los Álamos. Hice el camino desde Castronegro más veces de ' +
+      'las que me hubiera gustado. Atendí a la señora Vera en el 97 y puedo ' +
       'confirmarle lo que le contaron, con la salvedad de que lo que a usted le contaron ya pasó por ' +
       'demasiadas bocas.\n\n' +
       'No fue un ahogado. El aljibe tenía en ese momento poco más de un metro de agua y el hombre medía ' +
@@ -625,9 +641,9 @@ export const AGUA_QUIETA: Scenario = {
   title: 'Agua Quieta',
 
   surfacePremise:
-    'Ignacio Vera, arrendatario de la estancia Los Álamos, desapareció hace once noches. No hay cuerpo, ' +
-    'no hay nota, no hay rastro. La policía de campaña anotó "se ausentó del domicilio" y cerró el asunto. ' +
-    'Alguien tiene que ir a mirar.',
+    'Ignacio Vera, arrendatario de Los Álamos, a cuatro leguas de Castronegro, desapareció hace once ' +
+    'noches. No hay cuerpo, no hay nota, no hay rastro. La policía de campaña anotó "se ausentó del ' +
+    'domicilio" y cerró el asunto. Alguien tiene que ir a mirar.',
 
 
   investigators: [ELENA, TOMAS],
@@ -657,7 +673,8 @@ export const AGUA_QUIETA: Scenario = {
   ],
 
   opening:
-    'La chata del correo la dejó en el portón a las cinco y media y siguió viaje sin apagar el motor.\n\n' +
+    'La chata del correo salió de Castronegro a las cuatro, tardó una hora y media en cuatro leguas de ' +
+    'huella, la dejó en el portón y siguió viaje sin apagar el motor.\n\n' +
     'Los Álamos es una casa baja, un galpón y tres árboles que le dan el nombre, todo en medio de un campo ' +
     'que en octubre debería estar más verde. El portón estaba abierto. Nadie salió a recibirla.\n\n' +
     'En el patio hay un aljibe de ladrillo con brocal de piedra, y una mujer parada al lado del galpón con ' +

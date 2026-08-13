@@ -50,6 +50,11 @@ const REQUERIDO: Array<[string, string]> = [
   ['el secreto de Rosa', 'Había dos luces'],
   ['la narración del motor', 'Gritás el nombre hacia el aljibe'],
   ['los documentos diegéticos', 'tengo que ver si estoy'],
+  // El header de aguaquieta.ts afirmaba que el nombre viejo aparecía en un
+  // registro catastral. No aparecía: decía «aguada blanca», que no es el
+  // nombre. Declarado y no entregado, otra vez. Ahora está escrito y esta
+  // aserción impide que se pierda sin que nadie se entere.
+  ['el nombre viejo del lugar', 'paraje de Agua Blanca'],
 ];
 
 let fallos = 0;

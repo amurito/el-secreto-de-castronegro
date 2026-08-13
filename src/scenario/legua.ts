@@ -5,6 +5,16 @@
  * ESPACIO, y aclara que los nombres geográficos de los otros Umbrales no son
  * canon definitivo. Esta aventura usa ese margen.
  *
+ * DÓNDE PASA: LEJOS DE CASTRONEGRO, y eso es estructural, no decorativo. §11
+ * asigna a Agua Blanca / Castronegro el eje «tiempo, observación y memoria» —
+ * que es Agua Quieta— y al Segundo Umbral el del espacio, que es esto. Los
+ * Siete «no son siete puertas independientes que conducen a una habitación
+ * común»: son puntos distintos de una misma estructura. Traer esta aventura al
+ * partido de Castronegro fusionaría dos Umbrales en uno y rompería esa idea.
+ *
+ * Las dos son historias PARALELAS: mismo lustro, ningún personaje en común
+ * salvo el investigador si encadenás campaña, y ninguna explica a la otra.
+ *
  * NO confirma, por diseño:
  *   · que esto SEA el Segundo Umbral — se comporta como uno, nadie lo confirma
  *   · la relación con Agua Blanca, que desde acá no se puede establecer
