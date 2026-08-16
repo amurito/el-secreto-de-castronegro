@@ -284,6 +284,14 @@ export interface Investigator {
    * decía «doctora» sin mirar quién jugaba. Ver `rules/tratamiento.ts`.
    */
   treatment: string;
+  /**
+   * Sólo para concordancia gramatical —«lo»/«la», «cansado»/«cansada»—, vía
+   * los tokens `{lo}`/`{Lo}` en `rules/tratamiento.ts`. `treatment` alcanzaba
+   * para el tratamiento en sí, pero no para el resto de la oración: la
+   * apertura de las dos aventuras tenía «la dejó en el portón» fijo, mismo
+   * bug que «doctora» en una posición gramatical distinta.
+   */
+  genero: 'm' | 'f';
   nationality: string;
   description: string;
   birthplace?: string;

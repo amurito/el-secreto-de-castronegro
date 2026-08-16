@@ -674,11 +674,11 @@ export const AGUA_QUIETA: Scenario = {
 
   opening:
     'La chata del correo salió de Castronegro a las cuatro, tardó una hora y media en cuatro leguas de ' +
-    'huella, la dejó en el portón y siguió viaje sin apagar el motor.\n\n' +
+    'huella, {lo} dejó en el portón y siguió viaje sin apagar el motor.\n\n' +
     'Los Álamos es una casa baja, un galpón y tres árboles que le dan el nombre, todo en medio de un campo ' +
-    'que en octubre debería estar más verde. El portón estaba abierto. Nadie salió a recibirla.\n\n' +
+    'que en octubre debería estar más verde. El portón estaba abierto. Nadie salió a recibir{lo}.\n\n' +
     'En el patio hay un aljibe de ladrillo con brocal de piedra, y una mujer parada al lado del galpón con ' +
-    'un repasador en las manos, mirándola llegar desde hace un rato. Cuando usted está a diez metros, ' +
+    'un repasador en las manos, mirándo{lo} llegar desde hace un rato. Cuando usted está a diez metros, ' +
     'la mujer habla primero.\n\n' +
     // Sin artículo delante del token a propósito: «¿Usted es la doctora?»
     // funciona, pero «¿Usted es la comisario?» o «¿Usted es la don Tomás?» no.

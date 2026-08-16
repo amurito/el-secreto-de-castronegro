@@ -174,6 +174,7 @@ export function crearInvestigador(
     age: decisiones.edad,
     occupation: ocupacion.nombre,
     treatment: calcularTratamiento(decisiones.nombre.trim(), decisiones.genero, ocupacion),
+    genero: decisiones.genero,
     nationality: 'Argentina',
     description: decisiones.descripcion.trim(),
     characteristics: ch,

@@ -795,13 +795,13 @@ export const LA_LEGUA: Scenario = {
   ],
 
   opening:
-    'El break del pueblo la deja en el portón a las nueve y cuarto y el cochero no baja del pescante.\n\n' +
-    '—La esperan —dice, y señala con la barbilla la galería, donde hay tres personas que no están juntas: ' +
+    'El break del pueblo {lo} deja en el portón a las nueve y cuarto y el cochero no baja del pescante.\n\n' +
+    '—{Lo} esperan —dice, y señala con la barbilla la galería, donde hay tres personas que no están juntas: ' +
     'una mujer de vestido oscuro, un hombre de alpargatas parado en el escalón más bajo, y un viejo de traje ' +
     'que llegó por su cuenta y que nadie llamó.\n\n' +
     'La Perseverancia es una casa larga, tres eucaliptos y un campo que desde acá parece un campo. ' +
     'Del otro lado del potrero, chiquito y nítido, se ve un molino.\n\n' +
-    'A usted la mandaron a firmar un certificado de defunción. Fermín Arce, treinta y cuatro años, muerto ' +
+    'A usted {lo} mandaron a firmar un certificado de defunción. Fermín Arce, treinta y cuatro años, muerto ' +
     'de sed a doscientos metros de un tanque lleno. Para firmarlo hay que consignar el lugar del hecho.\n\n' +
     'Y ése, va a descubrir en las próximas horas, es el problema.',
 };

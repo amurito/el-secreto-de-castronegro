@@ -422,7 +422,12 @@ function takeItem(turn: Turn, i: Intent, out: string[], run: Runner): void {
     pickVariant(s, [
       'Pesa lo que tiene que pesar, que a esta altura ya es algo.',
       'Queda en tu bolsillo. Vas a acordarte de que lo tenés en el peor momento posible.',
-      'Ahora es tuyo, con lo que eso signifique en esta casa.',
+      // Sin «en esta casa»: era la variante genérica de agarrar CUALQUIER
+      // objeto, en CUALQUIER aventura, y «esta casa» sólo tenía sentido en
+      // Los Álamos. Agarrar la cantimplora de un muerto en un galpón de
+      // estancia con esa frase leía como si la estancia fuera una casa de
+      // familia. Genérico de verdad: sirve en cualquier lugar.
+      'Ahora es tuyo, con lo que eso signifique.',
     ]),
   );
 }

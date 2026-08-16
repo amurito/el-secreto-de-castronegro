@@ -14,6 +14,7 @@
 
 import { createCampaign, Turn } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
+import { LA_LEGUA } from './scenario/legua.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
@@ -114,6 +115,20 @@ async function main() {
   check('nunca dice «doctora» (Nico es varón)', !/doctora/i.test(texto));
   check('nunca deja el token {trato} sin resolver', !texto.includes('{trato}'));
   check('sí lo trata de «doctor» en algún momento', /doctor\b/.test(texto));
+
+  // ── {lo}/{Lo}: el resto de la gramática, no sólo el tratamiento ─────────
+  // Bug real, reportado jugando: la apertura de las dos aventuras tenía «la
+  // dejó en el portón», «recibirla», «la mandaron» fijos en femenino. {trato}
+  // arreglaba el sustantivo con el que te llaman; nada arreglaba el resto de
+  // la oración.
+  console.log('\n{lo}/{Lo}: EL RESTO DE LA GRAMÁTICA, NO SÓLO {trato}');
+  for (const [nombre, escenario] of [['Agua Quieta', AGUA_QUIETA], ['La Legua Perdida', LA_LEGUA]] as const) {
+    const abiertaVaron = conTrato(escenario.opening, nico);
+    check(`${nombre}: sin llaves sin resolver`, !/\{lo\}|\{Lo\}|\{trato\}/.test(abiertaVaron));
+    check(`${nombre}: nunca dice «la» donde debería decir «lo» (varón)`,
+      !/\bla dej[oó]|recibirla|mirándola|—La esperan|usted la mandaron/i.test(abiertaVaron),
+      abiertaVaron.slice(0, 80));
+  }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

@@ -40,11 +40,22 @@ export function calcularTratamiento(
 }
 
 /**
- * Reemplaza `{trato}` por el tratamiento del investigador activo. Sin el
- * token, no toca nada — así es seguro pasarle cualquier texto, no sólo el que
- * se sabe que se dirige al jugador.
+ * Reemplaza `{trato}` por el tratamiento del investigador activo, y
+ * `{lo}`/`{Lo}` por el pronombre de objeto que corresponda a su género
+ * («recibir{lo}» → «recibirlo»/«recibirla», «{Lo} esperan» → «Lo
+ * esperan»/«La esperan»). Sin los tokens, no toca nada — así es seguro
+ * pasarle cualquier texto, no sólo el que se sabe que se dirige al jugador.
+ *
+ * `{lo}` existe porque `{trato}` no alcanzaba: arregla CÓMO se dirigen al
+ * investigador, no el resto de la gramática de la oración. Las aperturas de
+ * las dos aventuras tenían «la dejó en el portón» fijo — mismo bug que
+ * «doctora», en una posición gramatical distinta.
  */
 export function conTrato(texto: string, inv: Investigator | null | undefined): string {
-  if (!texto.includes('{trato}')) return texto;
-  return texto.replaceAll('{trato}', inv?.treatment ?? 'usted');
+  if (!/\{trato\}|\{lo\}|\{Lo\}/.test(texto)) return texto;
+  const f = inv?.genero === 'f';
+  return texto
+    .replaceAll('{trato}', inv?.treatment ?? 'usted')
+    .replaceAll('{lo}', f ? 'la' : 'lo')
+    .replaceAll('{Lo}', f ? 'La' : 'Lo');
 }
