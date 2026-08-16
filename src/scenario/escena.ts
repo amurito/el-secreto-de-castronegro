@@ -79,7 +79,28 @@ export interface EfectoEscena {
    * de 5 o más aplica una crisis de locura temporal sin que la escena tenga
    * que pedirlo.
    */
-  cordura?: { amount: number; cause: string };
+  cordura?: {
+    amount: number;
+    cause: string;
+    /**
+     * Si ESTE golpe cruza el piso de 5+ que dispara una crisis de locura
+     * temporal (el motor decide si lo cruza, no la escena: la Exposición alta
+     * suma de más y la escena no puede saber cuánto de antemano), qué fobia o
+     * manía se lleva en vez de la genérica «Crisis de locura temporal».
+     *
+     * Sin esto, la crisis sigue existiendo —el motor la aplica igual— sólo
+     * que sin sabor propio. Con esto, lo que queda mal después de un aljibe
+     * que mira de vuelta no es lo mismo que lo que queda mal después de
+     * caminar un campo que no cierra, y la ficha lo dice.
+     */
+    crisis?: {
+      nombre: string;
+      descripcion: string;
+      tipo?: 'phobia' | 'mania';
+      /** Ver el signo en `MechanicalEffect`: positivo penaliza, negativo bonifica. */
+      afecta: Array<{ skill: string; dados: number }>;
+    };
+  };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   pregunta?: string;

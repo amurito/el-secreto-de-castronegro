@@ -228,7 +228,17 @@ export interface Condition {
 }
 
 export interface MechanicalEffect {
-  /** Dados de penalización/bonificación aplicados a estas habilidades. */
+  /**
+   * Dados aplicados a estas habilidades mientras la condición esté activa.
+   * `dice` POSITIVO es penalización, NEGATIVO es bonificación — igual que se
+   * lee «+1 dado en contra» o «-1 dado a favor» en la mesa. El motor los suma
+   * a los que ya traiga la tirada y los topa en 2, igual que cualquier otro
+   * modificador (`toolRequestRoll`).
+   *
+   * Estuvo declarado sin que nada lo leyera hasta que las fobias y manías
+   * necesitaron un efecto real: una condición que sólo cambia la prosa no es
+   * una fobia, es una etiqueta.
+   */
   skillModifiers?: Array<{ skill: SkillId | CharacteristicId; dice: number }>;
   note?: string;
 }

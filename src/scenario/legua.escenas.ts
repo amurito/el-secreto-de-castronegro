@@ -69,7 +69,23 @@ export const LEGUA_ESCENAS: Escenas = [
         // espacio no se comporta como espacio es percepción directa, igual
         // que el reflejo de Agua Quieta. Con la pifia cruza el piso de crisis
         // temporal (5) que aplica el motor solo.
-        cordura: { amount: pifio ? 5 : critico ? 1 : entera ? 2 : 3, cause: 'comprobar en el propio cuerpo que la línea no mide lo que debería' },
+        cordura: {
+          amount: pifio ? 5 : critico ? 1 : entera ? 2 : 3,
+          cause: 'comprobar en el propio cuerpo que la línea no mide lo que debería',
+          // El desenlace ya lo cuenta en prosa —«la primera cosa que va a
+          // hacer tu cabeza es empezar a contar postes»—; esto lo vuelve
+          // mecánico. Contar de menos no es sólo mala suerte social: cuenta
+          // en vez de escuchar. Y por qué es NEGATIVO en Descubrir: la misma
+          // compulsión que distrae en una charla afila la cuenta de detalles.
+          crisis: {
+            nombre: 'Compulsión de contar', tipo: 'mania',
+            descripcion:
+              'Postes, baldosas, sillas, palabras de una frase ajena: cualquier fila de cosas se cuenta sola, ' +
+              'sin que lo decida, y si alguien interrumpe hay que volver a empezar. Cuesta prestarle a una ' +
+              'conversación la atención que se le está yendo a un número.',
+            afecta: [{ skill: 'persuasion', dados: 1 }, { skill: 'descubrir', dados: -1 }],
+          },
+        },
         pistas: [{
           description: 'Caminar el alambrado del oeste lleva más tiempo del que permite su longitud, y de vuelta lleva más que de ida.',
           kind: 'experiential', source: 'la caminata', reliability: 'reliable',

@@ -78,7 +78,22 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
           // percibirse, y eso es Cordura, no Umbral. Con la pifia, seis
           // puntos de golpe cruzan el piso de crisis temporal (5) que el
           // motor aplica solo — ver toolApplySanityLoss.
-          cordura: { amount: pifio ? 6 : critico ? 2 : firme ? 3 : 4, cause: 'ver con claridad que el reflejo actúa por su cuenta' },
+          cordura: {
+            amount: pifio ? 6 : critico ? 2 : firme ? 3 : 4,
+            cause: 'ver con claridad que el reflejo actúa por su cuenta',
+            // Si esto cruza el piso de crisis (lo cruza seguro con la pifia,
+            // y puede cruzarlo igual con Exposición alta), se lleva ESTA
+            // fobia y no una genérica. Hipervigilante y desorientada no es
+            // sabor: es -1 dado real en Psicología y Orientarse mientras dure.
+            crisis: {
+              nombre: 'Horror a las superficies quietas', tipo: 'phobia',
+              descripcion:
+                'Desde el aljibe, cualquier superficie que no se mueve —un charco, un vidrio, un plato hondo— ' +
+                'tarda un segundo de más en dejar de parecer que está por hacer algo. No es que tenga miedo al ' +
+                'agua: es que dejó de confiar en que las cosas quietas estén realmente quietas.',
+              afecta: [{ skill: 'psicologia', dados: 1 }, { skill: 'orientarse', dados: 1 }],
+            },
+          },
           pistas: [{
             description: 'El reflejo del aljibe dejó de imitar y se movió por su cuenta. No es un efecto óptico: hay algo que usa el agua para mirar.',
             kind: 'experiential', source: 'observación sostenida hasta la respuesta', reliability: 'reliable',

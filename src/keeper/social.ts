@@ -22,6 +22,7 @@ import type { TemaConversacion, EfectoTema } from '../scenario/conversacion.ts';
 import { pickVariant } from './narrator.ts';
 import { ACTITUD, COSTO, REINTENTO, ACTITUD_POR_AGOTAR } from '../rules/social.config.ts';
 import { gradoDeLaTirada, huboExito } from './grado.ts';
+import { argsDeCrisis } from './crisis.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) =>
   { ok: boolean; message: string; emit?: { kind: string; data: unknown } };
@@ -73,7 +74,7 @@ function aplicar(
   }
   if (efecto.pregunta) run('raise_question', { question: efecto.pregunta });
   if (efecto.cordura) {
-    run('apply_sanity_loss', { amount: efecto.cordura, cause: causa });
+    run('apply_sanity_loss', { amount: efecto.cordura, cause: causa, ...argsDeCrisis(efecto.crisis) });
   }
   if (efecto.exposicion) {
     run('apply_umbral_exposure', {

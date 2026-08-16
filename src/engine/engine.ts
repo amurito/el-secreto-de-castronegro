@@ -14,7 +14,7 @@ import { uuid } from './crypto.ts';
 import type { GameEvent, Actor, GameEventType } from '../shared/events.ts';
 import type {
   GameState, InvestigatorId, RollRecord, RollModifier, Difficulty,
-  Clue, Npc, Condition, WorldTime, SkillId, CharacteristicId, Investigator,
+  Clue, Npc, Condition, MechanicalEffect, WorldTime, SkillId, CharacteristicId, Investigator,
 } from '../shared/types.ts';
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
@@ -715,6 +715,21 @@ export class Turn {
       modifiers.push({ kind: 'penalty_die', count: stabPenalty, reason: `Estabilidad ${inv.umbral.stability}/100` });
     }
 
+    // ★ Fobias y manías activas también se aplican solas. `mechanicalEffect`
+    //   está en el tipo desde el principio y hasta acá nada lo leía: una
+    //   condición que sólo cambiaba la prosa no era una fobia, era una
+    //   etiqueta. Positivo penaliza, negativo bonifica (ver `MechanicalEffect`).
+    for (const cond of inv.conditions) {
+      const mod = cond.mechanicalEffect?.skillModifiers?.find((m) => m.skill === skill);
+      if (!mod || mod.dice === 0) continue;
+      const count = clamp(Math.abs(mod.dice), 0, 2);
+      modifiers.push({
+        kind: mod.dice > 0 ? 'penalty_die' : 'bonus_die',
+        count,
+        reason: cond.name,
+      });
+    }
+
     const stakes = {
       onSuccess: String(raw.stakes_success ?? ''),
       onFailure: String(raw.stakes_failure ?? ''),
@@ -854,14 +869,31 @@ export class Turn {
       note = ' CORDURA EN 0: LOCURA INDEFINIDA. El investigador queda fuera de juego como personaje jugable — ' +
         'es el mismo cierre que la muerte, aunque no lo sea. No lo deshagas, no lo suavices.';
     } else if (from - to >= 5) {
+      // Si quien pidió la pérdida declaró una fobia o manía concreta, se
+      // lleva esa en vez de la genérica. El motor decide SI cruza el piso
+      // —la Exposición alta suma de más y quien pide la pérdida no puede
+      // saber cuánto de antemano— pero QUÉ se lleva puede venir declarado.
+      const nombre = String(raw.crisis_name ?? '').trim() || 'Crisis de locura temporal';
+      const descripcion = String(raw.crisis_description ?? '').trim()
+        || `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final de la ` +
+           'escena, y lo que haga durante ella no es enteramente decisión suya.';
+      const tipo = String(raw.crisis_kind ?? 'mental') as Condition['kind'];
+      const skillModifiers: NonNullable<MechanicalEffect['skillModifiers']> = [];
+      for (const n of [1, 2] as const) {
+        const skill = String(raw[`crisis_skill_${n}`] ?? '').trim();
+        const dice = Number(raw[`crisis_dice_${n}`] ?? 0);
+        if (skill && dice !== 0) skillModifiers.push({ skill: skill as SkillId, dice });
+      }
       this.aplicarCondicion({
-        name: 'Crisis de locura temporal',
-        description: `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final ` +
-          'de la escena, y lo que haga durante ella no es enteramente decisión suya.',
-        kind: 'mental',
+        name: nombre,
+        description: descripcion,
+        kind: tipo,
         temporary: true,
+        ...(skillModifiers.length ? { mechanicalEffect: { skillModifiers } } : {}),
       });
-      note = ' Pérdida de 5 o más en un golpe: crisis de locura temporal aplicada — ver la condición en la ficha.';
+      note = skillModifiers.length
+        ? ` Pérdida de 5 o más en un golpe: se lleva «${nombre}», con efecto real en tiradas futuras — ver la ficha.`
+        : ' Pérdida de 5 o más en un golpe: crisis de locura temporal aplicada — ver la condición en la ficha.';
     }
 
     return { ok: true, message: `Cordura ${from} → ${to} de ${inv.derived.maxSan}${extraNote}.${note}` };

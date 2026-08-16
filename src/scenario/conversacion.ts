@@ -50,6 +50,13 @@ export interface EfectoTema {
    * insoportable de escuchar. Ver el mismo campo en `scenario/escena.ts`.
    */
   cordura?: number;
+  /** Qué fobia o manía se lleva si `cordura` cruza el piso de crisis (5+). */
+  crisis?: {
+    nombre: string;
+    descripcion: string;
+    tipo?: 'phobia' | 'mania';
+    afecta: Array<{ skill: string; dados: number }>;
+  };
 }
 
 export interface TemaConversacion {

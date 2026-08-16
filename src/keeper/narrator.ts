@@ -151,7 +151,12 @@ export function describeScene(state: GameState, detailed: boolean): string {
  */
 function reaccionANPCsPresentes(state: GameState, primerNombre: string): string {
   const inv = state.investigators[state.activeInvestigator];
-  const crisis = inv?.conditions.find((c) => c.kind === 'mental' && c.temporary);
+  // 'mental' es la crisis genérica; 'phobia'/'mania' son las que se llevan
+  // sabor propio (ver `keeper/crisis.ts`). Las tres son la misma crisis de
+  // locura temporal contada distinto, y las tres ameritan que alguien lo note.
+  const crisis = inv?.conditions.find(
+    (c) => c.temporary && (c.kind === 'mental' || c.kind === 'phobia' || c.kind === 'mania'),
+  );
   if (!crisis) return '';
   return pickVariant(state, [
     `${primerNombre} lo nota apenas entra —algo en cómo se mueve, o en cómo no lo hace— y no dice nada todavía, ` +

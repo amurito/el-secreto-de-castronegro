@@ -20,6 +20,7 @@ import { porPrioridad } from '../scenario/escena.ts';
 import { pickVariant } from './narrator.ts';
 import type { Intent } from './intent.ts';
 import { gradoDeLaTirada, huboExito } from './grado.ts';
+import { argsDeCrisis } from './crisis.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) =>
   { ok: boolean; message: string; emit?: { kind: string; data: unknown } };
@@ -139,7 +140,10 @@ function aplicarEfecto(
     });
   }
   if (efecto.cordura) {
-    run('apply_sanity_loss', { amount: efecto.cordura.amount, cause: efecto.cordura.cause });
+    run('apply_sanity_loss', {
+      amount: efecto.cordura.amount, cause: efecto.cordura.cause,
+      ...argsDeCrisis(efecto.cordura.crisis),
+    });
   }
   if (efecto.dano) {
     run('apply_damage', { amount: efecto.dano.amount, cause: efecto.dano.cause });
