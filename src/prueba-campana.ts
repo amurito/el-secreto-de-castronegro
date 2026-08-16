@@ -23,7 +23,9 @@ import { accionesDisponibles } from './scenario/acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import { STABILITY_RECOVERY, techoDeEstabilidad } from './rules/umbral.config.ts';
-import type { GameState } from './shared/types.ts';
+import { OCUPACION_POR_ID } from './scenario/ocupaciones.ts';
+import { crearInvestigador } from './rules/ficha.ts';
+import type { GameState, Characteristics, Investigator } from './shared/types.ts';
 
 useStore(fileStore);
 
@@ -187,6 +189,70 @@ async function main() {
   check('jugar La Legua sola sigue funcionando',
     invDe(solo).umbral.exposure === 0 && solo.consequences.length === 0,
     `Exp ${invDe(solo).umbral.exposure}`);
+
+  // ── Un investigador propio no se pierde al encadenar ─────────────────────
+  // Bug real, reportado jugando: terminar Agua Quieta con un investigador
+  // armado a mano y seguir a La Legua Perdida devolvía a Elena, sin jugar.
+  // La causa estaba en `investigadoresDe`: recorría el elenco de la aventura
+  // NUEVA (siempre Elena y Tomás) y buscaba coincidencias de id contra la
+  // campaña vieja. Un id como «inv-nico-abc123» no coincide con ningún
+  // pregenerado de ninguna aventura, así que desaparecía enterito.
+  console.log('\nUN INVESTIGADOR PROPIO CRUZA, NO SE PIERDE');
+  {
+    const ch: Characteristics = { STR: 50, CON: 60, SIZ: 55, DEX: 60, APP: 55, INT: 70, POW: 60, EDU: 75 };
+    const ocupacion = OCUPACION_POR_ID['medico-rural']!;
+    const r = crearInvestigador(
+      { caracteristicas: ch, suerte: 55 },
+      {
+        nombre: 'Nico', genero: 'm', edad: 44, descripcion: 'Un investigador armado a mano.',
+        ocupacionId: 'medico-rural', restaFisica: { STR: 3, CON: 2 },
+        reparto: {
+          ocupacion: { medicina: 60, primeros_auxilios: 40, psicologia: 40, biblioteca: 40,
+            buscar_libros: 40, descubrir: 30, ciencia_naturales: 20, credito: 30 },
+          personal: { escuchar: 40, historia: 30, orientarse: 30, trepar: 20, nadar: 20 },
+        },
+        trasfondo: [
+          { id: 'a1', kind: 'personas', text: 'Un socio en Buenos Aires.' },
+          { id: 'a2', kind: 'lugares', text: 'Su consultorio.' },
+          { id: 'a3', kind: 'rasgos', text: 'Desconfiado.' },
+        ],
+        conexionClave: 'a1',
+      },
+      ocupacion, () => 99, () => 4,
+    );
+    if (!r.ok) throw new Error(`No se pudo armar a Nico: ${r.problemas.map((p) => p.mensaje).join(' | ')}`);
+    const nico = r.investigador as Investigator;
+
+    const idNico = await createCampaign(AGUA_QUIETA, 'CON NICO', 'w'.repeat(64), undefined, nico);
+    const usadas = new Set<string>();
+    for (let n = 0; n < 45; n++) {
+      const t = await Turn.open(idNico);
+      if (t.state.ending) break;
+      const disp = accionesDisponibles(t.state, AGUA_QUIETA);
+      const sig = disp.find((o) => !o.final && !usadas.has(o.id))
+        ?? disp.find((o) => o.id === 'bajar') ?? disp.find((o) => o.final);
+      if (!sig) break;
+      usadas.add(sig.id);
+      await turno(idNico, AGUA_QUIETA, sig.intencion);
+    }
+    const estadoNico = (await Turn.open(idNico)).state;
+    check('Nico terminó la primera aventura como activo', estadoNico.activeInvestigator === nico.id,
+      estadoNico.activeInvestigator);
+
+    const idContinua = await createCampaign(LA_LEGUA, 'CON NICO 2', 'y'.repeat(64), {
+      estadoAnterior: estadoNico, mesesTranscurridos: meses,
+    });
+    const continuado = (await loadState(idContinua)).state;
+    check('sigue siendo Nico, no una Elena nueva', continuado.activeInvestigator === nico.id,
+      `activo: ${continuado.investigators[continuado.activeInvestigator]?.name}`);
+    check('con lo que jugó, no de cero',
+      continuado.investigators[nico.id]?.umbral.exposure === estadoNico.investigators[nico.id]!.umbral.exposure
+      && continuado.investigators[nico.id]!.umbral.exposure > 0,
+      `Exposición: ${continuado.investigators[nico.id]?.umbral.exposure}`);
+    check('y Tomás sigue disponible de reserva, fresco',
+      continuado.investigators['inv-tomas']?.status === 'alive'
+      && continuado.reserveInvestigators.includes('inv-tomas'));
+  }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

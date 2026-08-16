@@ -228,16 +228,44 @@ function heredarInvestigador(inv: Investigator, meses: number): Investigator {
   };
 }
 
+/**
+ * Bug real, reportado jugando: terminar Agua Quieta con un investigador
+ * armado a mano y continuar a La Legua Perdida devolvía a Elena, sin jugar.
+ *
+ * La causa: esto recorría `scenario.investigators` —el elenco de la aventura
+ * NUEVA, que son siempre Elena y Tomás— y buscaba en la campaña vieja a
+ * alguien con el MISMO id que esos pregenerados. Un investigador propio tiene
+ * un id que no coincide con ningún pregenerado de ninguna aventura (`inv-` +
+ * nombre + timestamp), así que quedaba invisible para esta función enterita,
+ * y `activoDe` —que sólo mira lo que esto devuelve— no tenía forma de
+ * encontrarlo y caía en el primero de la lista: Elena, fresca.
+ *
+ * El arreglo: primero se heredan los DOS slots de siempre por coincidencia de
+ * id (mismo comportamiento que había, y sigue sirviendo para Tomás de
+ * reserva). Después se agrega, aparte, cualquiera de la campaña anterior que
+ * siga vivo y no tenga slot —es decir, un investigador propio—, con la MISMA
+ * herencia que recibiría un pregenerado. No importa si la aventura nueva lo
+ * conoce: un investigador es genérico, no específico de la aventura que lo
+ * vio nacer.
+ */
 function investigadoresDe(scenario: Scenario, herencia?: Herencia): Investigator[] {
   if (!herencia) return scenario.investigators;
   const previos = herencia.estadoAnterior.investigators;
-  return scenario.investigators.map((base) => {
+
+  const porSlot = scenario.investigators.map((base) => {
     const antes = previos[base.id];
     // Sólo hereda quien sobrevivió. Un investigador muerto sigue muerto: es la
     // regla más vieja del proyecto y el encadenado no la puede ablandar.
     if (!antes || antes.status !== 'alive') return base;
     return heredarInvestigador(antes, herencia.mesesTranscurridos);
   });
+
+  const idsDeSlot = new Set(scenario.investigators.map((i) => i.id));
+  const sinSlot = Object.values(previos)
+    .filter((i) => i.status === 'alive' && !idsDeSlot.has(i.id))
+    .map((i) => heredarInvestigador(i, herencia.mesesTranscurridos));
+
+  return [...porSlot, ...sinSlot];
 }
 
 function activoDe(scenario: Scenario, herencia?: Herencia): InvestigatorId {
