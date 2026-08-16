@@ -27,7 +27,7 @@
  * Es más honesto que leer el código y más barato que jugar mil partidas.
  */
 
-import type { GameState, Item, Npc } from '../shared/types.ts';
+import type { GameState, Item, Npc, SuccessDegree } from '../shared/types.ts';
 import type { Scenario } from '../scenario/types.ts';
 import type { EfectoEscena, EscenaAutoral, IntencionLeida } from '../scenario/escena.ts';
 
@@ -155,17 +155,25 @@ export function loQuePuedeEntregar(esc: Scenario, estados: GameState[]): Entrega
     }
   }
 
-  // Las escenas: se las ejecuta con las dos ramas de la tirada.
+  // Las escenas: se las ejecuta con los SEIS grados de tirada, no sólo
+  // éxito/fracaso. Desde que una escena puede declarar contenido específico
+  // para un crítico o una pifia (ver `keeper/grado.ts`), ese contenido es
+  // exactamente la clase de cosa que esta auditoría existe para encontrar: si
+  // una pifia da una pista que ningún otro camino entrega, tiene que aparecer
+  // acá como alcanzable, no quedar declarada y sin verificar.
+  const GRADOS: SuccessDegree[] = ['critical', 'extreme', 'hard', 'regular', 'failure', 'fumble'];
+  const exitoso = (g: SuccessDegree) => g !== 'failure' && g !== 'fumble';
   for (const escena of esc.scenes as EscenaAutoral[]) {
     for (const estado of estados) {
-      for (const exito of [true, false]) {
+      for (const grado of GRADOS) {
         try {
           const antes = escena.antes?.(estado, INTENCION_VACIA);
           if (antes) recolectar(antes, out);
+          const exito = exitoso(grado);
           recolectar(escena.resolver({
             estado,
             intencion: INTENCION_VACIA,
-            tirada: { exito, mensaje: exito ? 'SUPERA la dificultad' : 'NO SUPERA la dificultad' },
+            tirada: { exito, grado, mensaje: exito ? 'SUPERA la dificultad' : 'NO SUPERA la dificultad' },
             variante: (o) => o[0] ?? '',
           }), out);
         } catch (err) {

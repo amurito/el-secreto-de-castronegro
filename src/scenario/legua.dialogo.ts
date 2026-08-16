@@ -149,7 +149,9 @@ export const LEGUA_TEMAS: Conversaciones = [
       ],
     },
     cerrado: {
-      texto: ['—Doctora, usted vino a firmar un papel. —Y sonríe con la boca nada más.'],
+      // {trato} a mitad de frase: ver la nota de `keeper/social.ts` sobre por
+      // qué el token nunca abre la oración.
+      texto: ['—Usted, {trato}, vino a firmar un papel. —Y sonríe con la boca nada más.'],
     },
   },
 
@@ -374,6 +376,31 @@ export const LEGUA_TEMAS: Conversaciones = [
       exposicion: 6,
       revelaSecreto: 's-e-tercera',
     },
+    // Un 01 es éxito automático, y acá significa que Eusebio no sólo contesta:
+    // contesta la pregunta que usted todavía no le hizo.
+    critico: {
+      actitud: 12,
+      texto: [
+        'El viejo tarda mucho en contestar. Cuando contesta, no la mira, y por primera vez en veintidós años ' +
+        'termina la idea entera.\n\n' +
+        '—La tercera la hice de noche, con lámpara, porque quería descartar el error del anteojo. —Traga—. ' +
+        'Ocho mil cuatrocientos treinta.\n\n' +
+        '—Ése es el número que le da a usted si cuenta los postes. Lo sé porque los conté yo también, esa noche, ' +
+        'uno por uno, hasta que se me acabó el querosén.\n\n' +
+        '—Y entonces entendí que el número dependía de la hora. Y que eso no se puede escribir en una mensura, ' +
+        'porque una mensura es un papel que después firma un juez.\n\n' +
+        'Se queda callado un rato. Después agrega lo que veintidós años nunca le sacaron a nadie:\n\n' +
+        '—La medí una cuarta vez. Al amanecer, con la primera luz. Dio nueve mil once. Esa no la firmé ni se la ' +
+        'conté a nadie, porque una mensura que cambia con la hora del día no es una mensura: es una pregunta ' +
+        'disfrazada de número, y a mí me pagaban por números.',
+      ],
+      pista: {
+        description: 'Roldán midió una cuarta vez, al amanecer: 9.011 metros. No la registró ni la contó a nadie hasta ahora. El campo no tiene un solo número que no cierra: tiene varios, todos distintos, todos según la hora.',
+        kind: 'testimonial', reliability: 'reliable',
+      },
+      exposicion: 6,
+      revelaSecreto: 's-e-tercera',
+    },
     esquiva: {
       texto: [
         '—La tercera la descarté. —Y ahí se le nota la edad por primera vez—. Un instrumento descalibrado. ' +
@@ -381,9 +408,27 @@ export const LEGUA_TEMAS: Conversaciones = [
         'Lo dice mirando el bastón. Veintidós años diciendo lo mismo no le alcanzaron para aprender a decirlo bien.',
       ],
     },
-    cerrado: {
+    // Una pifia en Psicología acá no es que Eusebio esquive: es que usted
+    // presiona mal a un viejo que lleva veintidós años protegiendo esto, y
+    // él se cierra de una manera que ya no se puede reabrir con otra tirada.
+    pifia: {
+      actitud: -10,
       texto: [
-        '—Con todo respeto, señora: usted es médica. —Y no lo dice con desprecio, sino con cansancio—. ' +
+        'Algo en cómo lo pregunta lo cierra de golpe, como una puerta que se golpea sola con el viento.\n\n' +
+        '—La tercera la descarté —dice, y esta vez no le tiembla la voz ni le falla la mirada. Es la primera ' +
+        'vez que miente bien.\n\n' +
+        'Se levanta, apoyado en el bastón, y usted entiende que la conversación terminó de una manera distinta ' +
+        'a las otras veces: no porque él se cansó, sino porque decidió que con usted no valía la pena seguir ' +
+        'intentando decirlo.',
+      ],
+    },
+    cerrado: {
+      // Antes decía «usted es médica», que asumía a la vez género y ocupación
+      // —el mismo error que «doctora», con otras palabras—. La broma de
+      // Eusebio no necesita saber qué estudió el investigador: necesita saber
+      // que no es agrimensor, y eso vale para cualquiera.
+      texto: [
+        '—Con todo respeto, {trato}: medir no es su oficio. —Y no lo dice con desprecio, sino con cansancio—. ' +
         'Tráigame a alguien que sepa medir y hablamos.',
       ],
     },

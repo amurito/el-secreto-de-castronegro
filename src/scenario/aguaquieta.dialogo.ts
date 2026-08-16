@@ -221,6 +221,26 @@ export const ROSA_TEMAS: Conversaciones = [
       exposicion: 3,
       revelaSecreto: 's-rosa-vio',
     },
+    // Un 01 es éxito automático, como cualquier éxito: Rosa cede igual. La
+    // diferencia es que un crítico en Psicología no sólo la hace hablar, la
+    // hace hablar de más — cuenta el detalle que se guardaba incluso al ceder.
+    critico: {
+      actitud: 9,
+      texto: [
+        'Se queda callada un momento más largo de lo cómodo, y cuando arranca ya no para.\n\n' +
+        '—La noche siguiente vine con el farol. A llamarlo. —Se mira las manos—. El farol tarda en aparecer en el ' +
+        'agua, ¿sabe? Uno se asoma y la luz llega después. Y cuando llegó… había dos luces. Yo tenía una sola.\n\n' +
+        'Se detiene, pero esta vez sigue:\n\n' +
+        '—Y la otra luz no estaba quieta como la mía. Se movía para el costado, despacito, como buscando algo que ' +
+        'no era yo. Por eso saqué la soga. No fue miedo a que él subiera. Fue miedo a que subiera lo otro.',
+      ],
+      pista: {
+        description: 'La segunda luz que vio Rosa en el aljibe se movía por su cuenta, buscando algo que no era ella. Rosa sacó la soga por eso, no por miedo a que Ignacio volviera.',
+        kind: 'testimonial', reliability: 'reliable',
+      },
+      exposicion: 3,
+      revelaSecreto: 's-rosa-vio',
+    },
     esquiva: {
       actitud: 4,
       texto: [
@@ -228,6 +248,23 @@ export const ROSA_TEMAS: Conversaciones = [
         'dice que suena ensayada—. Yo estaba durmiendo.\n\nDespués, más bajo, casi para ella:\n\n' +
         '—Y desde entonces duermo con la luz prendida, que es un gasto.',
       ],
+    },
+    // Una pifia acá no es «esquivó»: es «mintió mal, y usted se dio cuenta».
+    // Preguntar mal una cosa así cuesta más que no preguntarla. Ver el
+    // comentario de `esquiva` para el piso —esto es peor que eso.
+    pifia: {
+      actitud: -6,
+      texto: [
+        'Rosa contesta demasiado rápido.\n\n—Yo no vi nada —dice—. Yo estaba durmiendo.\n\n' +
+        'Y usted se da cuenta, ahí mismo, de que es mentira: la mano con el repasador no se mueve, y las personas ' +
+        'que duermen no tienen esa clase de quietud despierta.\n\n' +
+        'No va a volver a preguntárselo así. Lo que sea que Rosa esté protegiendo, ahora sabe que usted casi ' +
+        'llega, y eso la hace más difícil, no más fácil.',
+      ],
+      pista: {
+        description: 'Rosa mintió al decir que dormía la noche siguiente a la desaparición: no se comporta como alguien que duerme.',
+        kind: 'testimonial', reliability: 'reliable',
+      },
     },
     cerrado: {
       texto: [

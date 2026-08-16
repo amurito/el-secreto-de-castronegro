@@ -92,6 +92,19 @@ export interface TemaConversacion {
    * acá ni siquiera hubo tirada.
    */
   cerrado?: EfectoTema;
+  /**
+   * Qué contesta ante un 01 —crítico, siempre supera cualquier dificultad—.
+   * Sin esto, un crítico usa `cede`: ceder es ceder, pero un tema que quiera
+   * distinguir «contestó» de «contestó mejor de lo que hacía falta» puede.
+   */
+  critico?: EfectoTema;
+  /**
+   * Qué contesta ante una pifia —96-100, o sólo 100 con habilidad ≥50;
+   * siempre pierde—. Sin esto, una pifia usa `esquiva`: la diferencia no es
+   * mecánica, es que una pifia puede costar más que una pregunta sin
+   * contestar. Ver `keeper/grado.ts`.
+   */
+  pifia?: EfectoTema;
 }
 
 /** Todos los temas de una aventura, en un solo lugar. */

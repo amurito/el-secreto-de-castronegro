@@ -26,9 +26,10 @@
     "prueba:tiradas": "tsx src/prueba-tiradas.ts",
     "prueba:auditoria": "tsx src/prueba-auditoria.ts",
     "prueba:tratamiento": "tsx src/prueba-tratamiento.ts",
+    "prueba:critico": "tsx src/prueba-critico-pifia.ts",
     "revisar:bundle": "tsx src/revisar-bundle.ts",
     "desplegar": "tsx src/desplegar.ts",
-    "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run prueba:desenlaces && npm run prueba:social && npm run prueba:umbral && npm run prueba:desarrollo && npm run prueba:desacople && npm run prueba:legua && npm run prueba:campana && npm run prueba:creacion && npm run prueba:tiradas && npm run prueba:auditoria && npm run prueba:tratamiento && npm run build && npm run revisar:bundle"
+    "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run prueba:desenlaces && npm run prueba:social && npm run prueba:umbral && npm run prueba:desarrollo && npm run prueba:desacople && npm run prueba:legua && npm run prueba:campana && npm run prueba:creacion && npm run prueba:tiradas && npm run prueba:auditoria && npm run prueba:tratamiento && npm run prueba:critico && npm run build && npm run revisar:bundle"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",

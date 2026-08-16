@@ -24,7 +24,7 @@
  * del proyecto se mantiene: el contenido propone, el motor dispone.
  */
 
-import type { GameState, Clue, SkillId, LocationId } from '../shared/types.ts';
+import type { GameState, Clue, SkillId, LocationId, SuccessDegree } from '../shared/types.ts';
 import type { Dificultad } from './conversacion.ts';
 
 /**
@@ -104,9 +104,22 @@ export interface ContextoEscena {
   intencion: IntencionLeida;
   /**
    * Resultado de `prueba`. `null` si la escena no pidió tirada.
-   * `mensaje` es lo que devolvió el motor, por si la escena quiere citarlo.
+   *
+   * `grado` es el resultado CoC 7e tal cual lo dio el motor —crítico, extremo,
+   * difícil, regular, fracaso o pifia— para que una escena pueda distinguir un
+   * éxito cualquiera de uno excepcional, o un fracaso cualquiera de una pifia.
+   * `exito` sigue existiendo para el caso común, que es la mayoría: sólo
+   * importa si superó la dificultad o no.
+   *
+   * Reglamento (7e, sin tabla propietaria): 01 siempre es crítico y siempre
+   * supera cualquier dificultad; 96-100 —o sólo 100 con habilidad ≥50— siempre
+   * es pifia y siempre la pierde. Eso ya lo aplica `rules/dice.ts` antes de
+   * que la escena vea nada. Lo que el manual deja a criterio del Keeper es QUÉ
+   * pasa además de ganar o perder, y una escena que declara contenido para
+   * `grado === 'critical'` o `'fumble'` es exactamente eso: la decisión del
+   * Keeper, escrita de antemano porque acá no hay un Keeper en vivo.
    */
-  tirada: { exito: boolean; mensaje: string } | null;
+  tirada: { exito: boolean; grado: SuccessDegree; mensaje: string } | null;
   /** Elige una variante que no se haya usado todavía en esta partida. */
   variante: (opciones: string[]) => string;
 }

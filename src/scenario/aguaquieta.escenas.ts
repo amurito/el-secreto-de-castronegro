@@ -62,39 +62,67 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
     resolver: ({ estado, tirada }) => {
       if (aqui(estado) !== 'patio') return { texto: ['El aljibe está en el patio.'] };
       const firme = tirada?.exito ?? false;
+      const grado = tirada?.grado;
+      // Con penalizador de por medio, esta tirada pifia más seguido que la
+      // mayoría, y es el momento de la aventura donde más importa que pifie
+      // distinto a fallar. Un crítico, en cambio, es el único momento en que
+      // el investigador se va con algo a favor.
+      const pifio = grado === 'fumble';
+      const critico = grado === 'critical';
       return [
         {
-          exposicion: { amount: 18, source: 'aljibe:respuesta', cause: 'sostener la mirada hasta que el reflejo respondió' },
-          estabilidad: { amount: firme ? -12 : -22, cause: 'que el reflejo dejara de imitar' },
+          exposicion: { amount: pifio ? 24 : 18, source: 'aljibe:respuesta', cause: 'sostener la mirada hasta que el reflejo respondió' },
+          estabilidad: { amount: pifio ? -30 : critico ? -8 : firme ? -12 : -22, cause: 'que el reflejo dejara de imitar' },
           pistas: [{
             description: 'El reflejo del aljibe dejó de imitar y se movió por su cuenta. No es un efecto óptico: hay algo que usa el agua para mirar.',
             kind: 'experiential', source: 'observación sostenida hasta la respuesta', reliability: 'reliable',
           }],
           consecuencia: {
-            description: 'El investigador sostuvo la mirada hasta que el fenómeno del aljibe respondió.',
+            description: pifio
+              ? 'El investigador sostuvo la mirada hasta que el fenómeno del aljibe respondió, y algo se quedó mirando de vuelta más tiempo del que debía.'
+              : 'El investigador sostuvo la mirada hasta que el fenómeno del aljibe respondió.',
             scope: 'campaign', permanent: true,
-            worldReminder: 'El agua respondió a este investigador. Lo que sea que mira desde el aljibe ahora sabe qué cara tiene.',
+            worldReminder: pifio
+              ? 'El agua no sólo respondió: se quedó un rato mirando de más antes de irse. Lo que sea que mira desde el aljibe conoce a este investigador mejor de lo que a este investigador le gustaría.'
+              : 'El agua respondió a este investigador. Lo que sea que mira desde el aljibe ahora sabe qué cara tiene.',
           },
           texto: [
             'En algún momento del tercero, la cara del agua deja de copiarte.\n\n' +
             'No hace nada espectacular. Simplemente sigue ahí, con tu cara, quieta, mientras vos parpadeás. ' +
-            'Y después, sin apuro, ladea la cabeza hacia un lado al que vos no la ladeaste.',
+            'Y después, sin apuro, ladea la cabeza hacia un lado al que vos no la ladeaste.'
+            + (pifio
+              ? '\n\nY se queda así. Uno, dos, tres segundos de más, mirándote ladeada, como si estuviera terminando de anotar algo.'
+              : critico
+                ? '\n\nY volvés en vos casi al instante, con la certeza incómoda de haber entendido más de lo que tardaste en entenderlo.'
+                : ''),
           ],
           desenlace: {
             id: 'mirar', title: 'Lo que devuelve la mirada',
-            text: firme
-              ? 'Te apartás del brocal por decisión propia, que es más de lo que la mayoría podría decir.\n\n' +
-                'Rosa está en la puerta de la cocina con el repasador en las manos y no pregunta nada, porque te vio la cara ' +
-                'y ya sabe. Adentro pone la pava, y las dos toman mate sin hablar hasta que se hace de noche.\n\n' +
-                'Vos entendiste qué es el aljibe. No lo vas a poder escribir en el informe de una manera que sirva, ' +
-                'y vas a volver a Buenos Aires con eso adentro.\n\n' +
-                'Lo que no vas a saber nunca es si el aljibe entendió qué sos vos, o si le alcanzó con verte.'
-              : 'No sabés cómo llegaste al suelo del patio. Rosa te está sacudiendo el hombro y el sol está en otro lado del cielo, ' +
-                'mucho más abajo, y ella dice que estuviste tres horas asomada sin contestarle.\n\n' +
-                'Te levantás. Te lavás la cara en el balde, no en el aljibe, y esa distinción te parece la cosa más importante ' +
-                'que decidiste en tu vida.\n\n' +
-                'Entendiste qué es el aljibe. También entendiste, con la misma claridad, que el aljibe tuvo tres horas ' +
-                'para entenderte a vos, y que vos no te acordás de ninguna.',
+            text: pifio
+              ? 'No te apartás del brocal: te caés hacia atrás, de espaldas, y quedás mirando el cielo un rato antes de poder ' +
+                'sentarte.\n\n' +
+                'Rosa sale corriendo del galpón y no pregunta nada, porque te vio la cara —la que tenías cuando te asomaste, ' +
+                'no la de ahora— y algo en ella ya lo sabía de antes.\n\n' +
+                'Vos entendiste qué es el aljibe, de la peor manera posible: entendiendo, también, con exactitud, cuánto rato ' +
+                'más se quedó mirándote después de que vos ya habías dejado de mirar.\n\n' +
+                'Eso no se lo vas a poder contar a nadie de un modo que no suene a delirio. Y vas a tener razón en no contarlo, ' +
+                'porque una parte de vos —la parte que se cayó de espaldas— sabe que contarlo es otra forma de invitarlo.'
+              : firme
+                ? 'Te apartás del brocal por decisión propia, que es más de lo que la mayoría podría decir.\n\n' +
+                  'Rosa está en la puerta de la cocina con el repasador en las manos y no pregunta nada, porque te vio la cara ' +
+                  'y ya sabe. Adentro pone la pava, y las dos toman mate sin hablar hasta que se hace de noche.\n\n' +
+                  'Vos entendiste qué es el aljibe. No lo vas a poder escribir en el informe de una manera que sirva, ' +
+                  'y vas a volver a Buenos Aires con eso adentro.\n\n' +
+                  (critico
+                    ? 'Lo que no sabías es que ibas a poder volver a mirarlo sin que te cueste nada: la comprensión, esta vez, ' +
+                      'se te acomodó adentro sin pelearse con el resto de vos. No es que te haya dolido menos. Es que entró bien.'
+                    : 'Lo que no vas a saber nunca es si el aljibe entendió qué sos vos, o si le alcanzó con verte.')
+                : 'No sabés cómo llegaste al suelo del patio. Rosa te está sacudiendo el hombro y el sol está en otro lado del cielo, ' +
+                  'mucho más abajo, y ella dice que estuviste tres horas asomada sin contestarle.\n\n' +
+                  'Te levantás. Te lavás la cara en el balde, no en el aljibe, y esa distinción te parece la cosa más importante ' +
+                  'que decidiste en tu vida.\n\n' +
+                  'Entendiste qué es el aljibe. También entendiste, con la misma claridad, que el aljibe tuvo tres horas ' +
+                  'para entenderte a vos, y que vos no te acordás de ninguna.',
           },
         },
       ];
@@ -372,6 +400,21 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
         },
       };
 
+      // Una pifia en esta tirada no es «perdiste el hilo un rato»: es la
+      // versión mala de eso. 96-100 (o sólo 100 con POW ≥50) siempre pierde,
+      // y acá pierde peor —lo que en la mesa el manual deja a criterio del
+      // Keeper, escrito de antemano porque acá no hay uno en vivo.
+      if (tirada?.grado === 'fumble') {
+        return [apertura, {
+          texto: [
+            'Pasa un rato largo. Cuando por fin lográs apartar la vista, no fue decisión tuya: fue Rosa, ' +
+            'sacudiéndote del hombro y diciendo tu nombre por segunda o tercera vez.\n\n' +
+            'No sabés cuánto estuviste así. No sabés, tampoco, en qué momento dejaste de mirar vos y empezaste ' +
+            'a ser mirado.',
+          ],
+          estabilidad: { amount: -14, cause: 'perder el control de la mirada, no sólo la cuenta del tiempo' },
+        }, exposicion];
+      }
       if (!tirada?.exito) {
         return [apertura, {
           texto: [variante([
@@ -382,12 +425,22 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
         }, exposicion];
       }
 
+      // Un crítico (01) es éxito automático, como cualquier éxito. La
+      // diferencia que declara esta escena es que sale limpio: se entiende lo
+      // mismo, sin que la comprensión cueste tanto.
+      const critico = tirada.grado === 'critical';
+
       // Lo que se descubre depende de lo que TODAVÍA NO SE DESCUBRIÓ, no de
       // cuántas veces se intentó. Atado a los intentos, si la primera tirada
       // fallaba la pista del retardo quedaba fuera de alcance para siempre.
       if (!pista(estado, 'retardo perceptible')) {
         return [apertura, {
-          texto: ['Y entonces lo notás, porque estabas atento: cuando ladeás la cabeza, la cara del agua ladea la cabeza una fracción de segundo después. Poco. Lo que tarda un vidrio de tren. Pero un vidrio de tren tiene una excusa.'],
+          texto: [
+            'Y entonces lo notás, porque estabas atento: cuando ladeás la cabeza, la cara del agua ladea la cabeza una fracción de segundo después. Poco. Lo que tarda un vidrio de tren. Pero un vidrio de tren tiene una excusa.'
+            + (critico
+              ? '\n\nLo notás sin esfuerzo, además, como quien encuentra algo que en realidad estaba buscando: no te cuesta creerlo. Eso, después, te va a costar más que el descubrimiento en sí.'
+              : ''),
+          ],
           pistas: [{
             description: 'El reflejo del aljibe imita al observador con un retardo perceptible, constante, de una fracción de segundo.',
             kind: 'experiential', source: 'observación directa del aljibe', reliability: 'reliable',
@@ -405,7 +458,8 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
             description: 'El retardo del reflejo aumenta con la velocidad del movimiento: no es un efecto óptico constante.',
             kind: 'experiential', source: 'observación repetida del aljibe', reliability: 'reliable',
           }],
-          estabilidad: { amount: -5, cause: 'comprobar que el retardo responde al movimiento' },
+          // Con un crítico, entender esto no descoloca: se comprueba y listo.
+          ...(critico ? {} : { estabilidad: { amount: -5, cause: 'comprobar que el retardo responde al movimiento' } }),
         }, exposicion];
       }
 

@@ -19,10 +19,10 @@ import type {
 import { porPrioridad } from '../scenario/escena.ts';
 import { pickVariant } from './narrator.ts';
 import type { Intent } from './intent.ts';
+import { gradoDeLaTirada, huboExito } from './grado.ts';
 
-type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
-
-const exito = (msg: string) => /SUPERA la dificultad/.test(msg) && !/NO SUPERA/.test(msg);
+type Runner = (tool: string, args: Record<string, unknown>) =>
+  { ok: boolean; message: string; emit?: { kind: string; data: unknown } };
 
 /**
  * Traduce lo que entendió el clasificador a lo que ve la aventura.
@@ -195,7 +195,7 @@ export function ejecutarEscena(
       penalty_dice: prueba.penalty_dice ?? 0,
       modifier_reason: prueba.modifier_reason ?? '',
     });
-    tirada = { exito: exito(r.message), mensaje: r.message };
+    tirada = { exito: huboExito(r), grado: gradoDeLaTirada(r), mensaje: r.message };
   }
 
   const ctx: ContextoEscena = {

@@ -21,10 +21,10 @@ import type { GameState, Npc } from '../shared/types.ts';
 import type { TemaConversacion, EfectoTema } from '../scenario/conversacion.ts';
 import { pickVariant } from './narrator.ts';
 import { ACTITUD, COSTO, REINTENTO, ACTITUD_POR_AGOTAR } from '../rules/social.config.ts';
+import { gradoDeLaTirada, huboExito } from './grado.ts';
 
-type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
-
-const exito = (msg: string) => /SUPERA la dificultad/.test(msg) && !/NO SUPERA/.test(msg);
+type Runner = (tool: string, args: Record<string, unknown>) =>
+  { ok: boolean; message: string; emit?: { kind: string; data: unknown } };
 
 export const actitudDe = (s: GameState, npc: Npc) => npc.attitude[s.activeInvestigator] ?? 0;
 
@@ -169,15 +169,27 @@ export function resolverTema(
     modifier_reason: razones.join(' y '),
   });
 
-  if (exito(tirada.message)) {
-    aplicar(turn, npc, tema.cede, out, run, `cedió en: ${tema.id}`, tema.id);
+  const grado = gradoDeLaTirada(tirada);
+  if (huboExito(tirada)) {
+    // Un crítico (01) cede igual que cualquier éxito, pero si el tema declaró
+    // algo especial para ese caso, gana. No es distinto EN LA REGLA —un
+    // crítico siempre supera cualquier dificultad, como cualquier éxito— es
+    // distinto en lo que cuenta el NPC.
+    const efecto = grado === 'critical' && tema.critico ? tema.critico : tema.cede;
+    aplicar(turn, npc, efecto, out, run, `cedió en: ${tema.id}`, tema.id);
   } else {
     run('change_npc_state', {
       npc_id: npc.id, status: 'unchanged', present: 'unchanged',
       attitude_delta: 0, patience_delta: 0, dodged_topic: tema.id,
       cause: `esquivó la pregunta sobre ${tema.id}`,
     });
-    if (tema.esquiva) aplicar(turn, npc, tema.esquiva, out, run, `esquivó: ${tema.id}`, tema.id);
+    // Una pifia (96-100, o sólo 100 con habilidad ≥50) también pierde la
+    // pregunta, pero puede costar más que una esquiva cualquiera: es la
+    // diferencia entre «no contestó» y «contestó mal, y ahora hay que
+    // arreglarlo». Ver `pifia` en `scenario/conversacion.ts`.
+    const especial = grado === 'fumble' ? tema.pifia : undefined;
+    if (especial) aplicar(turn, npc, especial, out, run, `pifió: ${tema.id}`, tema.id);
+    else if (tema.esquiva) aplicar(turn, npc, tema.esquiva, out, run, `esquivó: ${tema.id}`, tema.id);
     else {
       out.push(pickVariant(s, [
         `${npc.name.split(' ')[0]} contesta al lado de la pregunta, y se nota que es a propósito.`,
@@ -204,7 +216,12 @@ function avisarSiSeAgota(turn: Turn, npc: Npc, out: string[], run: Runner): void
   });
   out.push(pickVariant(turn.state, [
     `\n${ahora.name.split(' ')[0]} deja lo que está haciendo y se queda mirándote.\n\n` +
-    '—Doctora. Tengo que hacer la cena. —No lo dice con enojo, que sería más fácil—. Después seguimos.',
+    // {trato} en minúscula a propósito y no al principio de la frase: `conTrato`
+    // hace un reemplazo literal, así que si el token abriera la oración
+    // quedaría con minúscula donde iría mayúscula («doctora.» en vez de
+    // «Doctora.»). Está armada para que la sustitución caiga siempre a mitad
+    // de frase.
+    '—Ya está, {trato}. Tengo que hacer la cena. —No lo dice con enojo, que sería más fácil—. Después seguimos.',
     `\n—Ya está —dice ${ahora.name.split(' ')[0]}—. Por hoy ya está.\n\n` +
     'Y se pone a lavar algo que no está sucio, que es lo que hace cuando se termina una conversación.',
   ]));

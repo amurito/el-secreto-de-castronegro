@@ -55,10 +55,16 @@ export const LEGUA_ESCENAS: Escenas = [
     }),
     resolver: ({ tirada }) => {
       const entera = tirada?.exito ?? false;
+      // Igual que en Agua Quieta: con penalizador de por medio, esta tirada
+      // pifia más seguido que la mayoría, y es donde más importa que pifiar
+      // no sea lo mismo que fallar. El crítico es el único momento de la
+      // aventura en el que caminar la línea sale sin costarle todo.
+      const pifio = tirada?.grado === 'fumble';
+      const critico = tirada?.grado === 'critical';
       return [{
         tiempo: { minutes: 11 * 60, reason: 'caminar el alambrado del oeste' },
-        exposicion: { amount: 20, source: 'oeste:caminar', cause: 'caminar la línea entera de punta a punta' },
-        estabilidad: { amount: entera ? -18 : -28, cause: 'contar postes hasta perder la cuenta de las horas' },
+        exposicion: { amount: pifio ? 26 : 20, source: 'oeste:caminar', cause: 'caminar la línea entera de punta a punta' },
+        estabilidad: { amount: pifio ? -36 : critico ? -10 : entera ? -18 : -28, cause: 'contar postes hasta perder la cuenta de las horas' },
         pistas: [{
           description: 'Caminar el alambrado del oeste lleva más tiempo del que permite su longitud, y de vuelta lleva más que de ida.',
           kind: 'experiential', source: 'la caminata', reliability: 'reliable',
@@ -66,36 +72,61 @@ export const LEGUA_ESCENAS: Escenas = [
         consecuencia: {
           description: 'El investigador caminó el alambrado del oeste de punta a punta.',
           scope: 'campaign', permanent: true,
-          worldReminder: 'El investigador caminó la línea entera. Sea lo que sea que le pasa al espacio en ese campo, le pasó a él durante once horas.',
+          worldReminder: pifio
+            ? 'El investigador caminó la línea entera y perdió la cuenta más de una vez, cada vez desde un número distinto. Once horas no le alcanzaron para volver siendo la misma persona que salió.'
+            : 'El investigador caminó la línea entera. Sea lo que sea que le pasa al espacio en ese campo, le pasó a él durante once horas.',
         },
         texto: [
           'Contás postes. Es lo único que se puede hacer y es lo que hacen todos: contar postes.\n\n' +
           'A los trescientos el sol está donde debería. A los seiscientos también. A los ochocientos cuarenta y ' +
           'tres llegás a la esquina, y son las cuatro y media de la tarde, y saliste a las siete de la mañana.\n\n' +
           'Ocho kilómetros y medio en nueve horas y media es la velocidad de una persona muy vieja o de una ' +
-          'persona que se detuvo mucho. Vos no te detuviste.',
+          'persona que se detuvo mucho. Vos no te detuviste.'
+          + (pifio
+            ? '\n\nO no del todo. Hay un tramo, entre el ochocientos y el ochocientos veinte, del que no te acordás ' +
+              'haber caminado. Contaste esos veinte postes igual. La letra de tu propia libreta lo prueba.'
+            : critico
+              ? '\n\nY llegás sabiendo algo más que el número: sabés, con una certeza que no viene de contar, en qué ' +
+                'poste exacto el campo dejó de medir lo que mide. No hace falta volver a comprobarlo.'
+              : ''),
         ],
         desenlace: {
           id: 'caminar', title: 'Lo que camina',
-          text: entera
-            ? 'Volvés de noche, por adentro del campo y no por la línea, porque la línea ya la caminaste y no ' +
-              'querés saber cuánto mide de vuelta.\n\n' +
-              'Casimiro está en el portón del corral con un farol. No pregunta nada. Te alcanza el mate y se sienta ' +
-              'en el escalón, al lado tuyo, y se quedan los dos mirando el campo negro.\n\n' +
-              '—Ahora sabe —dice.\n\n' +
-              'Y sí. Ahora sabe. Lo que no sabe es qué hacer con eso, y a los sesenta y siete años de Casimiro ' +
-              'nadie le encontró una respuesta a esa parte.\n\n' +
-              'Elena Sartori firmó el certificado de defunción de Fermín Arce al día siguiente. Puso ' +
-              '«deshidratación» y puso el lugar que le pedía el formulario, y las dos cosas eran ciertas y ninguna ' +
-              'era verdad.'
-            : 'No volvés esa noche.\n\n' +
-              'Casimiro te encuentra a la mañana siguiente sentada contra un poste, con la cantimplora todavía ' +
-              'por la mitad, contando en voz baja. Ibas por ochocientos noventa y uno.\n\n' +
-              'No estás deshidratada, no estás insolada y no estás herida. Estás contando.\n\n' +
-              'Te lleva al casco a caballo y no le cuenta a nadie en qué estado te encontró. Vos tampoco te lo ' +
-              'contás del todo.\n\n' +
-              'Y durante el resto de tu vida, cada vez que camines al lado de un alambrado, la primera cosa que ' +
-              'va a hacer tu cabeza —antes de pensarlo, antes de decidirlo— es empezar a contar postes.',
+          text: pifio
+            ? 'No volvés esa noche, y tampoco a la mañana siguiente exactamente.\n\n' +
+              'Casimiro te encuentra al segundo día, contra el mismo poste que la vez anterior —ochocientos ' +
+              'noventa y uno— pero con la libreta llena de números que no coinciden entre sí, tachados y ' +
+              'reescritos, como si hubieras contado el mismo tramo muchas veces y cada vez te hubiera dado otra ' +
+              'cosa.\n\n' +
+              'No estás deshidratada, no estás insolada y no estás herida. Estás contando, y no parás cuando te ' +
+              'habla, y no parás del todo nunca más: durante el resto de tu vida, cualquier fila de postes, de ' +
+              'baldosas, de sillas, la vas a contar sin darte cuenta y vas a tener que volver a empezar si alguien ' +
+              'te interrumpe. No por costumbre. Por necesidad.\n\n' +
+              'Elena Sartori firmó el certificado de defunción de Fermín Arce, pero esta vez lo firmó otra persona: ' +
+              'alguien la ayudó a sostener la lapicera.'
+            : entera
+              ? 'Volvés de noche, por adentro del campo y no por la línea, porque la línea ya la caminaste y no ' +
+                'querés saber cuánto mide de vuelta.\n\n' +
+                'Casimiro está en el portón del corral con un farol. No pregunta nada. Te alcanza el mate y se sienta ' +
+                'en el escalón, al lado tuyo, y se quedan los dos mirando el campo negro.\n\n' +
+                '—Ahora sabe —dice.\n\n' +
+                'Y sí. Ahora sabe. Lo que no sabe es qué hacer con eso, y a los sesenta y siete años de Casimiro ' +
+                'nadie le encontró una respuesta a esa parte.\n\n' +
+                'Elena Sartori firmó el certificado de defunción de Fermín Arce al día siguiente. Puso ' +
+                '«deshidratación» y puso el lugar que le pedía el formulario, y las dos cosas eran ciertas y ninguna ' +
+                'era verdad.'
+                + (critico
+                  ? '\n\nLa firmó con mano firme, además, que es más de lo que esperaba de sí misma. Entender esto no ' +
+                    'le costó la mano.'
+                  : '')
+              : 'No volvés esa noche.\n\n' +
+                'Casimiro te encuentra a la mañana siguiente sentada contra un poste, con la cantimplora todavía ' +
+                'por la mitad, contando en voz baja. Ibas por ochocientos noventa y uno.\n\n' +
+                'No estás deshidratada, no estás insolada y no estás herida. Estás contando.\n\n' +
+                'Te lleva al casco a caballo y no le cuenta a nadie en qué estado te encontró. Vos tampoco te lo ' +
+                'contás del todo.\n\n' +
+                'Y durante el resto de tu vida, cada vez que camines al lado de un alambrado, la primera cosa que ' +
+                'va a hacer tu cabeza —antes de pensarlo, antes de decidirlo— es empezar a contar postes.',
         },
       }];
     },
