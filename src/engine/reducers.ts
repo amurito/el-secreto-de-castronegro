@@ -403,6 +403,15 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'INVESTIGATOR_WENT_INSANE': {
+      const p = ev.payload as P.InvestigatorWentInsanePayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (inv) inv.status = 'insane';
+      s.narrative.push(entry(ev, 'system',
+        `${inv?.name ?? 'El investigador'} pierde la razón por completo. ${p.cause}`));
+      break;
+    }
+
     case 'INVESTIGATOR_INTRODUCED': {
       const p = ev.payload as P.InvestigatorIntroducedPayload;
       s.activeInvestigator = p.investigatorId;

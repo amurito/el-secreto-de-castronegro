@@ -69,6 +69,17 @@ export interface EfectoEscena {
   }>;
   exposicion?: { amount: number; source: string; cause: string };
   estabilidad?: { amount: number; cause: string };
+  /**
+   * Pérdida de Cordura de verdad (CoC 7e), distinta de Exposición/Estabilidad
+   * —que son la mecánica propia del Umbral—. Ver `rules/umbral.config.ts` §
+   * cabecera: SAN y Exposición NO se convierten una en otra; esto es la
+   * tercera variable, la del reglamento base, y hasta ahora ninguna escena la
+   * tocaba. `amount` es lo que decide ESTA escena; el motor le suma solo lo
+   * que corresponda por Exposición alta (★ en `engine.ts`), y si el golpe es
+   * de 5 o más aplica una crisis de locura temporal sin que la escena tenga
+   * que pedirlo.
+   */
+  cordura?: { amount: number; cause: string };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   pregunta?: string;

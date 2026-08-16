@@ -61,7 +61,8 @@ try {
   node(TSX, ['src/prueba-auditoria.ts']);
   node(TSX, ['src/prueba-tratamiento.ts']);
   node(TSX, ['src/prueba-critico-pifia.ts']);
-  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo, desacople, las dos aventuras, el encadenado, la creación, el criterio de tiradas, la auditoría de alcanzabilidad, el tratamiento y crítico/pifia en verde');
+  node(TSX, ['src/prueba-cordura.ts']);
+  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo, desacople, las dos aventuras, el encadenado, la creación, el criterio de tiradas, la auditoría de alcanzabilidad, el tratamiento, crítico/pifia y Cordura en verde');
 
   paso(2, 'Construyendo…');
   if (existsSync(join(RAIZ, 'dist'))) rmSync(join(RAIZ, 'dist'), { recursive: true, force: true });

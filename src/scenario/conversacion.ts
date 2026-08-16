@@ -45,6 +45,11 @@ export interface EfectoTema {
   revelaSecreto?: string;
   /** Exposición al Umbral, si oír esto es en sí mismo un contacto. */
   exposicion?: number;
+  /**
+   * Pérdida de Cordura de verdad, si lo que cuenta el NPC es en sí mismo
+   * insoportable de escuchar. Ver el mismo campo en `scenario/escena.ts`.
+   */
+  cordura?: number;
 }
 
 export interface TemaConversacion {

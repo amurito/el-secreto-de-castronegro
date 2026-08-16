@@ -138,6 +138,9 @@ function aplicarEfecto(
       amount: efecto.estabilidad.amount, cause: efecto.estabilidad.cause,
     });
   }
+  if (efecto.cordura) {
+    run('apply_sanity_loss', { amount: efecto.cordura.amount, cause: efecto.cordura.cause });
+  }
   if (efecto.dano) {
     run('apply_damage', { amount: efecto.dano.amount, cause: efecto.dano.cause });
   }

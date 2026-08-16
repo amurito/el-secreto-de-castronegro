@@ -219,6 +219,7 @@ export const ROSA_TEMAS: Conversaciones = [
         kind: 'testimonial', reliability: 'reliable',
       },
       exposicion: 3,
+      cordura: 1,
       revelaSecreto: 's-rosa-vio',
     },
     // Un 01 es éxito automático, como cualquier éxito: Rosa cede igual. La
@@ -239,6 +240,7 @@ export const ROSA_TEMAS: Conversaciones = [
         kind: 'testimonial', reliability: 'reliable',
       },
       exposicion: 3,
+      cordura: 2,
       revelaSecreto: 's-rosa-vio',
     },
     esquiva: {

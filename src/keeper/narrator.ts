@@ -128,9 +128,40 @@ export function describeScene(state: GameState, detailed: boolean): string {
   const npcs = Object.values(state.npcs).filter((n) => n.present && n.status === 'alive');
   if (npcs.length) {
     parts.push(`${npcs.map((n) => n.name).join(' y ')} ${npcs.length > 1 ? 'están' : 'está'} acá.`);
+    const reaccion = reaccionANPCsPresentes(state, npcs[0]!.name.split(' ')[0]!);
+    if (reaccion) parts.push(reaccion);
   }
 
   return parts.filter(Boolean).join('\n\n');
+}
+
+/**
+ * Un NPC nota cómo llega el investigador, no sólo lo que le pregunta.
+ *
+ * Antes esto no existía: la interfaz con el mundo era enteramente el diálogo,
+ * así que un investigador con una crisis de locura temporal en la ficha
+ * seguía recibiendo exactamente las mismas líneas de ambiente que uno
+ * perfectamente entero. La ficha existía y nadie la miraba.
+ *
+ * No es específico de ningún NPC —el motor no sabe quién es Rosa ni quién es
+ * Eusebio— así que la reacción es genérica a propósito: cualquier persona que
+ * ve entrar a alguien temblando reacciona más o menos así. Lo escrito acá es
+ * lo mínimo verificable; una aventura que quiera algo más propio de su NPC
+ * puede declarar su propia escena de mayor prioridad y esta ni se ofrece.
+ */
+function reaccionANPCsPresentes(state: GameState, primerNombre: string): string {
+  const inv = state.investigators[state.activeInvestigator];
+  const crisis = inv?.conditions.find((c) => c.kind === 'mental' && c.temporary);
+  if (!crisis) return '';
+  return pickVariant(state, [
+    `${primerNombre} lo nota apenas entra —algo en cómo se mueve, o en cómo no lo hace— y no dice nada todavía, ` +
+    'pero deja de hacer lo que estaba haciendo.',
+    `${primerNombre} sigue mirándolo un momento más largo de lo normal antes de volver a lo suyo. No pregunta. ` +
+    'Alguien que pregunta espera una respuesta, y por la cara que trae, mejor no.',
+    // Última variante: se asienta como estado, no como sobresalto repetido.
+    `${primerNombre} ya se acostumbró a la cara que trae desde hace un rato y actúa con normalidad, que es su ` +
+    'manera de no hacer más difícil lo que ya es difícil.',
+  ]);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

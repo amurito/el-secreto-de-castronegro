@@ -841,8 +841,28 @@ export class Turn {
       ? ` (${base} de la fuente + ${extra} extra porque su Exposición al Umbral es ${inv.umbral.exposure}: el horror tiene dónde agarrarse)`
       : '';
     let note = '';
-    if (to === 0) note = ' SAN en 0: locura permanente. El investigador queda fuera de juego como personaje jugable.';
-    else if (from - to >= 5) note = ' Pérdida de 5 o más en un golpe: corresponde una crisis de locura temporal.';
+
+    // CoC 7e p. 166: cinco o más puntos de Cordura en un solo golpe es una
+    // crisis de locura temporal, automática. En modo IA el Keeper podía
+    // narrarla y olvidarse de aplicarla; en modo motor no hay nadie que la
+    // note si el motor no la aplica. Se aplica sola, igual que ★ arriba.
+    if (to === 0 && from > 0) {
+      this.emit('INVESTIGATOR_WENT_INSANE', {
+        investigatorId: inv.id,
+        cause: `Cordura en 0. ${cause}`,
+      });
+      note = ' CORDURA EN 0: LOCURA INDEFINIDA. El investigador queda fuera de juego como personaje jugable — ' +
+        'es el mismo cierre que la muerte, aunque no lo sea. No lo deshagas, no lo suavices.';
+    } else if (from - to >= 5) {
+      this.aplicarCondicion({
+        name: 'Crisis de locura temporal',
+        description: `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final ` +
+          'de la escena, y lo que haga durante ella no es enteramente decisión suya.',
+        kind: 'mental',
+        temporary: true,
+      });
+      note = ' Pérdida de 5 o más en un golpe: crisis de locura temporal aplicada — ver la condición en la ficha.';
+    }
 
     return { ok: true, message: `Cordura ${from} → ${to} de ${inv.derived.maxSan}${extraNote}.${note}` };
   }
@@ -916,17 +936,31 @@ export class Turn {
   }
 
   private toolApplyCondition(raw: Record<string, unknown>): ToolOutcome {
-    const inv = this.investigator;
-    const condition: Condition = {
-      id: id(),
+    const condition = this.aplicarCondicion({
       name: String(raw.name ?? ''),
       description: String(raw.description ?? ''),
       kind: String(raw.kind ?? 'status') as Condition['kind'],
       temporary: String(raw.temporary ?? 'true') === 'true',
+    });
+    return { ok: true, message: `Condición aplicada: ${condition.name}.` };
+  }
+
+  /**
+   * Registra una condición sin pasar por la herramienta pública. La usa
+   * `toolApplySanityLoss` para la crisis de locura temporal (p. 166: pérdida
+   * de 5 o más de Cordura en un solo golpe): en modo motor no hay un Keeper
+   * en vivo que reciba el aviso y decida aplicarla, así que la regla se
+   * aplica sola en vez de quedar pendiente de que alguien la note.
+   */
+  private aplicarCondicion(datos: Omit<Condition, 'id' | 'since'>): Condition {
+    const inv = this.investigator;
+    const condition: Condition = {
+      ...datos,
+      id: id(),
       since: this.pending[this.pending.length - 1]?.id ?? 'inicio',
     };
     this.emit('CONDITION_APPLIED', { investigatorId: inv.id, condition });
-    return { ok: true, message: `Condición aplicada: ${condition.name}.` };
+    return condition;
   }
 
   // ── OBJETOS Y DESCUBRIMIENTO ───────────────────────────────────────────────

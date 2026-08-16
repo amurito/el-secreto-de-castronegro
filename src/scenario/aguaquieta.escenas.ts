@@ -73,6 +73,12 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
         {
           exposicion: { amount: pifio ? 24 : 18, source: 'aljibe:respuesta', cause: 'sostener la mirada hasta que el reflejo respondió' },
           estabilidad: { amount: pifio ? -30 : critico ? -8 : firme ? -12 : -22, cause: 'que el reflejo dejara de imitar' },
+          // Cordura de verdad, además de Estabilidad: el reflejo dejando de
+          // imitar es percepción directa de algo que no debería poder
+          // percibirse, y eso es Cordura, no Umbral. Con la pifia, seis
+          // puntos de golpe cruzan el piso de crisis temporal (5) que el
+          // motor aplica solo — ver toolApplySanityLoss.
+          cordura: { amount: pifio ? 6 : critico ? 2 : firme ? 3 : 4, cause: 'ver con claridad que el reflejo actúa por su cuenta' },
           pistas: [{
             description: 'El reflejo del aljibe dejó de imitar y se movió por su cuenta. No es un efecto óptico: hay algo que usa el agua para mirar.',
             kind: 'experiential', source: 'observación sostenida hasta la respuesta', reliability: 'reliable',

@@ -76,6 +76,7 @@ export type GameEventType =
   | 'THRESHOLD_CROSSED'
   | 'VISION_RECEIVED'
   | 'INVESTIGATOR_DIED'
+  | 'INVESTIGATOR_WENT_INSANE'
   | 'INVESTIGATOR_INTRODUCED'
   | 'SKILL_IMPROVED'
   | 'BACKSTORY_REVISED'
@@ -260,6 +261,17 @@ export interface NarrationEmittedPayload {
 }
 
 export interface InvestigatorDiedPayload {
+  investigatorId: InvestigatorId;
+  cause: string;
+}
+
+/**
+ * Cordura en 0 (CoC 7e p. 166): locura indefinida, el investigador queda
+ * fuera de juego como personaje jugable. No es la muerte, pero cierra la
+ * partida para él igual que la muerte: por eso el status y el flujo de
+ * reserva son los mismos que en `INVESTIGATOR_DIED`.
+ */
+export interface InvestigatorWentInsanePayload {
   investigatorId: InvestigatorId;
   cause: string;
 }

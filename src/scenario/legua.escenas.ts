@@ -65,6 +65,11 @@ export const LEGUA_ESCENAS: Escenas = [
         tiempo: { minutes: 11 * 60, reason: 'caminar el alambrado del oeste' },
         exposicion: { amount: pifio ? 26 : 20, source: 'oeste:caminar', cause: 'caminar la línea entera de punta a punta' },
         estabilidad: { amount: pifio ? -36 : critico ? -10 : entera ? -18 : -28, cause: 'contar postes hasta perder la cuenta de las horas' },
+        // Cordura, no sólo Estabilidad: haber demostrado EN EL CUERPO que el
+        // espacio no se comporta como espacio es percepción directa, igual
+        // que el reflejo de Agua Quieta. Con la pifia cruza el piso de crisis
+        // temporal (5) que aplica el motor solo.
+        cordura: { amount: pifio ? 5 : critico ? 1 : entera ? 2 : 3, cause: 'comprobar en el propio cuerpo que la línea no mide lo que debería' },
         pistas: [{
           description: 'Caminar el alambrado del oeste lleva más tiempo del que permite su longitud, y de vuelta lleva más que de ida.',
           kind: 'experiential', source: 'la caminata', reliability: 'reliable',

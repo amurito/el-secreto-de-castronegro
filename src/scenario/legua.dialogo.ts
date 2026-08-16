@@ -374,6 +374,7 @@ export const LEGUA_TEMAS: Conversaciones = [
         kind: 'testimonial', reliability: 'reliable',
       },
       exposicion: 6,
+      cordura: 1,
       revelaSecreto: 's-e-tercera',
     },
     // Un 01 es éxito automático, y acá significa que Eusebio no sólo contesta:
@@ -399,6 +400,7 @@ export const LEGUA_TEMAS: Conversaciones = [
         kind: 'testimonial', reliability: 'reliable',
       },
       exposicion: 6,
+      cordura: 2,
       revelaSecreto: 's-e-tercera',
     },
     esquiva: {

@@ -72,6 +72,9 @@ function aplicar(
     }
   }
   if (efecto.pregunta) run('raise_question', { question: efecto.pregunta });
+  if (efecto.cordura) {
+    run('apply_sanity_loss', { amount: efecto.cordura, cause: causa });
+  }
   if (efecto.exposicion) {
     run('apply_umbral_exposure', {
       amount: efecto.exposicion, cause: `lo que dijo ${npc.name}`,
