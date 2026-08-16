@@ -31,6 +31,7 @@ function make(
   name: string,
   age: number,
   occupation: string,
+  treatment: string,
   description: string,
   ch: Characteristics,
   luck: number,
@@ -47,6 +48,7 @@ function make(
     name,
     age,
     occupation,
+    treatment,
     nationality: 'Argentina',
     description,
     characteristics: ch,
@@ -67,6 +69,7 @@ export const ELENA: Investigator = make(
   'Elena Sartori',
   34,
   'Médica rural',
+  'doctora',
   'Se recibió en Buenos Aires y eligió el campo, cosa que su familia todavía no le perdona. ' +
     'Escucha más de lo que habla. Tiene la costumbre de anotar todo lo que ve antes de opinar sobre ello, ' +
     'y la costumbre peor de volver a leer sus notas hasta encontrarles un defecto.',
@@ -116,6 +119,7 @@ export const TOMAS: Investigator = make(
   'Tomás Belgrano',
   29,
   'Periodista de policiales',
+  'don Tomás',
   'Trabaja para un diario de provincia que le paga tarde y mal. Llegó a Los Álamos porque una desaparición ' +
     'en el campo es media columna, y porque le debe favores a demasiada gente en la ciudad. ' +
     'Fotografía todo. Cree que una imagen es una prueba, lo cual es su virtud y va a ser su problema.',

@@ -173,30 +173,36 @@ export function classify(state: GameState, raw: string): Intent {
     else if (present.length === 1) target = { kind: 'npc', npc: present[0]! };
   }
 
-  // 1. Detalles examinables de esta localización (lo más específico primero).
+  // 1+2. Detalles de la localización Y objetos al alcance, en una sola
+  // competencia. Gana el nombre MÁS LARGO que coincida, sea de un detalle o
+  // de un objeto — antes las features se miraban primero y ganaban por orden,
+  // no por especificidad, así que «Llevarte cantimplora de Fermín» resolvía
+  // el objetivo contra la feature del cadáver (alias «fermín», 6 letras) en
+  // vez del ítem que el jugador estaba señalando («cantimplora», 11 letras).
+  // Bug real, reportado jugando: agarrar cualquier objeto «de Fermín» tiraba
+  // «Fermín no es algo que puedas llevarte». Unificar el criterio lo cierra
+  // para cualquier objeto cuyo nombre incluya el de un NPC o un detalle.
   if (target.kind === 'none') {
+    let mejor: { target: Intent['target']; largo: number } | null = null;
     for (const f of loc.features ?? []) {
-      if (f.names.some((n) => t.includes(norm(n)))) { target = { kind: 'feature', feature: f }; break; }
+      for (const n of f.names.map(norm)) {
+        if (n.length >= 3 && t.includes(n) && (!mejor || n.length > mejor.largo)) {
+          mejor = { target: { kind: 'feature', feature: f }, largo: n.length };
+        }
+      }
     }
-  }
-
-  // 2. Objetos al alcance.
-  if (target.kind === 'none') {
     const inv = state.investigators[state.activeInvestigator]!;
     const reachable = Object.values(state.items).filter((i) => i.owner === loc.id || i.owner === inv.id);
-    // Los nombres salen del objeto, no de una tabla escrita acá. Gana el
-    // alias MÁS LARGO que coincida: «foto dada vuelta» le gana a «foto», sin
-    // que el escenario tenga que ordenarlos de específico a genérico.
-    let mejor: { item: typeof reachable[number]; largo: number } | null = null;
+    // Los nombres salen del objeto, no de una tabla escrita acá.
     const candidatos = reachable.length ? reachable : Object.values(state.items);
     for (const item of candidatos) {
       for (const n of [norm(item.name), ...(item.aliases ?? []).map(norm)]) {
         if (n.length >= 3 && t.includes(n) && (!mejor || n.length > mejor.largo)) {
-          mejor = { item, largo: n.length };
+          mejor = { target: { kind: 'item', item }, largo: n.length };
         }
       }
     }
-    if (mejor) target = { kind: 'item', item: mejor.item };
+    if (mejor) target = mejor.target;
   }
 
   // 3. Personajes presentes.

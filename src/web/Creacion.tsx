@@ -21,6 +21,16 @@ import {
   tirarCaracteristicasDe, presupuesto, armar, catalogoCreacion, efectoEdad,
   type TiradaInicial,
 } from '../app/creacion.ts';
+import { calcularTratamiento } from '../rules/tratamiento.ts';
+
+/** Vista previa del botón de tratamiento, antes de tocar «Tirar». */
+function tratamientoPreview(
+  ocupacionId: string, genero: 'm' | 'f',
+  catalogo: ReturnType<typeof catalogoCreacion>, nombre: string,
+): string {
+  const ocupacion = catalogo.ocupaciones.find((o) => o.id === ocupacionId)!;
+  return calcularTratamiento(nombre.trim() || 'Investigador', genero, ocupacion);
+}
 
 const ETIQUETA_CAR: Record<CharacteristicId, string> = {
   STR: 'FUE', CON: 'CON', SIZ: 'TAM', DEX: 'DES',
@@ -49,6 +59,7 @@ export function Creacion({
   const [paso, setPaso] = useState<Paso>('quien');
 
   const [nombre, setNombre] = useState('');
+  const [genero, setGenero] = useState<'m' | 'f'>('f');
   const [edad, setEdad] = useState(34);
   const [descripcion, setDescripcion] = useState('');
   const [ocupacionId, setOcupacionId] = useState(catalogo.ocupaciones[0]!.id);
@@ -85,7 +96,7 @@ export function Creacion({
       .map((c) => ({ id: c.kind, kind: c.kind, text: trasfondo[c.kind]!.trim() }));
 
     const r = armar(tirada, {
-      nombre, edad, descripcion, ocupacionId,
+      nombre, genero, edad, descripcion, ocupacionId,
       caracteristicaElegida: elegida,
       restaFisica: restaFisica as never,
       restaJuventud: restaJuventud as never,
@@ -128,6 +139,20 @@ export function Creacion({
             <span>Nombre</span>
             <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Casilda Ferreyra" />
           </label>
+
+          <div className="campo">
+            <span>
+              Cómo se dirige a {nombre.trim() ? 'ella' : 'él o ella'} la gente de campo
+            </span>
+            <div className="eleccion">
+              <button className={`chip ${genero === 'f' ? 'chip-on' : ''}`} onClick={() => setGenero('f')}>
+                {tratamientoPreview(ocupacionId, 'f', catalogo, nombre)}
+              </button>
+              <button className={`chip ${genero === 'm' ? 'chip-on' : ''}`} onClick={() => setGenero('m')}>
+                {tratamientoPreview(ocupacionId, 'm', catalogo, nombre)}
+              </button>
+            </div>
+          </div>
 
           <label className="campo">
             <span>Edad — {efecto.etiqueta}</span>

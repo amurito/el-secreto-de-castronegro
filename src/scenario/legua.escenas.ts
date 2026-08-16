@@ -134,7 +134,7 @@ export const LEGUA_ESCENAS: Escenas = [
           'mensura por profesional distinto, ya que la presentada contiene un error material evidente.\n\n' +
           'Y tienen razón. Desde La Plata, con el papel sobre el escritorio, lo único que se puede concluir es ' +
           'que alguien midió mal.\n\n' +
-          'Eso es lo que descubrió usted, doctora: no que el campo no cierra. Que se puede demostrar que no ' +
+          'Eso es lo que descubrió usted, {trato}: no que el campo no cierra. Que se puede demostrar que no ' +
           'cierra, con testigos y con firma, y que la demostración no le sirve a nadie para nada.',
       },
     }),

@@ -29,6 +29,7 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 30, max: 80 },
     formula: { fijos: { EDU: 4 } },
     nota: 'La ocupación de Elena Sartori.',
+    tratamiento: { m: 'doctor', f: 'doctora' },
   },
   {
     id: 'periodista',
@@ -52,6 +53,7 @@ export const OCUPACIONES: Ocupacion[] = [
       'descubrir', 'mecanica', 'persuasion', 'credito'],
     credito: { min: 20, max: 60 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['DEX', 'INT'], multiplicador: 2 } },
+    tratamiento: { m: 'agrimensor', f: 'agrimensora' },
   },
   {
     id: 'comisario',
@@ -63,6 +65,7 @@ export const OCUPACIONES: Ocupacion[] = [
       'orientarse', 'persuasion', 'primeros_auxilios', 'credito'],
     credito: { min: 20, max: 50 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
+    tratamiento: { m: 'comisario', f: 'comisaria' },
   },
   {
     id: 'maestra',
@@ -74,6 +77,7 @@ export const OCUPACIONES: Ocupacion[] = [
       'ciencia_naturales', 'buscar_libros', 'escuchar', 'credito'],
     credito: { min: 9, max: 30 },
     formula: { fijos: { EDU: 4 } },
+    tratamiento: { m: 'maestro', f: 'maestra' },
   },
   {
     id: 'escribano',
@@ -85,6 +89,7 @@ export const OCUPACIONES: Ocupacion[] = [
       'psicologia', 'descubrir', 'antropologia', 'credito'],
     credito: { min: 40, max: 80 },
     formula: { fijos: { EDU: 4 } },
+    tratamiento: { m: 'escribano', f: 'escribana' },
   },
   {
     id: 'anticuario',
@@ -130,6 +135,10 @@ export const OCUPACIONES: Ocupacion[] = [
       'ocultismo', 'escuchar', 'primeros_auxilios', 'credito'],
     credito: { min: 9, max: 60 },
     formula: { fijos: { EDU: 4 } },
+    // «Padre» para los dos géneros: en el clero católico de 1920 no hay forma
+    // femenina de esta ocupación. Elegir «cura de pueblo» siendo mujer es
+    // anacrónico en los términos del propio mundo, no un error de esta tabla.
+    tratamiento: { m: 'padre', f: 'padre' },
   },
 ];
 

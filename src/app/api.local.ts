@@ -18,7 +18,11 @@ import { ESCENARIOS, mesesEntre } from '../scenario/catalogo.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 import { sanitizeForClient } from '../server/sanitize.ts';
+import { conTrato } from '../rules/tratamiento.ts';
+import type { GameState } from '../shared/types.ts';
 import type { GameApi, StatusInfo, TurnEvent } from './api.ts';
+
+const activo = (state: GameState) => state.investigators[state.activeInvestigator];
 
 // El catálogo es la única fuente. Agregar una aventura es sumarla allá.
 const SCENARIOS = ESCENARIOS;
@@ -54,7 +58,7 @@ export function createLocalApi(): GameApi {
       const campaignId = await createCampaign(scenario);
       const { state } = await loadState(campaignId);
       return {
-        campaignId, opening: scenario.opening,
+        campaignId, opening: conTrato(scenario.opening, activo(state)),
         state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
       };
     },
@@ -67,7 +71,7 @@ export function createLocalApi(): GameApi {
       );
       const { state } = await loadState(campaignId);
       return {
-        campaignId, opening: scenario.opening,
+        campaignId, opening: conTrato(scenario.opening, activo(state)),
         state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
       };
     },
@@ -76,7 +80,8 @@ export function createLocalApi(): GameApi {
       const { state } = await loadState(id);
       const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
       return {
-        state: sanitizeForClient(state), opening: scenario?.opening ?? '',
+        state: sanitizeForClient(state),
+        opening: scenario ? conTrato(scenario.opening, activo(state)) : '',
         options: scenario ? accionesDisponibles(state, scenario) : [],
       };
     },
@@ -134,7 +139,7 @@ export function createLocalApi(): GameApi {
       });
       const { state } = await loadState(campaignId);
       return {
-        campaignId, opening: scenario.opening,
+        campaignId, opening: conTrato(scenario.opening, activo(state)),
         state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
       };
     },

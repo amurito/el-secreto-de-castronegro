@@ -17,6 +17,7 @@ import {
   armarHabilidades, validarReparto, efectoEdad, mejoraEdu,
   tirarCaracteristicas, tirarSuerte, EDAD_MINIMA, EDAD_MAXIMA,
 } from './creacion.ts';
+import { calcularTratamiento } from './tratamiento.ts';
 
 /** Lo que salió de los dados, antes de que el jugador decida nada. */
 export interface TiradaInicial {
@@ -43,6 +44,12 @@ export function tirarFicha(edad: number, d6: Dado): TiradaInicial {
 export interface DecisionesFicha {
   nombre: string;
   edad: number;
+  /**
+   * Sólo decide dos cosas: la forma del tratamiento («doctor»/«doctora», o
+   * «don»/«doña» cuando la ocupación no tiene uno propio) y nada más. No es
+   * una casilla del reglamento de CoC 7e ni afecta ninguna tirada.
+   */
+  genero: 'm' | 'f';
   descripcion: string;
   ocupacionId: string;
   /** Para las fórmulas con elección: «EDU × 2 + o bien DES × 2 o bien FUE × 2». */
@@ -166,6 +173,7 @@ export function crearInvestigador(
     name: decisiones.nombre.trim(),
     age: decisiones.edad,
     occupation: ocupacion.nombre,
+    treatment: calcularTratamiento(decisiones.nombre.trim(), decisiones.genero, ocupacion),
     nationality: 'Argentina',
     description: decisiones.descripcion.trim(),
     characteristics: ch,

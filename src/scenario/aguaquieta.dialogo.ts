@@ -158,7 +158,7 @@ export const ROSA_TEMAS: Conversaciones = [
     esquiva: {
       texto: [
         '—Debía plata. Eso es lo que pasó. —Y lo dice como quien apoya una piedra sobre un papel para que no se ' +
-        'vuele—. Los hombres se van por eso todo el tiempo, doctora.',
+        'vuele—. Los hombres se van por eso todo el tiempo, {trato}.',
       ],
     },
   },
@@ -178,7 +178,7 @@ export const ROSA_TEMAS: Conversaciones = [
       texto: [
         '—Se pelearon por el campo hace años. No se hablaban. —Se encoge de hombros—. Ya sé lo que está pensando, ' +
         'y no. El hermano está en Rosario y hace ocho años que no viene.\n\n' +
-        '—No todo lo raro de esta casa es de la familia, doctora.',
+        '—No todo lo raro de esta casa es de la familia, {trato}.',
       ],
       pista: {
         description: 'El hermano de Ignacio vive en Rosario y no visita el campo hace ocho años. La disputa familiar no tiene relación con la desaparición.',
@@ -231,7 +231,7 @@ export const ROSA_TEMAS: Conversaciones = [
     },
     cerrado: {
       texto: [
-        '—¿Yo? —Rosa se ríe sin ganas—. Yo cocino y limpio, doctora. Pregúntele a alguien que sepa algo.\n\n' +
+        '—¿Yo? —Rosa se ríe sin ganas—. Yo cocino y limpio, {trato}. Pregúntele a alguien que sepa algo.\n\n' +
         'Todavía no confía en usted lo suficiente como para que esa pregunta signifique algo.',
       ],
     },

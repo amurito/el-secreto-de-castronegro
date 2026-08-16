@@ -392,7 +392,15 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ── ENTRADA ────────────────────────────────────────────────────────────── */
 
-.input-area { padding: 1rem 2rem 1.5rem; max-width: 42rem; width: 100%; margin: 0 auto; }
+/*
+ * 42rem ancho de línea es lo que le conviene a un párrafo (`.narrative` lo
+ * usa, y sigue así). A un cajón de botones NO le conviene: los mismos 42rem
+ * dejaban trece opciones apiladas en columnas altísimas con medio monitor
+ * vacío a los costados en pantalla ancha. Los botones se envuelven solos
+ * (`.grupo-botones` tiene `flex-wrap`), así que lo único que hacía falta era
+ * darles más ancho para envolver.
+ */
+.input-area { padding: 1rem 2rem 1.5rem; max-width: 62rem; width: 100%; margin: 0 auto; }
 
 /* ── ACCIONES ─────────────────────────────────────────────────────────────
    Agrupadas por tipo. Lo que se ve acá es lo que se puede hacer AHORA:

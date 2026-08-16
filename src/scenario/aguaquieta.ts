@@ -680,7 +680,10 @@ export const AGUA_QUIETA: Scenario = {
     'En el patio hay un aljibe de ladrillo con brocal de piedra, y una mujer parada al lado del galpón con ' +
     'un repasador en las manos, mirándola llegar desde hace un rato. Cuando usted está a diez metros, ' +
     'la mujer habla primero.\n\n' +
-    '—¿Usted es la doctora? —dice—. Pase por adentro. Por acá no.\n\n' +
+    // Sin artículo delante del token a propósito: «¿Usted es la doctora?»
+    // funciona, pero «¿Usted es la comisario?» o «¿Usted es la don Tomás?» no.
+    // «¿Usted es {trato}?» es la forma que sirve para cualquier tratamiento.
+    '—¿Usted es {trato}? —dice—. Pase por adentro. Por acá no.\n\n' +
     'Y señala el patio, que está vacío, y en cuyo centro el agua del aljibe está completamente inmóvil.',
 
 };

@@ -266,6 +266,14 @@ export interface Investigator {
   name: string;
   age: number;
   occupation: string;
+  /**
+   * Cómo se dirige a este investigador la gente de campo: «doctora»,
+   * «comisario», «don Tomás». Un solo campo en vez de género + ocupación
+   * porque quien escribe una escena no tiene por qué resolver esa gramática:
+   * la prosa pone el token `{trato}` y listo. Nace de un bug real — la prosa
+   * decía «doctora» sin mirar quién jugaba. Ver `rules/tratamiento.ts`.
+   */
+  treatment: string;
   nationality: string;
   description: string;
   birthplace?: string;

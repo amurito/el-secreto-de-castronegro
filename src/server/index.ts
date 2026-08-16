@@ -22,6 +22,10 @@ import { AGUA_QUIETA_KEEPER } from '../scenario/aguaquieta.keeper.ts';
 import { sanitizeForClient } from './sanitize.ts';
 import { runKeeperTurn, hasApiKey } from '../keeper/keeper.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
+import { conTrato } from '../rules/tratamiento.ts';
+import type { GameState } from '../shared/types.ts';
+
+const activo = (state: GameState) => state.investigators[state.activeInvestigator];
 
 // ── .env casero: sin dependencias ─────────────────────────────────────────────
 const envPath = join(process.cwd(), '.env');
@@ -67,7 +71,7 @@ app.post<{ Body: { scenarioId?: string } }>('/api/campaigns', async (req) => {
   const campaignId = await createCampaign(scenario);
   const { state } = await loadState(campaignId);
   return {
-    campaignId, opening: scenario.opening,
+    campaignId, opening: conTrato(scenario.opening, activo(state)),
     state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
   };
 });
@@ -76,7 +80,8 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id', async (req) => {
   const { state } = await loadState(req.params.id);
   const scenario = SCENARIOS[state.scenarioId as keyof typeof SCENARIOS];
   return {
-    state: sanitizeForClient(state), opening: scenario?.opening ?? '',
+    state: sanitizeForClient(state),
+    opening: scenario ? conTrato(scenario.opening, activo(state)) : '',
     options: scenario ? accionesDisponibles(state, scenario) : [],
   };
 });
@@ -93,7 +98,7 @@ app.post<{ Body: { scenarioId: string; investigador: unknown } }>(
     );
     const { state } = await loadState(campaignId);
     return {
-      campaignId, opening: scenario.opening,
+      campaignId, opening: conTrato(scenario.opening, activo(state)),
       state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
     };
   },
@@ -113,7 +118,7 @@ app.post<{ Params: { id: string }; Body: { scenarioId: string } }>(
     });
     const { state } = await loadState(campaignId);
     return {
-      campaignId, opening: scenario.opening,
+      campaignId, opening: conTrato(scenario.opening, activo(state)),
       state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
     };
   },

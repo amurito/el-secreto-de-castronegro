@@ -28,6 +28,7 @@ import { accionesDisponibles, detalleExaminado } from '../scenario/acciones.ts';
 import { resolverTema, temasDisponibles } from './social.ts';
 import { propiedadPorTirada, tieneAlgoMas } from '../rules/cuando-tirar.ts';
 import { escenaPara, ejecutarEscena, leerIntencion } from './escenas.ts';
+import { conTrato } from '../rules/tratamiento.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
 
@@ -48,7 +49,11 @@ export async function runOfflineTurn(
 
   resolve(turn, intent, out, run, scenario);
 
-  const narration = out.filter(Boolean).join('\n\n');
+  // `conTrato` resuelve el token `{trato}` que la prosa autoral usa para
+  // dirigirse al investigador — «doctora», «comisario», «don Tomás» — según
+  // quién esté jugando de verdad, y no según quién estaba pensado al escribir
+  // la escena. Un solo lugar para toda la narración de un turno.
+  const narration = conTrato(out.filter(Boolean).join('\n\n'), turn.investigator);
   emit({ kind: 'narration_delta', data: narration });
   // Las opciones las calcula el motor desde el estado ya actualizado.
   return {
@@ -611,7 +616,7 @@ function sinTema(turn: Turn, npcId: string, scenario: Scenario): string {
   return pickVariant(s, [
     `${npc.name.split(' ')[0]} contesta lo justo.
 
-—Pregunte lo que tenga que preguntar, doctora. ` +
+—Pregunte lo que tenga que preguntar, {trato}. ` +
     'Yo tengo que hacer la cena igual.',
     `—Mmm —dice ${npc.name.split(' ')[0]}, que es lo que dice cuando no piensa contestar.
 

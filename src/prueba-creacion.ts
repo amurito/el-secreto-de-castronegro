@@ -135,7 +135,7 @@ function main() {
   const r = crearInvestigador(
     tirada,
     {
-      nombre: 'Casilda Ferreyra', edad: 44, descripcion: 'Médica de pueblo.',
+      nombre: 'Casilda Ferreyra', genero: 'f', edad: 44, descripcion: 'Médica de pueblo.',
       ocupacionId: 'medico-rural',
       restaFisica: { STR: 3, CON: 2 },
       reparto: legal, trasfondo: TRASFONDO, conexionClave: 'a1',
@@ -166,7 +166,7 @@ function main() {
 
   const malaEdad = crearInvestigador(
     tirada,
-    { nombre: 'X', edad: 44, descripcion: '', ocupacionId: 'medico-rural',
+    { nombre: 'X', genero: 'f', edad: 44, descripcion: '', ocupacionId: 'medico-rural',
       restaFisica: { STR: 1 }, reparto: legal, trasfondo: TRASFONDO, conexionClave: null },
     medico, fijo(50), fijo(4),
   );
@@ -175,7 +175,7 @@ function main() {
 
   const sinTrasfondo = crearInvestigador(
     tirada,
-    { nombre: 'X', edad: 30, descripcion: '', ocupacionId: 'medico-rural',
+    { nombre: 'X', genero: 'f', edad: 30, descripcion: '', ocupacionId: 'medico-rural',
       reparto: legal, trasfondo: [], conexionClave: null },
     medico, fijo(50), fijo(4),
   );

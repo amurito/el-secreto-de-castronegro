@@ -182,6 +182,13 @@ export interface Ocupacion {
   formula: FormulaPuntos;
   /** Época en que la ocupación tiene sentido, para el sabor. */
   nota?: string;
+  /**
+   * Cómo se dirige a esta persona alguien de campo, en 1920. Con qué se cubre
+   * un investigador cuya ocupación no tiene tratamiento propio: «don»/«doña» +
+   * el nombre, que es lo que se usa en el campo con cualquiera al que se le
+   * debe respeto y no título.
+   */
+  tratamiento?: { m: string; f: string };
 }
 
 export interface ProblemaReparto {

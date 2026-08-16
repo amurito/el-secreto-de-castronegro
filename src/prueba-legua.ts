@@ -148,6 +148,25 @@ async function main() {
     }
   }
 
+  // ── Un objeto llamado «de alguien» no es ese alguien ─────────────────────
+  // Bug real, reportado jugando: «cantimplora de Fermín» resolvía el objetivo
+  // contra la feature del cadáver (alias «fermín») en vez del ítem, porque las
+  // features se miraban antes que los objetos sin comparar qué nombre era más
+  // largo. El jugador pedía llevarse la cantimplora y el motor contestaba
+  // «Fermín no es algo que puedas llevarte».
+  console.log('\nUN OBJETO "DE ALGUIEN" NO ES ESE ALGUIEN');
+  const sCant = await jugar('LEGUA CANTIMPLORA', 'z', [
+    ...INVESTIGAR.slice(0, 4), // hasta «Voy al galpón»
+    'Agarro cantimplora de fermín', 'Agarro alpargatas de fermín',
+  ]);
+  const invCant = sCant.investigators[sCant.activeInvestigator]!;
+  check('la cantimplora se lleva, no el cadáver',
+    sCant.items['it-cantimplora']?.owner === invCant.id,
+    `dueño: ${sCant.items['it-cantimplora']?.owner}`);
+  check('las alpargatas se llevan, no el cadáver',
+    sCant.items['it-botas']?.owner === invCant.id,
+    `dueño: ${sCant.items['it-botas']?.owner}`);
+
   console.log('\nCOBERTURA');
   const faltan = LA_LEGUA.endings.filter((e) => !alcanzados.has(e.id));
   check('todos los desenlaces declarados son alcanzables', faltan.length === 0,

@@ -35,7 +35,7 @@ export const LEGUA_TEMAS: Conversaciones = [
       texto: [
         '—Salió el lunes a la mañana a revisar el alambrado del oeste. Se llevó la cantimplora llena, yo lo vi ' +
         'llenarla en la bomba. —Habla mirando el mapa de la pared, no a usted—. Volvía a la tarde. No volvió.\n\n' +
-        '—El miércoles Casimiro lo encontró al lado del tanque. Del tanque, doctora. Lleno.\n\n' +
+        '—El miércoles Casimiro lo encontró al lado del tanque. Del tanque, {trato}. Lleno.\n\n' +
         'Se queda un momento y después dice, más rápido:\n\n—Necesito el certificado. Tengo una operación en curso.',
       ],
       pista: {
@@ -81,7 +81,7 @@ export const LEGUA_TEMAS: Conversaciones = [
         '—La de 1903 no coincidía con el título, así que mandé a hacer otra. Bermúdez estuvo tres semanas. ' +
         'Midió el oeste cuatro veces, con dos aparatos distintos, y le dio siempre lo mismo.\n\n' +
         '—Y después no me quiso firmar el plano. —Ahora sí lo mira a usted—. Le pagué igual. Un profesional que ' +
-        'mide cuatro veces y no firma no es un profesional que se equivocó, doctora. Es un profesional que vio algo.',
+        'mide cuatro veces y no firma no es un profesional que se equivocó, {trato}. Es un profesional que vio algo.',
       ],
       pista: {
         description: 'El agrimensor de 1924 midió el oeste cuatro veces con dos instrumentos, obtuvo siempre 8.430 m, y se negó a firmar el plano.',
@@ -131,7 +131,7 @@ export const LEGUA_TEMAS: Conversaciones = [
         '—Fui una vez. Con la rueda. Salí a las once y volví… —se detiene, y arranca de nuevo—. Para mí volví a la ' +
         'una. Dos horas. Tengo el reloj de pulsera y lo miré.\n\n' +
         '—Acá me esperaron hasta las ocho de la noche. Casimiro había salido a buscarme dos veces.\n\n' +
-        '—No estoy loca, doctora. Miré el reloj.',
+        '—No estoy loca, {trato}. Miré el reloj.',
       ],
       pista: {
         description: 'Herminia midió el oeste durante dos horas según su reloj. En el casco la esperaron nueve. Ninguna de las dos versiones se corrigió después.',
@@ -165,7 +165,7 @@ export const LEGUA_TEMAS: Conversaciones = [
       texto: [
         '—Miércoles, temprano. Venía por el bajo y lo vi de lejos, en el pastizal. —Se saca el sombrero para hablar ' +
         'y lo tiene en la mano todo el rato—. Estaba boca arriba, mirando el tanque.\n\n' +
-        '—Doscientos metros, doctora. Yo los caminé para estar seguro. Doscientos y pico.\n\n' +
+        '—Doscientos metros, {trato}. Yo los caminé para estar seguro. Doscientos y pico.\n\n' +
         'Y después, más bajo:\n\n—Tenía los ojos abiertos y estaba mirando para allá. Para el agua.',
       ],
       pista: {
@@ -192,7 +192,7 @@ export const LEGUA_TEMAS: Conversaciones = [
         'del hombre, mide un tramo de diez zancadas, y después cuenta los tramos.\n\n' +
         '—Dieciséis mil quinientos pasos. Diecisiete kilómetros, más o menos.\n\n' +
         'Se para y se sacude la mano en el pantalón.\n\n' +
-        '—El campo mide cinco por cinco, doctora. Para caminar diecisiete kilómetros derecho para el mismo lado ' +
+        '—El campo mide cinco por cinco, {trato}. Para caminar diecisiete kilómetros derecho para el mismo lado ' +
         'hay que salirse tres veces. Y el alambre está entero.',
       ],
       pista: {
@@ -220,7 +220,7 @@ export const LEGUA_TEMAS: Conversaciones = [
         'Usted le comenta que la patrona dice veinte minutos. Casimiro no se ofende ni discute.\n\n' +
         '—Y sí. Para ella son veinte. —Se queda pensando si decir lo que sigue, y lo dice—: Para mi padre eran ' +
         'cuarenta. Yo lo acompañé de chico y eran cuarenta.\n\n' +
-        '—Cada uno tiene su media hora, doctora. Uno se acostumbra.',
+        '—Cada uno tiene su media hora, {trato}. Uno se acostumbra.',
       ],
       pista: {
         description: 'Casimiro: media hora del casco al molino. Su padre tardaba cuarenta minutos en el mismo trayecto. Ninguno cree que el otro se equivoque.',
@@ -266,7 +266,7 @@ export const LEGUA_TEMAS: Conversaciones = [
     },
     cerrado: {
       texto: [
-        '—Yo trabajo acá, doctora. —Y con eso contesta todo lo que hace falta contestar por ahora.',
+        '—Yo trabajo acá, {trato}. —Y con eso contesta todo lo que hace falta contestar por ahora.',
       ],
     },
   },
