@@ -72,6 +72,7 @@ export type GameEventType =
   | 'EVENT_ALTERED'
   | 'TEMPORAL_ECHO_RECEIVED'
   | 'UMBRAL_EXPOSURE'
+  | 'WORLD_PERMEABILITY_SHIFT'
   | 'STABILITY_SHIFT'
   | 'THRESHOLD_CROSSED'
   | 'VISION_RECEIVED'
@@ -155,6 +156,17 @@ export interface UmbralExposurePayload {
   source: string;
   /** Lo que habría dado la primera vez. Para auditar el decaimiento. */
   amountBeforeDecay: number;
+}
+
+/**
+ * El mundo se abre solo con las horas. No tiene investigatorId: es del
+ * mundo, no de nadie en particular — a diferencia de `UmbralExposurePayload`.
+ */
+export interface WorldPermeabilityShiftPayload {
+  amount: number;
+  from: number;
+  to: number;
+  cause: string;
 }
 
 export interface StabilityShiftPayload {

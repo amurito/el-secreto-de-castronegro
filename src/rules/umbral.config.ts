@@ -224,3 +224,35 @@ export const WORLD_PERMEABILITY_GAIN = {
   majorAnomaly: 5,
   manifestation: 10,
 } as const;
+
+/**
+ * PRESIÓN DE TIEMPO REAL.
+ *
+ * El reloj diegético existía desde el principio (`advance_time`) y no le
+ * costaba nada a nadie: nada competía por él salvo la curiosidad del
+ * jugador. La Permeabilidad del mundo (`world.umbralPermeability`) también
+ * existía desde el principio y no la leía nadie —subía con eventos que
+ * ninguna aventura emitía—. Las dos cosas juntas resuelven el mismo hueco:
+ * el mundo se abre solo con las horas, pase lo que pase, y cuando está más
+ * abierto CUALQUIER contacto con el fenómeno —en cualquier aventura, sin que
+ * el contenido tenga que declarar nada— cuesta más Exposición.
+ *
+ * No es un reloj de arena visible ni una cuenta regresiva: es que quedarse
+ * demasiado tiempo en cualquier parte, por la razón que sea, deja de ser
+ * gratis. Investigar con calma sigue siendo gratis — la mayoría de las
+ * acciones cuestan minutos, no horas. Lo que deja de ser gratis es quedarse
+ * parado, insistir sin avanzar, o los tramos largos (una caminata de once
+ * horas, por ejemplo) que ya de por sí eran las escenas más caras.
+ */
+export const PERMEABILIDAD_MINUTOS_POR_PUNTO = 20;
+
+/**
+ * Con el mundo más permeable, el mismo contacto declarado (`amount`) rinde
+ * más Exposición. Mismo patrón que `SAN_EXTRA_LOSS_BY_EXPOSURE`: una regla
+ * del motor, no una decisión de cada escena.
+ */
+export const EXPOSURE_EXTRA_BY_PERMEABILITY = [
+  { abovePermeability: 30, extraExposure: 1 },
+  { abovePermeability: 60, extraExposure: 2 },
+  { abovePermeability: 85, extraExposure: 3 },
+];

@@ -13,6 +13,8 @@ import {
   SAN_EXTRA_LOSS_BY_EXPOSURE,
   RENDIMIENTO_POR_REPETICION,
   RENDIMIENTO_MINIMO,
+  EXPOSURE_EXTRA_BY_PERMEABILITY,
+  PERMEABILIDAD_MINUTOS_POR_PUNTO,
 } from './umbral.config.ts';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -110,6 +112,26 @@ export function extraSanLossFromExposure(state: UmbralState): number {
     if (state.exposure > tier.aboveExposure) extra = Math.max(extra, tier.extraSanLoss);
   }
   return extra;
+}
+
+/**
+ * Cuánta Exposición EXTRA da cualquier contacto cuando el mundo ya está
+ * permeable. Mismo patrón que `extraSanLossFromExposure`, un nivel más
+ * arriba: ahí la Exposición propia agrava la Cordura; acá la Permeabilidad
+ * del MUNDO —que sube sola con las horas, no con lo que hace el
+ * investigador— agrava la Exposición.
+ */
+export function extraExposureFromPermeability(worldPermeability: number): number {
+  let extra = 0;
+  for (const tier of EXPOSURE_EXTRA_BY_PERMEABILITY) {
+    if (worldPermeability > tier.abovePermeability) extra = Math.max(extra, tier.extraExposure);
+  }
+  return extra;
+}
+
+/** Puntos de Permeabilidad que dan los minutos de mundo transcurridos ahora. */
+export function permeabilityFromMinutes(minutes: number): number {
+  return Math.floor(minutes / PERMEABILIDAD_MINUTOS_POR_PUNTO);
 }
 
 export function thresholdInfo(t: UmbralThreshold) {

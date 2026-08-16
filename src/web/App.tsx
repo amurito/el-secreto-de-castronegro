@@ -367,6 +367,17 @@ export function App() {
         <header className="scene-head">
           <div className="scene-name">{state?.location?.name}</div>
           <div className="scene-time">{state?.worldTime?.display}</div>
+          {/* Sólo aparece cuando ya importa: en 0 sería ruido desde el primer
+              turno. El mundo se abre solo con las horas, pase lo que pase —
+              quedarse parado no es gratis, aunque la escena no lo diga. */}
+          {(state?.umbralPermeability ?? 0) > 0 && (
+            <div
+              className={`scene-permeability ${state.umbralPermeability >= 60 ? 'permeability-alta' : ''}`}
+              title="Cuánto tiempo pasó, sin que importe qué se hizo con él. Con el mundo más abierto, cualquier contacto con el fenómeno cuesta más Exposición."
+            >
+              Permeabilidad {state.umbralPermeability}/100
+            </div>
+          )}
         </header>
 
         <div className="narrative" ref={scrollRef}>

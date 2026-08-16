@@ -262,6 +262,12 @@ button { font-family: inherit; cursor: pointer; }
 }
 .scene-name { font-size: 1.05rem; }
 .scene-time { font-family: var(--mono); font-size: 0.75rem; color: var(--text-faint); }
+.scene-permeability {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.04em;
+  color: var(--text-faint); border: 1px solid var(--line); border-radius: 3px;
+  padding: 0.1rem 0.45rem; cursor: default;
+}
+.scene-permeability.permeability-alta { color: var(--exposure); border-color: var(--exposure); }
 
 .narrative { flex: 1; overflow-y: auto; padding: 2rem 2rem 1rem; max-width: 42rem; width: 100%; margin: 0 auto; }
 

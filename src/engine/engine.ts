@@ -27,9 +27,10 @@ import { isCharacteristic, labelFor, SKILL_BY_ID } from '../rules/skills.ts';
 import {
   applyExposure, applyStabilityLoss, applyStabilityRecovery,
   stabilityPenaltyDice, extraSanLossFromExposure, thresholdInfo,
+  extraExposureFromPermeability, permeabilityFromMinutes,
 } from '../rules/umbral.ts';
 import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
-import { STABILITY_RECOVERY, techoDeEstabilidad } from '../rules/umbral.config.ts';
+import { STABILITY_RECOVERY, techoDeEstabilidad, EXPOSURE_THRESHOLDS } from '../rules/umbral.config.ts';
 import {
   marcasDe, mejora, alcanzaMaestria, maxCordura, premioDelKeeper,
   DADOS_SAN_POR_MAESTRIA, AUTOAYUDA, type Marca,
@@ -945,13 +946,32 @@ export class Turn {
     }
 
     const res = applyExposure(inv.umbral, amount, source);
-    this.ctx.exposureThisTurn += res.applied;
+
+    // ★ El mundo más permeable agrava CUALQUIER contacto, igual que la
+    //   Exposición alta ya agravaba la pérdida de Cordura. Regla, no
+    //   decisión de la escena: se aplica DESPUÉS de los rendimientos
+    //   decrecientes de la fuente, sobre lo que de verdad se aplicó, no
+    //   sobre lo declarado — repetir la misma fuente sigue rindiendo cada
+    //   vez menos aunque el mundo esté más abierto.
+    const extraPermeabilidad = res.applied > 0
+      ? extraExposureFromPermeability(this.state.world.umbralPermeability)
+      : 0;
+    const aplicadoFinal = clamp(res.applied + extraPermeabilidad, 0, 100 - res.from);
+    const to = res.from + aplicadoFinal;
+    // Recalculado sobre `to` final, no sobre `res.to`: el extra por
+    // permeabilidad puede ser lo que empuja a cruzar un umbral que la
+    // fuente sola no alcanzaba a cruzar.
+    const nuevosUmbrales = EXPOSURE_THRESHOLDS.filter(
+      (t) => to >= t.at && res.from < t.at && !inv.umbral.thresholdsCrossed.includes(t.threshold),
+    ).map((t) => t.threshold);
+
+    this.ctx.exposureThisTurn += aplicadoFinal;
     this.emit('UMBRAL_EXPOSURE', {
-      investigatorId: inv.id, amount: res.applied, from: res.from, to: res.to, cause,
+      investigatorId: inv.id, amount: aplicadoFinal, from: res.from, to, cause,
       source, amountBeforeDecay: res.beforeDecay,
     });
 
-    if (res.applied === 0) {
+    if (aplicadoFinal === 0) {
       return {
         ok: true,
         message:
@@ -961,12 +981,16 @@ export class Turn {
       };
     }
 
-    let msg = `Exposición al Umbral ${res.from} → ${res.to} de 100.`;
+    const permNote = extraPermeabilidad > 0
+      ? ` (${res.applied} de la fuente + ${extraPermeabilidad} extra porque el mundo está permeable — ` +
+        `Permeabilidad ${this.state.world.umbralPermeability}/100: el tiempo que pasó ya cambió el terreno)`
+      : '';
+    let msg = `Exposición al Umbral ${res.from} → ${to} de 100.${permNote}`;
     if (res.applied < res.beforeDecay) {
       msg += ` (${res.beforeDecay} reducidos a ${res.applied}: «${source}» ya produjo contacto ${res.timesBefore} vez/veces.)`;
     }
-    for (const t of res.newThresholds) {
-      this.emit('THRESHOLD_CROSSED', { investigatorId: inv.id, threshold: t, atExposure: res.to });
+    for (const t of nuevosUmbrales) {
+      this.emit('THRESHOLD_CROSSED', { investigatorId: inv.id, threshold: t, atExposure: to });
       const info = thresholdInfo(t);
       msg += `\n★ UMBRAL CRUZADO — ${info.label}: ${info.description} Esto es irreversible y cambia lo que el investigador puede percibir a partir de ahora. Tenelo en cuenta al narrar.`;
     }
@@ -1296,6 +1320,26 @@ export class Turn {
     const to: WorldTime = { iso, precision: 'minute', display: `${hh}:${mm}` };
     this.emit('TIME_ADVANCED', { from, to, minutes, reason });
     this.recoverPatience(minutes);
+    this.abrirElMundo(minutes);
+  }
+
+  /**
+   * El mundo se abre solo con las horas, pase lo que pase. No es una cuenta
+   * regresiva visible: es que el mismo contacto con el fenómeno rinde más
+   * Exposición cuanto más tiempo lleva transcurrido (`toolApplyExposure`).
+   * Investigar con calma sigue siendo gratis —la mayoría de acciones cuestan
+   * minutos, no horas—; lo que deja de ser gratis es quedarse parado o los
+   * tramos largos, que ya de por sí eran las escenas más caras.
+   */
+  private abrirElMundo(minutes: number) {
+    const puntos = permeabilityFromMinutes(minutes);
+    if (puntos <= 0) return;
+    const from = this.state.world.umbralPermeability;
+    const to = clamp(from + puntos, 0, 100);
+    if (to === from) return;
+    this.emit('WORLD_PERMEABILITY_SHIFT', {
+      amount: to - from, from, to, cause: `pasaron ${minutes} minutos`,
+    });
   }
 
   /**

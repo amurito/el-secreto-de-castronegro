@@ -156,6 +156,12 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'WORLD_PERMEABILITY_SHIFT': {
+      const p = ev.payload as P.WorldPermeabilityShiftPayload;
+      s.world = { ...s.world, umbralPermeability: p.to };
+      break;
+    }
+
     case 'STABILITY_SHIFT': {
       const p = ev.payload as P.StabilityShiftPayload;
       const inv = cloneInvestigator(s, p.investigatorId);
