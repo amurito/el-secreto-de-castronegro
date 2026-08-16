@@ -15,7 +15,6 @@ import { createCampaign, Turn } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { accionesDisponibles } from './scenario/acciones.ts';
-import { AGUA_QUIETA_ACCIONES } from './scenario/aguaquieta.acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 
@@ -54,7 +53,10 @@ async function main() {
     // falló, reintentar es correcto y es lo que haría cualquiera en la mesa.
     // El error es ofrecer algo que YA DIO su resultado.
     for (const o of disponibles) {
-      const def = AGUA_QUIETA_ACCIONES.find((a) => a.id === o.id);
+      // Desde que el contenido vive en JSON, el catálogo sale del escenario
+      // ya cargado en vez de un import propio: es la misma lista, y así la
+      // prueba no depende de cómo esté guardada la aventura.
+      const def = AGUA_QUIETA.actions.find((a) => a.id === o.id);
       if (def?.hecha?.(t.state)) {
         repetidaYaHecha++;
         console.log(`   ⚠ turno ${turno}: ofrece "${o.etiqueta}" con su condición de hecha cumplida`);

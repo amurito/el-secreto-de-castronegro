@@ -1,0 +1,1945 @@
+{
+  "id": "agua-quieta",
+  "title": "Agua Quieta",
+  "surfacePremise": "Ignacio Vera, arrendatario de Los Álamos, a cuatro leguas de Castronegro, desapareció hace once noches. No hay cuerpo, no hay nota, no hay rastro. La policía de campaña anotó \"se ausentó del domicilio\" y cerró el asunto. Alguien tiene que ir a mirar.",
+  "items": [
+    {
+      "id": "it-foto1897",
+      "name": "Fotografía enmarcada (1897)",
+      "aliases": [
+        "retrato",
+        "foto vieja",
+        "fotografia vieja",
+        "fotografia enmarcada",
+        "1897",
+        "foto de la familia"
+      ],
+      "shortDescription": "Una familia posando delante del aljibe recién construido. Al dorso, a lápiz: \"Los Álamos, 1897\".",
+      "owner": "casa",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-1897-basico",
+          "description": "Nueve personas delante del aljibe. Ropa de fin de siglo. La calidad es mala pero los rostros se distinguen. Uno de los hombres del fondo está apenas fuera de foco, como si se hubiera movido.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-1897-rostro",
+          "description": "El hombre del fondo, el que está fuera de foco, tiene la misma cara que la figura reflejada en la fotografía que Ignacio tomó hace tres semanas. No es un parecido de familia. Es la misma cara, con la misma cicatriz corta sobre la ceja izquierda, en dos imágenes separadas por veintisiete años.",
+          "discoveryCondition": {
+            "kind": "comparison",
+            "withItem": "it-fotoreciente"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-fotoreciente",
+      "name": "Fotografía del aljibe (tomada por Ignacio)",
+      "aliases": [
+        "placa",
+        "fotografia de ignacio",
+        "foto de ignacio",
+        "foto dada vuelta",
+        "fotografia dada vuelta",
+        "foto",
+        "fotografia",
+        "imagen"
+      ],
+      "shortDescription": "Una placa reciente del brocal del aljibe, a plena luz. Estaba apoyada contra la pared, cara al revés.",
+      "owner": "cuarto",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-rec-basico",
+          "description": "El aljibe de frente, tomado desde poco más de un metro. Se ve el brocal, la roldana sin soga y, abajo, el círculo del agua. El encuadre es de alguien que sabía lo que quería fotografiar.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-rec-figura",
+          "description": "En el círculo de agua hay un reflejo. No es el de Ignacio: la posición no corresponde con la del que sostiene la cámara. Es un hombre, de pie, mirando hacia arriba. Hacia la cámara. Y no hay nadie más en el patio: la sombra de los álamos cae sobre tierra vacía.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-reloj",
+      "name": "Reloj de bolsillo",
+      "aliases": [
+        "reloj"
+      ],
+      "shortDescription": "De níquel, con la tapa abollada. Apareció en el brocal del aljibe. Estaba seco.",
+      "owner": "patio",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-reloj-basico",
+          "description": "Un reloj de bolsillo corriente, con las iniciales I.V. grabadas sin oficio en la tapa. Está parado a las cuatro y veinte. Rosa lo encontró sobre el brocal la mañana después de la desaparición: estaba completamente seco, y esa noche había llovido.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-reloj-atras",
+          "description": "Sostenido sobre el agua del aljibe, el segundero se mueve. Va hacia atrás, seis o siete segundos, y se detiene otra vez en las cuatro y veinte. Repite el mismo tramo cada vez. Retirado del brocal, vuelve a estar parado y nada indica que se haya movido nunca.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-espejo",
+      "name": "Espejo de mano",
+      "aliases": [
+        "espejo"
+      ],
+      "shortDescription": "De Rosa. Marco de hojalata, azogue picado en un borde.",
+      "owner": "casa",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-espejo-basico",
+          "description": "Un espejo de mano gastado. Rosa lo tiene sobre el aparador, boca abajo.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [
+        {
+          "id": "p-espejo-indirecto",
+          "description": "Mirando el aljibe a través del espejo, en lugar de asomarse, el retardo del reflejo se vuelve evidente: lo que devuelve el agua llega tarde respecto de lo que devuelve el espejo. Ver el fenómeno de esta manera protege: el agua no parece registrar a quien no la mira de frente.",
+          "trigger": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "regular"
+          },
+          "active": false,
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-farol",
+      "name": "Farol de querosén",
+      "aliases": [
+        "farol",
+        "lampara",
+        "lámpara"
+      ],
+      "shortDescription": "Con combustible para unas cuantas horas.",
+      "owner": "casa",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-farol-basico",
+          "description": "Un farol de querosén en buen estado. Da luz suficiente para el patio o para bajar a alguna parte.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-rosa",
+      "name": "Rosa Quintana",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cincuenta y ocho años, casera de Los Álamos desde antes de que Ignacio arrendara el campo. Habla poco y mira mucho. Tiene las manos siempre ocupadas: si no hay nada que hacer, dobla y desdobla un repasador.",
+      "motivation": "Que alguien resuelva esto y se vaya. No quiere justicia ni verdad: quiere volver a dormir. Ayuda porque la ayuda apura el final, no porque confíe.",
+      "fears": [
+        "El aljibe después de la caída del sol. No se acerca. Si la obligan, se va de la casa.",
+        "Que le pregunten qué vio ella, y no qué vio Ignacio."
+      ],
+      "refusals": [
+        "No baja al aljibe. Bajo ninguna circunstancia, con ninguna recompensa, con ningún argumento.",
+        "No se queda sola en el patio de noche.",
+        "No habla del hermano de Ignacio hasta que la confianza sea alta."
+      ],
+      "knowledge": [
+        {
+          "id": "k-rosa-1",
+          "statement": "Ignacio desapareció hace once noches. Cenó, salió al patio a fumar y no volvió.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-rosa-2",
+          "statement": "El reloj apareció seco sobre el brocal a la mañana siguiente, y esa noche había llovido.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-rosa-3",
+          "statement": "Las últimas semanas Ignacio se pasaba horas mirando el aljibe. Ella creía que era por el agua, por la sequía.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-rosa-4",
+          "statement": "Ella cree que Ignacio se fue por su propia voluntad, porque debía plata en el pueblo. Es su explicación y se aferra a ella.",
+          "acquiredAt": "previo",
+          "source": "interpretación propia",
+          "reliability": "false"
+        },
+        {
+          "id": "k-rosa-5",
+          "statement": "La soga de la roldana la sacó ella, tres días DESPUÉS de que Ignacio desapareciera. No lo va a ofrecer: hay que preguntarle por qué.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        }
+      ],
+      "secrets": [
+        {
+          "id": "s-rosa-vio",
+          "content": "Rosa se asomó al aljibe la noche siguiente a la desaparición, con un farol, llamando a Ignacio. El reflejo del farol tardó en aparecer. Cuando apareció, había dos luces. Por eso sacó la soga: para que nadie pudiera bajar. Sólo lo cuenta si la actitud hacia el investigador llega a 40 o más, o si el investigador le cuenta primero algo que ella pueda reconocer.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 10,
+        "inv-tomas": 0
+      },
+      "present": true,
+      "isCompanion": true,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-cuaderno",
+      "title": "Cuaderno de Ignacio Vera",
+      "author": "Ignacio Vera",
+      "date": "agosto – octubre de 1924",
+      "location": "El cuarto de Ignacio",
+      "kind": "diary",
+      "content": "14 de agosto.\nSe secó el pozo del fondo. Queda el aljibe. El agua está buena, pero no baja de nivel aunque saque. Dos baldes por día y sigue igual. Anoté la marca en el ladrillo para estar seguro.\n\n2 de septiembre.\nLa marca sigue donde la puse. Diecinueve días. Es imposible.\n\n19 de septiembre.\nFui al juzgado de paz de Castronegro por lo del arriendo y aproveché para pedir los papeles viejos del campo. El asiento de 1874 no dice Castronegro. Dice que la fracción está «en el paraje de Agua Blanca», y anota al margen que copia un título anterior que no está. Le pregunté al escribiente y me dijo que antes se le decía así a todo esto, por las aguadas con sales, que dejan el borde blanco al secarse. Acá el borde no queda blanco. Nunca quedó. Pero el nombre está escrito, y es más viejo que el pueblo.\n\n30 de septiembre.\nEs el reflejo. Tarda. No es mucho, es como cuando uno se ve en un vidrio de tren, que la cara va un poco atrás. Se lo mostré a Rosa y me dijo que era el cansancio.\n\n6 de octubre.\nSaqué una placa. Necesito que quede en algo que no sea mi memoria.\n\n11 de octubre.\nEn la placa hay alguien más. No estaba en el patio. Estuve toda la tarde comparando con el retrato de los viejos que está en la cocina, el de cuando hicieron el aljibe. Es él. Es el mismo hombre. No entiendo cómo pero lo entiendo: el agua guarda. Es una napa de sales, retiene lo que pasa por encima como una placa fotográfica retiene la luz. Todo lo que se refleje ahí queda ahí. Eso es todo. Es un fenómeno del suelo, no es otra cosa. Voy a escribirle al doctor Miralles a La Plata, que entiende de minas.\n\n15 de octubre.\nSi el agua guarda, entonces me está guardando a mí también. Y si me guarda a mí, entonces yo ya estoy ahí abajo desde antes de esta noche. Tengo que verlo. Tengo que ver si estoy.",
+      "authenticity": "authentic",
+      "accuracy": "misinterpreted",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-carta",
+      "title": "Carta del Dr. Emilio Rausch (1911)",
+      "author": "Emilio Rausch, médico",
+      "date": "3 de marzo de 1911",
+      "location": "Entre las páginas del cuaderno",
+      "kind": "letter",
+      "content": "Estimado colega:\n\nRespondo a su consulta sobre el caso de Los Álamos. Hice el camino desde Castronegro más veces de las que me hubiera gustado. Atendí a la señora Vera en el 97 y puedo confirmarle lo que le contaron, con la salvedad de que lo que a usted le contaron ya pasó por demasiadas bocas.\n\nNo fue un ahogado. El aljibe tenía en ese momento poco más de un metro de agua y el hombre medía un metro setenta y cinco. Tampoco hubo cuerpo, cosa que el comisario resolvió escribiendo «se ausentó del domicilio», que es la manera que tenemos en el campo de no escribir nada.\n\nLo que sí le puedo decir, y le pido discreción: la mujer sostuvo hasta el final que su marido siguió estando en el patio tres días más. Que lo veía cuando sacaba agua. Que él la miraba y que ella no podía sostenerle la mirada porque no era la cara de él, era la cara de él más vieja.\n\nLa traté por delirio de duelo, que es lo que correspondía. Murió en el 4 sin retractarse.\n\nNo repita esto por escrito. Yo mismo dudé si escribirlo.\n\nSuyo,\nE. Rausch",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "patio": {
+      "id": "patio",
+      "name": "El patio y el aljibe",
+      "aliases": [
+        "afuera",
+        "pozo",
+        "brocal"
+      ],
+      "description": "Un patio de tierra apisonada entre la casa y el galpón. En el centro, un aljibe de ladrillo con brocal de piedra y una roldana sin soga. Tres álamos flacos dan una sombra que no alcanza.",
+      "atmosphere": [
+        "El agua del aljibe está completamente inmóvil. Ni siquiera cuando sopla viento.",
+        "La soga de la roldana no está. Rosa dice que la sacó ella. No dice cuándo.",
+        "Alrededor del brocal, la tierra está más pisada de un lado que del otro."
+      ],
+      "connections": [
+        "casa",
+        "orilla"
+      ],
+      "itemsPresent": [
+        "it-reloj"
+      ],
+      "npcsPresent": [
+        "npc-rosa"
+      ],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sound": [
+          "No se oye nada del agua. Un aljibe hace ruido — gotea, respira, devuelve el eco de tu voz. Este no.",
+          "Los álamos suenan arriba. El patio, abajo, está en silencio."
+        ],
+        "smell": [
+          "Huele a tierra seca y a ladrillo mojado, que son dos olores que no deberían convivir en octubre."
+        ],
+        "touch": [
+          "La piedra del brocal está fría de un lado y tibia del otro, y el sol le da parejo a los dos."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-brocal",
+          "names": [
+            "brocal",
+            "piedra",
+            "borde del aljibe"
+          ],
+          "description": "Piedra gastada por generaciones de sogas. Hay un surco profundo de un solo lado.",
+          "closerLook": "El surco de la soga está de un lado nomás, y del otro lado la piedra está lisa. Alguien usó este aljibe durante décadas parándose siempre en el mismo sitio. Sobre el borde interior, a unos centímetros del agua, hay una marca a cuchillo: una raya y una fecha, 14/8. La marca de nivel de Ignacio. El agua está exactamente ahí.",
+          "exposure": 2,
+          "clue": {
+            "description": "La marca de nivel que Ignacio talló el 14 de agosto coincide exactamente con el nivel actual del agua, dos meses después.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-roldana",
+          "names": [
+            "roldana",
+            "polea",
+            "soga",
+            "cuerda"
+          ],
+          "description": "Una roldana de hierro, oxidada pero entera. No tiene soga.",
+          "closerLook": "La roldana gira sin trabarse: alguien la usó hace poco. En el gancho quedan tres fibras de soga nueva, cortadas limpio con cuchillo, no gastadas. La cortaron a propósito y sin apuro.",
+          "clue": {
+            "description": "La soga del aljibe fue cortada a cuchillo, deliberadamente y sin apuro, no se gastó ni se rompió.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-tierra",
+          "names": [
+            "tierra",
+            "suelo",
+            "piso",
+            "huellas",
+            "pisadas"
+          ],
+          "description": "Tierra apisonada. Alrededor del brocal está más pisada de un lado que del otro.",
+          "closerLook": "Las pisadas de un lado son de bota de hombre y están viejas, muchas, superpuestas: semanas de venir al mismo sitio a pararse en el mismo lugar. Las del otro lado son de mujer, de alpargata, y son de ir y venir, nunca de quedarse. Salvo una: hay un par de alpargatas quietas, mirando al aljibe, y al lado la marca redonda de algo apoyado en el piso. Un farol.",
+          "clue": {
+            "description": "Rosa estuvo parada frente al aljibe, quieta, con un farol apoyado en el piso, aunque dice que no se acerca de noche.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-alamos",
+          "names": [
+            "álamos",
+            "alamos",
+            "árboles",
+            "arboles",
+            "sombra"
+          ],
+          "description": "Tres álamos flacos. La sombra que dan no alcanza a cubrir el patio.",
+          "closerLook": "Los tres están secos del lado que mira al aljibe y verdes del lado que mira al campo. No es el sol: el sol les da del otro lado.",
+          "exposure": 2
+        },
+        {
+          "id": "f-galpon",
+          "names": [
+            "galpón",
+            "galpon",
+            "depósito"
+          ],
+          "description": "Un galpón de chapa con la puerta entornada. Herramienta de campo, tablas, un cerco viejo desarmado.",
+          "closerLook": "Hay tablas, clavos y piedra del cerco viejo. Alcanzaría para tapar algo del tamaño de un aljibe."
+        }
+      ]
+    },
+    "casa": {
+      "id": "casa",
+      "name": "La casa",
+      "aliases": [
+        "cocina",
+        "adentro",
+        "comedor"
+      ],
+      "description": "Cocina de piso de ladrillo, una mesa larga, un aparador con loza desparejada. Huele a humedad y a yerba vieja. Del gancho de la pared cuelga un sombrero de hombre que nadie descolgó en once días.",
+      "atmosphere": [
+        "Rosa cocina de más. Sirve dos platos por costumbre y después retira uno.",
+        "El reloj de pared está parado. Rosa no lo da cuerda desde que Ignacio no está."
+      ],
+      "connections": [
+        "patio",
+        "cuarto"
+      ],
+      "itemsPresent": [
+        "it-foto1897",
+        "it-espejo",
+        "it-farol"
+      ],
+      "npcsPresent": [
+        "npc-rosa"
+      ],
+      "visited": false,
+      "umbralIntensity": 1,
+      "senses": {
+        "sound": [
+          "La casa cruje como cruje una casa vieja. Nada más.",
+          "Del patio no llega ningún sonido. Ninguno."
+        ],
+        "smell": [
+          "Humedad, yerba vieja y guiso de hace rato."
+        ],
+        "touch": [
+          "El piso de ladrillo está frío incluso donde da el sol."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-sombrero",
+          "names": [
+            "sombrero",
+            "gancho",
+            "percha"
+          ],
+          "description": "Un sombrero de hombre colgado del gancho. Tiene once días de polvo encima.",
+          "closerLook": "Es un sombrero de trabajo, sudado en la badana, muy usado. Nadie que salga a fumar al patio y piense volver se lleva el sombrero. Pero nadie que se vaya del campo debiendo plata lo deja colgado tampoco.",
+          "clue": {
+            "description": "Ignacio dejó el sombrero colgado. No se lo llevó, lo que contradice la idea de que se fue del campo por su voluntad.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-reloj-pared",
+          "names": [
+            "reloj de pared",
+            "reloj parado",
+            "péndulo",
+            "pendulo"
+          ],
+          "description": "Un reloj de pared, parado. Rosa no le da cuerda desde que Ignacio no está.",
+          "closerLook": "Está parado a las cuatro y veinte. Como el reloj de bolsillo que apareció en el brocal. Rosa dice que ella no lo tocó.",
+          "exposure": 3,
+          "clue": {
+            "description": "El reloj de pared de la cocina está parado a las cuatro y veinte, la misma hora que el reloj de bolsillo hallado en el brocal.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-mesa",
+          "names": [
+            "mesa",
+            "platos",
+            "aparador",
+            "loza"
+          ],
+          "description": "Mesa larga de madera. Rosa pone dos platos por costumbre y después retira uno.",
+          "closerLook": "El segundo plato está puesto y limpio. Lo pone, lo mira, lo levanta. Hace once días que repite eso y todavía no se dio cuenta de que lo hace."
+        },
+        {
+          "id": "f-ventana-cocina",
+          "names": [
+            "ventana"
+          ],
+          "description": "La ventana de la cocina da al patio. Desde la mesa se ve el brocal.",
+          "closerLook": "El vidrio está limpio de un solo lado: el de adentro, y sólo en el rectángulo desde donde se ve el aljibe."
+        }
+      ]
+    },
+    "cuarto": {
+      "id": "cuarto",
+      "name": "El cuarto de Ignacio",
+      "aliases": [
+        "habitacion",
+        "pieza",
+        "dormitorio"
+      ],
+      "description": "Un catre, una silla, un cajón de manzanas dado vuelta que hace de mesa. Sobre el cajón, un cuaderno de tapas de hule y una fotografía apoyada contra la pared, cara al revés.",
+      "atmosphere": [
+        "La cama está hecha. Ignacio no era de hacer la cama, dice Rosa.",
+        "La ventana da al patio. Desde el catre se ve el brocal del aljibe."
+      ],
+      "connections": [
+        "casa"
+      ],
+      "itemsPresent": [
+        "it-fotoreciente"
+      ],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sound": [
+          "Silencio. El cuarto da al patio y del patio no viene nada."
+        ],
+        "smell": [
+          "Huele a tabaco frío y a ropa guardada."
+        ],
+        "touch": [
+          "El catre está tendido con las esquinas metidas, prolijo hasta lo raro."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-catre",
+          "names": [
+            "catre",
+            "cama",
+            "colchón",
+            "colchon"
+          ],
+          "description": "Un catre de una plaza, tendido con una prolijidad que no encaja con nada más del cuarto.",
+          "closerLook": "Debajo del colchón, contra el elástico, hay una hoja doblada: un plano a lápiz del patio, con el aljibe marcado y una serie de números alrededor, en círculo. Son horas. De las cuatro y cuarto a las cuatro y media, cada dos minutos, anotadas durante varios días. Y una sola de esas anotaciones está subrayada: 4:20.",
+          "exposure": 3,
+          "clue": {
+            "description": "Ignacio cronometró el fenómeno del aljibe durante días y subrayó una hora concreta: las cuatro y veinte.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-ventana-cuarto",
+          "names": [
+            "ventana",
+            "vidrio"
+          ],
+          "description": "La ventana da al patio. Desde el catre se ve el brocal del aljibe.",
+          "closerLook": "En el vidrio, del lado de adentro, hay marcas de dedos. Muchas, superpuestas, todas a la misma altura: la de alguien acostado que se incorpora para mirar el patio. Algunas están a la altura de la almohada.",
+          "clue": {
+            "description": "Ignacio miraba el aljibe desde la cama, de forma repetida, incluso acostado.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-cajon",
+          "names": [
+            "cajón",
+            "cajon",
+            "mesa de manzanas",
+            "caja"
+          ],
+          "description": "Un cajón de manzanas dado vuelta que hace de mesa. Encima, el cuaderno y la fotografía.",
+          "closerLook": "Dentro del cajón hay un frasco de vidrio con agua, tapado y sellado con cera. El agua está perfectamente quieta.",
+          "exposure": 4,
+          "clue": {
+            "description": "Ignacio guardó una muestra de agua del aljibe en un frasco sellado. Dentro del frasco, el agua también está inmóvil.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "orilla": {
+      "id": "orilla",
+      "name": "La orilla de la Laguna Mansa",
+      "aliases": [
+        "costa",
+        "pastizal"
+      ],
+      "description": "Doscientos metros de pastizal y después el agua, ancha y baja, del color del cielo cuando el cielo no tiene nada que decir. La laguna se llama Mansa porque nunca tiene olas. Nadie recuerda un día con olas.",
+      "atmosphere": [
+        "Los pájaros de la orilla no se acercan al agua. Caminan paralelos.",
+        "El barro de la orilla conserva huellas viejas mejor de lo que debería."
+      ],
+      "connections": [
+        "patio"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sound": [
+          "Pájaros, viento en el pastizal, y del agua nada. Una laguna de esta superficie tendría que sonar."
+        ],
+        "smell": [
+          "Huele a juncos y a barro. Un olor honesto, por una vez."
+        ],
+        "touch": [
+          "El agua está fría y no opone resistencia. Ni una corriente, ni un tironeo."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-barro",
+          "names": [
+            "barro",
+            "orilla",
+            "huellas",
+            "pisadas"
+          ],
+          "description": "El barro de la orilla conserva huellas viejas mejor de lo que debería.",
+          "closerLook": "Hay huellas de bota que entran al agua y no salen. Están intactas, con el borde nítido, y por el estado del barro tendrían que tener semanas. Once días de lluvia y viento no las tocaron.",
+          "exposure": 4,
+          "clue": {
+            "description": "En la orilla hay huellas de bota que entran a la laguna y no salen, conservadas de forma imposible después de once días.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-pajaros",
+          "names": [
+            "pájaros",
+            "pajaros",
+            "aves",
+            "chorlo"
+          ],
+          "description": "Los pájaros caminan paralelos al agua, nunca hacia ella.",
+          "closerLook": "Los mirás un rato largo. Ninguno baja a beber. Ninguno cruza volando por encima: bordean. Un chorlo se acerca a un metro, se queda quieto mirando la superficie, y retrocede caminando para atrás sin darle la espalda.",
+          "examineSkill": "ciencia_naturales",
+          "exposure": 3,
+          "clue": {
+            "description": "Ningún ave bebe de la laguna ni la sobrevuela. La bordean, y retroceden sin darle la espalda al agua.",
+            "kind": "experiential",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-superficie",
+          "names": [
+            "superficie",
+            "juncos",
+            "pastizal"
+          ],
+          "description": "Ancha, baja, del color del cielo. Sin una arruga en cien hectáreas.",
+          "closerLook": "Tirás una piedra: entra sin ruido, y las ondas salen, se abren un metro y se detienen. No se apagan de a poco. Se detienen, como si alguien las hubiera apoyado.",
+          "exposure": 5,
+          "clue": {
+            "description": "Las ondas en la Laguna Mansa no se disipan: se abren un metro y se detienen de golpe.",
+            "kind": "experiential",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "startLocation": "patio",
+  "startTime": {
+    "iso": "1924-10-26T17:40:00",
+    "precision": "minute",
+    "display": "las seis menos veinte de la tarde"
+  },
+  "startUmbralPermeability": 12,
+  "timeline": [
+    {
+      "id": "te-1897",
+      "description": "Desaparición del marido de la señora Vera en el aljibe de Los Álamos.",
+      "when": {
+        "iso": "1897-06-01T00:00:00",
+        "precision": "vague",
+        "display": "invierno de 1897"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-ignacio",
+      "description": "Desaparición de Ignacio Vera. Salió al patio a fumar y no volvió.",
+      "when": {
+        "iso": "1924-10-15T22:30:00",
+        "precision": "hour",
+        "display": "la noche del 15 de octubre"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-reflejo",
+      "description": "Lo que el agua devuelve. Si es memoria, presencia, o algo para lo que ninguna de las dos palabras sirve, no está determinado — y esta aventura no lo determina.",
+      "when": {
+        "iso": "1924-10-26T00:00:00",
+        "precision": "vague",
+        "display": "ahora"
+      },
+      "category": "UNKNOWN",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "KEEPER_SECRET",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "ignacio",
+      "npc": "npc-rosa",
+      "orden": 10,
+      "etiqueta": "Preguntarle qué pasó esa noche",
+      "intencion": "Le pregunto a Rosa qué pasó esa noche con Ignacio",
+      "claves": [
+        "esa noche",
+        "ultima vez",
+        "que paso",
+        "el marido",
+        "desaparic"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Cenó. Guiso. Comió poco, que ya venía comiendo poco. —Rosa habla mirando la mesa—. Salió al patio a fumar, como todas las noches. Yo levanté los platos, me acosté. A la mañana no estaba.\n\n—El reloj apareció ahí, en el brocal. Seco. Y esa noche llovió.\n\nSe queda un momento. Después dice, más rápido, como quien cierra un tema:\n\n—Debía plata en el pueblo. Eso es lo que pasó."
+        ],
+        "pista": {
+          "description": "Ignacio salió al patio a fumar la noche del 15 y no volvió. El reloj apareció seco en el brocal a la mañana siguiente, después de una noche de lluvia.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "salió al patio a fumar"
+      }
+    },
+    {
+      "id": "aljibe",
+      "npc": "npc-rosa",
+      "orden": 20,
+      "etiqueta": "Preguntarle por el aljibe",
+      "intencion": "Le pregunto a Rosa por el aljibe",
+      "claves": [
+        "aljibe",
+        "pozo",
+        "el agua"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Rosa vuelve a doblar el repasador.\n\n—El agua está buena —dice—. Nunca se secó, ni en el veinte, que se secó todo. —Una pausa—. Él la miraba mucho. Yo le decía que era el cansancio.\n\nSe levanta a mover una olla que no necesita que la muevan.\n\n—Yo de noche al patio no salgo. Por si le interesa."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "El agua está buena"
+      }
+    },
+    {
+      "id": "1897",
+      "npc": "npc-rosa",
+      "orden": 40,
+      "etiqueta": "Preguntarle por la fotografía vieja",
+      "intencion": "Le pregunto a Rosa por la fotografía de 1897",
+      "claves": [
+        "1897",
+        "foto vieja",
+        "fotografia vieja",
+        "los patrones"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Esa es de cuando hicieron el aljibe. Los patrones viejos, los Vera de antes. —Se acerca a mirarla ella también, y es la primera vez que se acerca a algo por su cuenta—.\n\n—Mi madre trabajó para ellos. Decía que a la señora se le murió el marido en el pozo y que después se le fue la cabeza.\n\nSe da vuelta y vuelve a la olla.\n\n—Cosas de antes."
+        ],
+        "pregunta": "¿Qué le pasó exactamente a la familia Vera en 1897?"
+      },
+      "disponible": {
+        "op": "narrado",
+        "contiene": "Nueve personas delante del aljibe"
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "los patrones viejos"
+      }
+    },
+    {
+      "id": "soga",
+      "npc": "npc-rosa",
+      "orden": 15,
+      "etiqueta": "Preguntarle por la soga cortada",
+      "intencion": "Le pregunto a Rosa por la soga de la roldana",
+      "claves": [
+        "soga",
+        "roldana",
+        "cuerda",
+        "polea"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "razon": "leerle la cara mientras explica por qué sacó la soga"
+      },
+      "cede": {
+        "actitud": 5,
+        "texto": [
+          "Rosa deja de doblar el repasador.\n\n—La saqué yo —dice—. Tres días después. —Y como no decís nada, agrega—: Antes no. Después.\n\nSe queda callada. Es evidente que hay una segunda parte y que todavía no se la ganaste."
+        ],
+        "pista": {
+          "description": "Rosa retiró la soga de la roldana tres días DESPUÉS de la desaparición de Ignacio, no antes.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Estaba podrida —dice—. Se cortó sola.\n\nY vuelve al repasador. Una soga podrida no se corta a cuchillo, y las dos lo saben, pero ella lo dijo primero y ahora hay que desarmarlo."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "cortada a cuchillo"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "tres días DESPUÉS"
+      }
+    },
+    {
+      "id": "reloj",
+      "npc": "npc-rosa",
+      "orden": 25,
+      "etiqueta": "Preguntarle por el reloj que apareció seco",
+      "intencion": "Le pregunto a Rosa por el reloj",
+      "claves": [
+        "reloj",
+        "cuatro y veinte"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "convencerla de volver sobre la mañana que encontró el reloj"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Estaba seco —dice—. Eso es lo que no me sale de la cabeza. Llovió toda la noche y el reloj estaba seco arriba del brocal, como si alguien lo hubiera puesto ahí a la mañana.\n\n—Y la casa estaba cerrada por dentro. Yo la cerré."
+        ],
+        "pista": {
+          "description": "La casa estaba cerrada por dentro esa noche, y el reloj apareció seco sobre el brocal tras una noche de lluvia.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Lo encontré y lo levanté. ¿Qué quiere que le diga? —Se encoge de hombros—. Un reloj arriba de un brocal.\n\nEstá saltando la parte que le importa a usted, y lo hace bien, sin ponerse nerviosa."
+        ]
+      },
+      "disponible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "cuatro y veinte"
+          },
+          {
+            "op": "propiedad",
+            "item": "it-reloj",
+            "prop": "p-reloj-atras"
+          }
+        ]
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "cerrada por dentro"
+      }
+    },
+    {
+      "id": "deuda",
+      "npc": "npc-rosa",
+      "orden": 30,
+      "etiqueta": "Preguntarle por la plata que se debía",
+      "intencion": "Le pregunto a Rosa por la plata que se debía",
+      "claves": [
+        "plata",
+        "deuda",
+        "debia",
+        "dinero"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "razon": "medir si la deuda es su explicación o su excusa"
+      },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Debía en el almacén, como todos. —Rosa lo dice rápido—. Cuarenta pesos, capaz sesenta.\n\nSesenta pesos no es una cifra por la que un hombre abandone un campo arrendado, un sombrero y un reloj. Ella lo sabe también, y por eso lo dijo rápido."
+        ]
+      },
+      "esquiva": {
+        "texto": [
+          "—Debía plata. Eso es lo que pasó. —Y lo dice como quien apoya una piedra sobre un papel para que no se vuele—. Los hombres se van por eso todo el tiempo, {trato}."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "salió al patio a fumar"
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Cuarenta pesos"
+      }
+    },
+    {
+      "id": "hermano",
+      "npc": "npc-rosa",
+      "orden": 35,
+      "etiqueta": "Preguntarle por el hermano",
+      "intencion": "Le pregunto a Rosa por el hermano",
+      "claves": [
+        "hermano",
+        "pariente"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 30,
+        "razon": "meterse en un asunto de familia que no le corresponde"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Se pelearon por el campo hace años. No se hablaban. —Se encoge de hombros—. Ya sé lo que está pensando, y no. El hermano está en Rosario y hace ocho años que no viene.\n\n—No todo lo raro de esta casa es de la familia, {trato}."
+        ],
+        "pista": {
+          "description": "El hermano de Ignacio vive en Rosario y no visita el campo hace ocho años. La disputa familiar no tiene relación con la desaparición.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "cerrado": {
+        "actitud": -3,
+        "texto": [
+          "—Del hermano no hablo —dice, y es la primera vez que le sale cortante—. Eso es de familia y usted vino por otra cosa."
+        ]
+      },
+      "disponible": {
+        "op": "narrado",
+        "contiene": "Cuarenta pesos"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "vive en Rosario"
+      }
+    },
+    {
+      "id": "ella",
+      "npc": "npc-rosa",
+      "orden": 50,
+      "etiqueta": "Preguntarle qué vio ella",
+      "intencion": "Le pregunto a Rosa qué vio ella",
+      "claves": [
+        "que vio ella",
+        "lo que vio",
+        "vio usted",
+        "tiene miedo",
+        "por que no sale"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 12,
+        "razon": "que deje de contar lo de Ignacio y cuente lo suyo"
+      },
+      "cede": {
+        "actitud": 6,
+        "texto": [
+          "Se queda callada un momento más largo de lo cómodo.\n\n—La noche siguiente vine con el farol. A llamarlo. —Se mira las manos—. El farol tarda en aparecer en el agua, ¿sabe? Uno se asoma y la luz llega después. Y cuando llegó… —se detiene—. Había dos luces. Yo tenía una sola.\n\n—Por eso saqué la soga."
+        ],
+        "pista": {
+          "description": "Rosa vio dos luces reflejadas en el aljibe cuando bajó con un solo farol, la noche siguiente a la desaparición.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3,
+        "cordura": 1,
+        "revelaSecreto": "s-rosa-vio"
+      },
+      "critico": {
+        "actitud": 9,
+        "texto": [
+          "Se queda callada un momento más largo de lo cómodo, y cuando arranca ya no para.\n\n—La noche siguiente vine con el farol. A llamarlo. —Se mira las manos—. El farol tarda en aparecer en el agua, ¿sabe? Uno se asoma y la luz llega después. Y cuando llegó… había dos luces. Yo tenía una sola.\n\nSe detiene, pero esta vez sigue:\n\n—Y la otra luz no estaba quieta como la mía. Se movía para el costado, despacito, como buscando algo que no era yo. Por eso saqué la soga. No fue miedo a que él subiera. Fue miedo a que subiera lo otro."
+        ],
+        "pista": {
+          "description": "La segunda luz que vio Rosa en el aljibe se movía por su cuenta, buscando algo que no era ella. Rosa sacó la soga por eso, no por miedo a que Ignacio volviera.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3,
+        "cordura": 2,
+        "revelaSecreto": "s-rosa-vio"
+      },
+      "esquiva": {
+        "actitud": 4,
+        "texto": [
+          "Rosa se queda quieta con el repasador en las manos.\n\n—Yo no vi nada —dice, y es la primera cosa que dice que suena ensayada—. Yo estaba durmiendo.\n\nDespués, más bajo, casi para ella:\n\n—Y desde entonces duermo con la luz prendida, que es un gasto."
+        ]
+      },
+      "pifia": {
+        "actitud": -6,
+        "texto": [
+          "Rosa contesta demasiado rápido.\n\n—Yo no vi nada —dice—. Yo estaba durmiendo.\n\nY usted se da cuenta, ahí mismo, de que es mentira: la mano con el repasador no se mueve, y las personas que duermen no tienen esa clase de quietud despierta.\n\nNo va a volver a preguntárselo así. Lo que sea que Rosa esté protegiendo, ahora sabe que usted casi llega, y eso la hace más difícil, no más fácil."
+        ],
+        "pista": {
+          "description": "Rosa mintió al decir que dormía la noche siguiente a la desaparición: no se comporta como alguien que duerme.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "cerrado": {
+        "texto": [
+          "—¿Yo? —Rosa se ríe sin ganas—. Yo cocino y limpio, {trato}. Pregúntele a alguien que sepa algo.\n\nTodavía no confía en usted lo suficiente como para que esa pregunta signifique algo."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "salió al patio a fumar"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "dos luces"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "fin-sostener",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "sosten[eg]"
+          },
+          {
+            "op": "texto",
+            "patron": "mirada|vista|reflejo"
+          },
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "retardo perceptible"
+              },
+              {
+                "op": "o",
+                "de": [
+                  {
+                    "op": "exposicion",
+                    "minimo": 25
+                  },
+                  {
+                    "op": "propiedad",
+                    "item": "it-fotoreciente",
+                    "prop": "p-rec-figura"
+                  },
+                  {
+                    "op": "pista",
+                    "contiene": "dos luces"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-quedarse",
+      "prioridad": 94,
+      "cuando": {
+        "op": "texto",
+        "patron": "me quedo|quedarme|paso la noche|pasar la noche"
+      }
+    },
+    {
+      "id": "fin-sellar",
+      "prioridad": 93,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "tapar"
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "objetivo",
+                "kind": "water"
+              },
+              {
+                "op": "texto",
+                "patron": "aljibe"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-irse",
+      "prioridad": 93,
+      "cuando": {
+        "op": "verbo",
+        "es": [
+          "irse"
+        ]
+      }
+    },
+    {
+      "id": "fin-bajar",
+      "prioridad": 92,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "bajar"
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "objetivo",
+                "kind": "water"
+              },
+              {
+                "op": "texto",
+                "patron": "aljibe|pozo"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "comparar-fotos",
+      "prioridad": 80,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "compar"
+          },
+          {
+            "op": "texto",
+            "patron": "foto|retrato|imagen|placa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reloj-sobre-agua",
+      "prioridad": 78,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "reloj"
+          },
+          {
+            "op": "texto",
+            "patron": "agua|aljibe|sobre|encima|pozo"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "patio"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-agua",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "kind": "water"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "mirar",
+              "examinar",
+              "usar",
+              "tocar"
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "y",
+              "de": [
+                {
+                  "op": "texto",
+                  "patron": "reloj"
+                },
+                {
+                  "op": "lugar",
+                  "es": [
+                    "patio"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "placa-fotografica",
+      "prioridad": 68,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-fotoreciente"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "mirar",
+              "examinar",
+              "buscar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "revisar-paginas",
+      "prioridad": 66,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "documento",
+            "id": "doc-cuaderno"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "texto",
+                "patron": "carta|sobre|papel doblado"
+              },
+              {
+                "op": "texto",
+                "patron": "hoja por hoja|pagina"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-cuaderno",
+      "prioridad": 64,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "cuaderno|diario|anotacion|apunte"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "texto",
+              "patron": "hoja por hoja|entre las pagina|paginas"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "rosa-no-habla-de-noche",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "kind": "npc",
+            "id": "npc-rosa"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "patio"
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "hora",
+                "minimo": 19
+              },
+              {
+                "op": "hora",
+                "maximo": 5
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "espejo-sobre-aljibe",
+      "prioridad": 76,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-espejo"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "patio"
+            ]
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "usar",
+              "mirar",
+              "examinar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "romper-espejo",
+      "prioridad": 75,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-espejo"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "romper",
+              "forzar",
+              "atacar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "encender-farol",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-farol"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "usar",
+              "encender"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "gritar-al-aljibe",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "gritar",
+              "llamar"
+            ]
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "patio"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "romper-el-brocal",
+      "prioridad": 71,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "romper",
+              "forzar",
+              "atacar"
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "objetivo",
+                "kind": "water"
+              },
+              {
+                "op": "texto",
+                "patron": "brocal|aljibe"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cavar-junto-al-aljibe",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "cavar"
+            ]
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "patio"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dormir",
+      "prioridad": 69,
+      "cuando": {
+        "op": "verbo",
+        "es": [
+          "dormir"
+        ]
+      }
+    },
+    {
+      "id": "tocar-el-agua",
+      "prioridad": 67,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "tocar"
+            ]
+          },
+          {
+            "op": "objetivo",
+            "kind": "water"
+          }
+        ]
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "asomarse",
+      "grupo": "observar",
+      "lugar": "patio",
+      "orden": 1,
+      "intencion": "Me asomo al aljibe y miro el reflejo un rato largo",
+      "etiqueta": [
+        {
+          "cuando": {
+            "op": "no",
+            "de": {
+              "op": "pista",
+              "contiene": "retardo perceptible"
+            }
+          },
+          "texto": "Asomarte al aljibe y mirar el reflejo"
+        },
+        {
+          "cuando": {
+            "op": "no",
+            "de": {
+              "op": "pista",
+              "contiene": "aumenta con la velocidad"
+            }
+          },
+          "texto": "Probar el retardo moviéndote rápido frente al agua"
+        },
+        {
+          "texto": "Volver a asomarte al agua"
+        }
+      ]
+    },
+    {
+      "id": "reloj-agua",
+      "grupo": "usar",
+      "lugar": "patio",
+      "orden": 2,
+      "intencion": "Sostengo el reloj sobre el agua del aljibe",
+      "etiqueta": "Sostener el reloj de Ignacio sobre el agua",
+      "visible": {
+        "op": "alcanzable",
+        "item": "it-reloj"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-reloj",
+        "prop": "p-reloj-atras"
+      }
+    },
+    {
+      "id": "espejo-aljibe",
+      "grupo": "usar",
+      "lugar": "patio",
+      "orden": 3,
+      "intencion": "Uso el espejo para mirar el aljibe",
+      "etiqueta": "Mirar el aljibe a través del espejo",
+      "visible": {
+        "op": "lleva",
+        "item": "it-espejo"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-espejo",
+        "prop": "p-espejo-indirecto"
+      }
+    },
+    {
+      "id": "gritar",
+      "grupo": "usar",
+      "lugar": "patio",
+      "orden": 4,
+      "intencion": "Grito el nombre de Ignacio hacia el aljibe",
+      "etiqueta": "Llamar a Ignacio hacia el aljibe",
+      "visible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "salió al patio a fumar"
+          },
+          {
+            "op": "documento",
+            "id": "doc-cuaderno"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "no devuelve eco"
+      }
+    },
+    {
+      "id": "escuchar-patio",
+      "grupo": "observar",
+      "lugar": "patio",
+      "orden": 22,
+      "intencion": "Escucho el aljibe con atención",
+      "etiqueta": "Escuchar el aljibe",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Un aljibe hace ruido"
+      }
+    },
+    {
+      "id": "cavar",
+      "grupo": "usar",
+      "lugar": "patio",
+      "orden": 23,
+      "intencion": "Cavo al lado del aljibe",
+      "etiqueta": "Cavar junto al aljibe para llegar a la napa",
+      "visible": {
+        "op": "documento",
+        "id": "doc-cuaderno"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "napa está a sesenta"
+      }
+    },
+    {
+      "id": "foto1897",
+      "grupo": "observar",
+      "lugar": "casa",
+      "orden": 5,
+      "intencion": "Examino la fotografía enmarcada de 1897",
+      "etiqueta": "Mirar la fotografía enmarcada de 1897",
+      "hecha": {
+        "op": "o",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "Nueve personas delante del aljibe"
+          },
+          {
+            "op": "propiedad",
+            "item": "it-foto1897",
+            "prop": "p-1897-rostro"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cuaderno",
+      "grupo": "observar",
+      "lugar": "cuarto",
+      "orden": 6,
+      "intencion": "Leo el cuaderno de Ignacio",
+      "etiqueta": "Leer el cuaderno de Ignacio",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-cuaderno"
+      }
+    },
+    {
+      "id": "paginas",
+      "grupo": "observar",
+      "lugar": "cuarto",
+      "orden": 7,
+      "intencion": "Reviso el cuaderno hoja por hoja",
+      "etiqueta": "Revisar el cuaderno hoja por hoja",
+      "visible": {
+        "op": "documento",
+        "id": "doc-cuaderno"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-carta"
+      }
+    },
+    {
+      "id": "placa",
+      "grupo": "observar",
+      "lugar": "cuarto",
+      "orden": 8,
+      "intencion": "Examino la fotografía dada vuelta",
+      "etiqueta": "Examinar la fotografía que Ignacio dejó dada vuelta",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-fotoreciente",
+        "prop": "p-rec-figura"
+      }
+    },
+    {
+      "id": "comparar",
+      "grupo": "usar",
+      "lugar": [
+        "casa",
+        "cuarto"
+      ],
+      "orden": 9,
+      "intencion": "Comparo las dos fotografías",
+      "etiqueta": "Comparar las dos fotografías",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "propiedad",
+            "item": "it-fotoreciente",
+            "prop": "p-rec-figura"
+          },
+          {
+            "op": "alcanzable",
+            "item": "it-foto1897"
+          },
+          {
+            "op": "alcanzable",
+            "item": "it-fotoreciente"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-foto1897",
+        "prop": "p-1897-rostro"
+      }
+    },
+    {
+      "id": "pensar",
+      "grupo": "decidir",
+      "orden": 50,
+      "intencion": "Pienso en lo que sé hasta ahora",
+      "etiqueta": "Ordenar lo que sabés",
+      "visible": {
+        "op": "pistas",
+        "minimo": 2
+      }
+    },
+    {
+      "id": "anotar",
+      "grupo": "decidir",
+      "orden": 51,
+      "intencion": "Anoto todo lo que tengo en la libreta",
+      "etiqueta": "Anotar todo en la libreta",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Sacás la libreta"
+      }
+    },
+    {
+      "id": "esperar",
+      "grupo": "decidir",
+      "orden": 52,
+      "intencion": "Espero un rato largo sin hacer nada",
+      "etiqueta": "Esperar y no hacer nada",
+      "visible": {
+        "op": "pistas",
+        "minimo": 1
+      }
+    },
+    {
+      "id": "bajar",
+      "grupo": "decidir",
+      "lugar": "patio",
+      "orden": 90,
+      "final": true,
+      "intencion": "Bajo al aljibe",
+      "etiqueta": "Bajar al aljibe",
+      "visible": {
+        "op": "pistas",
+        "minimo": 4
+      }
+    },
+    {
+      "id": "sellar",
+      "grupo": "decidir",
+      "lugar": "patio",
+      "orden": 91,
+      "final": true,
+      "intencion": "Sello el aljibe con las tablas del galpón",
+      "etiqueta": "Sellar el aljibe con las tablas del galpón",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pistas",
+            "minimo": 5
+          },
+          {
+            "op": "detalleVisto",
+            "lugar": "patio",
+            "feature": "f-galpon"
+          }
+        ]
+      }
+    },
+    {
+      "id": "irse",
+      "grupo": "decidir",
+      "orden": 92,
+      "final": true,
+      "intencion": "Me voy de Los Álamos",
+      "etiqueta": "Irte de Los Álamos con lo que tenés",
+      "visible": {
+        "op": "pistas",
+        "minimo": 4
+      }
+    },
+    {
+      "id": "sostener",
+      "grupo": "decidir",
+      "lugar": "patio",
+      "orden": 93,
+      "final": true,
+      "intencion": "Le sostengo la mirada al reflejo del aljibe hasta el final",
+      "etiqueta": "Sostenerle la mirada al reflejo hasta que responda",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "retardo perceptible"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "exposicion",
+                "minimo": 25
+              },
+              {
+                "op": "propiedad",
+                "item": "it-fotoreciente",
+                "prop": "p-rec-figura"
+              },
+              {
+                "op": "pista",
+                "contiene": "dos luces"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "quedarse",
+      "grupo": "decidir",
+      "orden": 94,
+      "final": true,
+      "intencion": "Me quedo en Los Álamos a pasar la noche",
+      "etiqueta": "Quedarte en la casa a pasar la noche",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pistas",
+            "minimo": 4
+          },
+          {
+            "op": "hora",
+            "minimo": 18
+          }
+        ]
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "sellar",
+      "title": "Lo que se tapa",
+      "condition": "El investigador sella, tapa o llena el aljibe sin haber mirado hasta el final."
+    },
+    {
+      "id": "mirar",
+      "title": "Lo que devuelve la mirada",
+      "condition": "El investigador mira sostenidamente hasta que el fenómeno responde. Exposición alta."
+    },
+    {
+      "id": "llevarse",
+      "title": "Lo que se lleva",
+      "condition": "El investigador se va con la evidencia y sin la explicación."
+    },
+    {
+      "id": "bajar",
+      "title": "Lo que está abajo",
+      "condition": "El investigador baja al aljibe."
+    },
+    {
+      "id": "quedarse",
+      "title": "Lo que se queda",
+      "condition": "El investigador decide quedarse a esperar. Consecuencia grave."
+    }
+  ],
+  "opening": "La chata del correo salió de Castronegro a las cuatro, tardó una hora y media en cuatro leguas de huella, {lo} dejó en el portón y siguió viaje sin apagar el motor.\n\nLos Álamos es una casa baja, un galpón y tres árboles que le dan el nombre, todo en medio de un campo que en octubre debería estar más verde. El portón estaba abierto. Nadie salió a recibir{lo}.\n\nEn el patio hay un aljibe de ladrillo con brocal de piedra, y una mujer parada al lado del galpón con un repasador en las manos, mirándo{lo} llegar desde hace un rato. Cuando usted está a diez metros, la mujer habla primero.\n\n—¿Usted es {trato}? —dice—. Pase por adentro. Por acá no.\n\nY señala el patio, que está vacío, y en cuyo centro el agua del aljibe está completamente inmóvil."
+}

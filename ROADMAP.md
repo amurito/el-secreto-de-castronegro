@@ -253,12 +253,40 @@ Chaosium sigue sin poder entrar al repositorio público — eso no cambia.
 
 ## 4. Sistema
 
-### 4.1 Contenido fuera del código
+### 4.1 Contenido fuera del código ✔ HECHO (Agua Quieta; falta migrar La Legua)
 
-Hoy la aventura es TypeScript. Está bien para una; para cinco no. Datos en
-archivos, validación al cargar, y el escenario deja de necesitar compilación.
+Agua Quieta vive en `agua-quieta.contenido.json`: lugares, objetos, NPC,
+documentos, línea de tiempo, temas de conversación, botones, desenlaces, y
+las condiciones de CUÁNDO responde cada escena. Pasó de cuatro archivos
+TypeScript (~1200 líneas) a un JSON más `aguaquieta.logica.ts`.
 
-Depende de 3.2: sin una segunda aventura no sabés qué forma tiene que tener.
+**Qué sigue siendo código, y por qué.** `resolver` —la prosa que se arma
+distinto según el grado de la tirada y lo que ya se descubrió— no es una
+pregunta de sí/no que un árbol de condiciones pueda expresar: es composición
+de texto con estado. Convertirlo a datos sería inventar un lenguaje de guion
+completo. Se queda en TypeScript, en un archivo que ahora sólo tiene eso.
+
+**El lenguaje de condiciones** (`condiciones.ts`) tiene 18 operadores y sale
+de catalogar las ~50 comprobaciones reales de las dos aventuras: verbo,
+objetivo, lugar, texto, pista, documento, propiedad, hora, y los compuestos
+`y`/`o`/`no`. Antes cada aventura reescribía sus propias `pista()`,
+`documento()`, `aqui()` casi al carácter; ahora están una sola vez.
+
+**Lo que se gana no es que el JSON sea más lindo: es que se puede recorrer.**
+Un id mal tipeado dentro de una función —`propiedadVista(s, 'it-relog')`—
+compila perfecto y se descubre jugando, o nunca. `validarContenido` corre AL
+CARGAR y lo rechaza nombrando el campo. `prueba-carga-contenido.ts` le rompe
+quince cosas distintas a propósito y verifica que las encuentre todas — misma
+idea que `auditarLaAuditoria`.
+
+Es una capa distinta de `prueba-auditoria.ts` y las dos hacen falta: ésta
+pregunta «¿la forma es correcta y las referencias existen?», aquélla «¿todo
+lo declarado tiene camino real en el juego?».
+
+**Falta:** migrar La Legua Perdida con la misma receta. Es mecánico ahora que
+el camino está probado, y hasta que se haga las dos formas conviven sin
+problema —lo cual es en sí mismo la prueba de que el motor no se enteró del
+cambio.
 
 ### 4.2 CI de verdad
 
@@ -314,13 +342,22 @@ pasar algo.
 
 ## Agregar una aventura, hoy
 
-Después del refactor social, el camino es:
+Después del paso a contenido en datos, el camino es:
 
-1. Escribir `src/scenario/<nombre>.ts` — un `Scenario`.
-2. Escribir `src/scenario/<nombre>.dialogo.ts` — los temas de sus NPC.
-3. Escribir `src/scenario/<nombre>.keeper.ts` — el briefing, que sólo importa
+1. Escribir `src/scenario/<nombre>.contenido.json` — lugares, objetos, NPC,
+   documentos, temas, botones, desenlaces, y el `cuando` de cada escena en el
+   lenguaje de condiciones. Es el 90% del trabajo y no se toca TypeScript.
+2. Escribir `src/scenario/<nombre>.logica.ts` — sólo el `resolver` de cada
+   escena declarada, casado por `id` con el JSON.
+3. Escribir `src/scenario/<nombre>.ts` — tres líneas: `cargarAventura(json,
+   logica, pregens)`.
+4. Escribir `src/scenario/<nombre>.keeper.ts` — el briefing, que sólo importa
    el servidor y por eso no entra al bundle público.
-4. Sumar una línea a `src/scenario/catalogo.ts` con su fecha diegética.
+5. Sumar una línea a `src/scenario/catalogo.ts` con su fecha diegética.
+
+Si el JSON tiene una referencia rota —un objeto que no existe, un secreto que
+el NPC no tiene, una escena declarada sin `resolver`— el juego lo dice al
+cargar, con el campo nombrado. Antes eso compilaba y se descubría jugando.
 
 El catálogo se ordena solo por fecha, así que una aventura escrita después
 puede transcurrir antes y encajar en su lugar sin renumerar nada. `requiere`
@@ -328,7 +365,7 @@ está listo para encadenar cuando haya dos.
 
 Ya no queda nada de Agua Quieta en el motor: los desenlaces, las escenas con
 prosa propia y hasta la regla de que Rosa no habla de noche en el patio viven
-en `aguaquieta.escenas.ts`. `offline.ts` pasó de 1153 a 599 líneas.
+con la aventura. `offline.ts` pasó de 1153 a 631 líneas.
 
 ## Cómo se mantiene
 

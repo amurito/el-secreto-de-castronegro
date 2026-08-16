@@ -1,21 +1,26 @@
 /**
- * LAS ESCENAS ESCRITAS A MANO DE AGUA QUIETA.
+ * LA LÓGICA DE LAS ESCENAS DE AGUA QUIETA — lo único que no puede ser dato.
  *
- * Todo esto vivía dentro del resolvedor del motor: mirar el agua, la placa, las
- * dos fotografías, el reloj sobre el aljibe, el cuaderno, y los cinco
- * desenlaces. Funcionaba para una aventura y sólo para una.
+ * Todo lo demás de esta aventura vive en `agua-quieta.contenido.json`:
+ * lugares, objetos, NPC, documentos, temas de conversación, botones,
+ * desenlaces, y las condiciones de CUÁNDO responde cada escena.
  *
- * Ahora vive con la aventura. El motor recorre estas escenas sin saber qué es
- * un aljibe; la prosa y las ramas están acá, donde se escriben.
+ * Acá queda `resolver` —con sus `antes`/`prueba`—, que es prosa que se arma
+ * distinto según cómo salió la tirada y qué se descubrió antes. Eso no es una
+ * pregunta de sí/no que un árbol de condiciones pueda expresar: es
+ * composición de texto con estado, y por eso sigue siendo código.
  *
- * Cada escena declara CUÁNDO responde, qué tirada pide y qué deja. Lo que deja
- * es declarativo: la escena no toca el estado, lo propone, y el motor lo
- * ejecuta con las herramientas que valida.
+ * Lo que devuelve sigue siendo declarativo, como siempre: la escena no toca
+ * el estado, lo propone, y el motor lo ejecuta con las herramientas que
+ * valida.
+ *
+ * El `id` de cada entrada la casa con su declaración en el JSON. Si sobra o
+ * falta una de un lado, `validarContenido` lo rechaza al cargar.
  */
 
 import type { GameState } from '../shared/types.ts';
-import type { Escenas, IntencionLeida } from './escena.ts';
-import { listoParaSostener } from './aguaquieta.acciones.ts';
+import type { IntencionLeida } from './escena.ts';
+import type { LogicaDeEscenas } from './cargarAventura.ts';
 
 // ── AYUDAS ───────────────────────────────────────────────────────────────────
 
@@ -36,15 +41,13 @@ const dice = (i: IntencionLeida, re: RegExp) => re.test(i.norm);
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const AGUA_QUIETA_ESCENAS: Escenas = [
+export const AGUA_QUIETA_LOGICA: LogicaDeEscenas = [
   // ══ DESENLACES ════════════════════════════════════════════════════════════
   // Prioridad alta: cierran la aventura, así que se comprueban antes que
   // cualquier lectura más suave de la misma frase.
 
   {
-    id: 'fin-sostener', prioridad: 95,
-    cuando: (s, i) =>
-      dice(i, /sosten[eg]/) && dice(i, /mirada|vista|reflejo/) && listoParaSostener(s),
+    id: 'fin-sostener',
     antes: (s) => aqui(s) !== 'patio' ? null : ({
       texto: [
         'Apoyás los codos en el brocal y decidís no apartar la vista. Es una decisión, no un descuido: ' +
@@ -151,8 +154,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-quedarse', prioridad: 94,
-    cuando: (_s, i) => dice(i, /me quedo|quedarme|paso la noche|pasar la noche/),
+    id: 'fin-quedarse',
     resolver: () => ({
       tiempo: { minutes: 8 * 60, reason: 'pasar la noche en Los Álamos' },
       exposicion: { amount: 14, source: 'noche-en-la-casa', cause: 'dormir a veinte metros del aljibe' },
@@ -182,8 +184,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-sellar', prioridad: 93,
-    cuando: (_s, i) => i.verb === 'tapar' && (i.objetivo.kind === 'water' || dice(i, /aljibe/)),
+    id: 'fin-sellar',
     resolver: () => ({
       consecuencia: {
         description: 'El aljibe de Los Álamos quedó sellado.', scope: 'world', permanent: true,
@@ -203,8 +204,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-irse', prioridad: 93,
-    cuando: (_s, i) => i.verb === 'irse',
+    id: 'fin-irse',
     resolver: () => ({
       consecuencia: {
         description: 'El investigador se fue de Los Álamos sin resolver la desaparición.', scope: 'world', permanent: true,
@@ -223,9 +223,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-bajar', prioridad: 92,
-    cuando: (_s, i) =>
-      i.verb === 'bajar' && (i.objetivo.kind === 'water' || dice(i, /aljibe|pozo/)),
+    id: 'fin-bajar',
     antes: (s) => aqui(s) !== 'patio' ? null : ({
       texto: [
         'Apoyás las manos en el brocal. La roldana no tiene soga: Rosa la sacó, y ya sabés por qué o estás por saberlo.\n\n' +
@@ -281,8 +279,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
 
   {
     // Comparar las dos fotografías. Antes que la placa: nombra las dos.
-    id: 'comparar-fotos', prioridad: 80,
-    cuando: (_s, i) => dice(i, /compar/) && dice(i, /foto|retrato|imagen|placa/),
+    id: 'comparar-fotos',
     resolver: ({ estado }) => {
       if (!propiedadVista(estado, 'it-fotoreciente')) {
         return {
@@ -320,9 +317,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'reloj-sobre-agua', prioridad: 78,
-    cuando: (s, i) =>
-      dice(i, /reloj/) && dice(i, /agua|aljibe|sobre|encima|pozo/) && aqui(s) === 'patio',
+    id: 'reloj-sobre-agua',
     antes: (s) => propiedadVista(s, 'it-reloj') ? null : ({
       texto: ['Te asomás lo justo y extendés el brazo con el reloj colgando de la cadena, encima del círculo de agua.'],
     }),
@@ -368,10 +363,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'mirar-agua', prioridad: 70,
-    cuando: (s, i) =>
-      i.objetivo.kind === 'water' && ['mirar', 'examinar', 'usar', 'tocar'].includes(i.verb)
-      && !(dice(i, /reloj/) && aqui(s) === 'patio'),
+    id: 'mirar-agua',
     prueba: (s, i) =>
       aqui(s) !== 'patio' && aqui(s) !== 'orilla' ? null : ({
         skill: 'POW', difficulty: 'regular',
@@ -494,9 +486,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'placa-fotografica', prioridad: 68,
-    cuando: (_s, i) =>
-      i.objetivo.id === 'it-fotoreciente' && ['mirar', 'examinar', 'buscar'].includes(i.verb),
+    id: 'placa-fotografica',
     prueba: (s) => propiedadVista(s, 'it-fotoreciente') ? null : ({
       skill: 'descubrir', difficulty: 'regular',
       reason: 'examinar la placa que Ignacio dejó dada vuelta',
@@ -536,10 +526,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'revisar-paginas', prioridad: 66,
-    cuando: (s, i) =>
-      Boolean(s.documents['doc-cuaderno']?.obtainedAt) &&
-      (dice(i, /carta|sobre|papel doblado/) || dice(i, /hoja por hoja|pagina/)),
+    id: 'revisar-paginas',
     prueba: (s) => s.documents['doc-carta']?.obtainedAt ? null : ({
       skill: 'descubrir', difficulty: 'regular',
       reason: 'revisar el cuaderno hoja por hoja',
@@ -571,9 +558,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'leer-cuaderno', prioridad: 64,
-    cuando: (_s, i) =>
-      dice(i, /cuaderno|diario|anotacion|apunte/) && !dice(i, /hoja por hoja|entre las pagina|paginas/),
+    id: 'leer-cuaderno',
     resolver: ({ estado }) => {
       if (estado.documents['doc-cuaderno']?.obtainedAt) {
         return { texto: ['Volvés sobre el cuaderno. Ya lo leíste entero; está en tus documentos.'] };
@@ -603,10 +588,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   {
     // Regla de escenario, no del motor: Rosa no habla en el patio de noche.
     // Vivía escrita a mano dentro del resolvedor social; acá es una escena más.
-    id: 'rosa-no-habla-de-noche', prioridad: 60,
-    cuando: (s, i) =>
-      i.objetivo.kind === 'npc' && i.objetivo.id === 'npc-rosa'
-      && aqui(s) === 'patio' && esDeNoche(s),
+    id: 'rosa-no-habla-de-noche',
     resolver: () => ({
       texto: ['—Adentro —dice Rosa desde el umbral, sin salir—. Yo acá afuera de noche no hablo.'],
     }),
@@ -618,10 +600,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   // "romper algo" sin editar el resolvedor.
 
   {
-    id: 'espejo-sobre-aljibe', prioridad: 76,
-    cuando: (s, i) =>
-      i.objetivo.id === 'it-espejo' && aqui(s) === 'patio'
-      && ['usar', 'mirar', 'examinar'].includes(i.verb),
+    id: 'espejo-sobre-aljibe',
     antes: (s) => propiedadVista(s, 'it-espejo') ? null : ({
       texto: ['Te parás de espaldas al brocal y levantás el espejo hasta que el agua aparece adentro del marco.'],
     }),
@@ -663,9 +642,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'romper-espejo', prioridad: 75,
-    cuando: (_s, i) =>
-      i.objetivo.id === 'it-espejo' && ['romper', 'forzar', 'atacar'].includes(i.verb),
+    id: 'romper-espejo',
     resolver: () => ({
       texto: ['El espejo se parte contra el ladrillo. Los pedazos quedan boca arriba en la tierra, cada uno con su porción de cielo, y todos con la misma fracción de segundo de retraso.'],
       exposicion: { amount: 4, source: 'espejo-roto', cause: 'ver el fenómeno multiplicado en los fragmentos' },
@@ -678,8 +655,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'encender-farol', prioridad: 74,
-    cuando: (_s, i) => i.objetivo.id === 'it-farol' && ['usar', 'encender'].includes(i.verb),
+    id: 'encender-farol',
     resolver: ({ estado }) => ({
       tiempo: { minutes: 1, reason: 'encender el farol' },
       texto: [esDeNoche(estado)
@@ -689,8 +665,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'gritar-al-aljibe', prioridad: 72,
-    cuando: (s, i) => ['gritar', 'llamar'].includes(i.verb) && aqui(s) === 'patio',
+    id: 'gritar-al-aljibe',
     resolver: ({ estado, variante }) => {
       const primeraVez = !pista(estado, 'no devuelve eco');
       const rosaAca = Boolean(estado.npcs['npc-rosa']?.present)
@@ -716,10 +691,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'romper-el-brocal', prioridad: 71,
-    cuando: (_s, i) =>
-      ['romper', 'forzar', 'atacar'].includes(i.verb)
-      && (i.objetivo.kind === 'water' || dice(i, /brocal|aljibe/)),
+    id: 'romper-el-brocal',
     prueba: () => ({
       skill: 'STR', difficulty: 'hard',
       reason: 'romper el brocal a golpes',
@@ -735,8 +707,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'cavar-junto-al-aljibe', prioridad: 70,
-    cuando: (s, i) => i.verb === 'cavar' && aqui(s) === 'patio',
+    id: 'cavar-junto-al-aljibe',
     antes: () => ({ tiempo: { minutes: 45, reason: 'cavar en el patio' } }),
     prueba: () => ({
       skill: 'STR', difficulty: 'regular',
@@ -760,8 +731,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'dormir', prioridad: 69,
-    cuando: (_s, i) => i.verb === 'dormir',
+    id: 'dormir',
     resolver: ({ estado }) => {
       const exp = estado.investigators[estado.activeInvestigator]?.umbral.exposure ?? 0;
       const base = {
@@ -783,8 +753,7 @@ export const AGUA_QUIETA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'tocar-el-agua', prioridad: 67,
-    cuando: (_s, i) => i.verb === 'tocar' && i.objetivo.kind === 'water',
+    id: 'tocar-el-agua',
     resolver: () => ({
       texto: ['El agua no opone nada. Ni frío de más, ni corriente, ni el tironeo mínimo que tiene siempre el agua de un pozo. Sacás la mano seca antes de darte cuenta de que la sacaste seca.'],
       exposicion: { amount: 5, source: 'aljibe:tocar', cause: 'contacto físico con el agua quieta' },
