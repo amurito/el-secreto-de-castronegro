@@ -850,3 +850,78 @@ button { font-family: inherit; cursor: pointer; }
   .barra-movil button { padding: 0.5rem 0.3rem; min-height: 0; }
 }
 
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SIMULADOR DE COMBATE
+
+   Pantalla propia, no una variante de la de jugar: la de jugar está armada
+   alrededor de la narración y acá no hay narración, hay números. Dos
+   columnas —ficha y galpón— que en teléfono se apilan.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.scenario-card-sim { border-style: dashed; border-color: var(--text-faint); }
+
+.sim {
+  display: grid; grid-template-columns: 280px 1fr;
+  gap: 1.5rem; max-width: 1100px; margin: 0 auto; padding: 1.5rem;
+  align-items: start;
+}
+.sim-ficha { position: sticky; top: 1.5rem; }
+
+.sim-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.sim-head h2 { margin: 0; font-weight: 400; font-size: 1.5rem; }
+.sim-sub { color: var(--text-dim); margin: 0.4rem 0 0; font-size: 0.9rem; }
+
+.sim-controles {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0 1rem;
+}
+.sim-campo label {
+  display: block; font-family: var(--mono); font-size: 0.7rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint);
+  margin-bottom: 0.5rem;
+}
+.sim-campo select {
+  width: 100%; padding: 0.6rem; background: var(--bg-raised);
+  color: var(--text); border: 1px solid var(--line); border-radius: 3px;
+  font-family: inherit; font-size: 0.9rem;
+}
+.sim-ayuda { color: var(--text-faint); font-size: 0.78rem; margin-top: 0.5rem; line-height: 1.4; }
+
+.sim-rivales { display: flex; flex-direction: column; gap: 0.4rem; }
+.sim-rival {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem;
+  padding: 0.6rem 0.7rem; text-align: left; cursor: pointer;
+  background: var(--bg-raised); border: 1px solid var(--line);
+  border-radius: 3px; color: var(--text); font-family: inherit;
+}
+.sim-rival-on { border-color: var(--accent); }
+.sim-rival-caido { opacity: 0.45; }
+.sim-rival b { font-weight: 400; }
+.sim-rival-arma { font-size: 0.75rem; color: var(--text-dim); }
+.sim-rival-hp { font-family: var(--mono); font-size: 0.7rem; color: var(--hp); }
+
+.sim-acciones { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+.sim-aviso {
+  border-left: 2px solid var(--accent); padding: 0.6rem 0.9rem;
+  color: var(--text-dim); font-size: 0.88rem; margin-bottom: 1rem;
+}
+
+.sim-registro { display: flex; flex-direction: column; gap: 1rem; }
+.sim-vacio { color: var(--text-faint); font-style: italic; }
+.sim-asalto {
+  border: 1px solid var(--line); border-radius: 3px; padding: 0.9rem;
+  background: var(--bg-panel);
+}
+.sim-asalto-rechazado { border-color: var(--accent-dim); }
+.sim-texto {
+  margin: 0 0 0.8rem; white-space: pre-wrap; font-family: inherit;
+  font-size: 0.92rem; line-height: 1.55; color: var(--text);
+}
+
+@media (max-width: 860px) {
+  .sim { grid-template-columns: 1fr; padding: 1rem; }
+  .sim-ficha { position: static; }
+  .sim-controles { grid-template-columns: 1fr; }
+  .sim-acciones { flex-direction: column; }
+  .sim-acciones button { width: 100%; }
+}

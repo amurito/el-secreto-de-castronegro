@@ -14,6 +14,9 @@ import { fileStore } from '../engine/store.node.ts';
 import { verifyRollChain } from '../engine/rng.ts';
 import { AGUA_QUIETA } from '../scenario/aguaquieta.ts';
 import { ESCENARIOS, mesesEntre } from '../scenario/catalogo.ts';
+import { SIMULADOR } from '../scenario/simulador.ts';
+import { ARMA_POR_ID } from '../rules/armas.ts';
+import { toClientRoll } from '../shared/protocol.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 // Sólo el servidor importa el briefing: en el build estático nadie lo hace y
 // el empaquetador lo descarta, así que la solución de la aventura no viaja al
@@ -39,7 +42,19 @@ if (existsSync(envPath)) {
 // En el servidor, el log vive en archivos JSONL.
 useStore(fileStore);
 
-const SCENARIOS = ESCENARIOS;
+// El simulador no es una aventura y por eso no está en el catálogo, pero el
+// servidor tiene que saber cargarlo igual.
+const SCENARIOS = { ...ESCENARIOS, [SIMULADOR.id]: SIMULADOR };
+
+/** Los rivales del galpón con sus PV. Sólo lo usa el simulador. */
+const rivalesDe = (state: GameState) =>
+  Object.values(state.npcs)
+    .filter((n) => n.combate)
+    .map((n) => ({
+      id: n.id, name: n.name,
+      hp: n.combate!.hp, maxHp: n.combate!.maxHp,
+      arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
+    }));
 const BRIEFINGS = { 'agua-quieta': AGUA_QUIETA_KEEPER };
 const app = Fastify({ logger: false });
 const locks = new Set<string>();
@@ -171,6 +186,52 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id/auditoria', async (req) 
       'Verificá vos mismo: SHA-256 de la semilla debe coincidir con el compromiso que viste al empezar, y ' +
       'cada tirada debe reproducirse con HMAC-SHA256(semilla, "roll:" + índice).',
   };
+});
+
+/** Un asalto del simulador. Sin narración: dados y números crudos. */
+app.post<{ Params: { id: string }; Body: { npcId: string; armaId: string } }>(
+  '/api/campaigns/:id/atacar',
+  async (req) => {
+    const turn = await Turn.open(req.params.id);
+    const antes = turn.state.rolls.length;
+    const r = turn.executeTool('resolve_attack', {
+      npc_id: req.body.npcId, weapon_id: req.body.armaId,
+    });
+    await turn.commit();
+    const { state } = await loadState(req.params.id);
+    return {
+      ok: r.ok, mensaje: r.message,
+      state: sanitizeForClient(state),
+      tiradas: state.rolls.slice(antes).map(toClientRoll),
+      rivales: rivalesDe(state),
+    };
+  },
+);
+
+/** Vuelve a empezar con todos enteros. El log es append-only: se abre otra. */
+app.post<{ Params: { id: string } }>(
+  '/api/campaigns/:id/reiniciar-simulador',
+  async (req) => {
+    const { state: viejo } = await loadState(req.params.id);
+    const inv = activo(viejo);
+    await store().deleteCampaign(req.params.id);
+    const campaignId = await createCampaign(
+      SIMULADOR, undefined, undefined, undefined,
+      inv ? ({ ...inv, derived: { ...inv.derived, hp: inv.derived.maxHp } } as never) : undefined,
+    );
+    const { state } = await loadState(campaignId);
+    return {
+      campaignId,
+      ok: true, mensaje: 'Galpón reiniciado. Todos enteros.',
+      state: sanitizeForClient(state), tiradas: [], rivales: rivalesDe(state),
+    };
+  },
+);
+
+/** Estado del galpón al entrar: quién está en pie y con qué. */
+app.get<{ Params: { id: string } }>('/api/campaigns/:id/simulador', async (req) => {
+  const { state } = await loadState(req.params.id);
+  return { state: sanitizeForClient(state), rivales: rivalesDe(state) };
 });
 
 /** Continuar con otro investigador tras una muerte. */

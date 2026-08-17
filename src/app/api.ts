@@ -82,4 +82,34 @@ export interface GameApi {
   ): Promise<{ report: DevelopmentReport; state: ClientState }>;
   audit(id: string): Promise<AuditInfo>;
   deleteCampaign(id: string): Promise<void>;
+  /**
+   * Un asalto contra alguien que puede pelear. Existe aparte de `submitIntent`
+   * porque el simulador no narra: muestra los dados y los números crudos, que
+   * es lo único que sirve para decidir si las reglas se sienten bien.
+   */
+  atacar(id: string, npcId: string, armaId: string): Promise<AttackResult>;
+  /**
+   * Deja el galpón como estaba: rivales enteros, investigador curado.
+   *
+   * DEVUELVE UN `campaignId` NUEVO, y quien llama tiene que quedárselo. El log
+   * de este motor es append-only y no existe «deshacer»: reiniciar no rebobina
+   * la campaña, abre otra. La anterior se borra, así que seguir usando el id
+   * viejo después de esto no encuentra nada.
+   */
+  reiniciarSimulador(id: string): Promise<AttackResult & { campaignId: string }>;
+  /** Los rivales del galpón y sus PV, para pintar la pantalla al entrar. */
+  estadoSimulador(id: string): Promise<{ state: ClientState; rivales: Rival[] }>;
+}
+
+export interface Rival {
+  id: string; name: string; hp: number; maxHp: number; arma: string;
+}
+
+export interface AttackResult {
+  ok: boolean;
+  mensaje: string;
+  state: ClientState;
+  /** Las tiradas de ESTE asalto, para mostrarlas al lado del resultado. */
+  tiradas: unknown[];
+  rivales: Rival[];
 }

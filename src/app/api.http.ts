@@ -73,6 +73,14 @@ export function createHttpApi(): GameApi {
     async deleteCampaign(id) {
       await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
     },
+
+    atacar: async (id, npcId, armaId) =>
+      json(await post(`/api/campaigns/${id}/atacar`, { npcId, armaId })),
+
+    reiniciarSimulador: async (id) =>
+      json(await post(`/api/campaigns/${id}/reiniciar-simulador`)),
+
+    estadoSimulador: async (id) => json(await fetch(`/api/campaigns/${id}/simulador`)),
   };
 }
 

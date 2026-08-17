@@ -15,6 +15,9 @@ import { useStore, store } from '../engine/store.ts';
 import { browserStore } from '../engine/store.browser.ts';
 import { verifyRollChain } from '../engine/rng.ts';
 import { ESCENARIOS, mesesEntre } from '../scenario/catalogo.ts';
+import { SIMULADOR } from '../scenario/simulador.ts';
+import { ARMA_POR_ID } from '../rules/armas.ts';
+import { toClientRoll } from '../shared/protocol.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
 import { sanitizeForClient } from '../server/sanitize.ts';
@@ -24,8 +27,22 @@ import type { GameApi, StatusInfo, TurnEvent } from './api.ts';
 
 const activo = (state: GameState) => state.investigators[state.activeInvestigator];
 
-// El catálogo es la única fuente. Agregar una aventura es sumarla allá.
-const SCENARIOS = ESCENARIOS;
+/**
+ * El catálogo es la única fuente de AVENTURAS. El simulador se suma acá y no
+ * allá porque no es una aventura: si estuviera en el catálogo aparecería
+ * como una más en la pantalla de inicio, entre dos historias, y no es eso.
+ */
+const SCENARIOS = { ...ESCENARIOS, [SIMULADOR.id]: SIMULADOR };
+
+/** Los rivales del galpón, con sus PV. Sólo para el simulador. */
+const rivalesDe = (state: GameState) =>
+  Object.values(state.npcs)
+    .filter((n) => n.combate)
+    .map((n) => ({
+      id: n.id, name: n.name,
+      hp: n.combate!.hp, maxHp: n.combate!.maxHp,
+      arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
+    }));
 
 /** Un turno por vez, igual que el lock del servidor. */
 const enCurso = new Set<string>();
@@ -197,6 +214,55 @@ export function createLocalApi(): GameApi {
 
     async deleteCampaign(id) {
       await store().deleteCampaign(id);
+    },
+
+    async atacar(id, npcId, armaId) {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('resolve_attack', { npc_id: npcId, weapon_id: armaId });
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok,
+          mensaje: r.message,
+          state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          rivales: rivalesDe(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async reiniciarSimulador(id) {
+      // Se descarta la campaña y se abre otra: el log es append-only a
+      // propósito —no hay «deshacer» en este motor— así que reiniciar es
+      // empezar de nuevo, no rebobinar. Por eso devuelve el id nuevo.
+      const { state: viejo } = await loadState(id);
+      const inv = activo(viejo);
+      await store().deleteCampaign(id);
+      const campaignId = await createCampaign(
+        SIMULADOR, undefined, undefined, undefined,
+        // Se conserva el investigador con el que estaba probando, curado.
+        inv ? ({ ...inv, derived: { ...inv.derived, hp: inv.derived.maxHp } } as never) : undefined,
+      );
+      const { state } = await loadState(campaignId);
+      return {
+        campaignId,
+        ok: true,
+        mensaje: 'Galpón reiniciado. Todos enteros.',
+        state: sanitizeForClient(state),
+        tiradas: [],
+        rivales: rivalesDe(state),
+      };
+    },
+
+    async estadoSimulador(id) {
+      const { state } = await loadState(id);
+      return { state: sanitizeForClient(state), rivales: rivalesDe(state) };
     },
   };
 }

@@ -141,9 +141,13 @@ export function danoDeAtaque(
     const arm = sumaDados(dadosArma) + arma.dano.suma;
     const b = sumaDados(dadosBonificacion) + bon.suma;
     const total = Math.max(0, arm + b);
+    const tirada = `${arma.dano.cantidad}D${arma.dano.caras}` +
+      (arma.dano.suma ? `+${arma.dano.suma}` : '');
     return {
       total,
-      detalle: b === 0 ? `${arm} de daño` : `${arm} del arma ${b >= 0 ? '+' : ''}${b} de corpulencia`,
+      detalle: b === 0
+        ? `${tirada} sacó ${arm}`
+        : `${tirada} sacó ${arm}, ${b >= 0 ? '+' : ''}${b} de corpulencia`,
     };
   }
 

@@ -6,6 +6,7 @@ import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
 import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
 import { Creacion } from './Creacion.tsx';
+import { Simulador } from './Simulador.tsx';
 import { leerPreferenciaDados, guardarPreferenciaDados, prefiereMenosMovimiento } from './dados.tsx';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
@@ -100,6 +101,8 @@ export function App() {
   const [cost, setCost] = useState<any>(null);
   /** Escenario elegido para crear personaje propio. null = no estamos creando. */
   const [creando, setCreando] = useState<string | null>(null);
+  /** Campaña del simulador de combate. null = no estamos en el galpón. */
+  const [simulando, setSimulando] = useState<string | null>(null);
   /**
    * Qué panel se ve EN MÓVIL. En pantalla grande no se usa: las tres columnas
    * están a la vista y este estado lo ignora el CSS.
@@ -192,6 +195,26 @@ export function App() {
     }
   }
 
+  /**
+   * Abre el galpón. `creando === 'simulador'` significa que el jugador quiso
+   * probarlo con un investigador propio; sin eso, va con Elena.
+   */
+  async function abrirSimulador(investigador?: unknown) {
+    if (!api) return;
+    setBusy(true); setError(null);
+    try {
+      const data = investigador
+        ? await api.createCampaignConFicha('simulador', investigador)
+        : await api.createCampaign('simulador');
+      setCreando(null);
+      setSimulando(data.campaignId);
+    } catch (e) {
+      setError(`No se pudo abrir el simulador: ${(e as Error).message}`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function newCampaignConFicha(scenarioId: string, investigador: unknown) {
     if (!api) return;
     setBusy(true); setError(null);
@@ -277,16 +300,24 @@ export function App() {
     }]);
   }
 
+  // ── SIMULADOR DE COMBATE ───────────────────────────────────────────────────
+  // Va antes que todo lo demás: es una pantalla propia, sin narración ni
+  // tablero, y no comparte nada con la de jugar salvo la ficha.
+  if (simulando && api) {
+    return <Simulador api={api} campaignId={simulando} onSalir={() => setSimulando(null)} />;
+  }
+
   // ── PANTALLA DE CREACIÓN ───────────────────────────────────────────────────
   if (!campaignId && creando) {
+    const alGalpon = creando === 'simulador';
     return (
       <div className="start">
         <div className="start-inner start-ancho">
           <Creacion
-            scenarioTitulo={entradaDe(creando)?.scenario.title ?? ''}
+            scenarioTitulo={alGalpon ? 'Simulador de combate' : entradaDe(creando)?.scenario.title ?? ''}
             ocupado={busy}
             onCancelar={() => setCreando(null)}
-            onListo={(inv) => newCampaignConFicha(creando, inv)}
+            onListo={(inv) => (alGalpon ? abrirSimulador(inv) : newCampaignConFicha(creando, inv))}
           />
           {error && <div className="error error-inicio">{error}</div>}
         </div>
@@ -337,6 +368,26 @@ export function App() {
               </div>
             </div>
           ))}
+
+          {/* El banco de pruebas. Va DESPUÉS de las aventuras y con otro
+              aspecto a propósito: no es una historia, y ponerlo entre ellas
+              haría dudar de si lo es. */}
+          <div className="scenario-card scenario-card-sim">
+            <h2>Simulador de combate</h2>
+            <p>
+              Un galpón vacío y tres personas dispuestas a que las golpeen. No hay nada que descubrir:
+              es para probar las reglas de pelea con las manos, con el motor de verdad y los dados a la vista.
+            </p>
+            <div className="scenario-meta">Sin historia · Sin muerte permanente · Reiniciable</div>
+            <div className="scenario-botones">
+              <button className="primary" onClick={() => abrirSimulador()} disabled={busy || !api}>
+                {busy ? 'Abriendo…' : 'Entrar con Elena'}
+              </button>
+              <button className="ghost" onClick={() => setCreando('simulador')} disabled={busy || !api}>
+                Crear investigador
+              </button>
+            </div>
+          </div>
 
           {/* Sin esto, un fallo del almacenamiento dejaba el botón muerto y sin
               explicación: el jugador clickeaba y no pasaba nada. */}
