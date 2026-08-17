@@ -67,6 +67,26 @@ export const KEEPER_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'resolve_attack',
+    description:
+      'Resuelve un asalto entero contra un personaje que puede pelear: tira por el investigador, ' +
+      'tira por el que se defiende, compara los dos resultados y aplica el daño a quien corresponda. ' +
+      'Es UNA herramienta y no tres a propósito: una tirada enfrentada que se pueda pedir a pedazos ' +
+      'es una tirada que se puede abandonar cuando el primer dado sale mal. Si el personaje no tiene ' +
+      'estadísticas de combate, el motor lo rechaza: esa pelea no está contemplada y no hay que ' +
+      'inventarle puntos de vida.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        npc_id: str('Id del personaje al que se ataca.'),
+        weapon_id: str('Id del arma que usa el investigador. Sin esto, pelea a mano limpia.'),
+        reason: str('Qué está intentando hacer, en una frase.'),
+      },
+      required: ['npc_id'],
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'apply_sanity_loss',
     description:
       'Aplica pérdida de Cordura. Sólo después de una tirada de SAN, o de un horror que no admita tirada. ' +

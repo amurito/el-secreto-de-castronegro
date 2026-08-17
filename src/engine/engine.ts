@@ -15,10 +15,13 @@ import type { GameEvent, Actor, GameEventType } from '../shared/events.ts';
 import type {
   GameState, InvestigatorId, RollRecord, RollModifier, Difficulty,
   Clue, Npc, Condition, MechanicalEffect, WorldTime, SkillId, CharacteristicId, Investigator,
+  SuccessDegree,
 } from '../shared/types.ts';
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
-import { dieValues, generateSeed, commitmentOf } from './rng.ts';
+import { dieValues, damageDice, generateSeed, commitmentOf } from './rng.ts';
+import { ARMAS, ARMA_POR_ID, dadosQuePide, type Arma } from '../rules/armas.ts';
+import { resolverEnfrentamiento, danoDeAtaque } from '../rules/combate.ts';
 import {
   combineD100, degreeFor, meetsDifficulty, tensDiceNeeded, thresholdsFor,
   DEGREE_LABEL, DIFFICULTY_LABEL, canPush,
@@ -666,6 +669,7 @@ export class Turn {
       switch (name) {
         case 'request_roll': return this.toolRequestRoll(raw);
         case 'apply_damage': return this.toolApplyDamage(raw);
+        case 'resolve_attack': return this.toolResolveAttack(raw);
         case 'apply_sanity_loss': return this.toolApplySanityLoss(raw);
         case 'apply_umbral_exposure': return this.toolApplyExposure(raw);
         case 'apply_stability_shift': return this.toolApplyStability(raw);
@@ -847,6 +851,184 @@ export class Turn {
         `Grado: ${DEGREE_LABEL[degree]} — ${success ? 'SUPERA' : 'NO SUPERA'} la dificultad exigida.\n` +
         `Apuesta declarada: ${success ? stakes.onSuccess : stakes.onFailure}\n` +
         `Narrá esta consecuencia. No cambies el número, no lo suavices, no lo contradigas.`,
+    };
+  }
+
+  // ── COMBATE ────────────────────────────────────────────────────────────────
+
+  /**
+   * La tirada del que se defiende. Va a la MISMA cadena verificable y al
+   * mismo registro público que las del investigador, con el id del NPC en
+   * lugar del suyo.
+   *
+   * Que la tirada del rival sea auditable no es un lujo: en una tirada
+   * enfrentada el motor tira por las dos partes, y si sólo una quedara
+   * registrada no habría manera de comprobar que no le regaló el resultado
+   * a la que le convenía. El jugador ve los dos dados, como en la mesa.
+   */
+  private tiradaDeNpc(npc: Npc, etiqueta: string, valor: number, razon: string) {
+    const rollId = id();
+    const index = this.state.rng.nextIndex;
+    const stakes = { onSuccess: '', onFailure: '' };
+    this.emit('ROLL_REQUESTED', {
+      rollId, investigatorId: npc.id, skill: etiqueta, skillLabel: `${npc.name}: ${etiqueta}`,
+      baseValue: valor, difficulty: 'regular' as Difficulty, modifiers: [],
+      reason: razon, stakes, visibility: 'public',
+    });
+
+    const { dice, hmac } = dieValues(this.meta.seed, index, 2);
+    const rawResult = combineD100(dice[0]!, dice.slice(1), 'none');
+    const degree = degreeFor(rawResult, valor);
+    const record: RollRecord = {
+      id: rollId,
+      seq: this.state.rolls.length + 1,
+      investigatorId: npc.id,
+      playerId: null,
+      commitment: {
+        reason: razon, skill: etiqueta, skillLabel: `${npc.name}: ${etiqueta}`,
+        baseValue: valor, difficulty: 'regular', modifiers: [], stakes,
+        committedAt: new Date().toISOString(),
+      },
+      execution: {
+        dice, rawResult, degree, thresholds: thresholdsFor(valor),
+        executedAt: new Date().toISOString(), proof: { index, hmac },
+      },
+      visibility: 'public',
+      narratedIn: null,
+    };
+    this.emit('ROLL_EXECUTED', { roll: record });
+    return { degree, rawResult };
+  }
+
+  /**
+   * Los dados de daño de un golpe que ya entró. Salen de la cadena, con el
+   * índice de la tirada que produjo el golpe y una ranura por tipo de dado
+   * —ver `damageDice`— para que el arma y la corpulencia no saquen el mismo
+   * número.
+   */
+  private tirarDano(arma: Arma, bonificacion: string, index: number, extremo: boolean) {
+    const pedidos = dadosQuePide(arma, bonificacion);
+    const dadosArma = damageDice(
+      this.meta.seed, index, 'arma', arma.dano.caras, arma.dano.cantidad).dice;
+    const bon = pedidos[1];
+    const dadosBon = bon
+      ? damageDice(this.meta.seed, index, 'bonif', bon.caras, bon.cantidad).dice
+      : [];
+    return danoDeAtaque(arma, bonificacion, dadosArma, dadosBon, extremo);
+  }
+
+  /**
+   * Un asalto entero: el investigador ataca, el otro se defiende, y el daño
+   * cae donde corresponda.
+   *
+   * Es una sola herramienta y no tres («tirar», «comparar», «aplicar») a
+   * propósito. Una tirada enfrentada que se pueda pedir a pedazos es una
+   * tirada que se puede abandonar a la mitad cuando el primer dado sale mal,
+   * y ese es exactamente el tipo de cosa que este motor existe para impedir.
+   */
+  private toolResolveAttack(raw: Record<string, unknown>): ToolOutcome {
+    const npcId = String(raw.npc_id ?? '').trim();
+    const armaId = String(raw.weapon_id ?? 'desarmado').trim();
+    const razon = String(raw.reason ?? '').trim();
+
+    const npc = this.state.npcs[npcId];
+    if (!npc) return this.reject('resolve_attack', raw, `El personaje «${npcId}» no existe.`);
+    if (!npc.combate) {
+      return this.reject('resolve_attack', raw,
+        `${npc.name} no tiene estadísticas de combate. Esta aventura no contempla pelear con ` +
+        'esta persona: no le inventes puntos de vida. Narrá el intento y su consecuencia social, ' +
+        'que es lo que la escena sí puede resolver.');
+    }
+    if (!npc.present || npc.status === 'dead') {
+      return this.reject('resolve_attack', raw, `${npc.name} no está acá para pelear.`);
+    }
+    if (npc.combate.hp <= 0) {
+      return this.reject('resolve_attack', raw,
+        `${npc.name} ya está fuera de combate. Ensañarse no es una tirada: es una decisión, y ` +
+        'se narra como tal.');
+    }
+
+    const arma = ARMA_POR_ID[armaId];
+    if (!arma) {
+      return this.reject('resolve_attack', raw,
+        `No existe el arma «${armaId}». Disponibles: ${ARMAS.map((a) => a.id).join(', ')}.`);
+    }
+
+    const inv = this.investigator;
+    const defensa = npc.combate.defensaPorDefecto;
+
+    // ── 1. El investigador ataca ──
+    const ataque = this.toolRequestRoll({
+      skill: arma.habilidad,
+      difficulty: 'regular',
+      reason: razon || `atacar a ${npc.name} con ${arma.nombre.toLowerCase()}`,
+      stakes_success: 'el golpe llega',
+      stakes_failure: 'el golpe no llega',
+    });
+    if (!ataque.ok) return ataque;
+    const gradoAtacante = this.ctx.lastRollDegree as SuccessDegree;
+    const indiceAtaque = this.state.rng.nextIndex - 1;
+
+    // ── 2. El otro se defiende ──
+    const valorDefensa = defensa === 'esquiva' ? npc.combate.esquivar : npc.combate.pelea;
+    const defensor = this.tiradaDeNpc(
+      npc,
+      defensa === 'esquiva' ? 'Esquivar' : 'Pelea',
+      valorDefensa,
+      defensa === 'esquiva' ? 'quitarse de en medio' : 'devolver el golpe',
+    );
+    const indiceDefensa = this.state.rng.nextIndex - 1;
+
+    // ── 3. Quién le pega a quién ──
+    const fallo = resolverEnfrentamiento({
+      atacante: gradoAtacante, defensor: defensor.degree, defensa,
+    });
+
+    const encabezado =
+      `ASALTO — ${inv.name} con ${arma.nombre.toLowerCase()} contra ${npc.name}, que ` +
+      `${defensa === 'esquiva' ? 'intenta esquivar' : 'devuelve el golpe'}.\n` +
+      `${DEGREE_LABEL[gradoAtacante]} contra ${DEGREE_LABEL[defensor.degree]}. ${fallo.razon}`;
+
+    if (fallo.golpea === null) {
+      return { ok: true, message: `${encabezado}\nNadie sale lastimado. Narralo como el intercambio que fue, no como una pausa.` };
+    }
+
+    // ── 4. El daño ──
+    if (fallo.golpea === 'defensor') {
+      const dano = this.tirarDano(arma, inv.derived.damageBonus, indiceAtaque, fallo.extremo);
+      const desde = npc.combate.hp;
+      const hasta = clamp(desde - dano.total, 0, npc.combate.maxHp);
+      const heridaGrave = dano.total >= Math.floor(npc.combate.maxHp / 2);
+      this.emit('NPC_DAMAGED', {
+        npcId: npc.id, from: desde, to: hasta, heridaGrave,
+        cause: `${arma.nombre} de ${inv.name}`,
+      });
+      const cierre = hasta <= 0
+        ? ` ${npc.name} deja de pelear. Si muere, si queda tirado o si alguien lo levanta después ` +
+          'lo decidís narrando: el motor sólo dice que no puede seguir.'
+        : heridaGrave
+          ? ` Es una herida grave: ${npc.name} sigue en pie, pero eso se nota en todo lo que haga después.`
+          : '';
+      return {
+        ok: true,
+        message:
+          `${encabezado}\n${fallo.extremo ? (arma.empala ? 'ENTRÓ DE LLENO: ' : 'GOLPE CERTERO: ') : ''}` +
+          `${dano.total} de daño (${dano.detalle}). ${npc.name}: ${desde} → ${hasta} PV.${cierre}`,
+      };
+    }
+
+    // El contraataque: le pega a quien empezó, con el arma del NPC.
+    const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
+    const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, indiceDefensa, false);
+    const golpe = this.toolApplyDamage({
+      amount: dano.total,
+      cause: `${armaNpc.nombre} de ${npc.name}`,
+    });
+    return {
+      ok: true,
+      message:
+        `${encabezado}\n${npc.name} se la devuelve con ${armaNpc.nombre.toLowerCase()}: ` +
+        `${dano.total} de daño (${dano.detalle}).\n${golpe.message}`,
     };
   }
 

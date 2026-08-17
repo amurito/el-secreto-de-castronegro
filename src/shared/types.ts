@@ -581,6 +581,13 @@ export interface Npc {
   patience: number;
   /** Temas que esquivó. Insistir cuesta más y tira con penalización. */
   dodgedTopics: string[];
+  /**
+   * Con qué pelea, si es que pelea. Ausente en la enorme mayoría: una viuda
+   * en su cocina no tiene estadísticas de combate, y dárselas «por las
+   * dudas» sería sugerir que pegarle es una opción que el juego contempla.
+   * Sin esto, el motor rechaza cualquier ataque contra este personaje.
+   */
+  combate?: CombateNpc;
   present: boolean;
   isCompanion: boolean;
   stats?: { hp: number; skills: Record<SkillId, number> };
@@ -595,6 +602,34 @@ export interface Npc {
  * crear la campaña, y un escenario puede fijarlos si un personaje concreto
  * aguanta más o menos preguntas que el resto.
  */
+/**
+ * Lo que hace falta para que alguien pueda devolver un golpe.
+ *
+ * Es deliberadamente chico: no es una ficha de investigador. Un NPC no
+ * necesita ocho características ni veinte habilidades para pelear —necesita
+ * aguantar, acertar y hacer daño—, y pedirle más al contenido sería pedirle
+ * que llene casillas que nadie va a leer.
+ */
+export interface CombateNpc {
+  hp: number;
+  maxHp: number;
+  /** Habilidad de Pelea, 0-100. Con la que ataca y con la que devuelve. */
+  pelea: number;
+  /** Habilidad de Esquivar, 0-100. */
+  esquivar: number;
+  /** Con qué pelea. Un id de `rules/armas.ts`. */
+  armaId: string;
+  /** Bonificación de daño, escrita como en la ficha: `+1D4`, `0`, `-1`. */
+  bonificacionDano: string;
+  /**
+   * Qué hace cuando lo atacan. El manual (recuadro «Does the Monster Fight
+   * Back or Dodge?») dice que lo normal es devolver el golpe: hace el
+   * combate más rápido y más simple de dirigir. Esquivar es de quien quiere
+   * escapar, no de quien quiere ganar.
+   */
+  defensaPorDefecto: 'esquiva' | 'contraataca';
+}
+
 export type NpcSeed =
   Omit<Npc, 'patience' | 'dodgedTopics'>
   & Partial<Pick<Npc, 'patience' | 'dodgedTopics'>>;

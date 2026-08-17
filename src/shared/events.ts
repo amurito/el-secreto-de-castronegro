@@ -65,6 +65,7 @@ export type GameEventType =
   | 'PLAYER_KNOWLEDGE_NOTED'
   | 'NPC_CREATED'
   | 'NPC_STATE_CHANGED'
+  | 'NPC_DAMAGED'
   | 'RELATIONSHIP_CHANGED'
   | 'DOCUMENT_OBTAINED'
   | 'LOCATION_ENTERED'
@@ -222,6 +223,15 @@ export interface NpcStateChangedPayload {
   /** Tema que el NPC acaba de esquivar: insistir después cuesta más. */
   dodgedTopic?: string;
   cause: string;
+}
+
+export interface NpcDamagedPayload {
+  npcId: NpcId;
+  from: number;
+  to: number;
+  cause: string;
+  /** El golpe llegó a la mitad de sus PV de una vez: herida grave. */
+  heridaGrave: boolean;
 }
 
 export interface DocumentObtainedPayload {

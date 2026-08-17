@@ -30,6 +30,7 @@ export interface ClientState {
   npcs: Array<{
     id: string; name: string; description: string; present: boolean; status: string;
     aqui: boolean; sinPaciencia: boolean;
+    puedePelear: boolean; fueraDeCombate: boolean;
   }>;
   documents: unknown[];
   board: unknown;
@@ -116,10 +117,15 @@ export function sanitizeForClient(state: GameState): ClientState {
     // convertiría la conversación en una barra que se administra; que ahora no
     // quiera hablar es información que el jugador ya tiene por la prosa, y la
     // interfaz sólo la confirma.
+    // Se expone SI puede pelear y SI ya está en el piso, nunca cuántos PV le
+    // quedan. En la mesa nadie ve la ficha del rival: se ve cómo se mueve. El
+    // número exacto convertiría la pelea en una barra que se administra.
     npcs: Object.values(state.npcs).map((n) => ({
       id: n.id, name: n.name, description: n.description, present: n.present, status: n.status,
       aqui: loc.npcsPresent.includes(n.id),
       sinPaciencia: n.patience <= 0,
+      puedePelear: Boolean(n.combate && n.combate.hp > 0),
+      fueraDeCombate: Boolean(n.combate && n.combate.hp <= 0),
     })),
 
     documents: Object.values(state.documents)

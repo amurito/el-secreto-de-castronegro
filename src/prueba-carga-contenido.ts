@@ -109,6 +109,18 @@ function main() {
   rompe('un documento que arranca ya obtenido',
     (c) => { c.documents[0]!.obtainedAt = 'evento-falso'; }, 'obtainedAt');
 
+  // Combate: un arma mal escrita caía en «desarmado» al resolver el ataque, y
+  // el personaje peleaba a puño limpio con el facón declarado en la mano.
+  const conCombate = (armaId: string, hp = 8, maxHp = 8) => (c: any) => {
+    c.npcs[0].combate = {
+      hp, maxHp, pelea: 40, esquivar: 25,
+      armaId, bonificacionDano: '0', defensaPorDefecto: 'contraataca',
+    };
+  };
+  rompe('un NPC que pelea con un arma que no existe', conCombate('facon-de-oro'), 'facon-de-oro');
+  rompe('un NPC que arranca con más PV que su máximo', conCombate('facon', 20, 8), 'por encima de su máximo');
+  rompe('un NPC sin puntos de vida que aguantar', conCombate('facon', 0, 0), 'mayor que cero');
+
   rompe('una escena declarada en el JSON y sin lógica',
     (c) => { c.scenes.push({ id: 'escena-sin-codigo', cuando: { op: 'verbo', es: ['mirar'] } }); },
     'sin `resolver` en la lógica');

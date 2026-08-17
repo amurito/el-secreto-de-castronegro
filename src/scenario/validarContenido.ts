@@ -17,6 +17,7 @@
 
 import type { ContenidoAventura, AccionJSON, TemaJSON, EscenaJSON } from './contenido.schema.ts';
 import type { Condicion } from './condiciones.ts';
+import { ARMA_POR_ID } from '../rules/armas.ts';
 
 export class ContenidoInvalido extends Error {
   constructor(public readonly problemas: string[]) {
@@ -138,6 +139,24 @@ export function validarContenido(
     if (item.owner && !lugares.has(item.owner) && !npcs.has(item.owner)) {
       problemas.push(`items.${item.id}.owner: «${item.owner}» no es un lugar ni un NPC.`);
     }
+  }
+
+  // ── Estadísticas de combate: el arma tiene que existir ──────────────────
+  // Sin esto, un id mal escrito caía en «desarmado» al resolver el ataque y
+  // el matón peleaba a puño limpio con el facón declarado en la mano. Es la
+  // familia de bug que este proyecto ya encontró seis veces: algo declarado
+  // en los datos que el código no encuentra y reemplaza por un defecto.
+  for (const npc of contenido.npcs) {
+    const c = npc.combate;
+    if (!c) continue;
+    if (!ARMA_POR_ID[c.armaId]) {
+      problemas.push(
+        `npcs.${npc.id}.combate.armaId: no existe el arma «${c.armaId}». ` +
+        `Disponibles: ${Object.keys(ARMA_POR_ID).join(', ')}.`,
+      );
+    }
+    if (c.maxHp <= 0) problemas.push(`npcs.${npc.id}.combate.maxHp: tiene que ser mayor que cero.`);
+    if (c.hp > c.maxHp) problemas.push(`npcs.${npc.id}.combate.hp: arranca por encima de su máximo.`);
   }
 
   // ── Condiciones: forma y referencias ────────────────────────────────────

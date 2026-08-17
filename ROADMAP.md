@@ -354,7 +354,7 @@ nada que verificar ahí todavía.
 La **Tabla XVII (armas)** también está verificada, en el subconjunto que el
 juego usa — ver 4.4.
 
-### 4.4 Combate — las reglas, sí; el asalto, todavía no
+### 4.4 Combate ✔ HECHO — reglas, armas y asalto jugado
 
 **HECHO: las reglas puras y el catálogo.**
 
@@ -379,14 +379,40 @@ juego usa — ver 4.4.
 Lo verifica `prueba-combate.ts`, incluida la regla que más se olvida en la
 mesa: el defensor que contraataca y saca un extremo NO empala.
 
-**FALTA: el asalto jugado.** Los NPC no tienen puntos de vida, ni habilidad
-de pelea, ni turno. Sin eso hay reglas y armas pero no hay con quién pelear.
-Lo que viene, en orden:
+**HECHO TAMBIÉN: el asalto jugado.**
 
-1. Estadísticas de combate en los NPC (PV, Pelea, Esquivar, arma).
-2. Una herramienta del motor que resuelva un ataque entero y aplique el daño
-   a quien corresponda.
-3. Orden de turno por DES y el resto del asalto (huir, maniobras).
+- `Npc.combate` — PV, Pelea, Esquivar, arma, bonificación de daño y qué hace
+  cuando lo atacan. Es **opcional y ausente en casi todos**: una viuda en su
+  cocina no tiene estadísticas de combate, y dárselas «por las dudas» sería
+  sugerir que pegarle es una opción que el juego contempla. Sin ellas el
+  motor rechaza el ataque y explica que esa pelea no está prevista.
+- `resolve_attack` — una herramienta, no tres. Tira por el investigador, tira
+  por el que se defiende, compara y aplica el daño a quien corresponda. Es
+  una sola a propósito: una tirada enfrentada que se pueda pedir a pedazos es
+  una tirada que se puede abandonar cuando el primer dado sale mal.
+- **La tirada del rival va al registro público**, con su HMAC, igual que las
+  del investigador. En una tirada enfrentada el motor tira por las dos
+  partes; si sólo una quedara registrada no habría manera de comprobar que
+  no le regaló el resultado a la que le convenía.
+- Llegar a 0 PV **no mata a nadie**: lo saca de la pelea. Si muere, si queda
+  tirado o si lo levantan después lo decide quien narra — una resta no
+  debería poder matar sola. Y ensañarse con alguien que ya está en el piso el
+  motor lo rechaza: eso se narra, no se tira.
+- El validador rechaza un arma mal escrita en la ficha de un NPC. Antes caía
+  en «desarmado» y el personaje peleaba a puño limpio con el facón declarado
+  en la mano — la misma familia de bug de siempre.
+- Al cliente cruza **si puede pelear y si ya está en el piso, nunca cuántos
+  PV le quedan**. En la mesa nadie ve la ficha del rival: se ve cómo se mueve.
+
+Ninguna de las tres aventuras publicadas tiene todavía un personaje con
+estadísticas de combate — ninguna es una aventura de pelear. El sistema se
+verifica con un rival armado dentro de `prueba-combate.ts`, igual que
+`prueba-desacople.ts` arma «El campanario» para probar el motor sin tocar el
+contenido real.
+
+**FALTA:** orden de turno por DES cuando hay más de dos, huir a mitad de
+asalto, maniobras (desarmar, derribar, sujetar) y los modificadores de armas
+de fuego (cubrirse, apuntar, punto blanco, blanco en movimiento).
 
 **No entra por ahora, a propósito:** escopetas y rifles largos, porque su
 daño depende del tramo de distancia y el motor no tiene distancias dentro de

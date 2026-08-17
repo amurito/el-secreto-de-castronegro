@@ -77,11 +77,13 @@ export function dieValues(seedHex: string, index: number, count: number): {
  * se acumula tirada tras tirada. Se descartan los bytes de la cola que no
  * entran en un múltiplo exacto de `caras`.
  */
-export function damageDice(seedHex: string, index: number, caras: number, count: number): {
-  dice: number[];
-  hmac: string;
-} {
-  const hmac = toHex(hmacSha256(utf8(seedHex), utf8(`damage:${index}`)));
+export function damageDice(
+  seedHex: string, index: number, ranura: string, caras: number, count: number,
+): { dice: number[]; hmac: string } {
+  // `ranura` separa los dados que se tiran en el MISMO índice: el del arma y
+  // el de la corpulencia. Sin ella, un facón 1D8 con bonificación +1D8
+  // sacaría dos veces el mismo número, siempre.
+  const hmac = toHex(hmacSha256(utf8(seedHex), utf8(`damage:${index}:${ranura}:${caras}`)));
   const buf = fromHex(hmac);
   const limite = Math.floor(256 / caras) * caras;
   const dice: number[] = [];

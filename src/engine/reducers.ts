@@ -354,6 +354,21 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'NPC_DAMAGED': {
+      const p = ev.payload as P.NpcDamagedPayload;
+      const npc = s.npcs[p.npcId];
+      if (!npc?.combate) break;
+      // Llegar a 0 no lo mata: lo saca de la pelea. Si muere, si queda
+      // tirado o si lo llevan al pueblo en una chata lo decide quien narra —
+      // una resta no debería poder matar a nadie sola. Lo único que el motor
+      // fija es que ya no puede seguir peleando.
+      s.npcs[p.npcId] = { ...npc, combate: { ...npc.combate, hp: p.to } };
+      if (p.to <= 0) {
+        s.narrative.push(entry(ev, 'system', `${npc.name} queda fuera de combate.`));
+      }
+      break;
+    }
+
     case 'DOCUMENT_OBTAINED': {
       const p = ev.payload as P.DocumentObtainedPayload;
       s.documents[p.document.id] = { ...p.document, obtainedAt: ev.id };
