@@ -178,7 +178,7 @@ export function crearInvestigador(
     nationality: 'Argentina',
     description: decisiones.descripcion.trim(),
     characteristics: ch,
-    derived: computeDerived(ch, { luck: tirada.suerte }),
+    derived: computeDerived(ch, { luck: tirada.suerte, edad: decisiones.edad }),
     skills,
     umbral: emptyUmbralState(),
     conditions: [],

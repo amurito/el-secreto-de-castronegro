@@ -23,6 +23,7 @@ import {
   puntosPersonales, validarReparto, TOPE_CREACION, FORMULA,
 } from './rules/creacion.ts';
 import { tirarFicha, crearInvestigador } from './rules/ficha.ts';
+import { computeDerived } from './rules/derived.ts';
 import type { Characteristics } from './shared/types.ts';
 
 useStore(fileStore);
@@ -69,10 +70,39 @@ function main() {
   check('a los 45 hay resta y dos chequeos de EDU',
     efectoEdad(45).restaFisica === 5 && efectoEdad(45).chequeosEdu === 2);
   check('a los 75 la resta es fuerte', efectoEdad(75).restaFisica === 40);
+  check('a los 85 la resta es la máxima de la tabla —tramo distinto del de 75—',
+    efectoEdad(85).restaFisica === 80 && efectoEdad(85).restaApariencia === 25);
   check('el adolescente tira Suerte dos veces', efectoEdad(17).dobleSuerte);
   const joven = tirarFicha(17, fijo(3));
   check('y se queda con la mejor',
     joven.suerteAlternativa === undefined || joven.suerte >= joven.suerteAlternativa);
+
+  // ── El Movimiento resta con la edad (antes no lo hacía nunca) ────────────
+  console.log('\nEL MOVIMIENTO RESTA CON LA EDAD');
+  const chJoven: Characteristics = { STR: 70, CON: 60, SIZ: 50, DEX: 70, APP: 55, INT: 60, POW: 55, EDU: 60 };
+  check('sin resta en la juventud: STR y DEX > SIZ da MOV 9',
+    computeDerived(chJoven, { luck: 50, edad: 25 }).move === 9);
+  check('a los 45 resta 1 —dos tramos de edad después sigue restando más—',
+    computeDerived(chJoven, { luck: 50, edad: 45 }).move === 8);
+  check('a los 65 resta 3', computeDerived(chJoven, { luck: 50, edad: 65 }).move === 6);
+  check('a los 78 resta 4, nunca por debajo de 1',
+    computeDerived(chJoven, { luck: 50, edad: 78 }).move === 5);
+
+  // ── La tabla de Daño y Corpulencia, verificada contra el manual ──────────
+  console.log('\nLA TABLA DE DAÑO Y CORPULENCIA (VERIFICADA CONTRA EL MANUAL)');
+  // STR+SIZ es lo único que le importa a esta tabla; se pone todo en STR y SIZ en 0.
+  const dbYBuild = (strMasSiz: number) =>
+    computeDerived({ ...chJoven, STR: strMasSiz, SIZ: 0 } as Characteristics, { luck: 50 });
+  check('64: -2 / Build -2', dbYBuild(64).damageBonus === '-2' && dbYBuild(64).build === -2);
+  check('124: sin bonificación / Build 0', dbYBuild(124).damageBonus === '0' && dbYBuild(124).build === 0);
+  check('164: +1D4 / Build 1', dbYBuild(164).damageBonus === '+1D4' && dbYBuild(164).build === 1);
+  check('204: +1D6 / Build 2 —tramo que antes no distinguía de +1D4—',
+    dbYBuild(204).damageBonus === '+1D6' && dbYBuild(204).build === 2);
+  check('284: +2D6 / Build 3', dbYBuild(284).damageBonus === '+2D6' && dbYBuild(284).build === 3);
+  check('524: +5D6 / Build 6 —el último tramo fijo de la tabla—',
+    dbYBuild(524).damageBonus === '+5D6' && dbYBuild(524).build === 6);
+  check('604 (80 más allá del tope): +6D6 / Build 7 —regla de extrapolación del manual—',
+    dbYBuild(604).damageBonus === '+6D6' && dbYBuild(604).build === 7);
 
   // ── El presupuesto sale de las características ───────────────────────────
   console.log('\nEL PRESUPUESTO SALE DE LA FICHA');

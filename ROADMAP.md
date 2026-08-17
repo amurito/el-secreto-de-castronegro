@@ -324,11 +324,35 @@ gh auth refresh -s workflow
 Después commitear el workflow y poner Settings → Pages → Source: GitHub Actions.
 Mientras tanto `npm run desplegar` hace lo mismo desde tu máquina.
 
-### 4.3 Tablas propietarias de CoC 7e
+### 4.3 Tablas propietarias de CoC 7e ✔ VERIFICADAS
 
-Marcadas con `⚠` en el código: bonificación de daño, Corpulencia, umbral de
-pifia, pérdidas de COR, locura. Están implementadas de memoria del sistema, no
-copiadas. Hay que verificarlas contra tu manual con licencia, una por una.
+Contra capturas del manual con licencia (Tabla 1, Quick Reference: Investigator
+Generation). Se encontraron y corrigieron tres diferencias reales, ninguna
+copiada del manual —los números se transcriben, el formato de tabla no—:
+
+- **Bonificación de daño / Corpulencia** (`rules/derived.ts`): la tabla de
+  memoria sólo distinguía hasta STR+SIZ 164 y metía todo lo demás en un único
+  «+1D6». La real tiene tramos hasta 524 (+2D6 a 284, +3D6 a 364, +4D6 a 444,
+  +5D6 a 524) y una regla de extrapolación más allá: +1D6 y +1 Build cada 80
+  puntos adicionales o fracción. Ya no es de memoria: es la tabla completa.
+- **Movimiento por edad** (`rules/derived.ts`, `rules/creacion.ts`): el MOV
+  nunca restaba por edad —`computeDerived` ni siquiera recibía la edad—. Ahora
+  resta 1/2/3/4/5 en los 40/50/60/70/80, como dice la tabla.
+- **El tramo de 80 años** (`rules/creacion.ts`): «setenta o más» hacía de
+  catch-all para 70 y 80 juntos, con los números de 70. Inalcanzable en la
+  práctica (`EDAD_MAXIMA` es 79) pero estaba mal declarado; ahora tiene su
+  propio tramo (resta 80, APA -25) por si el tope de edad se mueve algún día.
+
+El umbral de pifia (`rules/dice.ts`) no es una tabla con formato propietario,
+es una regla numérica (01 crítico, 100 pifia, <50% también pifia en 96-100) y
+coincide con lo conocido del sistema — no necesitó captura.
+
+Verificado por `prueba-creacion.ts`. No hay hoy una tabla genérica de pérdida
+de Cordura por tipo de horror —cada escena declara la suya— así que no hay
+nada que verificar ahí todavía. Lo que sí queda para cuando arranque combate
+—sistema nuevo, no existe nada hoy— son las tablas de daño de armas; las
+capturas ya recibidas (Combat Flow Chart, Table III: Other Forms of Damage)
+quedan de referencia para esa sesión.
 
 ### 4.4 Móvil ✔ HECHO
 

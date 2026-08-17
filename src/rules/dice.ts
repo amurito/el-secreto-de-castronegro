@@ -5,12 +5,13 @@
  * Recibe los dados ya lanzados (por el RNG del motor) y calcula el resultado.
  * Esa pureza es lo que permite testear el reglamento entero sin infraestructura.
  *
- * ⚠ VERIFICAR CONTRA EL MANUAL LICENCIADO antes de dar por buenos:
- *   - el umbral exacto de pifia según el valor de habilidad
- *   - la tabla de bonificación de daño por STR+SIZ
- *   - la tabla de Build
- * El Análisis Técnico v1.1 §8.1 lo detalla. Acá se implementa la MECÁNICA;
- * ninguna tabla propietaria se transcribe.
+ * La bonificación de daño y Build (STR+SIZ, Tabla 1) están verificadas
+ * contra el manual licenciado — ver `rules/derived.ts`. El umbral de pifia
+ * de acá (`isFumble`) es la regla textual del manual (01 siempre crítico,
+ * 100 siempre pifia, y con habilidad <50% 96-100 también pifia): no es una
+ * tabla con formato propietario, es un número, y coincide con lo conocido
+ * del sistema. Acá se implementa la MECÁNICA; ninguna tabla propietaria se
+ * transcribe.
  */
 
 import type { Difficulty, SuccessDegree, RollModifier } from '../shared/types.ts';

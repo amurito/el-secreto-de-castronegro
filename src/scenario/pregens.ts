@@ -39,7 +39,7 @@ function make(
   skills: Record<SkillId, number>,
   backstory: Investigator['backstory'],
 ): Investigator {
-  const derived = computeDerived(ch, { luck });
+  const derived = computeDerived(ch, { luck, edad: age });
   // Esquivar = DEX/2 salvo que la ocupación lo suba.
   const finalSkills = buildSkills({ ...skills, esquivar: skills.esquivar ?? Math.floor(ch.DEX / 2) });
   return {

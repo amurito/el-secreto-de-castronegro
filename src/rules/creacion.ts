@@ -82,16 +82,23 @@ export interface EfectoEdad {
   restaJuventud: number;
   /** Comprobaciones de mejora de EDU. */
   chequeosEdu: number;
+  /** Resta directa a Movimiento (p. 34: -1 en los 40, -2 en los 50, ... -5 en los 80). */
+  restaMovimiento: number;
   /** Los adolescentes tiran Suerte dos veces y se quedan con la mejor. */
   dobleSuerte: boolean;
   etiqueta: string;
 }
 
-/** Modificadores por edad (p. 34). Los rangos son los del manual. */
+/**
+ * Modificadores por edad (p. 34, Quick Reference: Investigator Generation).
+ * Verificado contra el manual licenciado — antes el tramo de 70 hacía de
+ * catch-all para 70+ y el de 80 nunca se distinguía; con EDAD_MAXIMA en 79
+ * era inalcanzable en la práctica, pero estaba mal declarado igual.
+ */
 export function efectoEdad(edad: number): EfectoEdad {
   const base = {
     restaFisica: 0, restaApariencia: 0, restaJuventud: 0,
-    chequeosEdu: 0, dobleSuerte: false, etiqueta: '',
+    chequeosEdu: 0, restaMovimiento: 0, dobleSuerte: false, etiqueta: '',
   };
   if (edad < 20) {
     return { ...base, restaJuventud: 5, chequeosEdu: 0, dobleSuerte: true,
@@ -99,19 +106,23 @@ export function efectoEdad(edad: number): EfectoEdad {
   }
   if (edad < 40) return { ...base, chequeosEdu: 1, etiqueta: 'En su mejor momento.' };
   if (edad < 50) {
-    return { ...base, restaFisica: 5, restaApariencia: 5, chequeosEdu: 2,
+    return { ...base, restaFisica: 5, restaApariencia: 5, chequeosEdu: 2, restaMovimiento: 1,
       etiqueta: 'Cuarenta: se nota en el cuerpo y se nota en lo que sabe.' };
   }
   if (edad < 60) {
-    return { ...base, restaFisica: 10, restaApariencia: 10, chequeosEdu: 3,
+    return { ...base, restaFisica: 10, restaApariencia: 10, chequeosEdu: 3, restaMovimiento: 2,
       etiqueta: 'Cincuenta: ya no corre, pero leyó mucho.' };
   }
   if (edad < 70) {
-    return { ...base, restaFisica: 20, restaApariencia: 15, chequeosEdu: 4,
+    return { ...base, restaFisica: 20, restaApariencia: 15, chequeosEdu: 4, restaMovimiento: 3,
       etiqueta: 'Sesenta: el cuerpo cobra y la cabeza cobra a favor.' };
   }
-  return { ...base, restaFisica: 40, restaApariencia: 20, chequeosEdu: 4,
-    etiqueta: 'Setenta o más: cada escalera es una tirada.' };
+  if (edad < 80) {
+    return { ...base, restaFisica: 40, restaApariencia: 20, chequeosEdu: 4, restaMovimiento: 4,
+      etiqueta: 'Setenta: cada escalera es una tirada.' };
+  }
+  return { ...base, restaFisica: 80, restaApariencia: 25, chequeosEdu: 4, restaMovimiento: 5,
+    etiqueta: 'Ochenta o más: lo que queda, queda a fuerza de terquedad.' };
 }
 
 export const EDAD_MINIMA = 15;
