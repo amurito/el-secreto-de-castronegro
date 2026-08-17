@@ -75,6 +75,11 @@ export function sanitizeForClient(state: GameState): ClientState {
         exposure: inv.umbral.exposure,
         stability: inv.umbral.stability,
         thresholdsCrossed: inv.umbral.thresholdsCrossed,
+        // El pico histórico nunca baja: es el piso permanente de la
+        // decadencia entre aventuras (ver `pisoDeExposicion`). Se expone
+        // para que la ficha pueda mostrar "nunca baja de X", no sólo el
+        // número actual.
+        peakExposure: inv.umbral.peakExposure,
       },
       conditions: inv.conditions.map((c) => ({ name: c.name, description: c.description, kind: c.kind })),
       knowledge: inv.knowledge.investigator.map((k) => k.statement),

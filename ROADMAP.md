@@ -124,15 +124,29 @@ Con la fuga tapada, las que quedan son de diseño y salen de jugar:
 
 - ¿100 debería alcanzarse en una aventura corta, o ser el techo de una campaña
   entera? Hoy una partida exhaustiva llega a ~37.
-- ¿La Estabilidad se recupera con descanso, y cuánto?
-- El arrastre entre aventuras: la Exposición no baja con descanso por canon,
-  pero cinco meses lejos de un Umbral no son descanso. Si se decide que baje,
-  es una ampliación de canon y hay que aprobarla.
+- ¿La Estabilidad se recupera con descanso, y cuánto? (Ya tiene respuesta:
+  sí, por anclaje, con techo — ver 3.2-ter.)
+- **El arrastre entre aventuras ✔ DECIDIDO.** Ampliación de canon aprobada
+  explícitamente: la Exposición SÍ decae entre aventuras (meses lejos de un
+  Umbral no son descanso cualquiera, pero tampoco son nada), pero nunca por
+  debajo de un piso permanente — la mitad del pico histórico que ese
+  investigador alcanzó alguna vez (`peakExposure`, que en sí nunca baja).
+  Los umbrales cruzados (`thresholdsCrossed`) siguen siendo irreversibles y
+  no se tocan. Números en `EXPOSURE_DECAY_PER_MONTH` / `EXPOSURE_FLOOR_FRACTION`
+  (`rules/umbral.config.ts`), lógica en `exposicionTrasMeses`/`pisoDeExposicion`
+  (`rules/umbral.ts`), aplicado en `heredarInvestigador` (`engine/engine.ts`).
+  Verificado por `prueba-campana.ts`.
 
-### 2.2 Qué pasa después de Disolución
+### 2.2 Qué pasa después de Disolución ✔ HECHO
 
-Cruzar el cuarto umbral hoy no hace nada mecánicamente. Es el único de los
-cuatro sin efecto propio.
+Cruzar el cuarto umbral deja una condición permanente y real, igual que una
+fobia/manía: **«La secuencia no es una sola»** (kind `mental`), con efecto
+mecánico —penaliza Orientarse, bonifica Descubrir— igual que la crisis de
+locura temporal de `apply_sanity_loss`. Se aplica sola en `toolApplyExposure`
+(`engine/engine.ts`) apenas se cruza `DISSOLUTION`, sin depender de un Keeper
+en vivo que la note. Los otros tres umbrales (Primer Contacto, Reciprocidad,
+Contaminación) siguen sin efecto mecánico propio — son irreversibles y
+cambian lo que se narra, pero no tocan dados. Verificado por `prueba-umbral.ts`.
 
 ### 2.3 Consentimiento de meta-horror
 

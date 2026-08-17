@@ -238,6 +238,11 @@ button { font-family: inherit; cursor: pointer; }
 .bar-stability { background: var(--stability); }
 .bar-danger { background: var(--accent); }
 
+.umbral-peak {
+  font-size: 0.65rem; color: var(--exposure); opacity: 0.75;
+  margin: -0.25rem 0 0.5rem;
+}
+
 .thresholds { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
 .threshold-chip {
   font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em;

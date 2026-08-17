@@ -108,6 +108,7 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       inv.umbral = {
         ...inv.umbral,
         exposure: p.to,
+        peakExposure: Math.max(inv.umbral.peakExposure, p.to),
         exposureEvents: [
           ...inv.umbral.exposureEvents,
           {

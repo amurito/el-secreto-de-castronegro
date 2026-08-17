@@ -148,6 +148,31 @@ async function main() {
   check('una partida exhaustiva llega a 30 de exposición', uExh.exposure >= 30,
     `${uExh.exposure}/30`);
 
+  console.log('\nDISOLUCIÓN (CUARTO UMBRAL) DEJA UNA CONDICIÓN PERMANENTE');
+  // Ninguna partida real de Agua Quieta llega a 80 —el techo real, medido
+  // arriba, es 38—, así que se empuja la Exposición directo con el motor,
+  // igual que prueba-cordura.ts hace con apply_sanity_loss.
+  {
+    const idDis = await createCampaign(AGUA_QUIETA, 'UMBRAL-DISOLUCION', 'd'.repeat(64));
+    const tDis = await Turn.open(idDis);
+    const antes = tDis.investigator.conditions.length;
+    tDis.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba-a', cause: 'prueba' });
+    tDis.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba-b', cause: 'prueba' });
+    tDis.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba-c', cause: 'prueba' });
+    tDis.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba-d', cause: 'prueba' });
+    await tDis.commit();
+    const despuesDis = (await Turn.open(idDis)).investigator;
+    check('empujar la Exposición a 80 cruza Disolución',
+      despuesDis.umbral.thresholdsCrossed.includes('DISSOLUTION'),
+      `Exposición ${despuesDis.umbral.exposure}, umbrales: ${despuesDis.umbral.thresholdsCrossed.join(', ')}`);
+    const condicion = despuesDis.conditions.find((c: { name: string }) => c.name === 'La secuencia no es una sola');
+    check('cruzar Disolución deja la condición permanente en la ficha',
+      despuesDis.conditions.length === antes + 1 && Boolean(condicion));
+    check('la condición tiene efecto mecánico real, no sólo etiqueta',
+      Boolean(condicion?.mechanicalEffect?.skillModifiers?.length));
+    check('es de tipo mental', condicion?.kind === 'mental');
+  }
+
   console.log('\nEL DECAIMIENTO QUEDA AUDITADO EN EL LOG');
   const eventos = uEstrecha.exposureEvents;
   const reducidos = eventos.filter((e) => (e.amountBeforeDecay ?? e.amount) > e.amount);

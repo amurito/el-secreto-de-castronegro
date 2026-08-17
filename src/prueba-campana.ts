@@ -6,7 +6,9 @@
  * prueba que la sostiene.
  *
  *   CRUZA   habilidades mejoradas, Cordura, trasfondo, cicatrices mentales,
- *           EXPOSICIÓN al Umbral entera y los umbrales cruzados.
+ *           y los umbrales cruzados —eso sí, entero e irreversible—.
+ *   DECAE   la EXPOSICIÓN al Umbral, hacia un piso permanente (una fracción
+ *           del pico histórico, que nunca baja).
  *   SE CURA estabilidad (por anclaje, que es lo que el canon permite) y PV.
  *   NO CRUZA objetos, pistas ni tablero: son de la investigación anterior.
  *
@@ -23,6 +25,7 @@ import { accionesDisponibles } from './scenario/acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import { STABILITY_RECOVERY, techoDeEstabilidad } from './rules/umbral.config.ts';
+import { exposicionTrasMeses, pisoDeExposicion } from './rules/umbral.ts';
 import { OCUPACION_POR_ID } from './scenario/ocupaciones.ts';
 import { crearInvestigador } from './rules/ficha.ts';
 import type { GameState, Characteristics, Investigator } from './shared/types.ts';
@@ -111,10 +114,16 @@ async function main() {
     mejoradas.map((m) => `${m.label} ${m.despues}%`).join(', ') || 'ninguna mejoró esta vez');
   check('la Cordura cruza', invDos.derived.san === invUno.derived.san,
     `${invDos.derived.san} vs ${invUno.derived.san}`);
-  check('la EXPOSICIÓN cruza entera —el canon dice que no baja—',
-    invDos.umbral.exposure === invUno.umbral.exposure,
-    `${invDos.umbral.exposure} vs ${invUno.umbral.exposure}`);
-  check('los umbrales cruzados siguen cruzados',
+  const exposicionEsperada = exposicionTrasMeses(invUno.umbral.exposure, invUno.umbral.peakExposure, meses);
+  const piso = pisoDeExposicion(invUno.umbral.peakExposure);
+  check('la EXPOSICIÓN decae hacia el piso permanente, no se queda igual sola',
+    invDos.umbral.exposure === exposicionEsperada,
+    `${invUno.umbral.exposure} → ${invDos.umbral.exposure} (esperada ${exposicionEsperada}, piso ${piso})`);
+  check('nunca baja del piso —la mitad del pico histórico—',
+    invDos.umbral.exposure >= piso, `${invDos.umbral.exposure} vs piso ${piso}`);
+  check('el pico histórico no baja', invDos.umbral.peakExposure === invUno.umbral.peakExposure,
+    `${invDos.umbral.peakExposure} vs ${invUno.umbral.peakExposure}`);
+  check('los umbrales cruzados siguen cruzados —eso sí es irreversible—',
     invUno.umbral.thresholdsCrossed.every((u) => invDos.umbral.thresholdsCrossed.includes(u)),
     invDos.umbral.thresholdsCrossed.join(', ') || 'ninguno');
   check('el trasfondo cruza, con las revisiones que haya sufrido',
@@ -123,15 +132,17 @@ async function main() {
   console.log('\nLO QUE SE RECUPERA');
   check('los PV se curan', invDos.derived.hp === invDos.derived.maxHp,
     `${invDos.derived.hp}/${invDos.derived.maxHp}`);
-  const techo = techoDeEstabilidad(invUno.umbral.exposure);
+  // El techo de Estabilidad se calcula sobre la Exposición YA decaída: menos
+  // contacto activo con el fenómeno deja más margen para anclarse.
+  const techo = techoDeEstabilidad(exposicionEsperada);
   const esperada = Math.min(
     Math.max(invUno.umbral.stability, techo),
     invUno.umbral.stability + STABILITY_RECOVERY.betweenSessions * meses,
   );
   check('la Estabilidad se recupera por anclaje', invDos.umbral.stability === esperada,
-    `${invUno.umbral.stability} → ${invDos.umbral.stability} (techo ${techo} por exposición ${invUno.umbral.exposure})`);
+    `${invUno.umbral.stability} → ${invDos.umbral.stability} (techo ${techo} por exposición decaída ${exposicionEsperada})`);
   check('pero NO al 100: la exposición baja el techo',
-    invUno.umbral.exposure === 0 || invDos.umbral.stability < 100,
+    exposicionEsperada === 0 || invDos.umbral.stability < 100,
     `${invDos.umbral.stability}`);
 
   console.log('\nLO QUE NO CRUZA');
@@ -245,10 +256,11 @@ async function main() {
     const continuado = (await loadState(idContinua)).state;
     check('sigue siendo Nico, no una Elena nueva', continuado.activeInvestigator === nico.id,
       `activo: ${continuado.investigators[continuado.activeInvestigator]?.name}`);
-    check('con lo que jugó, no de cero',
-      continuado.investigators[nico.id]?.umbral.exposure === estadoNico.investigators[nico.id]!.umbral.exposure
+    check('con lo que jugó, no de cero —decae hacia el piso, no se resetea—',
+      continuado.investigators[nico.id]!.umbral.exposure >=
+        pisoDeExposicion(estadoNico.investigators[nico.id]!.umbral.peakExposure)
       && continuado.investigators[nico.id]!.umbral.exposure > 0,
-      `Exposición: ${continuado.investigators[nico.id]?.umbral.exposure}`);
+      `Exposición: ${estadoNico.investigators[nico.id]?.umbral.exposure} → ${continuado.investigators[nico.id]?.umbral.exposure}`);
     check('y Tomás sigue disponible de reserva, fresco',
       continuado.investigators['inv-tomas']?.status === 'alive'
       && continuado.reserveInvestigators.includes('inv-tomas'));

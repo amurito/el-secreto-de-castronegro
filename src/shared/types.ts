@@ -173,10 +173,20 @@ export interface BackstoryAspect {
  *   después de jugar.
  */
 export interface UmbralState {
-  /** 0-100, ASCENDENTE. Contacto acumulado con el Umbral. No baja con descanso. */
+  /**
+   * 0-100, ASCENDENTE dentro de una aventura. No baja con descanso DURANTE
+   * una partida. Entre aventuras SÍ puede decaer, pero nunca por debajo del
+   * piso que fija `peakExposure` — ver `pisoDeExposicion` en umbral.config.ts.
+   */
   exposure: number;
   /** 0-100, DESCENDENTE desde 100. Coherencia de la percepción temporal. */
   stability: number;
+  /**
+   * El máximo de `exposure` que este investigador alcanzó alguna vez. NUNCA
+   * baja — es la memoria permanente de cuán hondo estuvo, incluso si la
+   * Exposición visible decae entre aventuras. Fija el piso de esa decadencia.
+   */
+  peakExposure: number;
   exposureEvents: ExposureRecord[];
   /** Cruzar un umbral es un hecho irreversible, no un estado reversible. */
   thresholdsCrossed: UmbralThreshold[];

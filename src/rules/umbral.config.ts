@@ -11,7 +11,13 @@
  * Las dos variables (v0.9 §7):
  *
  *   EXPOSICIÓN  0 → 100, ASCENDENTE.
- *     Contacto acumulado con el Umbral. NO baja con descanso ni con tiempo.
+ *     Contacto acumulado con el Umbral. DENTRO de una aventura no baja con
+ *     descanso ni con tiempo. ENTRE aventuras sí decae —meses lejos de un
+ *     Umbral son meses sin contacto—, pero nunca por debajo de un piso
+ *     permanente: una fracción del pico histórico (`peakExposure`) que
+ *     nunca baja. Decisión de diseño aprobada explícitamente (no estaba en
+ *     el canon original, que sólo hablaba de la Exposición DENTRO de una
+ *     partida); ver `pisoDeExposicion`/`exposicionTrasMeses` en umbral.ts.
  *     Mide cuánto te tocó el fenómeno, no cuánto te asustaste.
  *
  *   ESTABILIDAD 100 → 0, DESCENDENTE.
@@ -176,6 +182,28 @@ export const STABILITY_RECOVERY = {
  * este divisor en 0.
  */
 export const TECHO_ESTABILIDAD_POR_EXPOSICION: number = 4;
+
+/**
+ * DECAIMIENTO DE EXPOSICIÓN ENTRE AVENTURAS.
+ *
+ * Meses lejos de un Umbral no son descanso cualquiera, pero tampoco son
+ * nada: el canon original sólo fija que la Exposición no baja DENTRO de una
+ * partida (v0.9 §7). Entre aventuras, ahora sí decae, con dos números:
+ *
+ *   EXPOSURE_DECAY_PER_MONTH  cuánto baja la Exposición VISIBLE por cada mes
+ *                             diegético entre el cierre de una aventura y el
+ *                             inicio de la siguiente.
+ *   EXPOSURE_FLOOR_FRACTION   qué fracción del PICO histórico (el máximo que
+ *                             ese investigador alcanzó alguna vez) queda como
+ *                             piso permanente: por debajo de eso, ningún
+ *                             tiempo la baja más. El pico en sí nunca baja.
+ *
+ * Con el piso al 50%, un investigador que llegó a 80 nunca vuelve a estar
+ * mejor que 40, por más meses de rutina que pasen — el cuerpo se acostumbra
+ * un poco, la marca no se borra.
+ */
+export const EXPOSURE_DECAY_PER_MONTH: number = 3;
+export const EXPOSURE_FLOOR_FRACTION: number = 0.5;
 
 export const techoDeEstabilidad = (exposicion: number): number =>
   TECHO_ESTABILIDAD_POR_EXPOSICION === 0

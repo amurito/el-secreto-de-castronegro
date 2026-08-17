@@ -15,6 +15,8 @@ import {
   RENDIMIENTO_MINIMO,
   EXPOSURE_EXTRA_BY_PERMEABILITY,
   PERMEABILIDAD_MINUTOS_POR_PUNTO,
+  EXPOSURE_FLOOR_FRACTION,
+  EXPOSURE_DECAY_PER_MONTH,
 } from './umbral.config.ts';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
@@ -156,8 +158,33 @@ export function emptyUmbralState(): UmbralState {
   return {
     exposure: 0,
     stability: 100,
+    peakExposure: 0,
     exposureEvents: [],
     thresholdsCrossed: [],
     perceptualAnomalies: [],
   };
+}
+
+/**
+ * Piso permanente de Exposición: una fracción del pico histórico. Por debajo
+ * de esto la decadencia entre aventuras no puede bajar, sea cual sea el
+ * tiempo que pase — es la memoria de cuán hondo estuvo alguna vez.
+ */
+export function pisoDeExposicion(peakExposure: number): number {
+  return Math.round(peakExposure * EXPOSURE_FLOOR_FRACTION);
+}
+
+/**
+ * Exposición tras `meses` de tiempo diegético sin contacto con el fenómeno,
+ * entre el cierre de una aventura y el inicio de la siguiente.
+ *
+ * Decae de forma lineal hacia el piso —nunca por debajo— y nunca sube sola:
+ * `heredarInvestigador` es el único lugar que llama a esto, y sólo hacia
+ * abajo. El pico (`peakExposure`) no lo toca esta función: es permanente por
+ * definición y sólo crece en `applyExposure`.
+ */
+export function exposicionTrasMeses(actual: number, peakExposure: number, meses: number): number {
+  const piso = pisoDeExposicion(peakExposure);
+  const decaida = actual - EXPOSURE_DECAY_PER_MONTH * Math.max(0, meses);
+  return clamp(Math.max(decaida, piso), 0, actual);
 }

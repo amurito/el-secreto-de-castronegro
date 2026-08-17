@@ -27,7 +27,7 @@ import { isCharacteristic, labelFor, SKILL_BY_ID } from '../rules/skills.ts';
 import {
   applyExposure, applyStabilityLoss, applyStabilityRecovery,
   stabilityPenaltyDice, extraSanLossFromExposure, thresholdInfo,
-  extraExposureFromPermeability, permeabilityFromMinutes,
+  extraExposureFromPermeability, permeabilityFromMinutes, exposicionTrasMeses,
 } from '../rules/umbral.ts';
 import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
 import { STABILITY_RECOVERY, techoDeEstabilidad, EXPOSURE_THRESHOLDS } from '../rules/umbral.config.ts';
@@ -183,10 +183,13 @@ export async function createCampaign(
  *   Cicatrices y trastornos → SÍ. El proyecto tiene muerte permanente; sería
  *   incoherente que una fobia se curara al empezar capítulo.
  *
- *   EXPOSICIÓN AL UMBRAL → SÍ, ENTERA, y los umbrales cruzados también. El
- *   canon dice que la exposición no baja con descanso (v0.9 §7) y que cruzar un
- *   umbral es un hecho irreversible. Bajarla entre aventuras sería una
- *   ampliación de canon, y ésa no se toma de contrabando dentro de un refactor.
+ *   EXPOSICIÓN AL UMBRAL → decae hacia un piso permanente, y los umbrales
+ *   cruzados cruzan enteros. El canon (v0.9 §7) sólo fija que la exposición
+ *   no baja con descanso DENTRO de una partida; entre aventuras, meses lejos
+ *   del fenómeno SÍ la aflojan, pero nunca por debajo de una fracción del
+ *   pico histórico (`peakExposure`, que en sí nunca baja) — ver
+ *   `exposicionTrasMeses` en rules/umbral.ts. Cruzar un umbral sigue siendo
+ *   irreversible: `thresholdsCrossed` no se toca acá.
  *
  *   ESTABILIDAD → se recupera. Es lo que el canon SÍ permite: se recupera por
  *   anclaje, y meses de rutina son anclaje. Usa `STABILITY_RECOVERY.betweenSessions`,
@@ -199,10 +202,11 @@ export async function createCampaign(
  */
 function heredarInvestigador(inv: Investigator, meses: number): Investigator {
   const tramos = Math.max(1, Math.floor(meses));
-  // El techo baja con la exposición: quien más contacto tuvo con el fenómeno
-  // menos puede volver a anclarse del todo. Sin techo, la Estabilidad se
-  // recupera siempre al 100 y la campaña deja de acumular daño.
-  const techo = techoDeEstabilidad(inv.umbral.exposure);
+  // La Exposición decae primero: el techo de Estabilidad se calcula sobre la
+  // que queda DESPUÉS de los meses lejos del fenómeno, no sobre la de cierre
+  // de la aventura anterior — menos contacto activo, más margen para anclarse.
+  const exposicion = exposicionTrasMeses(inv.umbral.exposure, inv.umbral.peakExposure, meses);
+  const techo = techoDeEstabilidad(exposicion);
   const estabilidad = clamp(
     inv.umbral.stability + STABILITY_RECOVERY.betweenSessions * tramos,
     0,
@@ -214,7 +218,9 @@ function heredarInvestigador(inv: Investigator, meses: number): Investigator {
     umbral: {
       ...inv.umbral,
       stability: estabilidad,
-      // exposure y thresholdsCrossed intactos, a propósito.
+      exposure: exposicion,
+      // peakExposure y thresholdsCrossed intactos, a propósito: son la
+      // memoria permanente, no el nivel actual.
       exposureEvents: [...inv.umbral.exposureEvents],
       thresholdsCrossed: [...inv.umbral.thresholdsCrossed],
       perceptualAnomalies: [...inv.umbral.perceptualAnomalies],
@@ -994,6 +1000,28 @@ export class Turn {
       this.emit('THRESHOLD_CROSSED', { investigatorId: inv.id, threshold: t, atExposure: to });
       const info = thresholdInfo(t);
       msg += `\n★ UMBRAL CRUZADO — ${info.label}: ${info.description} Esto es irreversible y cambia lo que el investigador puede percibir a partir de ahora. Tenelo en cuenta al narrar.`;
+      // El cuarto umbral (Disolución) es el único de los cuatro con efecto
+      // mecánico propio, y se aplica solo, igual que la crisis de locura
+      // temporal de toolApplySanityLoss: en modo motor no hay Keeper en vivo
+      // que decida aplicarla si el motor no lo hace.
+      if (t === 'DISSOLUTION') {
+        this.aplicarCondicion({
+          name: 'La secuencia no es una sola',
+          description:
+            'Desde que cruzó Disolución, el investigador ya no puede confiar del todo en que lo que percibe ' +
+            'pertenece a un único momento. Un ruido, una cara, un dato pueden ser de ahora o de otra parte de ' +
+            'la secuencia, y notarlo cuesta tanto como no notarlo.',
+          kind: 'mental',
+          temporary: true,
+          mechanicalEffect: {
+            skillModifiers: [
+              { skill: 'orientarse', dice: 1 },
+              { skill: 'descubrir', dice: -1 },
+            ],
+          },
+        });
+        msg += '\n★ Se lleva «La secuencia no es una sola», permanente — ver la ficha.';
+      }
     }
     return { ok: true, message: msg };
   }
