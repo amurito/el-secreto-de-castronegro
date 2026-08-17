@@ -78,6 +78,11 @@ export function sanitizeForClient(state: GameState): ClientState {
       },
       conditions: inv.conditions.map((c) => ({ name: c.name, description: c.description, kind: c.kind })),
       knowledge: inv.knowledge.investigator.map((k) => k.statement),
+      // A diferencia de `knowledge`: esto NO es lo que el investigador tiene
+      // registrado, es lo que nota quien juega. Va aparte a propósito — ver
+      // `toolNotePlayerKnowledge` en engine.ts. Nunca cruza al Keeper IA
+      // (eso está en `context.ts`, no acá); esto es sólo cliente↔servidor.
+      playerKnowledge: inv.knowledge.playerObserved.map((k) => k.statement),
     },
     reserveAvailable: state.reserveInvestigators
       .map((id) => state.investigators[id])

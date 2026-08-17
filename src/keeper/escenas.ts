@@ -145,6 +145,13 @@ function aplicarEfecto(
       ...argsDeCrisis(efecto.cordura.crisis),
     });
   }
+  if (efecto.jugadorNota) {
+    run('note_player_knowledge', {
+      statement: efecto.jugadorNota.statement,
+      source: efecto.jugadorNota.source,
+      reliability: efecto.jugadorNota.reliability ?? 'unknown',
+    });
+  }
   if (efecto.dano) {
     run('apply_damage', { amount: efecto.dano.amount, cause: efecto.dano.cause });
   }

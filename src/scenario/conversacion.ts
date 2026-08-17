@@ -57,6 +57,8 @@ export interface EfectoTema {
     tipo?: 'phobia' | 'mania';
     afecta: Array<{ skill: string; dados: number }>;
   };
+  /** Ver el mismo campo en `scenario/escena.ts`. */
+  jugadorNota?: { statement: string; source: string; reliability?: 'reliable' | 'unreliable' | 'false' | 'unknown' };
 }
 
 export interface TemaConversacion {

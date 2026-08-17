@@ -76,6 +76,13 @@ function aplicar(
   if (efecto.cordura) {
     run('apply_sanity_loss', { amount: efecto.cordura, cause: causa, ...argsDeCrisis(efecto.crisis) });
   }
+  if (efecto.jugadorNota) {
+    run('note_player_knowledge', {
+      statement: efecto.jugadorNota.statement,
+      source: efecto.jugadorNota.source,
+      reliability: efecto.jugadorNota.reliability ?? 'unknown',
+    });
+  }
   if (efecto.exposicion) {
     run('apply_umbral_exposure', {
       amount: efecto.exposicion, cause: `lo que dijo ${npc.name}`,

@@ -683,6 +683,23 @@ button { font-family: inherit; cursor: pointer; }
 .cons-title { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
 .cons { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; }
 
+/* «Aparte» — deliberadamente distinto del resto de la ficha: borde
+   punteado, tipografía serif en vez de mono, para que se LEA como algo que
+   no pertenece al reglamento sino a quien está sentado leyendo. Es la
+   interfaz de `knowledge.playerObserved` — ver engine.ts. */
+.aparte {
+  border-top: 1px dashed var(--exposure); padding: 0.9rem 1rem;
+  background: color-mix(in srgb, var(--exposure) 6%, transparent);
+}
+.aparte-title {
+  font-family: var(--serif); font-style: italic; font-size: 0.74rem;
+  color: var(--exposure); margin-bottom: 0.5rem; line-height: 1.4;
+}
+.aparte-item {
+  font-family: var(--serif); font-size: 0.8rem; color: var(--text-dim);
+  margin-bottom: 0.4rem; line-height: 1.45;
+}
+
 /* La barra inferior no existe en pantalla grande. */
 .barra-movil { display: none; }
 

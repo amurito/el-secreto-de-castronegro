@@ -1,0 +1,1614 @@
+{
+  "id": "tercer-umbral",
+  "title": "La Firma Ajena",
+  "surfacePremise": "Un hombre que dice llamarse Alejo Ferreyra volvió a Los Cardales después de ocho años sin noticias, a reclamar una herencia que nadie puede pagarle sin que alguien primero certifique quién es. La mitad de quienes lo conocían de chico jura que es él. Una minoría, tan convencida como la mayoría, jura que no.",
+  "items": [
+    {
+      "id": "it-foto",
+      "name": "Fotografía de Alejo con Anastasio",
+      "aliases": [
+        "foto",
+        "fotografía",
+        "retrato",
+        "foto de alejo chico"
+      ],
+      "shortDescription": "Un chico de unos diez años parado junto a un hombre mayor, en la galería de la casa. Al dorso: \"A. y A., 1905\".",
+      "owner": "casco",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-foto-basico",
+          "description": "Un chico serio, el hombre con la mano en su hombro. Los dos miran a la cámara.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-foto-oreja",
+          "description": "La oreja izquierda del chico de la foto tiene el lóbulo pegado, sin separación. Es un rasgo de familia, chico pero real. No es algo que se pueda saber de memoria: hay que mirar la foto para saberlo.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "hard"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-cuchillo",
+      "name": "Cuchillo con mango de asta",
+      "aliases": [
+        "cuchillo",
+        "facón chico",
+        "el cuchillo de alejo"
+      ],
+      "shortDescription": "Un cuchillo de hoja corta, mango de asta gastado, con una M grabada cerca de la virola. Lo dejó entre sus cosas, sobre la cómoda del cuarto que le dieron.",
+      "owner": "casco",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-cuchillo-basico",
+          "description": "Fue de su padre. La M es de Ferreyra... no, de Miqueo, el apellido de la madre, dice él cuando se lo preguntan.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-cuchillo-filo",
+          "description": "El filo está afilado parejo de los dos lados, como lo afila alguien diestro. Todos los que conocieron a Alejo de chico coinciden en una cosa sin que se les pregunte dos veces: era zurdo.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-nacion",
+      "name": "Nación Ferreyra",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Sesenta y ocho años, viuda de Anastasio. Lo crió a Alejo desde los cinco años, cuando murieron sus padres.",
+      "motivation": "Que nadie le discuta lo único que le queda.",
+      "fears": [
+        "Que se lo vuelvan a llevar, de la forma que sea."
+      ],
+      "refusals": [
+        "No va a decir una palabra en contra de él, la pregunten como la pregunten."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-nacion-sueno",
+          "content": "La noche antes de que Alejo golpeara el portón, Nación soñó con él parado exactamente ahí, en la oscuridad, esperando que alguien lo dejara entrar. No se lo contó a nadie porque suena a locura de vieja. Sólo lo cuenta si la actitud llega a 45 o más: es lo más cerca que va a estar nunca de admitir que ella tampoco tiene una prueba, sólo una certeza que no se explica.",
+          "disclosure": "KEEPER_SECRET",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-ceferino",
+      "name": "Ceferino Bracamonte",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cincuenta y dos años, mayordomo de Los Cardales desde antes de que naciera Alejo.",
+      "motivation": "Que la estancia no se le vaya de las manos por una firma que nadie puede probar.",
+      "fears": [
+        "Que alguien mire los libros de 1923 con demasiado cuidado."
+      ],
+      "refusals": [
+        "No va a admitir que la hoja arrancada tiene que ver con la plata que administró esos meses."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-martiniano",
+      "name": "Martiniano Ibarra",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Setenta años, peón de Los Cardales desde antes de que naciera Anastasio. Vio crecer a tres generaciones.",
+      "motivation": "Entender lo que vio esa noche, aunque tenga setenta años y sepa que nadie le va a creer.",
+      "fears": [
+        "Que le pregunten justo la parte que no sabe cómo explicar sin sonar loco."
+      ],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-martiniano-dos",
+          "content": "Martiniano vio llegar a Alejo esa noche desde el galpón, y por un instante —un parpadeo, dice, no más— le pareció que eran dos figuras paradas en el portón, no una, y que las dos tenían la misma sombra. Un segundo después sólo quedaba una. No se lo dijo a nadie porque a los setenta años uno desconfía primero de sus propios ojos. Sólo lo cuenta si la actitud llega a 40 o más.",
+          "disclosure": "KEEPER_SECRET",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-alejo",
+      "name": "Alejo Ferreyra",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Treinta años, o los que sean. Volvió en agosto después de ocho años sin una carta.",
+      "motivation": "Que nadie le pida que explique lo que él mismo no termina de entender.",
+      "fears": [
+        "Una pregunta hecha exactamente de la manera correcta."
+      ],
+      "refusals": [
+        "No va a decir dónde estuvo estos ocho años con más detalle del que ya dio."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-carta",
+      "title": "Carta de Alejo desde la frontera",
+      "author": "Alejo Ferreyra",
+      "date": "julio de 1917",
+      "location": "Guardada por Nación, en su cuarto",
+      "kind": "letter",
+      "content": "Tío:\n\nAcá seguimos, sin novedad que se pueda escribir en una carta que otro va a leer antes que usted. Dígale a Nación que la extraño más de lo que un hombre debería admitir, y dígale también que sigo sin poder tomar mate sin quemarme, así que no me hago demasiadas ilusiones de haber crecido en nada que valga.\n\nCuando vuelva quiero que Martiniano me enseñe por fin a enlazar bien, ahora que él dice que ya soy grande. Y quiero pararme en el espejo del zaguán a ver cuánto me falta para ser tan alto como usted, aunque a esta altura ya sé que no va a alcanzar.\n\nSu sobrino que lo quiere,\nAlejo",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-partida",
+      "title": "Partida de bautismo de Alejo Ferreyra",
+      "author": "Parroquia de la zona",
+      "date": "3 de marzo de 1895",
+      "location": "Registro parroquial, en la capilla",
+      "kind": "file",
+      "content": "Alejo Custodio Ferreyra, hijo legítimo de Custodio Ferreyra y Rosa Miqueo, nacido el 24 de febrero de 1895 y bautizado en esta fecha. Padrinos: Anastasio Ferreyra y Encarnación Suárez de Ferreyra.\n\nNota al margen, con otra letra y otra tinta, sin fecha: \"M. de F. — zurdo de nacimiento, se le corrigió la mano para escribir, según costumbre.\"",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "casco": {
+      "id": "casco",
+      "name": "El casco de Los Cardales",
+      "aliases": [
+        "casa",
+        "casco de la estancia"
+      ],
+      "description": "Una casa de material con galería al frente, tres ventanas altas y un zaguán de baldosas que suena distinto pisado que vacío. En el zaguán, un espejo de marco oscuro, tan viejo como la casa.",
+      "atmosphere": [
+        "Se escucha una máquina de coser en algún cuarto del fondo, con pausas irregulares.",
+        "La galería tiene dos sillas de paja enfrentadas, como si alguien conversara ahí seguido.",
+        "Nación pasa un repasador por una mesa que ya está limpia."
+      ],
+      "connections": [
+        "escritorio",
+        "galpon",
+        "capilla"
+      ],
+      "itemsPresent": [
+        "it-foto",
+        "it-cuchillo"
+      ],
+      "npcsPresent": [
+        "npc-nacion",
+        "npc-alejo"
+      ],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sound": [
+          "El reloj de pared del living atrasa. Nadie lo corrige hace años."
+        ],
+        "smell": [
+          "Cera de piso y, más débil, el jabón de afeitar de alguien que no vivía acá hasta hace poco."
+        ],
+        "touch": [
+          "El pasamanos de la galería está gastado de un lado y liso del otro, como si sólo una mano lo usara siempre igual."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-espejo",
+          "names": [
+            "espejo",
+            "espejo del zaguán",
+            "espejo de marco oscuro"
+          ],
+          "description": "Un espejo alto, con manchas negras en el azogue de las esquinas.",
+          "closerLook": "El azogue está gastado en un óvalo justo a la altura de una cara: generaciones de Ferreyra se pararon siempre en el mismo lugar exacto para mirarse. El vidrio, ahí, devuelve un poco menos de lo que debería.",
+          "clue": {
+            "description": "El espejo del zaguán está gastado en el punto exacto donde alguien se para a mirarse, de tanto uso — y ahí devuelve menos de lo que debería.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-galeria",
+          "names": [
+            "galería",
+            "sillas",
+            "las dos sillas"
+          ],
+          "description": "Dos sillas de paja, enfrentadas, con las patas delanteras hundidas parejo en la tierra.",
+          "closerLook": "Las marcas de las patas son viejas, de años de uso en el mismo lugar exacto — de mucho antes de agosto.",
+          "clue": {
+            "description": "Las dos sillas de la galería llevan años en el mismo lugar: alguien se sentaba ahí con Anastasio mucho antes de que Alejo volviera.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-reloj",
+          "names": [
+            "reloj",
+            "reloj de pared",
+            "reloj del living"
+          ],
+          "description": "Un reloj de pared parado a las cuatro y diez.",
+          "closerLook": "No está roto: nadie le da cuerda desde una fecha que nadie puede precisar."
+        }
+      ]
+    },
+    "escritorio": {
+      "id": "escritorio",
+      "name": "El escritorio de la administración",
+      "aliases": [
+        "oficina",
+        "administración"
+      ],
+      "description": "Un cuarto chico con un escritorio de dos cuerpos, un archivo de madera y una ventana que da al corral. Ceferino Bracamonte lleva quince años sentado en la misma silla.",
+      "atmosphere": [
+        "Los libros de cuentas están en fila por año, sin un solo lomo fuera de lugar.",
+        "Ceferino escribe con la lapicera casi vertical, apretando fuerte."
+      ],
+      "connections": [
+        "casco"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-ceferino"
+      ],
+      "visited": false,
+      "umbralIntensity": 1,
+      "senses": {
+        "smell": [
+          "Tinta y papel viejo, y debajo, tabaco negro."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-libros",
+          "names": [
+            "libros de cuentas",
+            "libro mayor",
+            "los libros"
+          ],
+          "description": "Diez años de cuentas de la estancia, encuadernadas en cuero gastado.",
+          "closerLook": "El libro de 1923, el año en que murió Anastasio, tiene una hoja arrancada al ras del lomo. Ceferino no lo mencionó.",
+          "examineSkill": "buscar_libros",
+          "clue": {
+            "description": "Al libro de cuentas de 1923 le falta una hoja, arrancada al ras. Ceferino nunca lo mencionó.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "galpon": {
+      "id": "galpon",
+      "name": "El galpón y el corral",
+      "aliases": [
+        "galpón de herramientas",
+        "corral"
+      ],
+      "description": "Chapa y palo a pique, herramienta de campo colgada por tamaño, y un corral chico donde Martiniano Ibarra cuida dos caballos que ya no trabajan.",
+      "atmosphere": [
+        "Martiniano habla más con los caballos que con la gente, y no distingue mucho entre las dos conversaciones."
+      ],
+      "connections": [
+        "casco"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-martiniano"
+      ],
+      "visited": false,
+      "umbralIntensity": 1,
+      "features": [
+        {
+          "id": "f-herramientas",
+          "names": [
+            "herramientas",
+            "las herramientas"
+          ],
+          "description": "Palas, hoces, un arado de un solo disco.",
+          "closerLook": "Cada herramienta está engrasada y afilada, colgada siempre en el mismo clavo. A los setenta años, Martiniano sigue sin perdonarle el óxido a nada.",
+          "clue": {
+            "description": "Martiniano mantiene cada herramienta del galpón engrasada y afilada, colgada siempre en el mismo lugar, a sus setenta años.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "capilla": {
+      "id": "capilla",
+      "name": "La capilla",
+      "aliases": [
+        "iglesia",
+        "parroquia"
+      ],
+      "description": "Una capilla de un aula, cerrada casi siempre. El cura titular vive en el pueblo y viene una vez al mes; el registro de bautismos y defunciones queda en un atril, a la vista de cualquiera que entre.",
+      "atmosphere": [
+        "No hay nadie. Un candelabro con dos velas consumidas hasta la mitad."
+      ],
+      "connections": [
+        "casco",
+        "cementerio"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 2,
+      "features": [
+        {
+          "id": "f-registro",
+          "names": [
+            "registro",
+            "libro parroquial",
+            "registro de bautismos"
+          ],
+          "description": "Un libro grueso, con años enteros en la misma letra pareja del mismo escribiente."
+        }
+      ]
+    },
+    "cementerio": {
+      "id": "cementerio",
+      "name": "El cementerio de la familia",
+      "aliases": [
+        "panteón",
+        "las tumbas"
+      ],
+      "description": "Seis tumbas bajo dos tipas, con un alambrado más nuevo que las lápidas. La de Anastasio Ferreyra es la más reciente: 1923.",
+      "atmosphere": [
+        "El pasto está cortado parejo entre las tumbas y crecido entre las tipas: alguien lo cuida a mano, tumba por tumba."
+      ],
+      "connections": [
+        "capilla"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 2,
+      "features": [
+        {
+          "id": "f-tumba-anastasio",
+          "names": [
+            "tumba de anastasio",
+            "la tumba nueva"
+          ],
+          "description": "ANASTASIO FERREYRA · 1861-1923. Flores frescas, cambiadas hace poco."
+        },
+        {
+          "id": "f-tumba-padres",
+          "names": [
+            "tumba de los padres",
+            "tumba chica",
+            "la tumba de atrás"
+          ],
+          "description": "Dos lápidas más chicas y más viejas, casi tapadas por el pasto alto: los padres de Alejo, muertos en 1901.",
+          "closerLook": "No tienen flores. No las tuvieron nunca, según el color de la piedra."
+        }
+      ]
+    }
+  },
+  "startLocation": "casco",
+  "startTime": {
+    "iso": "1925-08-14T16:00:00",
+    "precision": "minute",
+    "display": "las cuatro de la tarde"
+  },
+  "startUmbralPermeability": 8,
+  "timeline": [
+    {
+      "id": "te-1901",
+      "description": "Mueren los padres de Alejo; Anastasio y Encarnación lo crían desde los cinco años.",
+      "when": {
+        "iso": "1901-04-01T00:00:00",
+        "precision": "vague",
+        "display": "otoño de 1901"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1915",
+      "description": "Alejo se va a la conscripción y después a la frontera. Escribe un par de veces.",
+      "when": {
+        "iso": "1915-03-01T00:00:00",
+        "precision": "vague",
+        "display": "1915"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1917",
+      "description": "Última carta conocida de Alejo, desde la frontera.",
+      "when": {
+        "iso": "1917-07-01T00:00:00",
+        "precision": "vague",
+        "display": "julio de 1917"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1923",
+      "description": "Muere Anastasio Ferreyra, sin testamento formal.",
+      "when": {
+        "iso": "1923-05-01T00:00:00",
+        "precision": "vague",
+        "display": "1923"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1925-vuelta",
+      "description": "Un hombre que dice ser Alejo Ferreyra vuelve a Los Cardales, después de ocho años sin noticias. Ni la hora ni el modo de su llegada coinciden entre los tres testigos.",
+      "when": {
+        "iso": "1925-08-04T00:00:00",
+        "precision": "vague",
+        "display": "la primera semana de agosto de 1925"
+      },
+      "category": "UNKNOWN",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "n-recuerdo",
+      "npc": "npc-nacion",
+      "orden": 10,
+      "etiqueta": "Preguntarle qué recuerda de Alejo de chico",
+      "intencion": "Le pregunto a Nación qué recuerda de Alejo de chico",
+      "claves": [
+        "de chico",
+        "cuando era chico",
+        "como era alejo",
+        "recuerdos de alejo"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "era zurdo de chico"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Zurdo para todo, de chiquito. —Sonríe, y por un segundo se le va veinte años la cara—. Comía con la izquierda, escribía con la izquierda, hasta que la maestra se lo corrigió a fuerza de regla en la mano.\n\nSe le corta la sonrisa a la mitad, como si acabara de acordarse de algo que no quiere decir todavía."
+        ],
+        "pista": {
+          "description": "Alejo era zurdo de chico: comía y escribía con la izquierda hasta que se lo corrigieron en la escuela.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "n-vuelta",
+      "npc": "npc-nacion",
+      "orden": 12,
+      "etiqueta": "Preguntarle cómo fue que él volvió",
+      "intencion": "Le pregunto a Nación cómo fue que Alejo volvió",
+      "claves": [
+        "como fue que",
+        "como volvio",
+        "la vuelta",
+        "cuando volvio",
+        "que paso cuando llego"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "golpeó el portón un miércoles"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Golpeó el portón un miércoles a la noche. Solo, con una valija chica, de esas que ya no se hacen. Yo estaba despierta, cosiendo, y algo me hizo ir a abrir antes de que golpeara de nuevo.\n\n—Tengo guardada una carta de él, de cuando estuvo en la frontera. Si quiere leerla, está en mi cuarto."
+        ],
+        "pista": {
+          "description": "Nación dice que Alejo golpeó el portón un miércoles de noche, solo, con una valija chica.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "n-duda",
+      "npc": "npc-nacion",
+      "orden": 14,
+      "etiqueta": "Preguntarle si nunca dudó",
+      "intencion": "Le pregunto a Nación si nunca dudó de que fuera Alejo",
+      "claves": [
+        "nunca dudo",
+        "esta segura",
+        "como sabe que es el"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 5,
+        "razon": "que admita, aunque sea un segundo, que algo la hizo dudar"
+      },
+      "cede": {
+        "actitud": 6,
+        "texto": [
+          "Se queda callada un momento largo.\n\n—Los ojos —dice, al final—. Lo reconocí por los ojos, antes de que dijera una palabra. No le sé explicar más que eso, y sé cómo suena. Una vieja que quiere que sea él y por eso decide que es él.\n\n—Pero se lo digo igual: no fue la cara, no fue la voz, no fue nada que pudiera jurar en un papel. Fueron los ojos."
+        ],
+        "pista": {
+          "description": "Nación dice que reconoció a Alejo por los ojos, no por ningún detalle que pueda explicar o jurar.",
+          "kind": "testimonial",
+          "reliability": "unreliable"
+        },
+        "revelaSecreto": "s-nacion-sueno"
+      },
+      "esquiva": {
+        "actitud": -2,
+        "texto": [
+          "Se le llenan los ojos de lágrimas y niega con la cabeza, sin contestar.\n\n—No —dice, nada más—. No."
+        ]
+      },
+      "cerrado": {
+        "texto": [
+          "—¿Cómo se atreve? —No lo dice fuerte. Lo dice bajito, que es peor—. Es mi Alejo. No hay pregunta que le vaya a hacer que me haga dudar de eso."
+        ]
+      }
+    },
+    {
+      "id": "n-anastasio",
+      "npc": "npc-nacion",
+      "orden": 16,
+      "etiqueta": "Preguntarle por Anastasio y el testamento",
+      "intencion": "Le pregunto a Nación por Anastasio y el testamento",
+      "claves": [
+        "anastasio",
+        "testamento",
+        "herencia",
+        "la sucesion"
+      ],
+      "cede": {
+        "texto": [
+          "—Anastasio nunca hizo testamento como la ley manda. Decía que total todo iba a ser de Alejo, que para qué gastar en un escribano una cosa tan clara.\n\n—Y ahora resulta que la cosa más clara del mundo es la que nadie puede probar."
+        ]
+      }
+    },
+    {
+      "id": "n-fecha",
+      "npc": "npc-nacion",
+      "orden": 18,
+      "etiqueta": "Preguntarle la fecha exacta en que volvió",
+      "intencion": "Le pregunto a Nación qué día exacto volvió Alejo",
+      "claves": [
+        "dia exacto",
+        "que dia volvio",
+        "la fecha exacta",
+        "cuando exactamente"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "golpeó el portón un miércoles"
+      },
+      "cede": {
+        "texto": [
+          "—El tres de agosto. Un miércoles, se lo puedo jurar, porque al otro día era el cumpleaños de la Rufina y no pude ir a saludarla de las vueltas que daba la cabeza."
+        ],
+        "pista": {
+          "description": "Nación asegura que Alejo volvió el 3 de agosto de 1925, un miércoles a la noche.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "c-porque",
+      "npc": "npc-ceferino",
+      "orden": 10,
+      "etiqueta": "Preguntarle por qué desconfía",
+      "intencion": "Le pregunto a Ceferino por qué desconfía de Alejo",
+      "claves": [
+        "por que desconfia",
+        "que le hace dudar",
+        "que nota raro"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "agarra todo con la derecha"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—No es una cosa sola. Es que agarra todo con la derecha. El mate, la lapicera, hasta el sombrero. Y el Alejo que yo vi crecer era zurdo para todo, sin excepción, quince años seguidos.\n\n—Puede ser que a un hombre se le corrija eso en ocho años lejos. Puede ser. Pero es lo primero que vi, antes de saludarlo siquiera."
+        ],
+        "pista": {
+          "description": "Ceferino dice que este hombre agarra todo con la derecha, y que el Alejo que él vio crecer era zurdo para todo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "c-cicatriz",
+      "npc": "npc-ceferino",
+      "orden": 12,
+      "etiqueta": "Preguntarle por la cicatriz",
+      "intencion": "Le pregunto a Ceferino por la cicatriz de Alejo",
+      "claves": [
+        "la cicatriz",
+        "una marca",
+        "un corte viejo"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "agarra todo con la derecha"
+      },
+      "cede": {
+        "texto": [
+          "—Se cortó de chico con el alambre del corral nuevo, antebrazo derecho, una media luna que le quedó blanca para siempre. Se la vi mil veces arremangado en la trilla.\n\n—Este hombre tiene una cicatriz parecida. En el izquierdo."
+        ],
+        "pista": {
+          "description": "La cicatriz que Alejo tenía en el antebrazo derecho, este hombre la tiene en el izquierdo.",
+          "kind": "testimonial",
+          "reliability": "unreliable"
+        }
+      }
+    },
+    {
+      "id": "c-administracion",
+      "npc": "npc-ceferino",
+      "orden": 14,
+      "etiqueta": "Preguntarle cómo administró la estancia",
+      "intencion": "Le pregunto a Ceferino cómo administró la estancia estos años",
+      "claves": [
+        "como administro",
+        "la administracion",
+        "como manejo la estancia",
+        "estos dos anos"
+      ],
+      "cede": {
+        "texto": [
+          "—Como pude. Sin patrón ni heredero confirmado, cada decisión la tuve que tomar solo y esperar que nadie me la cuestionara después. Todavía puede pasar.\n\nLo dice mirando los libros de cuentas, no a usted."
+        ]
+      }
+    },
+    {
+      "id": "c-vuelta",
+      "npc": "npc-ceferino",
+      "orden": 16,
+      "etiqueta": "Preguntarle cómo fue que él volvió",
+      "intencion": "Le pregunto a Ceferino cómo fue que Alejo volvió",
+      "claves": [
+        "como fue que",
+        "como volvio segun ceferino",
+        "usted que vio cuando llego"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "golpeó el portón un miércoles"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "llegó de tarde, no de noche"
+      },
+      "cede": {
+        "texto": [
+          "—¿De noche, solo, dice ella? No. Llegó de tarde, todavía con luz, y no vino solo: lo acompañaba un hombre que no bajó del sulky, lo dejó en el portón y se fue enseguida, sin que nadie le viera la cara.\n\n—Se lo pregunté después. Me dijo que era un paisano que lo trajo del pueblo, nada más. No supo decirme el nombre."
+        ],
+        "pista": {
+          "description": "Ceferino dice que Alejo llegó de tarde, no de noche, y que no vino solo: alguien lo acompañó hasta el portón y se fue sin que nadie le viera la cara.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "c-fecha",
+      "npc": "npc-ceferino",
+      "orden": 18,
+      "etiqueta": "Preguntarle la fecha exacta en que volvió",
+      "intencion": "Le pregunto a Ceferino qué día exacto volvió Alejo",
+      "claves": [
+        "dia exacto",
+        "que dia volvio segun ceferino",
+        "la fecha segun usted"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "llegó de tarde, no de noche"
+      },
+      "cede": {
+        "texto": [
+          "—El cinco de agosto. Un viernes. Lo sé porque los viernes cierro la semana en el libro, y esa tarde tuve que dejar la cuenta a medias."
+        ],
+        "pista": {
+          "description": "Ceferino asegura que Alejo llegó el 5 de agosto de 1925, un viernes por la tarde.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "m-nino",
+      "npc": "npc-martiniano",
+      "orden": 10,
+      "etiqueta": "Preguntarle cómo era Alejo de chico",
+      "intencion": "Le pregunto a Martiniano cómo era Alejo de chico",
+      "claves": [
+        "de chico",
+        "como era de chico segun martiniano",
+        "lo vio crecer"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Tenía la orejita de acá pegada, sin separación. —Se toca el lóbulo izquierdo—. Se la mostraba a cualquiera que se la nombrara, le daba orgullo, como si fuera una medalla.\n\nSe ríe, y después se le va la risa de la cara despacio, como si algo no le terminara de cerrar."
+        ],
+        "pista": {
+          "description": "Martiniano recuerda que el Alejo chico tenía el lóbulo de la oreja izquierda pegado, sin separación, y le gustaba mostrarlo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "m-vuelta",
+      "npc": "npc-martiniano",
+      "orden": 12,
+      "etiqueta": "Preguntarle cómo fue que él volvió",
+      "intencion": "Le pregunto a Martiniano cómo fue que Alejo volvió",
+      "claves": [
+        "como fue que",
+        "como volvio segun martiniano",
+        "usted que vio esa noche"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "golpeó el portón un miércoles"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 2,
+        "razon": "que cuente lo que vio esa noche y no sólo lo que le parece prudente decir"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Yo estaba en el galpón, con los caballos que no duermen bien en luna llena. Se hizo tarde, tarde de verdad, casi medianoche. Ni de tarde temprano como dice Ceferino ni al oscurecer como dice la señora: casi medianoche.\n\n—Y llegó a pie, solo, sin valija ni nada. Eso también es distinto de lo que cuentan los dos.\n\nSe queda callado un momento, dudando si seguir.\n\n—Y hay algo más, que no le dije a nadie porque a los setenta años uno desconfía primero de sus propios ojos. Por un instante, un parpadeo, no más, me pareció que en el portón había dos figuras paradas, no una, con la misma sombra exacta. Un segundo después ya sólo quedaba una."
+        ],
+        "pista": {
+          "description": "Martiniano dice que Alejo llegó casi a medianoche, a pie, sin valija, y que por un instante —un parpadeo— le pareció ver dos figuras con la misma sombra paradas en el portón, antes de que quedara una sola.",
+          "kind": "testimonial",
+          "reliability": "unreliable"
+        },
+        "revelaSecreto": "s-martiniano-dos"
+      },
+      "esquiva": {
+        "texto": [
+          "—No sé bien. Estaba con los caballos. —No lo mira a los ojos al decirlo, que en Martiniano es raro."
+        ]
+      }
+    },
+    {
+      "id": "m-partida",
+      "npc": "npc-martiniano",
+      "orden": 14,
+      "etiqueta": "Preguntarle por el bautismo de Alejo",
+      "intencion": "Le pregunto a Martiniano por el bautismo de Alejo",
+      "claves": [
+        "el bautismo",
+        "la partida",
+        "el registro parroquial"
+      ],
+      "cede": {
+        "texto": [
+          "—Eso lo tiene que buscar en la capilla. El padre Ezequiel llevaba todo anotado, bautismo por bautismo, desde antes de que yo naciera. Ahora viene poco, pero el libro queda ahí."
+        ]
+      }
+    },
+    {
+      "id": "m-guerra",
+      "npc": "npc-martiniano",
+      "orden": 16,
+      "etiqueta": "Preguntarle qué pasó cuando Alejo se fue",
+      "intencion": "Le pregunto a Martiniano qué pasó cuando Alejo se fue",
+      "claves": [
+        "cuando alejo se fue",
+        "cuando se fue",
+        "por que se fue",
+        "a la frontera",
+        "la conscripcion"
+      ],
+      "cede": {
+        "texto": [
+          "—Se fue a la conscripción en el quince, con veinte años, y de ahí lo mandaron para el sur, a la frontera. Escribió un par de veces esos primeros años. Después nada, ocho años de nada, hasta que apareció en el portón."
+        ]
+      }
+    },
+    {
+      "id": "a-quien",
+      "npc": "npc-alejo",
+      "orden": 10,
+      "etiqueta": "Preguntarle quién es",
+      "intencion": "Le pregunto a Alejo quién es",
+      "claves": [
+        "quien es",
+        "quien es usted",
+        "es realmente alejo",
+        "puede probarlo"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "razon": "que conteste sin salirse por la tangente"
+      },
+      "cede": {
+        "texto": [
+          "—Soy Alejo. —Lo dice sin apuro, sin ofenderse, como quien ya contestó esto muchas veces y encontró la manera de que no le cueste nada decirlo—. No sé qué más agregarle. La gente cambia en ocho años. Yo cambié en ocho años."
+        ],
+        "pista": {
+          "description": "Alejo contesta cada pregunta sobre quién es con la misma calma exacta, sin apurarse nunca.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        }
+      },
+      "critico": {
+        "actitud": 2,
+        "texto": [
+          "—Soy Alejo. —Y esta vez, por primera vez, algo le tiembla en la voz, apenas—. Aunque a esta altura no sabría decirle si soy Alejo por lo que me acuerdo, o si me acuerdo de lo que soy porque hace falta que me acuerde. No sé si eso contesta su pregunta. A mí tampoco me la contesta del todo."
+        ],
+        "pista": {
+          "description": "Por un momento, Alejo admitió que ni él mismo distingue si se acuerda de ser Alejo o si necesita acordarse para serlo.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        }
+      },
+      "esquiva": {
+        "actitud": -3,
+        "texto": [
+          "—Ya contesté eso. —Y se levanta, o se da vuelta, o encuentra alguna otra manera de que la conversación termine ahí."
+        ]
+      },
+      "pifia": {
+        "actitud": -8,
+        "texto": [
+          "—¿Y usted quién se cree que es para preguntarme eso? —Lo dice fuerte, más fuerte de lo que la pregunta ameritaba, y el silencio que queda después es peor que la respuesta que no dio."
+        ]
+      }
+    },
+    {
+      "id": "a-anos",
+      "npc": "npc-alejo",
+      "orden": 12,
+      "etiqueta": "Preguntarle qué pasó estos ocho años",
+      "intencion": "Le pregunto a Alejo qué pasó estos ocho años",
+      "claves": [
+        "estos ocho anos",
+        "donde estuvo",
+        "por que no escribio"
+      ],
+      "disponible": {
+        "op": "documento",
+        "id": "doc-carta"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "razon": "que el relato de estos años se sostenga solo, sin ayuda"
+      },
+      "cede": {
+        "texto": [
+          "—Anduve para el sur, de trabajo en trabajo, sin dirección fija. No tenía a quién escribirle que no fuera acá, y escribir acá me daba miedo de que después fuera peor no volver.\n\n—Así que no volví, hasta que volví."
+        ],
+        "pista": {
+          "description": "Alejo dice que anduvo ocho años para el sur, sin dirección fija, y que no escribió porque temía que fuera peor no volver después.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        },
+        "jugadorNota": {
+          "statement": "La carta de 1917 le pedía a Martiniano, por nombre, que le enseñara a enlazar cuando volviera. En este relato de \"estos ocho años\", Alejo no nombra a Martiniano ni una vez.",
+          "source": "comparar el relato con la carta de la frontera",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "a-cuchillo",
+      "npc": "npc-alejo",
+      "orden": 14,
+      "etiqueta": "Preguntarle por el cuchillo",
+      "intencion": "Le pregunto a Alejo por el cuchillo",
+      "claves": [
+        "el cuchillo",
+        "la m grabada",
+        "de quien fue el cuchillo"
+      ],
+      "cede": {
+        "texto": [
+          "—Fue de mi padre. La M es de Miqueo, el apellido de mi madre, no de Ferreyra. Se lo dejó a Anastasio guardado, y Anastasio me lo dio cuando cumplí quince."
+        ],
+        "pista": {
+          "description": "Alejo dice que la M del cuchillo es de Miqueo, el apellido de su madre.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "fin-preguntar",
+      "prioridad": 96,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "lo miro a los ojos|le pregunto directamente|le pregunto quien es de verdad|que me diga la verdad de una vez"
+          },
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "o",
+                "de": [
+                  {
+                    "op": "pista",
+                    "contiene": "Imposible que los tres cuenten lo mismo"
+                  },
+                  {
+                    "op": "pista",
+                    "contiene": "dos figuras"
+                  }
+                ]
+              },
+              {
+                "op": "o",
+                "de": [
+                  {
+                    "op": "exposicion",
+                    "minimo": 20
+                  },
+                  {
+                    "op": "pista",
+                    "contiene": "cicatriz"
+                  },
+                  {
+                    "op": "pista",
+                    "contiene": "agarra todo con la derecha"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-avalar",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "avalo|firmo que es el|reconozco que es alejo|certifico que es el"
+          },
+          {
+            "op": "pistas",
+            "minimo": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-desmentir",
+      "prioridad": 94,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "desmiento|no es alejo|es un impostor|declaro que no es el"
+          },
+          {
+            "op": "pistas",
+            "minimo": 4
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "cicatriz"
+              },
+              {
+                "op": "pista",
+                "contiene": "agarra todo con la derecha"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-quemar",
+      "prioridad": 93,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "quemo la foto|quemo la carta|destruyo la evidencia|hago desaparecer la prueba"
+          },
+          {
+            "op": "documento",
+            "id": "doc-carta"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-irse",
+      "prioridad": 92,
+      "cuando": {
+        "op": "verbo",
+        "es": [
+          "irse"
+        ]
+      }
+    },
+    {
+      "id": "leer-carta",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "carta|carta de alejo|carta de la frontera"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "casco"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "buscar-partida",
+      "prioridad": 68,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "registro|partida|bautismo|libro parroquial"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "capilla"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cotejar-testimonios",
+      "prioridad": 66,
+      "cuando": {
+        "op": "texto",
+        "patron": "cotejo|comparo lo que dicen|contrasto los relatos|pongo en fila lo que dijeron"
+      }
+    },
+    {
+      "id": "mostrar-foto-a-alejo",
+      "prioridad": 64,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "verbo",
+                "es": [
+                  "mostrar"
+                ]
+              },
+              {
+                "op": "texto",
+                "patron": "le muestro"
+              }
+            ]
+          },
+          {
+            "op": "objetivo",
+            "kind": "npc",
+            "id": "npc-alejo"
+          },
+          {
+            "op": "lleva",
+            "item": "it-foto"
+          }
+        ]
+      }
+    },
+    {
+      "id": "romper-foto",
+      "prioridad": 63,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-foto"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "romper",
+              "forzar",
+              "atacar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "dormir",
+      "prioridad": 60,
+      "cuando": {
+        "op": "verbo",
+        "es": [
+          "dormir"
+        ]
+      }
+    },
+    {
+      "id": "examinar-foto",
+      "prioridad": 62,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-foto"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "examinar",
+              "mirar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "examinar-cuchillo",
+      "prioridad": 61,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-cuchillo"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "examinar",
+              "mirar"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "ver-foto",
+      "grupo": "observar",
+      "lugar": "casco",
+      "orden": 1,
+      "etiqueta": "Mirar la fotografía de Alejo con Anastasio",
+      "intencion": "Examino la fotografía de Alejo con Anastasio"
+    },
+    {
+      "id": "leer-carta-btn",
+      "grupo": "observar",
+      "lugar": "casco",
+      "orden": 3,
+      "etiqueta": "Leer la carta que guarda Nación",
+      "intencion": "Leo la carta de Alejo desde la frontera",
+      "visible": {
+        "op": "pista",
+        "contiene": "golpeó el portón un miércoles"
+      }
+    },
+    {
+      "id": "pensar",
+      "grupo": "decidir",
+      "orden": 50,
+      "etiqueta": "Ordenar lo que sabés",
+      "intencion": "Pienso en lo que sé hasta ahora",
+      "visible": {
+        "op": "pistas",
+        "minimo": 2
+      }
+    },
+    {
+      "id": "anotar",
+      "grupo": "decidir",
+      "orden": 51,
+      "etiqueta": "Anotar todo en la libreta",
+      "intencion": "Anoto todo lo que tengo en la libreta",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Sacás la libreta"
+      }
+    },
+    {
+      "id": "esperar",
+      "grupo": "decidir",
+      "orden": 52,
+      "etiqueta": "Esperar y no hacer nada",
+      "intencion": "Espero un rato largo sin hacer nada",
+      "visible": {
+        "op": "pistas",
+        "minimo": 1
+      }
+    },
+    {
+      "id": "cotejar-btn",
+      "grupo": "decidir",
+      "orden": 53,
+      "etiqueta": [
+        {
+          "cuando": {
+            "op": "contradicciones",
+            "minimo": 1
+          },
+          "texto": "Volver sobre lo que dice cada uno"
+        },
+        {
+          "texto": "Cotejar lo que dice cada uno sobre esa noche"
+        }
+      ],
+      "intencion": "Cotejo lo que dice cada uno sobre esa noche",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "golpeó el portón un miércoles"
+          },
+          {
+            "op": "pista",
+            "contiene": "llegó de tarde, no de noche"
+          },
+          {
+            "op": "pista",
+            "contiene": "llegó casi a medianoche"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mostrar-foto-btn",
+      "grupo": "usar",
+      "lugar": "casco",
+      "orden": 54,
+      "etiqueta": "Mostrarle la foto a Alejo",
+      "intencion": "Le muestro la fotografía a Alejo",
+      "visible": {
+        "op": "lleva",
+        "item": "it-foto"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "la mira más tiempo del que hacía falta"
+      }
+    },
+    {
+      "id": "ver-libros",
+      "grupo": "observar",
+      "lugar": "escritorio",
+      "orden": 10,
+      "etiqueta": "Revisar los libros de cuentas",
+      "intencion": "Reviso los libros de cuentas de la administración"
+    },
+    {
+      "id": "buscar-partida-btn",
+      "grupo": "observar",
+      "lugar": "capilla",
+      "orden": 20,
+      "etiqueta": "Buscar la partida de bautismo de Alejo",
+      "intencion": "Busco la partida de bautismo de Alejo en el registro"
+    },
+    {
+      "id": "ver-tumba-anastasio",
+      "grupo": "observar",
+      "lugar": "cementerio",
+      "orden": 30,
+      "etiqueta": "Mirar la tumba de Anastasio",
+      "intencion": "Examino la tumba de Anastasio de cerca"
+    },
+    {
+      "id": "ver-tumba-padres",
+      "grupo": "observar",
+      "lugar": "cementerio",
+      "orden": 31,
+      "etiqueta": "Mirar la tumba de los padres de Alejo",
+      "intencion": "Examino la tumba de los padres de Alejo de cerca"
+    },
+    {
+      "id": "fin-avalar-btn",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "etiqueta": "Avalar que es Alejo y firmar",
+      "intencion": "Avalo que es Alejo y certifico su identidad",
+      "visible": {
+        "op": "pistas",
+        "minimo": 4
+      }
+    },
+    {
+      "id": "fin-desmentir-btn",
+      "grupo": "decidir",
+      "orden": 91,
+      "final": true,
+      "etiqueta": "Declarar que no es Alejo",
+      "intencion": "Desmiento que sea Alejo",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pistas",
+            "minimo": 4
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "cicatriz"
+              },
+              {
+                "op": "pista",
+                "contiene": "agarra todo con la derecha"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-quemar-btn",
+      "grupo": "decidir",
+      "lugar": "casco",
+      "orden": 92,
+      "final": true,
+      "etiqueta": "Quemar la carta y la foto",
+      "intencion": "Quemo la carta y la foto para que nadie tenga con qué probar nada",
+      "visible": {
+        "op": "documento",
+        "id": "doc-carta"
+      }
+    },
+    {
+      "id": "fin-irse-btn",
+      "grupo": "decidir",
+      "orden": 93,
+      "final": true,
+      "etiqueta": "Irte de Los Cardales sin decidir",
+      "intencion": "Me voy de Los Cardales sin decidir",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      }
+    },
+    {
+      "id": "fin-preguntar-btn",
+      "grupo": "decidir",
+      "lugar": "casco",
+      "orden": 94,
+      "final": true,
+      "etiqueta": "Mirarlo a los ojos y preguntarle quién es de verdad",
+      "intencion": "Lo miro a los ojos y le pregunto quién es de verdad",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "Imposible que los tres cuenten lo mismo"
+              },
+              {
+                "op": "pista",
+                "contiene": "dos figuras"
+              }
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "exposicion",
+                "minimo": 20
+              },
+              {
+                "op": "pista",
+                "contiene": "cicatriz"
+              },
+              {
+                "op": "pista",
+                "contiene": "agarra todo con la derecha"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "avalar",
+      "title": "Lo que se avala",
+      "condition": "El investigador certifica la identidad de Alejo, sin poder probarla del todo."
+    },
+    {
+      "id": "desmentir",
+      "title": "Lo que se desmiente",
+      "condition": "El investigador declara que no es Alejo, con evidencia real pero no concluyente."
+    },
+    {
+      "id": "quemar",
+      "title": "Lo que se quema",
+      "condition": "El investigador destruye la única evidencia física, para que la pregunta quede sin poder resolverse nunca."
+    },
+    {
+      "id": "irse",
+      "title": "Lo que no se firma",
+      "condition": "El investigador se va sin decidir nada."
+    },
+    {
+      "id": "preguntar",
+      "title": "Lo que contesta",
+      "condition": "El investigador lo enfrenta directamente y obtiene una respuesta."
+    }
+  ],
+  "opening": "El escribano del pueblo {lo} manda a Los Cardales con un solo encargo: hay una herencia trabada porque el único heredero que aparece no tiene con qué probar quién es, y alguien tiene que reunir lo necesario para que un juez firme algo. No hay partida de nacimiento a mano, no hay testamento, y el hombre que dice llamarse Alejo Ferreyra lleva once días en la estancia sin que nadie se ponga de acuerdo en nada, salvo en que hace falta que alguien de afuera venga a mirar.\n\nLos Cardales es un casco de material con galería, un escritorio de administración, un galpón, y —a media legua, cruzando el campo— una capilla con un cementerio de familia detrás. {Lo} está esperando una mujer mayor en la galería, sentada, con las manos quietas sobre la falda por primera vez en el día. Al lado, en la otra silla, un hombre de unos treinta años se pone de pie cuando {lo} ve llegar.\n\n—Así que usted viene a decidir si soy quien digo ser —dice, sin que se lo hayan preguntado todavía."
+}

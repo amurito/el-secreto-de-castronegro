@@ -129,6 +129,13 @@ export interface EfectoEscena {
   };
   /** Cierra la aventura. */
   desenlace?: { id: string; title: string; text: string };
+  /**
+   * Algo que nota QUIEN JUEGA, no el investigador. No aparece en su ficha ni
+   * en su tablero de conocimiento; la interfaz lo muestra aparte. Sirve para
+   * la distancia entre lo que el lector arma leyendo y lo que el personaje
+   * todavía no puede aceptar — ver `toolNotePlayerKnowledge` en `engine.ts`.
+   */
+  jugadorNota?: { statement: string; source: string; reliability?: 'reliable' | 'unreliable' | 'false' | 'unknown' };
 }
 
 export interface ContextoEscena {

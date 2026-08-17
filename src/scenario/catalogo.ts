@@ -18,6 +18,7 @@
 import type { Scenario } from './types.ts';
 import { AGUA_QUIETA } from './aguaquieta.ts';
 import { LA_LEGUA } from './legua.ts';
+import { TERCER_UMBRAL } from './tercerumbral.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -46,6 +47,15 @@ const ENTRADAS: EntradaCatalogo[] = [
     // No es un requisito duro: se puede jugar sola. Pero Elena llega distinta
     // si ya vio el aljibe, y algunas cosas se leen de otra manera.
     requiere: ['agua-quieta'],
+  },
+  {
+    scenario: TERCER_UMBRAL,
+    cuando: '1925-08-14',
+    epoca: 'Agosto de 1925 · estancia Los Cardales',
+    duracion: 'Una hora aproximadamente',
+    // Tampoco es requisito duro: es historia paralela a La Legua, mismo
+    // lustro, sin personajes en común salvo el investigador encadenado.
+    requiere: ['legua-perdida'],
   },
 ];
 

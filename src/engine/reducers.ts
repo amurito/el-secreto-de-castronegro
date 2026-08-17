@@ -296,6 +296,26 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'PLAYER_KNOWLEDGE_NOTED': {
+      // Va a `playerObserved`, NUNCA a `knowledge.investigator`: es lo que
+      // nota QUIEN LEE, no lo que su investigador tiene registrado. La
+      // distinción es el mecanismo entero — ver `toolNotePlayerKnowledge`.
+      const p = ev.payload as {
+        investigatorId: string; id: string; statement: string; source: string;
+        reliability: 'reliable' | 'unreliable' | 'false' | 'unknown';
+      };
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      inv.knowledge = {
+        ...inv.knowledge,
+        playerObserved: [
+          ...inv.knowledge.playerObserved,
+          { id: p.id, statement: p.statement, acquiredAt: ev.id, source: p.source, reliability: p.reliability },
+        ],
+      };
+      break;
+    }
+
     case 'FACT_ESTABLISHED': {
       const p = ev.payload as { fact: Fact };
       s.board.facts.push(p.fact);

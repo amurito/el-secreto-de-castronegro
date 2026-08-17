@@ -521,6 +521,17 @@ export function App() {
             ))}
           </div>
         )}
+        {/* Aparte, y a propósito distinto de la ficha: esto no es lo que el
+            investigador sabe, es lo que USTED —quien lee— nota. El
+            investigador no da señales de haberlo entendido. */}
+        {inv?.playerKnowledge?.length > 0 && (
+          <div className="aparte">
+            <div className="aparte-title">Usted lo nota. Su investigador, todavía no.</div>
+            {inv.playerKnowledge.map((k: string, i: number) => (
+              <div key={i} className="aparte-item">{k}</div>
+            ))}
+          </div>
+        )}
       </aside>
 
       {/* Sólo en móvil: el CSS la esconde en pantalla grande. */}

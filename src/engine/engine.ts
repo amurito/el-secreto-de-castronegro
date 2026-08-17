@@ -668,6 +668,7 @@ export class Turn {
         case 'add_clue': return this.toolAddClue(raw);
         case 'note_contradiction': return this.toolNoteContradiction(raw);
         case 'raise_question': return this.toolRaiseQuestion(raw);
+        case 'note_player_knowledge': return this.toolNotePlayerKnowledge(raw);
         case 'propose_fact': return this.toolProposeFact(raw);
         case 'create_npc': return this.toolCreateNpc(raw);
         case 'change_npc_state': return this.toolChangeNpcState(raw);
@@ -1146,6 +1147,43 @@ export class Turn {
     }
     this.emit('QUESTION_RAISED', { id: id(), question });
     return { ok: true, message: 'Pregunta abierta agregada.' };
+  }
+
+  /**
+   * `knowledge.playerObserved` estaba en el tipo desde el principio del
+   * proyecto y nada escribía ahí — ni siquiera `knowledge.investigator` tiene
+   * una herramienta que lo llene durante la partida; sólo se llena al
+   * heredar entre aventuras. Esta es la primera herramienta que escribe acá,
+   * y a propósito NO toca `knowledge.investigator`: la distancia entre lo que
+   * el jugador nota y lo que su investigador tiene registrado ES el
+   * mecanismo, no un detalle de implementación.
+   *
+   * `sanitize.ts` lo manda al cliente por separado, en su propio lugar de la
+   * interfaz — nunca mezclado con el conocimiento oficial del investigador—.
+   * Y no cruza al Keeper IA (ver el comentario en `shared/types.ts`): un
+   * Keeper que supiera lo que el jugador nota podría narrar en consecuencia,
+   * y ahí el meta-horror deja de ser del jugador y pasa a ser del modelo.
+   */
+  private toolNotePlayerKnowledge(raw: Record<string, unknown>): ToolOutcome {
+    const statement = String(raw.statement ?? '').trim();
+    if (!statement) return this.reject('note_player_knowledge', raw, 'Falta `statement`.');
+    const source = String(raw.source ?? '').trim();
+    const reliability = String(raw.reliability ?? 'unknown') as
+      'reliable' | 'unreliable' | 'false' | 'unknown';
+    const inv = this.investigator;
+
+    if (inv.knowledge.playerObserved.some((k) => k.statement === statement)) {
+      return { ok: true, message: 'Eso ya lo había notado.' };
+    }
+    this.emit('PLAYER_KNOWLEDGE_NOTED', {
+      investigatorId: inv.id, id: id(), statement, source, reliability,
+    });
+    return {
+      ok: true,
+      message:
+        'Anotado para quien juega, NO para el investigador: esto no aparece en su ficha ni en su ' +
+        'conocimiento oficial. Narrá la escena sin que el investigador dé señales de haberlo entendido.',
+    };
   }
 
   private toolProposeFact(raw: Record<string, unknown>): ToolOutcome {
