@@ -349,12 +349,52 @@ coincide con lo conocido del sistema — no necesitó captura.
 
 Verificado por `prueba-creacion.ts`. No hay hoy una tabla genérica de pérdida
 de Cordura por tipo de horror —cada escena declara la suya— así que no hay
-nada que verificar ahí todavía. Lo que sí queda para cuando arranque combate
-—sistema nuevo, no existe nada hoy— son las tablas de daño de armas; las
-capturas ya recibidas (Combat Flow Chart, Table III: Other Forms of Damage)
-quedan de referencia para esa sesión.
+nada que verificar ahí todavía.
 
-### 4.4 Móvil ✔ HECHO
+La **Tabla XVII (armas)** también está verificada, en el subconjunto que el
+juego usa — ver 4.4.
+
+### 4.4 Combate — las reglas, sí; el asalto, todavía no
+
+**HECHO: las reglas puras y el catálogo.**
+
+- `rules/armas.ts` — quince armas, verificadas contra la Tabla XVII: lo que
+  hay en un galpón (palo, piedra, antorcha, rebenque), filos (navaja,
+  cuchillo de carnear, facón, hacha de mano, hacha de leña) y armas de fuego
+  cortas de época (Derringer .25, revólver .32 y .38, pistola .45). Los
+  nombres son nuestros —un «facón» no está en un manual en inglés, pero
+  mecánicamente es el cuchillo grande de esa tabla—; los números son del
+  manual.
+- `rules/combate.ts` — la tirada enfrentada del cap. 6: quién gana los
+  empates según el defensor esquive o devuelva el golpe, y el éxito extremo
+  (empalar suma una tirada entera encima del máximo; golpear sólo llega al
+  máximo), que sólo consigue quien inicia el ataque.
+- `engine/rng.ts` — dados de daño (D3 a D10) de la misma cadena verificable,
+  con etiqueta propia para que el daño no quede correlacionado con la tirada
+  que lo produjo, y con rechazo por muestreo porque acá el sesgo sí se
+  acumula.
+- Tres habilidades nuevas: Pelea, Armas de Fuego (pistola) y Lanzar. Antes el
+  motor podía aplicar daño y nadie podía tirar para causarlo.
+
+Lo verifica `prueba-combate.ts`, incluida la regla que más se olvida en la
+mesa: el defensor que contraataca y saca un extremo NO empala.
+
+**FALTA: el asalto jugado.** Los NPC no tienen puntos de vida, ni habilidad
+de pelea, ni turno. Sin eso hay reglas y armas pero no hay con quién pelear.
+Lo que viene, en orden:
+
+1. Estadísticas de combate en los NPC (PV, Pelea, Esquivar, arma).
+2. Una herramienta del motor que resuelva un ataque entero y aplique el daño
+   a quien corresponda.
+3. Orden de turno por DES y el resto del asalto (huir, maniobras).
+
+**No entra por ahora, a propósito:** escopetas y rifles largos, porque su
+daño depende del tramo de distancia y el motor no tiene distancias dentro de
+una escena; meterlas con un solo número sería inventar una regla. Y armas de
+guerra (Thompson, granadas, lanzacohetes), que no van a aparecer en una
+estancia bonaerense en 1925.
+
+### 4.5 Móvil ✔ HECHO
 
 Medido antes, en 375×812: la ficha ocupaba 325 píxeles arriba y **la narración
 —el juego— quedaba en 48.** Dos renglones. El media query que había apilaba las

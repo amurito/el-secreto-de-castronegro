@@ -63,6 +63,45 @@ export function dieValues(seedHex: string, index: number, count: number): {
 }
 
 /**
+ * Dados de daño de caras arbitrarias (D3, D4, D6, D8, D10), de la MISMA
+ * cadena verificable que las tiradas de habilidad.
+ *
+ * Va por una etiqueta propia (`damage:` en vez de `roll:`) para que los dos
+ * flujos no se pisen: el índice N de una tirada de habilidad y el índice N de
+ * un daño derivan de HMAC distintos. Sin eso, dos dados del mismo índice
+ * darían el mismo número, y el daño de un ataque estaría correlacionado con
+ * la tirada que lo produjo — un sesgo invisible y difícil de encontrar.
+ *
+ * Rechazo por muestreo: a diferencia de `dieValues`, acá el sesgo sí importa.
+ * Un D3 sacado de `byte % 3` favorece el 1 casi un 1% sobre el 3, y el daño
+ * se acumula tirada tras tirada. Se descartan los bytes de la cola que no
+ * entran en un múltiplo exacto de `caras`.
+ */
+export function damageDice(seedHex: string, index: number, caras: number, count: number): {
+  dice: number[];
+  hmac: string;
+} {
+  const hmac = toHex(hmacSha256(utf8(seedHex), utf8(`damage:${index}`)));
+  const buf = fromHex(hmac);
+  const limite = Math.floor(256 / caras) * caras;
+  const dice: number[] = [];
+  let i = 0;
+  while (dice.length < count) {
+    const b = buf[i % buf.length]!;
+    // Reetiquetar al agotar el buffer evita repetir la misma secuencia de
+    // bytes cuando un arma pide más dados de los que entran en un HMAC.
+    if (i > 0 && i % buf.length === 0) {
+      const extra = fromHex(toHex(hmacSha256(utf8(seedHex), utf8(`damage:${index}:${i}`))));
+      buf.set(extra.subarray(0, buf.length));
+    }
+    i++;
+    if (b >= limite) continue;
+    dice.push((b % caras) + 1);
+  }
+  return { dice, hmac };
+}
+
+/**
  * Aleatoriedad NO auditada, para cosas que no son tiradas de juego:
  * variación de texto, orden de opciones, selección de detalle ambiental.
  * Nunca usar esto para resolver una acción.

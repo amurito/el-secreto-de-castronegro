@@ -110,7 +110,12 @@ export function degreeFor(result: number, baseValue: number): SuccessDegree {
   return 'failure';
 }
 
-const DEGREE_RANK: Record<SuccessDegree, number> = {
+/**
+ * Orden de los grados, para compararlos entre sí. Lo usa la tirada enfrentada
+ * de combate («gana el nivel de éxito más alto»), que no es una comprobación
+ * contra una dificultad sino una comparación entre dos resultados.
+ */
+export const DEGREE_RANK: Record<SuccessDegree, number> = {
   fumble: -1,
   failure: 0,
   regular: 1,

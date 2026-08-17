@@ -65,9 +65,10 @@ try {
   node(TSX, ['src/prueba-cordura.ts']);
   node(TSX, ['src/prueba-fobias.ts']);
   node(TSX, ['src/prueba-permeabilidad.ts']);
+  node(TSX, ['src/prueba-combate.ts']);
   node(TSX, ['src/prueba-condiciones.ts']);
   node(TSX, ['src/prueba-carga-contenido.ts']);
-  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo, desacople, las tres aventuras, el encadenado, la creación, el criterio de tiradas, la auditoría de alcanzabilidad, el tratamiento, crítico/pifia, Cordura, fobias/manías, la presión de tiempo, el lenguaje de condiciones y la carga de contenido en verde');
+  console.log('      motor, acción libre, opciones, desenlaces, social, Umbral, desarrollo, desacople, las tres aventuras, el encadenado, la creación, el criterio de tiradas, la auditoría de alcanzabilidad, el tratamiento, crítico/pifia, Cordura, fobias/manías, la presión de tiempo, las reglas de combate, el lenguaje de condiciones y la carga de contenido en verde');
 
   paso(2, 'Construyendo…');
   if (existsSync(join(RAIZ, 'dist'))) rmSync(join(RAIZ, 'dist'), { recursive: true, force: true });

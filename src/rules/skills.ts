@@ -40,6 +40,12 @@ export const SKILLS: SkillDef[] = [
   { id: 'fotografia', label: 'Arte/Oficio (Fotografía)', defaultBase: 5, useWhen: 'Leer, fechar o interpretar una imagen fotográfica.' },
   { id: 'orientarse', label: 'Orientarse', defaultBase: 10, useWhen: 'Ubicarse en el espacio o reconstruir un recorrido.' },
   { id: 'esquivar', label: 'Esquivar', defaultBase: 0, useWhen: 'Evitar un golpe o un peligro inmediato.' },
+  // Combate. Esquivar ya estaba —se usa para más cosas que pelear— pero sin
+  // estas tres no había con qué atacar: el motor podía aplicar daño y nadie
+  // podía tirar para causarlo.
+  { id: 'pelea', label: 'Pelea', defaultBase: 25, useWhen: 'Golpear a alguien de cerca, con o sin algo en la mano.' },
+  { id: 'armas_fuego', label: 'Armas de Fuego (pistola)', defaultBase: 20, useWhen: 'Disparar un arma corta.' },
+  { id: 'arrojar', label: 'Lanzar', defaultBase: 20, useWhen: 'Tirar algo con puntería: una piedra, un cuchillo, un farol.' },
   { id: 'mitos', label: 'Mitos de Cthulhu', defaultBase: 0, useWhen: 'Reconocer lo que no debería poder reconocerse.' },
   // Crédito es una habilidad rara: no se tira para hacer algo, se tiene. Mide
   // de qué vive el investigador y qué puertas se le abren por eso. Entra acá
