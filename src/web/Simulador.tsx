@@ -12,7 +12,7 @@
 
 import React, { useEffect, useState } from 'react';
 import type { GameApi, AttackResult, Rival } from '../app/api.ts';
-import { ARMAS } from '../rules/armas.ts';
+import { ARMAS, ARMA_POR_ID } from '../rules/armas.ts';
 import { Sheet, RollCard } from './components.tsx';
 
 const NOTA_RIVAL: Record<string, string> = {
@@ -40,6 +40,10 @@ export function Simulador({
   const [registro, setRegistro] = useState<Array<{ mensaje: string; tiradas: any[]; ok: boolean }>>([]);
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [apuntando, setApuntando] = useState(false);
+  const [puntoBlanco, setPuntoBlanco] = useState(false);
+  const [cubierto, setCubierto] = useState(false);
+  const [blancoMovil, setBlancoMovil] = useState(false);
 
   useEffect(() => {
     api.estadoSimulador(campaignId)
@@ -52,13 +56,40 @@ export function Simulador({
     setRivales(r.rivales);
   }
 
+  function agregarAlRegistro(r: AttackResult) {
+    aplicar(r);
+    setRegistro((prev) => [{ mensaje: r.mensaje, tiradas: r.tiradas as any[], ok: r.ok }, ...prev]);
+  }
+
   async function atacar() {
     setOcupado(true);
     setError(null);
     try {
-      const r = await api.atacar(campaignId, rival, arma);
-      aplicar(r);
-      setRegistro((prev) => [{ mensaje: r.mensaje, tiradas: r.tiradas as any[], ok: r.ok }, ...prev]);
+      agregarAlRegistro(await api.atacar(campaignId, rival, arma, { apuntando, puntoBlanco, cubierto, blancoMovil }));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function huir() {
+    setOcupado(true);
+    setError(null);
+    try {
+      agregarAlRegistro(await api.huir(campaignId, arma));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function maniobra(tipo: 'desarmar' | 'derribar' | 'sujetar') {
+    setOcupado(true);
+    setError(null);
+    try {
+      agregarAlRegistro(await api.maniobra(campaignId, rival, tipo));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -120,6 +151,26 @@ export function Simulador({
               {ARMAS.find((a) => a.id === arma)?.aporteBonificacion === 'ninguna'
                 && ' No suma corpulencia: las armas de fuego nunca la suman.'}
             </div>
+            {ARMA_POR_ID[arma]?.habilidad === 'armas_fuego' && (
+              <div className="sim-fuego">
+                <label className="sim-check">
+                  <input type="checkbox" checked={apuntando} onChange={(e) => setApuntando(e.target.checked)} />
+                  Venía apuntando (bonificación)
+                </label>
+                <label className="sim-check">
+                  <input type="checkbox" checked={puntoBlanco} onChange={(e) => setPuntoBlanco(e.target.checked)} />
+                  A quemarropa (bonificación)
+                </label>
+                <label className="sim-check">
+                  <input type="checkbox" checked={cubierto} onChange={(e) => setCubierto(e.target.checked)} />
+                  El blanco se cubre (penalización)
+                </label>
+                <label className="sim-check">
+                  <input type="checkbox" checked={blancoMovil} onChange={(e) => setBlancoMovil(e.target.checked)} />
+                  El blanco se mueve rápido (penalización)
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="sim-campo">
@@ -137,6 +188,11 @@ export function Simulador({
                   <span className="sim-rival-hp">
                     {r.hp <= 0 ? 'en el piso' : `${r.hp}/${r.maxHp} PV`}
                   </span>
+                  {(r.derribado || r.agarrado) && (
+                    <span className="sim-rival-marca">
+                      {r.derribado ? 'derribado' : ''}{r.derribado && r.agarrado ? ' · ' : ''}{r.agarrado ? 'sujeto' : ''}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -152,8 +208,24 @@ export function Simulador({
           >
             {ocupado ? 'Tirando…' : 'Atacar'}
           </button>
+          <button className="ghost" onClick={huir} disabled={ocupado || !investigadorEnPie}>
+            Huir
+          </button>
           <button className="ghost" onClick={reiniciar} disabled={ocupado}>
             Reiniciar el galpón
+          </button>
+        </div>
+
+        <div className="sim-maniobras">
+          <span className="sim-maniobras-label">Maniobras contra {elegido?.name ?? 'el rival elegido'}:</span>
+          <button className="ghost" onClick={() => maniobra('desarmar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+            Desarmar
+          </button>
+          <button className="ghost" onClick={() => maniobra('derribar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+            Derribar
+          </button>
+          <button className="ghost" onClick={() => maniobra('sujetar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+            Sujetar
           </button>
         </div>
 

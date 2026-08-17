@@ -281,7 +281,16 @@ export interface RingBond {
 export interface Investigator {
   id: InvestigatorId;
   playerId: PlayerId | null;
-  status: 'alive' | 'dead' | 'missing' | 'insane' | 'retired';
+  /**
+   * `unconscious` es de la Herida Grave (p. 119): perder la mitad o más de
+   * los PV máximos DE UN GOLPE obliga a tirar CON o desmayarse, aunque
+   * queden PV. No es lo mismo que `dead`: es temporario, y el juego hoy no
+   * tiene una herramienta de reanimar — igual que llegar a 0 PV, que
+   * tampoco la tenía antes de esto. Bloquea acciones por el mismo camino
+   * que ya bloqueaba `dead`/`insane`: todo lo que compara `status !==
+   * 'alive'` ya lo respeta sin cambios.
+   */
+  status: 'alive' | 'dead' | 'missing' | 'insane' | 'retired' | 'unconscious';
 
   name: string;
   age: number;
@@ -628,6 +637,28 @@ export interface CombateNpc {
    * escapar, no de quien quiere ganar.
    */
   defensaPorDefecto: 'esquiva' | 'contraataca';
+  /**
+   * Destreza, 0-100. Sólo decide el orden de un asalto con más de dos
+   * peleando: quién actúa antes de que el investigador termine su propio
+   * ataque, y quién actúa después. Opcional porque un rival solo —el caso de
+   * casi toda esta aventura— no necesita orden de nada.
+   */
+  dex?: number;
+  /**
+   * Corpulencia (Build), para las maniobras (desarmar, derribar, sujetar):
+   * el manual compara Build contra Build para decidir si la maniobra es
+   * posible y con qué dados. Sin esto se asume 0 (un tamaño medio).
+   */
+  build?: number;
+  /**
+   * Marcas de UN SOLO USO que deja una maniobra y que consume el próximo
+   * ataque que corresponda. `derribado` da un dado de bonificación a quien
+   * lo ataque después; `agarrado` da un dado de penalización a sus propios
+   * ataques. Se limpian solas al consumirse — no son un estado permanente,
+   * son «esto vale hasta la próxima tirada».
+   */
+  derribado?: boolean;
+  agarrado?: boolean;
 }
 
 export type NpcSeed =

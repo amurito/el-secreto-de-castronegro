@@ -71,18 +71,59 @@ export const KEEPER_TOOLS: ToolDef[] = [
     description:
       'Resuelve un asalto entero contra un personaje que puede pelear: tira por el investigador, ' +
       'tira por el que se defiende, compara los dos resultados y aplica el daño a quien corresponda. ' +
-      'Es UNA herramienta y no tres a propósito: una tirada enfrentada que se pueda pedir a pedazos ' +
-      'es una tirada que se puede abandonar cuando el primer dado sale mal. Si el personaje no tiene ' +
-      'estadísticas de combate, el motor lo rechaza: esa pelea no está contemplada y no hay que ' +
-      'inventarle puntos de vida.',
+      'Si hay MÁS de un rival presente con estadísticas de combate, también actúan este mismo asalto, ' +
+      'en el orden que les toque por Destreza — los más rápidos que el investigador antes del golpe ' +
+      'declarado, los más lentos después. Es UNA herramienta y no tres a propósito: una tirada ' +
+      'enfrentada que se pueda pedir a pedazos es una que se puede abandonar cuando el primer dado ' +
+      'sale mal. Si el personaje no tiene estadísticas de combate, el motor lo rechaza: esa pelea no ' +
+      'está contemplada y no hay que inventarle puntos de vida.',
     input_schema: {
       type: 'object',
       properties: {
         npc_id: str('Id del personaje al que se ataca.'),
         weapon_id: str('Id del arma que usa el investigador. Sin esto, pelea a mano limpia.'),
         reason: str('Qué está intentando hacer, en una frase.'),
+        apuntando: enumOf(['true', 'false'], 'Sólo con arma de fuego: pasó el turno anterior apuntando. Da un dado de bonificación.'),
+        punto_blanco: enumOf(['true', 'false'], 'Sólo con arma de fuego: dispara a quemarropa. Da un dado de bonificación.'),
+        cubierto: enumOf(['true', 'false'], 'Sólo con arma de fuego: el blanco está parcialmente cubierto. Da un dado de penalización.'),
+        blanco_movil: enumOf(['true', 'false'], 'Sólo con arma de fuego: el blanco se mueve rápido. Da un dado de penalización.'),
       },
       required: ['npc_id'],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'resolve_flee',
+    description:
+      'Sale de una pelea a mitad de asalto. Cuesta el turno entero —no se ataca— y cada rival ' +
+      'presente que todavía pueda pelear se lleva un golpe de oportunidad con ventaja, porque quien ' +
+      'huye no se está defendiendo. Puede fallar: si el golpe de oportunidad tumba al investigador, ' +
+      'no llega a irse.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        weapon_id: str('Con qué se defiende el investigador si algún rival lo alcanza al huir. Sin esto, a mano limpia.'),
+      },
+      required: [],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'resolve_maneuver',
+    description:
+      'Una maniobra de combate contra alguien que puede pelear: desarmar, derribar o sujetar. Se ' +
+      'resuelve como un Contraataque —Pelea contra Pelea— pero si gana la maniobra, en vez de daño ' +
+      'aplica su efecto (le vuela el arma, lo tira al piso, lo sujeta). Si pierde, el otro conecta un ' +
+      'golpe normal, con su arma. La Corpulencia de los dos decide si es posible: con 3 puntos o más ' +
+      'de diferencia en contra, ni se ofrece como opción.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        npc_id: str('Id del personaje al que se le hace la maniobra.'),
+        type: enumOf(['desarmar', 'derribar', 'sujetar'], 'Qué maniobra.'),
+        reason: str('Qué está intentando hacer, en una frase.'),
+      },
+      required: ['npc_id', 'type'],
       additionalProperties: false,
     },
   },

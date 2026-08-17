@@ -66,6 +66,8 @@ export type GameEventType =
   | 'NPC_CREATED'
   | 'NPC_STATE_CHANGED'
   | 'NPC_DAMAGED'
+  | 'NPC_COMBATE_CHANGED'
+  | 'INVESTIGATOR_UNCONSCIOUS'
   | 'RELATIONSHIP_CHANGED'
   | 'DOCUMENT_OBTAINED'
   | 'LOCATION_ENTERED'
@@ -232,6 +234,19 @@ export interface NpcDamagedPayload {
   cause: string;
   /** El golpe llegó a la mitad de sus PV de una vez: herida grave. */
   heridaGrave: boolean;
+}
+
+/** Cambios directos a las estadísticas de combate: desarmar, derribar, sujetar. */
+export interface NpcCombateChangedPayload {
+  npcId: NpcId;
+  changes: Partial<Pick<import('./types.ts').CombateNpc, 'armaId' | 'derribado' | 'agarrado'>>;
+  cause: string;
+}
+
+/** Herida Grave (p. 119): pérdida de 5+ o mitad de los PV máximos de un golpe. */
+export interface InvestigatorUnconsciousPayload {
+  investigatorId: InvestigatorId;
+  cause: string;
 }
 
 export interface DocumentObtainedPayload {

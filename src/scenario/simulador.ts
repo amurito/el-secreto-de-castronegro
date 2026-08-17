@@ -69,19 +69,19 @@ export const SIMULADOR: Scenario = {
     rival('npc-debil', 'Un muchacho asustado',
       'Flaco, joven, y evidentemente preferiría estar en cualquier otro lado. Trata de zafar, no de pelear.',
       {
-        hp: 6, maxHp: 6, pelea: 15, esquivar: 30,
+        hp: 6, maxHp: 6, pelea: 15, esquivar: 30, dex: 65, build: -1,
         armaId: 'palo-chico', bonificacionDano: '0', defensaPorDefecto: 'esquiva',
       }),
     rival('npc-normal', 'Un hombre grande',
       'Ancho de espaldas, con un palo en la mano y la cara de quien ya hizo esto otras veces.',
       {
-        hp: 12, maxHp: 12, pelea: 50, esquivar: 25,
+        hp: 12, maxHp: 12, pelea: 50, esquivar: 25, dex: 45, build: 1,
         armaId: 'palo-grande', bonificacionDano: '+1D4', defensaPorDefecto: 'contraataca',
       }),
     rival('npc-fuerte', 'Un hombre con un cuchillo',
       'No es más grande que el otro. Se para distinto, y tiene un facón que no es para carnear.',
       {
-        hp: 15, maxHp: 15, pelea: 75, esquivar: 40,
+        hp: 15, maxHp: 15, pelea: 75, esquivar: 40, dex: 70, build: 0,
         armaId: 'facon', bonificacionDano: '+1D4', defensaPorDefecto: 'contraataca',
       }),
   ],

@@ -87,7 +87,11 @@ export interface GameApi {
    * porque el simulador no narra: muestra los dados y los números crudos, que
    * es lo único que sirve para decidir si las reglas se sienten bien.
    */
-  atacar(id: string, npcId: string, armaId: string): Promise<AttackResult>;
+  atacar(id: string, npcId: string, armaId: string, mods?: ModsDeFuego): Promise<AttackResult>;
+  /** Salir de la pelea a mitad de asalto: cada rival en pie se lleva un golpe de oportunidad. */
+  huir(id: string, armaId: string): Promise<AttackResult>;
+  /** Una maniobra contra alguien que puede pelear: desarmar, derribar, sujetar. */
+  maniobra(id: string, npcId: string, tipo: 'desarmar' | 'derribar' | 'sujetar'): Promise<AttackResult>;
   /**
    * Deja el galpón como estaba: rivales enteros, investigador curado.
    *
@@ -103,6 +107,15 @@ export interface GameApi {
 
 export interface Rival {
   id: string; name: string; hp: number; maxHp: number; arma: string;
+  derribado?: boolean; agarrado?: boolean;
+}
+
+/** Sólo importan con arma de fuego; el motor los ignora en cuerpo a cuerpo. */
+export interface ModsDeFuego {
+  apuntando?: boolean;
+  puntoBlanco?: boolean;
+  cubierto?: boolean;
+  blancoMovil?: boolean;
 }
 
 export interface AttackResult {

@@ -54,6 +54,7 @@ const rivalesDe = (state: GameState) =>
       id: n.id, name: n.name,
       hp: n.combate!.hp, maxHp: n.combate!.maxHp,
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
+      derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
     }));
 const BRIEFINGS = { 'agua-quieta': AGUA_QUIETA_KEEPER };
 const app = Fastify({ logger: false });
@@ -189,13 +190,21 @@ app.get<{ Params: { id: string } }>('/api/campaigns/:id/auditoria', async (req) 
 });
 
 /** Un asalto del simulador. Sin narración: dados y números crudos. */
-app.post<{ Params: { id: string }; Body: { npcId: string; armaId: string } }>(
+app.post<{
+  Params: { id: string };
+  Body: { npcId: string; armaId: string; mods?: { apuntando?: boolean; puntoBlanco?: boolean; cubierto?: boolean; blancoMovil?: boolean } };
+}>(
   '/api/campaigns/:id/atacar',
   async (req) => {
     const turn = await Turn.open(req.params.id);
     const antes = turn.state.rolls.length;
+    const m = req.body.mods;
     const r = turn.executeTool('resolve_attack', {
       npc_id: req.body.npcId, weapon_id: req.body.armaId,
+      apuntando: String(Boolean(m?.apuntando)),
+      punto_blanco: String(Boolean(m?.puntoBlanco)),
+      cubierto: String(Boolean(m?.cubierto)),
+      blanco_movil: String(Boolean(m?.blancoMovil)),
     });
     await turn.commit();
     const { state } = await loadState(req.params.id);
@@ -204,6 +213,38 @@ app.post<{ Params: { id: string }; Body: { npcId: string; armaId: string } }>(
       state: sanitizeForClient(state),
       tiradas: state.rolls.slice(antes).map(toClientRoll),
       rivales: rivalesDe(state),
+    };
+  },
+);
+
+/** Salir de una pelea a mitad de asalto. */
+app.post<{ Params: { id: string }; Body: { armaId: string } }>(
+  '/api/campaigns/:id/huir',
+  async (req) => {
+    const turn = await Turn.open(req.params.id);
+    const antes = turn.state.rolls.length;
+    const r = turn.executeTool('resolve_flee', { weapon_id: req.body.armaId });
+    await turn.commit();
+    const { state } = await loadState(req.params.id);
+    return {
+      ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+      tiradas: state.rolls.slice(antes).map(toClientRoll), rivales: rivalesDe(state),
+    };
+  },
+);
+
+/** Desarmar, derribar o sujetar. */
+app.post<{ Params: { id: string }; Body: { npcId: string; tipo: string } }>(
+  '/api/campaigns/:id/maniobra',
+  async (req) => {
+    const turn = await Turn.open(req.params.id);
+    const antes = turn.state.rolls.length;
+    const r = turn.executeTool('resolve_maneuver', { npc_id: req.body.npcId, type: req.body.tipo });
+    await turn.commit();
+    const { state } = await loadState(req.params.id);
+    return {
+      ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+      tiradas: state.rolls.slice(antes).map(toClientRoll), rivales: rivalesDe(state),
     };
   },
 );

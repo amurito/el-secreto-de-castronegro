@@ -406,19 +406,53 @@ mesa: el defensor que contraataca y saca un extremo NO empala.
 
 Ninguna de las tres aventuras publicadas tiene todavía un personaje con
 estadísticas de combate — ninguna es una aventura de pelear. El sistema se
-verifica con un rival armado dentro de `prueba-combate.ts`, igual que
+verifica con rivales armados dentro de `prueba-combate.ts`, igual que
 `prueba-desacople.ts` arma «El campanario» para probar el motor sin tocar el
-contenido real.
+contenido real, y con un **simulador jugable en el navegador**
+(`scenario/simulador.ts` + `web/Simulador.tsx`): un galpón sin historia, con
+tres rivales de dificultad creciente, para probar las reglas con las manos
+antes de meterlas en una aventura de verdad.
 
-**FALTA:** orden de turno por DES cuando hay más de dos, huir a mitad de
-asalto, maniobras (desarmar, derribar, sujetar) y los modificadores de armas
-de fuego (cubrirse, apuntar, punto blanco, blanco en movimiento).
+**HECHO TAMBIÉN: orden de turno, huir, maniobras y modificadores de fuego.**
+
+- **Herida Grave** (p. 119, no estaba pedida pero es la mitad de la pregunta
+  «¿perder mucha vida en un turno no debería penalizar?»): perder la mitad o
+  más de los PV MÁXIMOS de un solo golpe obliga a tirar CON, aunque no se
+  llegue a 0. Si falla, `status: 'unconscious'` —estado nuevo, bloquea
+  acciones por el mismo camino que ya bloqueaba `dead`/`insane`— con PV por
+  encima de 0: no es lo mismo que quedar fuera por daño acumulado, es un
+  golpe que aturde de una sola vez.
+- **Orden de asalto por DES** (`CombateNpc.dex`, opcional): con más de dos
+  peleando, cualquier otro presente con estadísticas de combate también
+  actúa ese asalto — los más rápidos que el investigador ANTES del golpe
+  declarado (pueden interrumpirlo), los más lentos DESPUÉS. Enfrentar a más
+  de uno es de verdad más peligroso, no sólo una etiqueta.
+- **`resolve_flee`** — salir de una pelea cuesta el turno entero y cada rival
+  en pie se lleva un golpe de oportunidad con ventaja, porque quien huye no
+  se está defendiendo. Puede fallar: si el golpe de oportunidad tumba al
+  investigador, no llega a irse.
+- **`resolve_maneuver`** — desarmar, derribar, sujetar. Se resuelve como un
+  Contraataque (Pelea contra Pelea): si gana la maniobra, aplica su efecto
+  en vez de daño; si pierde, el otro conecta un golpe normal. La Corpulencia
+  de los dos decide si es posible antes de tirar nada —3 puntos o más de
+  diferencia en contra, imposible—. Derribar y sujetar dejan una marca de
+  UN SOLO USO (`derribado`/`agarrado`) que se gasta con la próxima tirada
+  que corresponda.
+- **Modificadores de armas de fuego** (`apuntando`, `punto_blanco`,
+  `cubierto`, `blanco_movil`) — sólo aplican con `armas_fuego`; en cuerpo a
+  cuerpo el motor los ignora aunque se los pasen. «Apuntando» confía en que
+  se declaró el turno anterior: no hay un estado de «desde cuándo apunta»,
+  simplificación conocida.
+
+Todo verificado por `prueba-combate.ts` y probado a mano en el simulador del
+navegador antes de darlo por bueno.
 
 **No entra por ahora, a propósito:** escopetas y rifles largos, porque su
 daño depende del tramo de distancia y el motor no tiene distancias dentro de
-una escena; meterlas con un solo número sería inventar una regla. Y armas de
+una escena; meterlas con un solo número sería inventar una regla. Armas de
 guerra (Thompson, granadas, lanzacohetes), que no van a aparecer en una
-estancia bonaerense en 1925.
+estancia bonaerense en 1925. Y una herramienta de reanimar a un inconsciente
+—hoy no existe ninguna, ni para Herida Grave ni para llegar a 0 PV—.
 
 ### 4.5 Móvil ✔ HECHO
 

@@ -42,6 +42,7 @@ const rivalesDe = (state: GameState) =>
       id: n.id, name: n.name,
       hp: n.combate!.hp, maxHp: n.combate!.maxHp,
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
+      derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
     }));
 
 /** Un turno por vez, igual que el lock del servidor. */
@@ -216,13 +217,19 @@ export function createLocalApi(): GameApi {
       await store().deleteCampaign(id);
     },
 
-    async atacar(id, npcId, armaId) {
+    async atacar(id, npcId, armaId, mods) {
       if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
       enCurso.add(id);
       try {
         const turn = await Turn.open(id);
         const antes = turn.state.rolls.length;
-        const r = turn.executeTool('resolve_attack', { npc_id: npcId, weapon_id: armaId });
+        const r = turn.executeTool('resolve_attack', {
+          npc_id: npcId, weapon_id: armaId,
+          apuntando: String(Boolean(mods?.apuntando)),
+          punto_blanco: String(Boolean(mods?.puntoBlanco)),
+          cubierto: String(Boolean(mods?.cubierto)),
+          blanco_movil: String(Boolean(mods?.blancoMovil)),
+        });
         await turn.commit();
         const { state } = await loadState(id);
         return {
@@ -231,6 +238,42 @@ export function createLocalApi(): GameApi {
           state: sanitizeForClient(state),
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           rivales: rivalesDe(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async huir(id, armaId) {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('resolve_flee', { weapon_id: armaId });
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll), rivales: rivalesDe(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async maniobra(id, npcId, tipo) {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('resolve_maneuver', { npc_id: npcId, type: tipo });
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll), rivales: rivalesDe(state),
         };
       } finally {
         enCurso.delete(id);

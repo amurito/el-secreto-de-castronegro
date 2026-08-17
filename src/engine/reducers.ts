@@ -454,6 +454,22 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'INVESTIGATOR_UNCONSCIOUS': {
+      const p = ev.payload as P.InvestigatorUnconsciousPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (inv) inv.status = 'unconscious';
+      s.narrative.push(entry(ev, 'system', `${inv?.name ?? 'El investigador'} pierde el conocimiento. ${p.cause}`));
+      break;
+    }
+
+    case 'NPC_COMBATE_CHANGED': {
+      const p = ev.payload as P.NpcCombateChangedPayload;
+      const npc = s.npcs[p.npcId];
+      if (!npc?.combate) break;
+      s.npcs[p.npcId] = { ...npc, combate: { ...npc.combate, ...p.changes } };
+      break;
+    }
+
     case 'INVESTIGATOR_INTRODUCED': {
       const p = ev.payload as P.InvestigatorIntroducedPayload;
       s.activeInvestigator = p.investigatorId;

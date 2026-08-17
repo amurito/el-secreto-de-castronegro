@@ -53,6 +53,25 @@ const MATON: NpcSeed = {
   },
 };
 
+/**
+ * Para las pruebas de maniobra: Elena (Pelea 25%) tiene que poder GANAR
+ * alguna vez dentro de un puñado de intentos. Contra MATON (Pelea 55%) se
+ * queda sin PV antes de lograrlo la mayoría de las veces —comprobado
+ * jugando—, así que las maniobras se prueban contra alguien más parejo.
+ */
+const MANIOBRABLE: NpcSeed = {
+  id: 'npc-flaco', name: 'Uno que no sabe pelear',
+  canon: { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' },
+  status: 'alive', description: 'x', motivation: 'x',
+  fears: [], refusals: [], knowledge: [], secrets: [], relationships: [],
+  attitude: {}, present: true, isCompanion: false, createdAt: 'inicio',
+  combate: {
+    hp: 10, maxHp: 10, pelea: 20, esquivar: 15,
+    armaId: 'navaja', bonificacionDano: '0',
+    defensaPorDefecto: 'contraataca',
+  },
+};
+
 async function main() {
   // ── La tirada enfrentada ─────────────────────────────────────────────────
   console.log('\nCONTRA QUIEN ESQUIVA: EL EMPATE LO GANA EL QUE ESQUIVA');
@@ -220,6 +239,11 @@ async function main() {
     id: 'prueba-combate',
     npcs: [...AGUA_QUIETA.npcs, MATON],
   };
+  const conManiobrable: Scenario = {
+    ...AGUA_QUIETA,
+    id: 'prueba-combate-maniobrable',
+    npcs: [...AGUA_QUIETA.npcs, MANIOBRABLE],
+  };
 
   console.log('\nEL MOTOR RECHAZA LO QUE NO ES UNA PELEA');
   {
@@ -256,15 +280,16 @@ async function main() {
     check('el asalto se resuelve', r.ok, r.message.split('\n')[0]);
     console.log(`  ${r.message.replace(/\n/g, '\n  ')}`);
 
-    check('tiró por los DOS: el que ataca y el que se defiende',
-      s.rolls.length === antesRolls + 2, `${s.rolls.length - antesRolls} tiradas`);
+    check('tiró por los DOS: el que ataca y el que se defiende (y quizás una CON de más, por herida grave)',
+      s.rolls.length >= antesRolls + 2, `${s.rolls.length - antesRolls} tiradas`);
     check('la tirada del rival quedó en el registro público, no escondida',
       s.rolls.some((x) => x.investigatorId === 'npc-maton'),
       s.rolls.map((x) => x.commitment.skillLabel).join(' | '));
-    check('las dos tiradas tienen prueba criptográfica',
-      s.rolls.slice(-2).every((x) => x.execution.proof.hmac.length === 64));
-    check('y usan índices distintos de la cadena',
-      s.rolls.at(-1)!.execution.proof.index !== s.rolls.at(-2)!.execution.proof.index);
+    check('todas las tiradas de este asalto tienen prueba criptográfica',
+      s.rolls.slice(antesRolls).every((x) => x.execution.proof.hmac.length === 64));
+    const indices = s.rolls.slice(antesRolls).map((x) => x.execution.proof.index);
+    check('y ninguna repite índice de la cadena',
+      new Set(indices).size === indices.length);
 
     const maton = s.npcs['npc-maton']!;
     const inv = s.investigators[s.activeInvestigator]!;
@@ -349,6 +374,230 @@ async function main() {
     const inv = s.investigators[s.activeInvestigator]!;
     check('un rival que devuelve el golpe termina lastimando a quien lo atacó',
       recibio, `investigadora ${inv.derived.hp}/${inv.derived.maxHp} PV`);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // LO QUE SIGUE: ORDEN POR DES, HUIR, MANIOBRAS, MODIFICADORES DE FUEGO
+  // ═══════════════════════════════════════════════════════════════════════
+
+  console.log('\nHERIDA GRAVE (p. 119): PERDER LA MITAD DE LOS PV DE UN GOLPE OBLIGA A TIRAR CON');
+  {
+    // Elena tiene 11 PV máximos; un golpe de 6 o más es Herida Grave sin
+    // llegar a 0. Se prueban varias semillas hasta ver las dos ramas: la
+    // CON que aguanta y la que no.
+    let vioConsciente = false, vioInconsciente = false;
+    for (const semilla of ['ga', 'gb', 'gc', 'gd', 'ge', 'gf', 'gg', 'gh']) {
+      const id = await createCampaign(AGUA_QUIETA, `HERIDA-${semilla}`, semilla.repeat(32));
+      const t = await Turn.open(id);
+      const r = t.executeTool('apply_damage', { amount: 6, cause: 'prueba' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      const inv = s.investigators[s.activeInvestigator]!;
+      check(`semilla ${semilla}: el mensaje nombra la Herida Grave`, /herida grave/i.test(r.message));
+      if (/sigue consciente/i.test(r.message)) {
+        vioConsciente = true;
+        check(`  · ${semilla}: la CON aguantó, el status sigue alive`, inv.status === 'alive');
+      }
+      if (/queda inconsciente/i.test(r.message)) {
+        vioInconsciente = true;
+        check(`  · ${semilla}: la CON falló, status pasa a unconscious`, inv.status === 'unconscious');
+        check(`  · ${semilla}: con hp > 0 —no es lo mismo que llegar a 0—`, inv.derived.hp > 0);
+        check(`  · ${semilla}: ya no puede pedir tiradas`,
+          !t.executeTool('request_roll', { skill: 'descubrir', difficulty: 'regular', reason: 'x' } as never).ok);
+      }
+    }
+    check('se vio la rama en la que la CON aguanta', vioConsciente);
+    check('se vio la rama en la que la CON falla', vioInconsciente);
+  }
+
+  console.log('\nORDEN DE ASALTO POR DES: CON MÁS DE DOS PELEANDO, TODOS ACTÚAN');
+  {
+    // Un rival lento (DES 20, bajo el de Elena) además del blanco declarado.
+    // Tiene que atacar TAMBIÉN este mismo asalto, después del intercambio
+    // principal — es la prueba de que «más de uno» es de verdad más
+    // peligroso, no sólo una etiqueta.
+    const conDos: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-dos',
+      npcs: [...AGUA_QUIETA.npcs, MATON, {
+        ...MATON, id: 'npc-lento', name: 'Otro, más atrás',
+        combate: { ...MATON.combate!, dex: 5, hp: 8, maxHp: 8 },
+      }],
+    };
+    const id = await createCampaign(conDos, 'COMBATE-DOS', 'k2'.repeat(32));
+    const t = await Turn.open(id);
+    const antes = t.state.rolls.length;
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('el asalto se resuelve', r.ok);
+    check('atacan los DOS rivales, no sólo el blanco: más de 4 tiradas',
+      s.rolls.length - antes > 4, `${s.rolls.length - antes} tiradas`);
+    check('el mensaje nombra al segundo rival también', r.message.includes('Otro, más atrás'));
+    check('el rival lento actúa DESPUÉS del intercambio con el blanco declarado',
+      r.message.indexOf('Un hombre en el portón') < r.message.indexOf('Otro, más atrás'));
+  }
+
+  console.log('\nORDEN DE ASALTO: UN RIVAL MÁS RÁPIDO ACTÚA ANTES DEL GOLPE DECLARADO');
+  {
+    const conRapido: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-rapido',
+      npcs: [...AGUA_QUIETA.npcs, MATON, {
+        ...MATON, id: 'npc-veloz', name: 'Uno rapidísimo',
+        combate: { ...MATON.combate!, dex: 99, hp: 8, maxHp: 8 },
+      }],
+    };
+    const id = await createCampaign(conRapido, 'COMBATE-RAPIDO', 'k3'.repeat(32));
+    const t = await Turn.open(id);
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+    await t.commit();
+    check('el más rápido que Elena actúa ANTES del intercambio declarado',
+      r.message.indexOf('Uno rapidísimo') < r.message.indexOf('Un hombre en el portón'));
+  }
+
+  console.log('\nHUIR A MITAD DE ASALTO');
+  {
+    const id = await createCampaign(conMaton, 'COMBATE-HUIR', 'k4'.repeat(32));
+    const t = await Turn.open(id);
+    const antes = t.state.rolls.length;
+    const r = t.executeTool('resolve_flee', { weapon_id: 'facon' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('huir tira al menos una vez: el golpe de oportunidad', s.rolls.length > antes);
+    check('el golpe de oportunidad lleva ventaja: dado de bonificación registrado',
+      s.rolls.slice(antes).some((x) => x.commitment.modifiers.some((m) => m.kind === 'bonus_die' && /espalda/.test(m.reason))));
+    check('el mensaje dice si logró irse o no', /logra salir|no llega a irse/.test(r.message));
+
+    // Sin nadie peleando, huir es gratis.
+    const idVacio = await createCampaign(AGUA_QUIETA, 'COMBATE-HUIR-VACIO', 'k5'.repeat(32));
+    const tVacio = await Turn.open(idVacio);
+    const antesVacio = tVacio.state.rolls.length;
+    const rVacio = tVacio.executeTool('resolve_flee', {});
+    check('sin nadie peleando, no hay golpe de oportunidad ni tirada', tVacio.state.rolls.length === antesVacio);
+    check('y lo dice', /no hay nadie peleando/i.test(rVacio.message));
+  }
+
+  console.log('\nMANIOBRAS: DESARMAR');
+  {
+    const id = await createCampaign(conManiobrable, 'MANIOBRA-DESARMAR', 'm1'.repeat(32));
+    let logrado = false;
+    for (let n = 0; n < 25 && !logrado; n++) {
+      const t = await Turn.open(id);
+      if (t.state.npcs['npc-flaco']!.combate!.armaId === 'desarmado') { logrado = true; break; }
+      if (t.investigator.derived.hp <= 0 || t.investigator.status !== 'alive') break;
+      t.executeTool('resolve_maneuver', { npc_id: 'npc-flaco', type: 'desarmar' });
+      await t.commit();
+      logrado = (await Turn.open(id)).state.npcs['npc-flaco']!.combate!.armaId === 'desarmado';
+    }
+    check('insistiendo, se lo puede desarmar', logrado);
+    if (logrado) {
+      const s = (await Turn.open(id)).state;
+      check('queda peleando a mano limpia', s.npcs['npc-flaco']!.combate!.armaId === 'desarmado');
+    }
+  }
+
+  console.log('\nMANIOBRAS: DERRIBAR DEJA VENTAJA PARA EL PRÓXIMO GOLPE, Y SE GASTA SOLA');
+  {
+    const id = await createCampaign(conManiobrable, 'MANIOBRA-DERRIBAR', 'm2'.repeat(32));
+    let logrado = false;
+    for (let n = 0; n < 25 && !logrado; n++) {
+      const t = await Turn.open(id);
+      if (t.state.npcs['npc-flaco']!.combate!.derribado) { logrado = true; break; }
+      if (t.investigator.derived.hp <= 0 || t.investigator.status !== 'alive') break;
+      t.executeTool('resolve_maneuver', { npc_id: 'npc-flaco', type: 'derribar' });
+      await t.commit();
+      logrado = (await Turn.open(id)).state.npcs['npc-flaco']!.combate!.derribado === true;
+    }
+    check('insistiendo, se lo puede derribar', logrado);
+    if (logrado) {
+      const t = await Turn.open(id);
+      const r = t.executeTool('resolve_attack', { npc_id: 'npc-flaco', weapon_id: 'facon' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      check('el siguiente ataque lleva la ventaja del derribo',
+        r.message.includes('está en el piso') || s.rolls.some((x) =>
+          x.commitment.modifiers.some((m) => /piso/.test(m.reason))));
+      check('y la marca se gasta: no queda derribado para siempre',
+        s.npcs['npc-flaco']!.combate!.derribado === false);
+    }
+  }
+
+  console.log('\nMANIOBRAS: SUJETAR PENALIZA SU PRÓXIMA TIRADA, Y SE GASTA SOLA');
+  {
+    const id = await createCampaign(conManiobrable, 'MANIOBRA-SUJETAR', 'm3'.repeat(32));
+    let logrado = false;
+    for (let n = 0; n < 25 && !logrado; n++) {
+      const t = await Turn.open(id);
+      if (t.state.npcs['npc-flaco']!.combate!.agarrado) { logrado = true; break; }
+      if (t.investigator.derived.hp <= 0 || t.investigator.status !== 'alive') break;
+      t.executeTool('resolve_maneuver', { npc_id: 'npc-flaco', type: 'sujetar' });
+      await t.commit();
+      logrado = (await Turn.open(id)).state.npcs['npc-flaco']!.combate!.agarrado === true;
+    }
+    check('insistiendo, se lo puede sujetar', logrado);
+    if (logrado) {
+      const t = await Turn.open(id);
+      t.executeTool('resolve_attack', { npc_id: 'npc-flaco', weapon_id: 'facon' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      check('la marca se gasta con la próxima tirada de defensa',
+        s.npcs['npc-flaco']!.combate!.agarrado === false);
+    }
+  }
+
+  console.log('\nMANIOBRAS: CON DEMASIADA DIFERENCIA DE CORPULENCIA, NI SE INTENTA');
+  {
+    const gigante: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-gigante',
+      npcs: [...AGUA_QUIETA.npcs, {
+        ...MATON, id: 'npc-gigante', combate: { ...MATON.combate!, build: 5 },
+      }],
+    };
+    const id = await createCampaign(gigante, 'MANIOBRA-IMPOSIBLE', 'm4'.repeat(32));
+    const t = await Turn.open(id);
+    const r = t.executeTool('resolve_maneuver', { npc_id: 'npc-gigante', type: 'derribar' });
+    check('se rechaza sin tirar nada', !r.ok);
+    check('explica por qué', /corpulencia|imposible/i.test(r.message));
+  }
+
+  console.log('\nMODIFICADORES DE ARMAS DE FUEGO');
+  {
+    const id = await createCampaign(conMaton, 'FUEGO-MODS', 'f1'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('resolve_attack', {
+      npc_id: 'npc-maton', weapon_id: 'revolver-38',
+      apuntando: 'true', punto_blanco: 'true',
+    });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    const tirAtaque = s.rolls.find((x) => x.investigatorId === s.activeInvestigator);
+    check('apuntar y tirar a quemarropa suman dados de bonificación',
+      (tirAtaque?.commitment.modifiers.find((m) => m.kind === 'bonus_die')?.count ?? 0) >= 2,
+      JSON.stringify(tirAtaque?.commitment.modifiers));
+
+    const id2 = await createCampaign(conMaton, 'FUEGO-MODS-2', 'f2'.repeat(32));
+    const t2 = await Turn.open(id2);
+    t2.executeTool('resolve_attack', {
+      npc_id: 'npc-maton', weapon_id: 'revolver-38',
+      cubierto: 'true', blanco_movil: 'true',
+    });
+    await t2.commit();
+    const s2 = (await Turn.open(id2)).state;
+    const tirAtaque2 = s2.rolls.find((x) => x.investigatorId === s2.activeInvestigator);
+    check('cubrirse y moverse suman dados de penalización',
+      (tirAtaque2?.commitment.modifiers.find((m) => m.kind === 'penalty_die')?.count ?? 0) >= 2,
+      JSON.stringify(tirAtaque2?.commitment.modifiers));
+
+    const id3 = await createCampaign(conMaton, 'FUEGO-MODS-MELEE', 'f3'.repeat(32));
+    const t3 = await Turn.open(id3);
+    t3.executeTool('resolve_attack', {
+      npc_id: 'npc-maton', weapon_id: 'facon', apuntando: 'true', punto_blanco: 'true',
+    });
+    await t3.commit();
+    const s3 = (await Turn.open(id3)).state;
+    const tirAtaque3 = s3.rolls.find((x) => x.investigatorId === s3.activeInvestigator);
+    check('cuerpo a cuerpo ignora los modificadores de arma de fuego, aunque se los pasen',
+      (tirAtaque3?.commitment.modifiers.length ?? 0) === 0,
+      JSON.stringify(tirAtaque3?.commitment.modifiers));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
