@@ -1,42 +1,32 @@
 /**
- * LAS ESCENAS DE LA LEGUA PERDIDA.
+ * LA LÓGICA DE LAS ESCENAS DE LA LEGUA PERDIDA — lo único que no puede ser dato.
  *
- * La aventura se juega con una herramienta: la rueda de agrimensor. Medir es el
- * verbo central, como mirar lo era en Agua Quieta.
+ * Todo lo demás vive en `la-legua-perdida.contenido.json`: lugares, objetos,
+ * NPC, documentos, temas de conversación, botones, desenlaces, y las
+ * condiciones de CUÁNDO responde cada escena.
  *
- * Y hay una escena que las otras aventuras no tienen: **cotejar los
- * testimonios**. Tres personas dicen tres cosas incompatibles y ninguna miente;
- * la escena que las pone una al lado de la otra es donde la aventura se resuelve,
- * y es la que por fin usa el tablero de contradicciones.
+ * Acá queda `resolver` —con sus `antes`/`prueba`—, que es prosa que se arma
+ * distinto según cómo salió la tirada y qué se descubrió antes. El `id` de
+ * cada entrada la casa con su declaración en el JSON.
  */
 
 import type { GameState } from '../shared/types.ts';
-import type { Escenas, IntencionLeida } from './escena.ts';
+import type { LogicaDeEscenas } from './cargarAventura.ts';
 
 // ── AYUDAS ───────────────────────────────────────────────────────────────────
+// `dice`/`aqui`/`lleva`/`pistas`/`puedeDemostrar` no están: sólo las usaban
+// los bloques `cuando`, que ahora son árboles de condición en el JSON.
 
 const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.description.includes(frag));
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
-const aqui = (s: GameState) => s.world.currentLocation;
-const lleva = (s: GameState, item: string) => s.items[item]?.owner === s.activeInvestigator;
-const dice = (i: IntencionLeida, re: RegExp) => re.test(i.norm);
-const pistas = (s: GameState) => s.board.clues.length;
 
-/** ¿Ya tiene con qué demostrar que el campo no cierra? */
-export function puedeDemostrar(s: GameState): boolean {
-  return propiedadVista(s, 'it-rueda') && pista(s, '843 postes');
-}
-
-export const LEGUA_ESCENAS: Escenas = [
+export const LEGUA_LOGICA: LogicaDeEscenas = [
   // ══ DESENLACES ════════════════════════════════════════════════════════════
 
   {
-    id: 'fin-caminar', prioridad: 96,
-    cuando: (s, i) =>
-      dice(i, /camino el alambrado|caminar el alambrado|de punta a punta|recorro el alambrado a pie/)
-      && pistas(s) >= 5,
+    id: 'fin-caminar',
     antes: () => ({
       texto: [
         'Le decís a Casimiro que vas a caminar el alambrado del oeste de punta a punta. Casimiro no discute. ' +
@@ -154,10 +144,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-medir', prioridad: 95,
-    cuando: (s, i) =>
-      dice(i, /demuestro|demostrar|levanto acta|acta de la medicion|dejo constancia/)
-      && puedeDemostrar(s),
+    id: 'fin-medir',
     resolver: () => ({
       tiempo: { minutes: 4 * 60, reason: 'medir, contar y escribir el acta' },
       exposicion: { amount: 8, source: 'oeste:demostrar', cause: 'medir hasta que no quede duda' },
@@ -193,10 +180,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-borrar', prioridad: 94,
-    cuando: (s, i) =>
-      dice(i, /quemo|destruyo|hago desaparecer|escondo la mensura|me llevo la mensura sin/)
-      && Boolean(s.documents['doc-mensura1903']?.obtainedAt),
+    id: 'fin-borrar',
     resolver: () => ({
       estabilidad: { amount: -6, cause: 'elegir que el problema no exista' },
       consecuencia: {
@@ -225,9 +209,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-firmar', prioridad: 93,
-    cuando: (s, i) => dice(i, /firmo el certificado|firmar el certificado|extiendo el certificado/)
-      && pistas(s) >= 3,
+    id: 'fin-firmar',
     resolver: () => ({
       consecuencia: {
         description: 'Se firmó el certificado de defunción de Fermín Arce con causa «deshidratación» y lugar «casco de la estancia».',
@@ -254,8 +236,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'fin-irse', prioridad: 92,
-    cuando: (_s, i) => i.verb === 'irse',
+    id: 'fin-irse',
     resolver: () => ({
       consecuencia: {
         description: 'El investigador se fue de La Perseverancia sin firmar el certificado.',
@@ -281,10 +262,7 @@ export const LEGUA_ESCENAS: Escenas = [
 
   {
     // La escena central de la aventura: medir con la rueda, ida y vuelta.
-    id: 'medir-con-la-rueda', prioridad: 80,
-    cuando: (s, i) =>
-      dice(i, /mido|medir|paso la rueda|uso la rueda/) && lleva(s, 'it-rueda')
-      && ['alambrado', 'molino', 'rastro'].includes(aqui(s)),
+    id: 'medir-con-la-rueda',
     antes: () => ({
       texto: [
         'Apoyás la rueda en el mojón, ponés el contador en cero y empezás a caminar empujándola. Es un trabajo ' +
@@ -330,8 +308,7 @@ export const LEGUA_ESCENAS: Escenas = [
 
   {
     // Cotejar los testimonios. Acá se usa el tablero de contradicciones.
-    id: 'cotejar-testimonios', prioridad: 78,
-    cuando: (_s, i) => dice(i, /cotejo|comparo lo que dicen|contrasto|pongo en fila lo que|los tres numeros/),
+    id: 'cotejar-testimonios',
     resolver: ({ estado }) => {
       const h = pista(estado, 'Herminia: veinte minutos');
       const c = pista(estado, 'Casimiro: media hora');
@@ -389,9 +366,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'leer-mensuras', prioridad: 76,
-    cuando: (s, i) =>
-      dice(i, /mensura|planos|los papeles|expediente/) && aqui(s) === 'escritorio',
+    id: 'leer-mensuras',
     prueba: (s) => s.documents['doc-mensura1903']?.obtainedAt ? null : ({
       skill: 'buscar_libros', difficulty: 'regular',
       reason: 'ordenar veinte años de papeles de campo',
@@ -431,8 +406,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'leer-libreta', prioridad: 74,
-    cuando: (_s, i) => dice(i, /libreta|cuaderno de roldan|anotaciones de roldan/),
+    id: 'leer-libreta',
     prueba: (s) => propiedadVista(s, 'it-libreta') ? null : ({
       skill: 'buscar_libros', difficulty: 'regular',
       reason: 'seguir la letra de un agrimensor a través de cuatro días de febrero de 1903',
@@ -462,8 +436,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'examinar-cantimplora', prioridad: 72,
-    cuando: (_s, i) => i.objetivo.id === 'it-cantimplora' && ['mirar', 'examinar', 'oler', 'buscar'].includes(i.verb),
+    id: 'examinar-cantimplora',
     prueba: (s) => propiedadVista(s, 'it-cantimplora') ? null : ({
       skill: 'ciencia_naturales', difficulty: 'regular',
       reason: 'establecer hace cuánto está seca una cantimplora',
@@ -493,10 +466,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'caminar-al-tanque', prioridad: 70,
-    cuando: (s, i) =>
-      dice(i, /camino hasta el tanque|voy caminando al tanque|hago el camino de fermin|doscientos metros/)
-      && ['rastro', 'molino'].includes(aqui(s)),
+    id: 'caminar-al-tanque',
     antes: () => ({
       texto: [
         'Te parás donde estaba Fermín, mirás el tanque —se ve, se ve clarísimo— y empezás a caminar hacia él ' +
@@ -528,9 +498,7 @@ export const LEGUA_ESCENAS: Escenas = [
   },
 
   {
-    id: 'certificar-fermin', prioridad: 68,
-    cuando: (s, i) =>
-      dice(i, /autopsia|reviso el cuerpo|examino a fermin|certifico la causa/) && aqui(s) === 'galpon',
+    id: 'certificar-fermin',
     prueba: () => ({
       skill: 'medicina', difficulty: 'regular',
       reason: 'establecer causa y tiempo de muerte',

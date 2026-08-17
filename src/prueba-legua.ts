@@ -3,8 +3,8 @@
  *
  * La segunda aventura es la prueba de fuego, y lo que prueba es esto: que
  * escribir una aventura sea escribir, no programar. Todo lo que verifica acá se
- * declaró en `legua.ts`, `legua.dialogo.ts`, `legua.escenas.ts` y
- * `legua.acciones.ts`, sin tocar una línea del motor.
+ * declaró en `la-legua-perdida.contenido.json` y `legua.logica.ts`, sin tocar
+ * una línea del motor.
  *
  * Verifica además la mecánica que la aventura vino a estrenar: **el tablero de
  * contradicciones**, que existía en el estado desde el día uno y no lo usaba

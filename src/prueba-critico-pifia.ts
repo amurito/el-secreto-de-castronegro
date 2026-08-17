@@ -97,7 +97,7 @@ async function main() {
   const estabilidadPorGrado: Partial<Record<SuccessDegree, number>> = {};
   for (const grado of ['fumble', 'failure', 'regular', 'critical'] as const) {
     const id = await createCampaign(AGUA_QUIETA, `SOSTENER-${grado}`, 's'.repeat(64));
-    // `listoParaSostener` vive en `aguaquieta.acciones.ts` y pide exposición
+    // La condición de este final pide exposición
     // ≥25: no alcanza con asomarse (rinde cada vez menos), hace falta tocar
     // el fenómeno por varios lados. Mismo guion que prueba-desenlaces.ts usa
     // para el mismo final, probado ahí.
@@ -164,7 +164,7 @@ async function main() {
     const despues = (await Turn.open(id)).state.board.clues.length;
     if (grado === 'fumble') {
       // Una pifia no es «no pasó nada»: deja su propia pista, distinta de la
-      // que hubiera dejado esquivar sin más. Ver `pifia` en aguaquieta.dialogo.ts.
+      // que hubiera dejado esquivar sin más. Ver `pifia` en el tema «ella».
       check('la pifia deja una pista propia (que Rosa mintió)', despues > antesDeClues,
         `${antesDeClues} → ${despues}`);
     }

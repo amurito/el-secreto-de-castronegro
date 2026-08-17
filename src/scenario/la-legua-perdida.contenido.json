@@ -1,0 +1,2032 @@
+{
+  "id": "legua-perdida",
+  "title": "La Legua Perdida",
+  "surfacePremise": "Fermín Arce, peón de la estancia La Perseverancia, apareció muerto de sed a doscientos metros de un tanque australiano lleno. Hay que firmar un certificado de defunción, y para firmarlo hay que decir dónde murió. Nadie en el campo se pone de acuerdo sobre dónde queda nada.",
+  "items": [
+    {
+      "id": "it-rueda",
+      "name": "Rueda de agrimensor",
+      "aliases": [
+        "rueda",
+        "odómetro",
+        "odometro",
+        "rueda de medir"
+      ],
+      "shortDescription": "Una rueda de medir con contador de vueltas, apoyada contra la columna de la galería. Es de Herminia: la compró en Buenos Aires para medir ella misma, porque no le cree a ninguno de los dos.",
+      "owner": "casco",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-rueda-basico",
+          "description": "Una rueda de hierro de un metro de circunferencia con un contador mecánico en el eje. Se empuja caminando y cuenta las vueltas. Es simple, es precisa y no se equivoca.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-rueda-dos-numeros",
+          "description": "Medís la misma línea dos veces, ida y vuelta, sin levantar la rueda del suelo.\n\nA la ida: seis mil cien metros. A la vuelta, sobre las mismas huellas de la rueda, en sentido contrario: cinco mil cuatrocientos.\n\nLa rueda no se equivoca. La rueda cuenta vueltas. Para que dé dos números tiene que haber girado una cantidad distinta de veces sobre el mismo tramo de suelo, en la misma tarde.",
+          "discoveryCondition": {
+            "kind": "usage",
+            "times": 2
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-libreta",
+      "name": "Libreta de campo de Roldán, 1903",
+      "aliases": [
+        "libreta",
+        "libreta de campo",
+        "cuaderno de roldan",
+        "anotaciones"
+      ],
+      "shortDescription": "La libreta de trabajo del agrimensor Eusebio Roldán, del verano de 1903. Tapas de hule, hojas cuadriculadas, la letra chiquita y prolija de quien anota números para otros.",
+      "owner": "escritorio",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-libreta-basico",
+          "description": "Columnas de números: rumbos, distancias, ángulos. Todo prolijo, todo firmado al pie de cada jornada. Es el trabajo de alguien que sabía lo que hacía.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-libreta-doble",
+          "description": "La jornada del 11 de febrero de 1903 está anotada dos veces.\n\nLa primera anotación está tachada con una sola línea, sin ensañamiento, de manera que se siga leyendo: seis mil ciento veinte metros. Debajo, la segunda: cinco mil doscientos.\n\nEntre las dos, con la misma letra pero más chica, una frase que no es un número:\n\n«Medí tres veces. Anoto la que coincide con el título. Que la corrija otro.»",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "buscar_libros",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-cantimplora",
+      "name": "Cantimplora de Fermín",
+      "aliases": [
+        "cantimplora",
+        "caramañola",
+        "caramanola"
+      ],
+      "shortDescription": "Una cantimplora de aluminio abollada, con la correa cortada. Estaba a un metro del cuerpo.",
+      "owner": "galpon",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-cant-basico",
+          "description": "Vacía. Seca por dentro y por fuera. La correa está cortada limpio, no reventada.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-cant-seca",
+          "description": "La destapás y la olés. No hay olor a nada: ni a agua estancada, ni a metal mojado, ni al moho que deja una cantimplora que se vació hace dos días.\n\nEsta cantimplora no está vacía desde hace dos días. Está seca como si nunca hubiera tenido agua adentro, y Fermín salió del casco con ella llena. Lo vieron llenarla.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "ciencia_naturales",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-botas",
+      "name": "Alpargatas de Fermín",
+      "aliases": [
+        "alpargatas",
+        "botas",
+        "calzado"
+      ],
+      "shortDescription": "Un par de alpargatas de yute, gastadas hasta la lona, puestas prolijamente bajo la puerta que le hace de camilla.",
+      "owner": "galpon",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-botas-basico",
+          "description": "La suela de yute está gastada hasta el hilo, con el desgaste parejo de quien camina en llano. Son alpargatas de dos meses de uso, y a Fermín se las dieron nuevas la semana pasada. Rufino, el del almacén, lo puede confirmar.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-herminia",
+      "name": "Herminia Lastra",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cuarenta y seis años, viuda, dueña de La Perseverancia desde hace cuatro. No se crió en el campo y lo compensa con método: anota, compara y desconfía. Fue ella la que hizo hacer la mensura de 1924, y la que compró la rueda cuando el resultado no cerró.",
+      "motivation": "Vender el campo. Tiene comprador y tiene precio, y el precio depende de una superficie que nadie le puede certificar. Quiere un número, uno solo, firmado por alguien.",
+      "fears": [
+        "Que la muerte de Fermín se convierta en una causa judicial y frene la venta.",
+        "Que el problema no sea de los papeles."
+      ],
+      "refusals": [
+        "No va al alambrado del oeste. Dice que no tiene por qué ir. Fue una vez y no volvió.",
+        "No habla del comprador hasta que la confianza sea alta."
+      ],
+      "knowledge": [
+        {
+          "id": "k-h-1",
+          "statement": "Mandó a hacer la mensura de 1924 porque la de 1903 no coincidía con el título.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-h-2",
+          "statement": "Midió ella misma con la rueda el tramo del oeste y le dio un tercer número, distinto de los dos.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-h-3",
+          "statement": "Del casco al molino son veinte minutos a caballo. Lo cronometró, dos veces.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-h-4",
+          "statement": "Cree que Roldán falseó la mensura de 1903 para favorecer al dueño anterior. Es su explicación y es falsa.",
+          "acquiredAt": "previo",
+          "source": "interpretación propia",
+          "reliability": "false"
+        },
+        {
+          "id": "k-h-5",
+          "statement": "Fue una sola vez al alambrado del oeste, con la rueda. Volvió caminando y no habla de eso.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        }
+      ],
+      "secrets": [
+        {
+          "id": "s-h-vuelta",
+          "content": "Herminia midió el tramo del oeste con la rueda un mediodía y volvió al casco de noche. Para ella fueron dos horas; en la casa la esperaron nueve. Nadie le cree y ella tampoco se cree a sí misma, y por eso quiere vender antes de tener que entenderlo. Sólo lo cuenta con actitud alta.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 5,
+        "inv-tomas": 5
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-casimiro",
+      "name": "Casimiro Pinto",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cincuenta y siete años, capataz. Nació en este campo y no durmió afuera más de veinte noches en su vida. Habla despacio, contesta lo que se le pregunta y no una palabra más. Fue él quien encontró a Fermín, y fue él quien contó las huellas.",
+      "motivation": "Que no manden a nadie más a caminar el campo. No sabe explicar por qué, y cuando lo intenta se le nota que ya lo intentó otras veces y le fue mal.",
+      "fears": [
+        "Que alguien camine el alambrado del oeste de punta a punta.",
+        "Que le pidan que él lo camine."
+      ],
+      "refusals": [
+        "No discute los números de nadie. Da el suyo y se calla.",
+        "No va al oeste después del mediodía."
+      ],
+      "knowledge": [
+        {
+          "id": "k-c-1",
+          "statement": "Encontró a Fermín anteayer a la mañana, a doscientos metros del tanque.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-c-2",
+          "statement": "Contó las huellas: dieciséis mil quinientos pasos. Diecisiete kilómetros.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-c-3",
+          "statement": "Del casco al molino son treinta minutos a caballo. Lo sabe desde chico y no lo discute.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-c-4",
+          "statement": "Cree que Fermín se emborrachó y se perdió. No lo cree del todo, pero es lo que dice.",
+          "acquiredAt": "previo",
+          "source": "interpretación propia",
+          "reliability": "false"
+        },
+        {
+          "id": "k-c-5",
+          "statement": "Hubo otro antes: un peón, en 1911, que apareció igual. Nadie hizo actas. No lo va a ofrecer.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        }
+      ],
+      "secrets": [
+        {
+          "id": "s-c-1911",
+          "content": "En 1911 apareció otro peón igual, muerto de sed cerca del agua. El patrón de entonces mandó enterrarlo sin acta y le dijo a Casimiro que si hablaba se quedaba sin trabajo. Casimiro tenía veinte años y no habló. Lleva catorce años esperando que alguien pregunte bien.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 0,
+        "inv-tomas": 0
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-eusebio",
+      "name": "Eusebio Roldán",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Setenta y un años, agrimensor jubilado. Vino en el break del pueblo apenas supo lo de Fermín, sin que nadie lo llamara. Tiene las manos manchadas de tinta vieja y la cabeza intacta, que es su desgracia: se acuerda perfectamente de febrero de 1903.",
+      "motivation": "Que alguien más lo mida y le diga que él no estaba loco. Vino para eso. No lo va a decir así.",
+      "fears": [
+        "Morirse siendo el agrimensor que falseó una mensura.",
+        "Que le den la razón, que es peor."
+      ],
+      "refusals": [
+        "No firma nada. Ni un certificado, ni una declaración, ni un croquis.",
+        "No dice qué anotó primero hasta que alguien le muestre que midió distinto."
+      ],
+      "knowledge": [
+        {
+          "id": "k-e-1",
+          "statement": "Midió el tramo del oeste tres veces en febrero de 1903 y le dio tres números.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-e-2",
+          "statement": "Anotó el número que coincidía con el título porque los otros dos no le servían a nadie.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-e-3",
+          "statement": "Su libreta de campo quedó en el escritorio de la estancia. Sabe exactamente en qué estante.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        },
+        {
+          "id": "k-e-4",
+          "statement": "Cree que el instrumento estaba mal calibrado. Lo repitió veintidós años y ya no se lo cree.",
+          "acquiredAt": "previo",
+          "source": "interpretación propia",
+          "reliability": "false"
+        },
+        {
+          "id": "k-e-5",
+          "statement": "El mojón de 1887 tenía el círculo grabado ya en 1903. Lo anotó y después tachó la anotación.",
+          "acquiredAt": "previo",
+          "source": "testigo",
+          "reliability": "reliable"
+        }
+      ],
+      "secrets": [
+        {
+          "id": "s-e-tercera",
+          "content": "La tercera medición de Roldán, la que no anotó en ningún lado, la hizo de noche con lámpara. Le dio ocho mil cuatrocientos treinta metros: exactamente lo que da contar los postes hoy. Entendió que el número dependía de la luz y decidió que eso no se podía escribir en una mensura. Sólo lo cuenta si le muestran que alguien más midió distinto.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 15,
+        "inv-tomas": 15
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-mensura1903",
+      "title": "Mensura de La Perseverancia, 1903",
+      "author": "Agrim. Eusebio Roldán",
+      "date": "febrero de 1903",
+      "location": "El escritorio de la estancia",
+      "kind": "report",
+      "content": "MENSURA Y DESLINDE DE LA FRACCIÓN DENOMINADA «LA PERSEVERANCIA»\nPracticada en febrero de 1903 a pedido de don Aurelio Lastra.\n\nLADO NORTE ........ 5.200 m\nLADO ESTE ......... 5.200 m\nLADO SUR .......... 5.200 m\nLADO OESTE ........ 5.200 m\nSUPERFICIE ........ 2.704 hectáreas, equivalentes a una legua cuadrada.\n\nLos cuatro lados resultaron iguales, lo que concuerda con el título de 1887 y con la costumbre de la zona de fraccionar en leguas cuadradas.\n\nOBSERVACIONES: Se hicieron mediciones repetidas del lado oeste por presentar el terreno una leve ondulación. Se adopta la primera.\n\nFirmado, Eusebio Roldán, agrimensor nacional.",
+      "authenticity": "authentic",
+      "accuracy": "partially_accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-mensura1924",
+      "title": "Mensura de La Perseverancia, 1924",
+      "author": "Agrim. Nicolás Bermúdez",
+      "date": "noviembre de 1924",
+      "location": "El escritorio de la estancia",
+      "kind": "report",
+      "content": "MENSURA DE ACTUALIZACIÓN — «LA PERSEVERANCIA»\nPracticada en noviembre de 1924 a pedido de doña Herminia Lastra.\n\nLADO NORTE ........ 5.210 m\nLADO ESTE ......... 5.198 m\nLADO SUR .......... 5.204 m\nLADO OESTE ........ 8.430 m\nSUPERFICIE ........ no se consigna.\n\nOBSERVACIONES DEL PROFESIONAL:\nEl lado oeste fue medido en cuatro oportunidades, en días distintos y con dos instrumentos, arrojando siempre el mismo valor. Dicho valor es incompatible con los otros tres lados: un cuadrilátero cerrado no admite estas medidas.\n\nNo obstante, el polígono CIERRA en el terreno. El alambrado existe, es continuo, y las cuatro esquinas son ángulos rectos verificados.\n\nEl suscripto declara no poder consignar superficie y sugiere se practique nueva mensura por profesional distinto. Se abstiene de firmar plano.\n\nN. Bermúdez.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-titulo",
+      "title": "Título de propiedad, 1887",
+      "author": "Escribanía Requena",
+      "date": "3 de mayo de 1887",
+      "location": "El escritorio de la estancia",
+      "kind": "file",
+      "content": "ESCRITURA DE COMPRAVENTA\n\n…una legua cuadrada de campo, más o menos, en el paraje conocido por los antiguos como «la legua que no se acaba», hoy denominado La Perseverancia, lindando al oeste con terrenos fiscales…\n\n…el comprador declara conocer que el deslinde del oeste ha sido cuestionado con anterioridad y renuncia a reclamo por diferencia de superficie…",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "casco": {
+      "id": "casco",
+      "name": "El casco de La Perseverancia",
+      "aliases": [
+        "casco",
+        "casa grande",
+        "patio del casco",
+        "estancia"
+      ],
+      "description": "Una casa larga de ladrillo revocado, con galería al norte y tres eucaliptos que le dan sombra a la mitad. Desde la galería se ve el molino, chico y nítido, del otro lado del potrero. Se ve tan cerca que uno calcula veinte minutos, y todos los que viven acá calculan distinto.",
+      "atmosphere": [
+        "Desde la galería el molino se ve nítido. Demasiado nítido para la distancia que dicen que hay.",
+        "Nadie sale a caminar por gusto. Se anda a caballo, o no se anda.",
+        "En la pared de la galería hay un mapa del campo clavado con cuatro tachuelas, y está corregido a lápiz."
+      ],
+      "connections": [
+        "escritorio",
+        "galpon",
+        "molino"
+      ],
+      "itemsPresent": [
+        "it-rueda"
+      ],
+      "npcsPresent": [
+        "npc-herminia"
+      ],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": {
+        "sound": [
+          "El molino. Se oye clarísimo, con el chirrido de la veleta y todo, como si estuviera a cincuenta metros.",
+          "Viento en los eucaliptos. Y abajo, el molino, siempre el molino."
+        ],
+        "smell": [
+          "Eucalipto, tierra seca, y el olor dulce del maíz que se está pasando en la troja."
+        ],
+        "touch": [
+          "El ladrillo de la galería guarda el calor de la tarde hasta bien entrada la noche."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-mapa",
+          "names": [
+            "mapa",
+            "plano en la pared",
+            "mapa clavado",
+            "tachuelas"
+          ],
+          "description": "Un mapa del campo clavado a la pared con cuatro tachuelas. Tiene correcciones a lápiz.",
+          "closerLook": "Es una copia de la mensura de 1903, con el alambrado del oeste corregido a lápiz tres veces, cada una un poco más adentro que la anterior. Las tres correcciones son de la misma mano y de tres lápices distintos. Nadie corrige un plano tres veces si el plano está bien la primera.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "El mapa del casco tiene el alambrado del oeste corregido a lápiz tres veces, cada una más adentro que la anterior.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-eucaliptos",
+          "names": [
+            "eucaliptos",
+            "árboles",
+            "arboles",
+            "sombra"
+          ],
+          "description": "Tres eucaliptos viejos al norte de la casa. La sombra cubre media galería.",
+          "closerLook": "Los tres se plantaron el mismo año, se ve por el diámetro. Pero el del medio está a doce pasos del primero y a nueve del tercero, y en la foto de 1903 que cuelga adentro los tres están parejos. Un árbol no camina. Un árbol tampoco se corre nueve pasos en veintidós años.",
+          "exposure": 3
+        },
+        {
+          "id": "f-galeria",
+          "names": [
+            "galería",
+            "galeria",
+            "vista",
+            "horizonte"
+          ],
+          "description": "La galería mira al sur. Desde acá se ve el molino, y detrás la línea del alambrado.",
+          "closerLook": "Te apoyás en la columna y mirás. El molino se ve entero: las aspas, el tanque, la escalerita. A la distancia que dicen que hay tendría que verse como una cruz borrosa, y se ve como una fotografía. El aire de marzo es limpio, sí. No tanto.",
+          "exposure": 4,
+          "clue": {
+            "description": "Desde el casco, el molino se ve con más detalle del que permite la distancia que todos declaran.",
+            "kind": "experiential",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "escritorio": {
+      "id": "escritorio",
+      "name": "El escritorio de la estancia",
+      "aliases": [
+        "escritorio",
+        "oficina",
+        "papeles"
+      ],
+      "description": "Un cuarto chico con un escritorio de roble, un fichero de metal y las paredes cubiertas de estantes. Acá está todo el papel de La Perseverancia desde 1887: títulos, mensuras, boletos, cuentas.",
+      "atmosphere": [
+        "Huele a papel viejo y a tinta ferrogálica.",
+        "El fichero de metal está abierto en la letra M. Alguien estuvo buscando acá hace poco."
+      ],
+      "connections": [
+        "casco"
+      ],
+      "itemsPresent": [
+        "it-libreta"
+      ],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 1,
+      "senses": {
+        "sound": [
+          "Nada. El cuarto no tiene ventana al sur y el molino no llega."
+        ],
+        "smell": [
+          "Papel, tinta, y el polvo particular que hace el papel al envejecer."
+        ],
+        "touch": [
+          "Los legajos están fríos, como está frío el papel guardado."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-fichero",
+          "names": [
+            "fichero",
+            "archivo",
+            "cajones",
+            "legajos"
+          ],
+          "description": "Un fichero de metal, abierto en la letra M. Alguien buscó acá hace poco.",
+          "closerLook": "En la M están las mensuras. Hay dos carpetas: 1903 y 1924. La de 1903 tiene el lomo gastado de tanto sacarla y volverla a poner. La de 1924 está impecable, salvo por una esquina doblada en la última hoja, que es donde va el número total.",
+          "clue": {
+            "description": "La carpeta de la mensura de 1903 está gastada de tanto consultarla. Alguien volvió sobre ella muchas veces en veintidós años.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-estantes",
+          "names": [
+            "estantes",
+            "libros",
+            "biblioteca",
+            "boletos"
+          ],
+          "description": "Estantes con los libros de campo, boletos de marca y cuentas del almacén.",
+          "closerLook": "Entre los libros de cuentas hay uno que no es de cuentas: un registro catastral impreso, de 1874, del que alguien arrancó la hoja de esta sección. El corte es limpio, hecho con cuchilla y con tiempo.",
+          "clue": {
+            "description": "Del registro catastral de 1874 alguien arrancó, con cuchilla y sin apuro, exactamente la hoja de esta fracción.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "galpon": {
+      "id": "galpon",
+      "name": "El galpón",
+      "aliases": [
+        "galpon",
+        "deposito",
+        "velatorio"
+      ],
+      "description": "Chapa y tirantes de quebracho. Adentro hace más fresco que afuera, que es la razón por la que pusieron acá a Fermín Arce, sobre una puerta apoyada en dos caballetes, tapado con una lona.",
+      "atmosphere": [
+        "Alguien le puso una vela a los pies y la vela está entera: la encendieron y se apagó sola.",
+        "Los perros no entran. Se quedan en la puerta, mirando, sin ladrar."
+      ],
+      "connections": [
+        "casco"
+      ],
+      "itemsPresent": [
+        "it-cantimplora",
+        "it-botas"
+      ],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sound": [
+          "Chapa que se dilata con el sol. Nada más, y es un alivio."
+        ],
+        "smell": [
+          "Grasa de máquina, cuero, y por debajo lo que hay que esperar que haya."
+        ],
+        "touch": [
+          "El aire de adentro está varios grados más fresco de lo que la chapa permite."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-fermin",
+          "names": [
+            "fermín",
+            "fermin",
+            "cuerpo",
+            "muerto",
+            "cadáver",
+            "cadaver",
+            "lona"
+          ],
+          "description": "Fermín Arce, treinta y cuatro años, peón. Lo encontraron anteayer a la mañana.",
+          "closerLook": "Deshidratación severa: la piel no vuelve, la lengua está pegada, los riñones dejaron de trabajar antes que el corazón. Murió de sed, y murió de sed despacio, en no menos de dos días.\n\nLo encontraron a doscientos metros del tanque australiano, que estaba lleno.\n\nY tiene las plantas de los pies como las tiene alguien que caminó mucho: ampollas reventadas y vueltas a hacer encima, capas, de días.",
+          "examineSkill": "medicina",
+          "exposure": 5,
+          "clue": {
+            "description": "Fermín Arce murió de sed, despacio, en no menos de dos días, a doscientos metros de un tanque lleno. Los pies muestran días de caminata.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-vela",
+          "names": [
+            "vela",
+            "cirio",
+            "llama"
+          ],
+          "description": "Una vela a los pies del cuerpo, entera, apagada.",
+          "closerLook": "Está entera y el pabilo está negro: se encendió y se apagó. Pero no hay cera derramada, ni una gota, y una vela que arde aunque sea un minuto derrama. Ésta ardió sin gastarse.",
+          "exposure": 4
+        }
+      ]
+    },
+    "molino": {
+      "id": "molino",
+      "name": "El molino y el tanque",
+      "aliases": [
+        "molino",
+        "tanque",
+        "aguada",
+        "australiano"
+      ],
+      "description": "Un molino de viento de doce pies, un tanque australiano lleno hasta el borde y un bebedero largo de cemento. Desde acá el casco se ve chiquito y lejísimos, y uno se pregunta cómo hizo para llegar tan rápido.",
+      "atmosphere": [
+        "El tanque está lleno. Rebalsa despacio por el este y hace un charco que no se seca.",
+        "Desde acá el casco se ve mucho más lejos de lo que se veía el molino desde el casco."
+      ],
+      "connections": [
+        "casco",
+        "rastro",
+        "alambrado"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-casimiro"
+      ],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sound": [
+          "El molino chirría. Es el mismo chirrido que se oye desde la galería, con la misma nitidez, y eso ahora que estás al lado es exactamente igual de fuerte que allá."
+        ],
+        "smell": [
+          "Agua, óxido, y la bosta seca de la hacienda alrededor del bebedero."
+        ],
+        "touch": [
+          "El agua del tanque está fresca y se mueve. Se mueve normal."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-tanque",
+          "names": [
+            "tanque",
+            "agua",
+            "australiano",
+            "bebedero"
+          ],
+          "description": "El tanque australiano, lleno hasta el borde. Rebalsa por el este.",
+          "closerLook": "Lleno, limpio, con el agua moviéndose como se mueve el agua. Nada raro. Lo raro es lo otro: que un hombre haya muerto de sed a doscientos metros de acá, y que esos doscientos metros, mirados desde el suelo, se vean como doscientos metros."
+        },
+        {
+          "id": "f-veleta",
+          "names": [
+            "veleta",
+            "aspas",
+            "torre",
+            "escalerita"
+          ],
+          "description": "La torre del molino, con la escalerita de mantenimiento y la veleta arriba.",
+          "closerLook": "Subís tres escalones y mirás al norte. El casco se ve chico y borroso, a la distancia que corresponde a un cuarto de hora a caballo.\n\nDesde la galería del casco, este molino se veía nítido.\n\nDos puntos no pueden estar a distancias distintas según cuál de los dos mire.",
+          "exposure": 6,
+          "clue": {
+            "description": "La distancia entre el casco y el molino es distinta según desde cuál de los dos se mire. Dos puntos no pueden estar a dos distancias.",
+            "kind": "experiential",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "rastro": {
+      "id": "rastro",
+      "name": "Donde apareció Fermín",
+      "aliases": [
+        "rastro",
+        "huellas",
+        "donde lo encontraron",
+        "pastizal"
+      ],
+      "description": "Un pastizal bajo, a doscientos metros del tanque. Hay una mancha de pasto aplastado con forma de hombre, y alrededor, en la tierra pelada, las huellas.",
+      "atmosphere": [
+        "Las huellas están frescas y son muchas. Demasiadas para dos días.",
+        "Desde acá se ve el tanque. Se ve perfectamente. Un hombre lo vería aunque estuviera de rodillas."
+      ],
+      "connections": [
+        "molino",
+        "alambrado"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 7,
+      "senses": {
+        "sound": [
+          "El molino, desde acá, se oye igual que desde el casco. Igual de fuerte. Igual."
+        ],
+        "smell": [
+          "Pasto seco. Nada más."
+        ],
+        "touch": [
+          "La tierra está dura y las huellas están hundidas: quien las hizo pesaba y arrastraba los pies."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-huellas",
+          "names": [
+            "huellas",
+            "rastro",
+            "pisadas",
+            "tierra"
+          ],
+          "description": "Huellas de alpargata en la tierra pelada. Muchas, superpuestas.",
+          "closerLook": "Casimiro las midió antes que vos, y las midió bien: dieciséis mil quinientos pasos, contados por el largo de la zancada y la cantidad de tramos. Diecisiete kilómetros.\n\nLas huellas van y vienen en línea recta, siempre hacia el tanque, y vuelven a empezar a doscientos metros del tanque. Una y otra vez. Como si cada vez que se acercaba, estuviera arrancando de nuevo.",
+          "examineSkill": "orientarse",
+          "exposure": 8,
+          "clue": {
+            "description": "Fermín caminó diecisiete kilómetros en línea recta hacia el tanque, en un campo donde no se pueden caminar diecisiete kilómetros en línea recta.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-marca",
+          "names": [
+            "pasto aplastado",
+            "marca",
+            "donde cayó",
+            "donde cayo"
+          ],
+          "description": "Una mancha de pasto aplastado con forma de hombre. Ahí lo encontraron.",
+          "closerLook": "El pasto está aplastado en una sola dirección: se acostó y no se movió. Y está aplastado de más, como si hubiera estado ahí mucho más tiempo del que estuvo.\n\nAlrededor, a un metro, el pasto está intacto. Nadie se le acercó antes de encontrarlo.",
+          "exposure": 5
+        }
+      ]
+    },
+    "alambrado": {
+      "id": "alambrado",
+      "name": "El alambrado del oeste",
+      "aliases": [
+        "alambrado",
+        "alambre",
+        "linde",
+        "mojón",
+        "mojon",
+        "límite",
+        "limite"
+      ],
+      "description": "La línea del oeste, la que las dos mensuras no ponen en el mismo lugar. Postes de ñandubay cada diez metros, siete hilos, y en la punta un mojón de mampostería con la fecha 1887 grabada.",
+      "atmosphere": [
+        "La línea es recta. Se ve recta y es recta: no hay nada torcido acá.",
+        "El campo del vecino empieza del otro lado y se ve igual que éste, que es lo que uno espera de un campo."
+      ],
+      "connections": [
+        "molino",
+        "rastro"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 5,
+      "senses": {
+        "sound": [
+          "Viento en el alambre. Un sonido largo y bajo que no termina de repetirse igual."
+        ],
+        "smell": [
+          "Ñandubay, alambre caliente."
+        ],
+        "touch": [
+          "Los postes están firmes. Nadie los movió nunca."
+        ]
+      },
+      "features": [
+        {
+          "id": "f-postes",
+          "names": [
+            "postes",
+            "ñandubay",
+            "nandubay",
+            "hilos"
+          ],
+          "description": "Postes cada diez metros. Se pueden contar.",
+          "closerLook": "Los contás. Son ochocientos cuarenta y tres postes desde el mojón hasta la esquina, cada diez metros: ocho mil cuatrocientos treinta metros.\n\nLa mensura de 1903 dice que esa línea mide cinco mil doscientos.\n\nLos postes están firmes, parejos, y la tierra alrededor de cada uno tiene veintidós años de no moverse. Nadie agregó postes. Están todos desde el principio.",
+          "examineSkill": "descubrir",
+          "exposure": 7,
+          "clue": {
+            "description": "El alambrado del oeste tiene 843 postes cada diez metros: 8.430 metros. La mensura de 1903 le da 5.200. Ningún poste fue agregado.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-mojon",
+          "names": [
+            "mojón",
+            "mojon",
+            "mampostería",
+            "mamposteria",
+            "1887"
+          ],
+          "description": "Un mojón de mampostería con 1887 grabado en el frente.",
+          "closerLook": "La fecha está grabada a cincel y debajo hay una segunda inscripción, más chica, que no es una fecha: una circunferencia atravesada por una línea vertical.\n\nEl agrimensor de 1887 no tenía por qué poner eso ahí, y el que grabó la fecha no fue el mismo que grabó el círculo: la piedra tiene dos desgastes distintos.",
+          "exposure": 6,
+          "clue": {
+            "description": "En el mojón de 1887 hay grabada, por otra mano y en otro momento, una circunferencia atravesada por una línea vertical.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "startLocation": "casco",
+  "startTime": {
+    "iso": "1925-03-11T09:20:00",
+    "precision": "minute",
+    "display": "las nueve y veinte de la mañana"
+  },
+  "startUmbralPermeability": 18,
+  "timeline": [
+    {
+      "id": "te-1887",
+      "description": "Se escritura la fracción como «la legua que no se acaba». El comprador renuncia a reclamo por superficie.",
+      "when": {
+        "iso": "1887-05-03T00:00:00",
+        "precision": "day",
+        "display": "mayo de 1887"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1903",
+      "description": "Roldán mide el lado oeste tres veces y obtiene tres números. Anota el que coincide con el título.",
+      "when": {
+        "iso": "1903-02-11T00:00:00",
+        "precision": "day",
+        "display": "11 de febrero de 1903"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1911",
+      "description": "Un peón aparece muerto de sed cerca del agua. Lo entierran sin acta.",
+      "when": {
+        "iso": "1911-01-01T00:00:00",
+        "precision": "vague",
+        "display": "el verano de 1911"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "KEEPER_SECRET",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-fermin",
+      "description": "Fermín Arce sale del casco con la cantimplora llena y no vuelve.",
+      "when": {
+        "iso": "1925-03-09T06:00:00",
+        "precision": "hour",
+        "display": "la mañana del 9 de marzo"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "h-fermin",
+      "npc": "npc-herminia",
+      "orden": 10,
+      "etiqueta": "Preguntarle qué pasó con Fermín",
+      "intencion": "Le pregunto a Herminia qué pasó con Fermín",
+      "claves": [
+        "que paso con fermin",
+        "fermin",
+        "el peon",
+        "la muerte"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Salió el lunes a la mañana a revisar el alambrado del oeste. Se llevó la cantimplora llena, yo lo vi llenarla en la bomba. —Habla mirando el mapa de la pared, no a usted—. Volvía a la tarde. No volvió.\n\n—El miércoles Casimiro lo encontró al lado del tanque. Del tanque, {trato}. Lleno.\n\nSe queda un momento y después dice, más rápido:\n\n—Necesito el certificado. Tengo una operación en curso."
+        ],
+        "pista": {
+          "description": "Fermín salió el lunes a la mañana con la cantimplora llena a revisar el alambrado del oeste. Apareció el miércoles junto al tanque.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "salió el lunes a la mañana"
+      }
+    },
+    {
+      "id": "h-distancia",
+      "npc": "npc-herminia",
+      "orden": 12,
+      "etiqueta": "Preguntarle cuánto hay del casco al molino",
+      "intencion": "Le pregunto a Herminia cuánto hay del casco al molino",
+      "claves": [
+        "cuanto hay del casco",
+        "distancia al molino",
+        "cuanto se tarda"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Veinte minutos a caballo. —Contesta sin pensarlo, como quien contesta la hora—. Lo cronometré dos veces, con reloj, porque acá nadie sabe medir nada.\n\nY agrega, con una precisión que suena a defensa:\n\n—Veinte minutos y cuarenta segundos la primera vez. Veinte minutos y cuarenta segundos la segunda."
+        ],
+        "pista": {
+          "description": "Herminia: veinte minutos y cuarenta segundos del casco al molino, cronometrados dos veces, idénticos.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "Herminia: veinte minutos"
+      }
+    },
+    {
+      "id": "h-mensuras",
+      "npc": "npc-herminia",
+      "orden": 14,
+      "etiqueta": "Preguntarle por las dos mensuras",
+      "intencion": "Le pregunto a Herminia por las mensuras",
+      "claves": [
+        "mensura",
+        "las dos mediciones",
+        "los planos"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que admita que la segunda mensura no le sirvió para nada"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—La de 1903 no coincidía con el título, así que mandé a hacer otra. Bermúdez estuvo tres semanas. Midió el oeste cuatro veces, con dos aparatos distintos, y le dio siempre lo mismo.\n\n—Y después no me quiso firmar el plano. —Ahora sí lo mira a usted—. Le pagué igual. Un profesional que mide cuatro veces y no firma no es un profesional que se equivocó, {trato}. Es un profesional que vio algo."
+        ],
+        "pista": {
+          "description": "El agrimensor de 1924 midió el oeste cuatro veces con dos instrumentos, obtuvo siempre 8.430 m, y se negó a firmar el plano.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Papeles viejos. —Se encoge de hombros—. Un agrimensor midió mal en 1903 y ahora me cuesta vender. Es un problema de escribanía, no de otra cosa.\n\nLo dice bien, con seguridad. Pero no le sostiene la mirada mientras lo dice."
+        ]
+      },
+      "disponible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "documento",
+            "id": "doc-mensura1903"
+          },
+          {
+            "op": "documento",
+            "id": "doc-mensura1924"
+          }
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "no me quiso firmar el plano"
+      }
+    },
+    {
+      "id": "h-roldan",
+      "npc": "npc-herminia",
+      "orden": 16,
+      "etiqueta": "Preguntarle qué opina de Roldán",
+      "intencion": "Le pregunto a Herminia qué opina de Roldán",
+      "claves": [
+        "roldan",
+        "el agrimensor viejo",
+        "el viejo del traje"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Nadie lo llamó. —Baja la voz, aunque el viejo está afuera—. Se enteró en el pueblo y vino solo, en el break, con el traje puesto. Setenta y un años.\n\n—Yo creo que falseó la mensura para favorecer al viejo Lastra, y que vino a ver si lo descubren. Es lo único que se me ocurre.\n\nY es lo único que se le ocurre, se le nota. No es que esté convencida."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "salió el lunes a la mañana"
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "nadie lo llamó"
+      }
+    },
+    {
+      "id": "h-oeste",
+      "npc": "npc-herminia",
+      "orden": 18,
+      "etiqueta": "Preguntarle por qué no va al alambrado del oeste",
+      "intencion": "Le pregunto a Herminia por qué no va al oeste",
+      "claves": [
+        "por que no va al oeste",
+        "el alambrado del oeste",
+        "que le paso a ella"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 15,
+        "razon": "que cuente lo que le pasó a ella y no lo que le pasó al campo"
+      },
+      "cede": {
+        "actitud": 6,
+        "texto": [
+          "Herminia deja el mate sin haberlo tomado.\n\n—Fui una vez. Con la rueda. Salí a las once y volví… —se detiene, y arranca de nuevo—. Para mí volví a la una. Dos horas. Tengo el reloj de pulsera y lo miré.\n\n—Acá me esperaron hasta las ocho de la noche. Casimiro había salido a buscarme dos veces.\n\n—No estoy loca, {trato}. Miré el reloj."
+        ],
+        "pista": {
+          "description": "Herminia midió el oeste durante dos horas según su reloj. En el casco la esperaron nueve. Ninguna de las dos versiones se corrigió después.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 5,
+        "revelaSecreto": "s-h-vuelta"
+      },
+      "esquiva": {
+        "actitud": 2,
+        "texto": [
+          "—No tengo por qué ir. Para eso está el capataz. —Levanta el mate y se lo lleva a la boca sin tomar—. Yo administro, no recorro.\n\nEs una respuesta razonable dicha por alguien que compró una rueda de agrimensor para medir el campo con sus propias manos."
+        ]
+      },
+      "cerrado": {
+        "texto": [
+          "—Usted, {trato}, vino a firmar un papel. —Y sonríe con la boca nada más."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "Herminia: veinte minutos"
+      },
+      "agotado": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "nueve horas"
+          },
+          {
+            "op": "narrado",
+            "contiene": "No tengo por qué ir"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c-encontro",
+      "npc": "npc-casimiro",
+      "orden": 20,
+      "etiqueta": "Preguntarle cómo lo encontró",
+      "intencion": "Le pregunto a Casimiro cómo encontró a Fermín",
+      "claves": [
+        "como lo encontro",
+        "como encontro",
+        "cuando lo encontro"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Miércoles, temprano. Venía por el bajo y lo vi de lejos, en el pastizal. —Se saca el sombrero para hablar y lo tiene en la mano todo el rato—. Estaba boca arriba, mirando el tanque.\n\n—Doscientos metros, {trato}. Yo los caminé para estar seguro. Doscientos y pico.\n\nY después, más bajo:\n\n—Tenía los ojos abiertos y estaba mirando para allá. Para el agua."
+        ],
+        "pista": {
+          "description": "Fermín apareció boca arriba, mirando el tanque, a doscientos metros. Casimiro caminó la distancia para confirmarla.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "boca arriba, mirando el tanque"
+      }
+    },
+    {
+      "id": "c-huellas",
+      "npc": "npc-casimiro",
+      "orden": 22,
+      "etiqueta": "Preguntarle por las huellas que contó",
+      "intencion": "Le pregunto a Casimiro por las huellas",
+      "claves": [
+        "las huellas",
+        "los pasos",
+        "diecisiete kilometros",
+        "lo que conto"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que le explique a alguien de afuera cómo se cuentan pasos en la tierra"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Se cuenta por tramo. —Se agacha y dibuja en la tierra con el dedo mientras habla—. Uno mide la zancada del hombre, mide un tramo de diez zancadas, y después cuenta los tramos.\n\n—Dieciséis mil quinientos pasos. Diecisiete kilómetros, más o menos.\n\nSe para y se sacude la mano en el pantalón.\n\n—El campo mide cinco por cinco, {trato}. Para caminar diecisiete kilómetros derecho para el mismo lado hay que salirse tres veces. Y el alambre está entero."
+        ],
+        "pista": {
+          "description": "Casimiro contó dieciséis mil quinientos pasos en línea recta hacia el tanque. Diecisiete kilómetros dentro de un campo de cinco por cinco, con el alambrado intacto.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Conté. —Y no dice más. Se pone el sombrero y mira el molino.\n\nContó bien, se le nota. Lo que no quiere es explicar qué significa lo que contó."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "boca arriba, mirando el tanque"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "dieciséis mil quinientos"
+      }
+    },
+    {
+      "id": "c-distancia",
+      "npc": "npc-casimiro",
+      "orden": 24,
+      "etiqueta": "Preguntarle cuánto hay del casco al molino",
+      "intencion": "Le pregunto a Casimiro cuánto hay del casco al molino",
+      "claves": [
+        "casimiro cuanto hay",
+        "media hora",
+        "cuanto tarda a caballo"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Media hora a caballo. —Lo dice como se dice el nombre de uno.\n\nUsted le comenta que la patrona dice veinte minutos. Casimiro no se ofende ni discute.\n\n—Y sí. Para ella son veinte. —Se queda pensando si decir lo que sigue, y lo dice—: Para mi padre eran cuarenta. Yo lo acompañé de chico y eran cuarenta.\n\n—Cada uno tiene su media hora, {trato}. Uno se acostumbra."
+        ],
+        "pista": {
+          "description": "Casimiro: media hora del casco al molino. Su padre tardaba cuarenta minutos en el mismo trayecto. Ninguno cree que el otro se equivoque.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 4
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "Casimiro: media hora"
+      }
+    },
+    {
+      "id": "c-1911",
+      "npc": "npc-casimiro",
+      "orden": 26,
+      "etiqueta": "Preguntarle si pasó antes",
+      "intencion": "Le pregunto a Casimiro si esto pasó antes",
+      "claves": [
+        "paso antes",
+        "otra vez",
+        "hubo otro",
+        "alguna vez"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 20,
+        "razon": "que suelte lo que calla desde hace catorce años"
+      },
+      "cede": {
+        "actitud": 8,
+        "texto": [
+          "Casimiro se queda mirando el sombrero que tiene en la mano.\n\n—El once. —Y lo dice como quien apoya algo pesado—. Un muchacho, Zabaleta. Igualito. Cerca del agua, seco como un cuero.\n\n—El patrón viejo mandó a enterrarlo atrás del monte y me dijo que si yo hablaba me iba del campo. Yo tenía veinte años y me quedé callado.\n\nLevanta la vista por primera vez en toda la conversación.\n\n—Usted es la primera que pregunta bien. Los otros preguntaban qué pasó. Usted preguntó si pasó antes."
+        ],
+        "pista": {
+          "description": "En 1911 apareció otro peón muerto igual, cerca del agua. Lo enterraron sin acta y a Casimiro le prohibieron hablar.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 4,
+        "revelaSecreto": "s-c-1911"
+      },
+      "esquiva": {
+        "texto": [
+          "—No sé. —Se pone el sombrero—. Hace mucho que estoy acá y pasan cosas.\n\nEs una respuesta que no dice nada y que tarda demasiado en llegar."
+        ]
+      },
+      "cerrado": {
+        "texto": [
+          "—Yo trabajo acá, {trato}. —Y con eso contesta todo lo que hace falta contestar por ahora."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "dieciséis mil quinientos"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "1911"
+      }
+    },
+    {
+      "id": "c-miedo",
+      "npc": "npc-casimiro",
+      "orden": 28,
+      "etiqueta": "Preguntarle por qué no va al oeste después del mediodía",
+      "intencion": "Le pregunto a Casimiro por qué no va al oeste después del mediodía",
+      "claves": [
+        "despues del mediodia",
+        "por que no va",
+        "le tiene miedo"
+      ],
+      "cede": {
+        "actitud": 5,
+        "texto": [
+          "—Porque de ida se hace corto y de vuelta se hace más largo. —No baja la voz: lo dice como un dato de trabajo, igual que diría que el bajo se inunda—. Si salís al mediodía, volvés de noche. Si salís a la mañana, volvés a la tarde.\n\n—No es que sea peligroso. Es que hay que tener en cuenta.\n\nY ahí está lo peor de todo: que Casimiro no está asustado. Casimiro se acostumbró."
+        ],
+        "pista": {
+          "description": "Para Casimiro, ir al oeste es más corto que volver del oeste. Lo trata como una condición del terreno, igual que un bajo que se inunda.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 5
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "1911"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "de vuelta se hace más largo"
+      }
+    },
+    {
+      "id": "e-porque",
+      "npc": "npc-eusebio",
+      "orden": 30,
+      "etiqueta": "Preguntarle por qué vino",
+      "intencion": "Le pregunto a Eusebio por qué vino",
+      "claves": [
+        "por que vino",
+        "quien lo llamo",
+        "que hace aca"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Vine porque leí «cerca del agua» en el diario del pueblo. —Tiene las manos apoyadas en el bastón y no las mueve—. Muerto de sed cerca del agua.\n\n—Yo medí este campo en 1903, señora. Tengo setenta y un años y no vine a ofrecer mis servicios.\n\nSe queda callado el tiempo justo para que quede claro que eso no es todo lo que vino a decir."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Vine porque leí «cerca del agua»"
+      }
+    },
+    {
+      "id": "e-1903",
+      "npc": "npc-eusebio",
+      "orden": 32,
+      "etiqueta": "Preguntarle por la mensura de 1903",
+      "intencion": "Le pregunto a Eusebio por la mensura de 1903",
+      "claves": [
+        "mensura de 1903",
+        "lo que midio",
+        "su mensura"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que hable de la mensura como agrimensor y no como acusado"
+      },
+      "cede": {
+        "actitud": 5,
+        "texto": [
+          "—Medí el lado oeste tres veces en cuatro días. —Habla con la precisión de quien ensayó esto durante veintidós años—. Cinco mil doscientos. Seis mil ciento veinte. Y una tercera.\n\n—Anoté cinco mil doscientos porque era el número que coincidía con el título de 1887, y porque un agrimensor que entrega tres números no entrega ninguno.\n\nGolpea el bastón contra el escalón, una vez.\n\n—No falseé nada, señora. Elegí. Que no es lo mismo y es peor."
+        ],
+        "pista": {
+          "description": "Roldán midió tres veces el lado oeste en 1903 y obtuvo tres valores distintos. Anotó el que coincidía con el título.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Está firmada y está registrada. —Cierra las dos manos sobre el bastón—. Si alguien tiene una objeción, que la presente por escrito ante el departamento topográfico.\n\nEs la respuesta de un hombre que preparó una defensa y no una conversación."
+        ]
+      },
+      "disponible": {
+        "op": "documento",
+        "id": "doc-mensura1903"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "Roldán midió tres veces"
+      }
+    },
+    {
+      "id": "e-tercera",
+      "npc": "npc-eusebio",
+      "orden": 34,
+      "etiqueta": "Preguntarle cuál fue la tercera medición",
+      "intencion": "Le pregunto a Eusebio cuál fue la tercera medición",
+      "claves": [
+        "la tercera",
+        "tercera medicion",
+        "el tercer numero"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 25,
+        "razon": "que diga el número que no anotó en ninguna parte"
+      },
+      "cede": {
+        "actitud": 8,
+        "texto": [
+          "El viejo tarda mucho en contestar. Cuando contesta, no la mira.\n\n—La tercera la hice de noche, con lámpara, porque quería descartar el error del anteojo. —Traga—. Ocho mil cuatrocientos treinta.\n\n—Ése es el número que le da a usted si cuenta los postes. Lo sé porque los conté yo también, esa noche, uno por uno, hasta que se me acabó el querosén.\n\n—Y entonces entendí que el número dependía de la hora. Y que eso no se puede escribir en una mensura, señora, porque una mensura es un papel que después firma un juez."
+        ],
+        "pista": {
+          "description": "La tercera medición de Roldán la hizo de noche: 8.430 metros, exactamente lo que da contar los postes. El número depende de la hora.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 6,
+        "cordura": 1,
+        "revelaSecreto": "s-e-tercera"
+      },
+      "critico": {
+        "actitud": 12,
+        "texto": [
+          "El viejo tarda mucho en contestar. Cuando contesta, no la mira, y por primera vez en veintidós años termina la idea entera.\n\n—La tercera la hice de noche, con lámpara, porque quería descartar el error del anteojo. —Traga—. Ocho mil cuatrocientos treinta.\n\n—Ése es el número que le da a usted si cuenta los postes. Lo sé porque los conté yo también, esa noche, uno por uno, hasta que se me acabó el querosén.\n\n—Y entonces entendí que el número dependía de la hora. Y que eso no se puede escribir en una mensura, porque una mensura es un papel que después firma un juez.\n\nSe queda callado un rato. Después agrega lo que veintidós años nunca le sacaron a nadie:\n\n—La medí una cuarta vez. Al amanecer, con la primera luz. Dio nueve mil once. Esa no la firmé ni se la conté a nadie, porque una mensura que cambia con la hora del día no es una mensura: es una pregunta disfrazada de número, y a mí me pagaban por números."
+        ],
+        "pista": {
+          "description": "Roldán midió una cuarta vez, al amanecer: 9.011 metros. No la registró ni la contó a nadie hasta ahora. El campo no tiene un solo número que no cierra: tiene varios, todos distintos, todos según la hora.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 6,
+        "cordura": 2,
+        "revelaSecreto": "s-e-tercera"
+      },
+      "esquiva": {
+        "texto": [
+          "—La tercera la descarté. —Y ahí se le nota la edad por primera vez—. Un instrumento descalibrado. Pasaba, en esa época.\n\nLo dice mirando el bastón. Veintidós años diciendo lo mismo no le alcanzaron para aprender a decirlo bien."
+        ]
+      },
+      "pifia": {
+        "actitud": -10,
+        "texto": [
+          "Algo en cómo lo pregunta lo cierra de golpe, como una puerta que se golpea sola con el viento.\n\n—La tercera la descarté —dice, y esta vez no le tiembla la voz ni le falla la mirada. Es la primera vez que miente bien.\n\nSe levanta, apoyado en el bastón, y usted entiende que la conversación terminó de una manera distinta a las otras veces: no porque él se cansó, sino porque decidió que con usted no valía la pena seguir intentando decirlo."
+        ]
+      },
+      "cerrado": {
+        "texto": [
+          "—Con todo respeto, {trato}: medir no es su oficio. —Y no lo dice con desprecio, sino con cansancio—. Tráigame a alguien que sepa medir y hablamos."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "Roldán midió tres veces"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "la midió de noche"
+      }
+    },
+    {
+      "id": "e-mojon",
+      "npc": "npc-eusebio",
+      "orden": 36,
+      "etiqueta": "Preguntarle por el círculo grabado en el mojón",
+      "intencion": "Le pregunto a Eusebio por el círculo del mojón",
+      "claves": [
+        "el circulo",
+        "el mojon",
+        "la marca grabada",
+        "la linea vertical"
+      ],
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Ya estaba en 1903. —Contesta rápido, casi con alivio de que le pregunten algo que puede contestar—. Lo anoté en la libreta y después taché la anotación, porque no venía al caso.\n\n—No es una marca de deslinde. Yo conozco todas las marcas de deslinde de esta provincia y ésa no es ninguna. La grabó alguien que no era agrimensor.\n\nSe queda pensando.\n\n—Lo que nunca supe es si la grabó antes o después de que el campo empezara a no cerrar."
+        ],
+        "pista": {
+          "description": "El círculo atravesado del mojón ya estaba en 1903 y no es una marca de deslinde conocida. La grabó alguien que no era agrimensor.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "pregunta": "¿Quién grabó el círculo atravesado en el mojón, y cuándo?"
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "circunferencia atravesada"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "ya estaba en 1903"
+      }
+    },
+    {
+      "id": "e-medir",
+      "npc": "npc-eusebio",
+      "orden": 38,
+      "etiqueta": "Pedirle que mida con usted",
+      "intencion": "Le pido a Eusebio que mida conmigo",
+      "claves": [
+        "que mida conmigo",
+        "medir juntos",
+        "que me acompane a medir"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Yo ya no mido. —Levanta las manos del bastón y se las muestra: tiemblan, no mucho, lo justo—. Con esto no se sostiene una mira.\n\n—Pero la acompaño. Y le cuento los postes en voz alta mientras usted empuja la rueda, que es lo único que puedo hacer todavía y lo hago bien.\n\nY ahí está: setenta y un años, traje de pueblo, y vino desde el pueblo sin que nadie lo llamara para que alguien por fin midiera con él."
+        ]
+      },
+      "disponible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "la midió de noche"
+          },
+          {
+            "op": "propiedad",
+            "item": "it-rueda"
+          }
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Yo ya no mido"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "fin-caminar",
+      "prioridad": 96,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "camino el alambrado|caminar el alambrado|de punta a punta|recorro el alambrado a pie"
+          },
+          {
+            "op": "pistas",
+            "minimo": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-medir",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "demuestro|demostrar|levanto acta|acta de la medicion|dejo constancia"
+          },
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "propiedad",
+                "item": "it-rueda"
+              },
+              {
+                "op": "pista",
+                "contiene": "843 postes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-borrar",
+      "prioridad": 94,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "quemo|destruyo|hago desaparecer|escondo la mensura|me llevo la mensura sin"
+          },
+          {
+            "op": "documento",
+            "id": "doc-mensura1903"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-firmar",
+      "prioridad": 93,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "firmo el certificado|firmar el certificado|extiendo el certificado"
+          },
+          {
+            "op": "pistas",
+            "minimo": 3
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-irse",
+      "prioridad": 92,
+      "cuando": {
+        "op": "verbo",
+        "es": [
+          "irse"
+        ]
+      }
+    },
+    {
+      "id": "medir-con-la-rueda",
+      "prioridad": 80,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "mido|medir|paso la rueda|uso la rueda"
+          },
+          {
+            "op": "lleva",
+            "item": "it-rueda"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "alambrado",
+              "molino",
+              "rastro"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cotejar-testimonios",
+      "prioridad": 78,
+      "cuando": {
+        "op": "texto",
+        "patron": "cotejo|comparo lo que dicen|contrasto|pongo en fila lo que|los tres numeros"
+      }
+    },
+    {
+      "id": "leer-mensuras",
+      "prioridad": 76,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "mensura|planos|los papeles|expediente"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "escritorio"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-libreta",
+      "prioridad": 74,
+      "cuando": {
+        "op": "texto",
+        "patron": "libreta|cuaderno de roldan|anotaciones de roldan"
+      }
+    },
+    {
+      "id": "examinar-cantimplora",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-cantimplora"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "mirar",
+              "examinar",
+              "oler",
+              "buscar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "caminar-al-tanque",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "camino hasta el tanque|voy caminando al tanque|hago el camino de fermin|doscientos metros"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "rastro",
+              "molino"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "certificar-fermin",
+      "prioridad": 68,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "autopsia|reviso el cuerpo|examino a fermin|certifico la causa"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "galpon"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "certificar",
+      "grupo": "observar",
+      "lugar": "galpon",
+      "orden": 1,
+      "intencion": "Examino a Fermín para certificar la causa",
+      "etiqueta": "Examinar el cuerpo como corresponde",
+      "hecha": {
+        "op": "pista",
+        "contiene": "cinco o seis días de caminata"
+      }
+    },
+    {
+      "id": "cantimplora",
+      "grupo": "observar",
+      "lugar": "galpon",
+      "orden": 2,
+      "intencion": "Examino la cantimplora de Fermín",
+      "etiqueta": "Revisar la cantimplora",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-cantimplora"
+      }
+    },
+    {
+      "id": "mensuras",
+      "grupo": "observar",
+      "lugar": "escritorio",
+      "orden": 3,
+      "intencion": "Busco las mensuras entre los papeles",
+      "etiqueta": "Buscar las mensuras entre los papeles",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-mensura1903"
+      }
+    },
+    {
+      "id": "libreta",
+      "grupo": "observar",
+      "lugar": "escritorio",
+      "orden": 4,
+      "intencion": "Leo la libreta de campo de Roldán",
+      "etiqueta": "Leer la libreta de campo de Roldán",
+      "visible": {
+        "op": "documento",
+        "id": "doc-mensura1903"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-libreta"
+      }
+    },
+    {
+      "id": "medir",
+      "grupo": "usar",
+      "lugar": [
+        "alambrado",
+        "molino",
+        "rastro"
+      ],
+      "orden": 5,
+      "intencion": "Mido la línea con la rueda de ida y de vuelta",
+      "etiqueta": [
+        {
+          "cuando": {
+            "op": "propiedad",
+            "item": "it-rueda"
+          },
+          "texto": "Volver a medir con la rueda"
+        },
+        {
+          "texto": "Medir la línea con la rueda, de ida y de vuelta"
+        }
+      ],
+      "visible": {
+        "op": "lleva",
+        "item": "it-rueda"
+      }
+    },
+    {
+      "id": "caminar-tanque",
+      "grupo": "usar",
+      "lugar": [
+        "rastro",
+        "molino"
+      ],
+      "orden": 6,
+      "intencion": "Camino hasta el tanque contando los pasos y mirando el reloj",
+      "etiqueta": "Caminar los doscientos metros hasta el tanque, con reloj",
+      "visible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "boca arriba, mirando el tanque"
+          },
+          {
+            "op": "pista",
+            "contiene": "diecisiete kilómetros"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "llevan veinticinco minutos"
+      }
+    },
+    {
+      "id": "cotejar",
+      "grupo": "decidir",
+      "orden": 20,
+      "intencion": "Cotejo lo que dice cada uno",
+      "etiqueta": [
+        {
+          "cuando": {
+            "op": "contradicciones",
+            "minimo": 1
+          },
+          "texto": "Volver sobre lo que dice cada uno"
+        },
+        {
+          "texto": "Cotejar lo que dice cada uno"
+        }
+      ],
+      "visible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Herminia: veinte minutos"
+          },
+          {
+            "op": "pista",
+            "contiene": "Casimiro: media hora"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pensar",
+      "grupo": "decidir",
+      "orden": 21,
+      "intencion": "Pienso en lo que sé hasta ahora",
+      "etiqueta": "Ordenar lo que sabés",
+      "visible": {
+        "op": "pistas",
+        "minimo": 2
+      }
+    },
+    {
+      "id": "anotar",
+      "grupo": "decidir",
+      "orden": 22,
+      "intencion": "Anoto todo lo que tengo en la libreta",
+      "etiqueta": "Anotar todo en la libreta",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Sacás la libreta"
+      }
+    },
+    {
+      "id": "esperar",
+      "grupo": "decidir",
+      "orden": 23,
+      "intencion": "Espero un rato largo sin hacer nada",
+      "etiqueta": "Esperar y no hacer nada",
+      "visible": {
+        "op": "pistas",
+        "minimo": 1
+      }
+    },
+    {
+      "id": "fin-firmar",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Firmo el certificado de defunción",
+      "etiqueta": "Firmar el certificado y terminar con esto",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      }
+    },
+    {
+      "id": "fin-medir",
+      "grupo": "decidir",
+      "orden": 91,
+      "final": true,
+      "intencion": "Demuestro que el campo no cierra y levanto acta",
+      "etiqueta": "Levantar un acta de la medición, con testigos",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "propiedad",
+            "item": "it-rueda"
+          },
+          {
+            "op": "pista",
+            "contiene": "843 postes"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-caminar",
+      "grupo": "decidir",
+      "lugar": [
+        "alambrado",
+        "molino",
+        "rastro"
+      ],
+      "orden": 92,
+      "final": true,
+      "intencion": "Camino el alambrado del oeste de punta a punta",
+      "etiqueta": "Caminar el alambrado del oeste de punta a punta",
+      "visible": {
+        "op": "pistas",
+        "minimo": 5
+      }
+    },
+    {
+      "id": "fin-borrar",
+      "grupo": "decidir",
+      "lugar": [
+        "escritorio",
+        "galpon"
+      ],
+      "orden": 93,
+      "final": true,
+      "intencion": "Quemo la mensura de 1903",
+      "etiqueta": "Quemar la mensura de 1903 y que el pleito muera con ella",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "documento",
+            "id": "doc-mensura1903"
+          },
+          {
+            "op": "pistas",
+            "minimo": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-irse",
+      "grupo": "decidir",
+      "orden": 94,
+      "final": true,
+      "intencion": "Me voy de La Perseverancia",
+      "etiqueta": "Irte de La Perseverancia sin firmar",
+      "visible": {
+        "op": "pistas",
+        "minimo": 4
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "firmar",
+      "title": "Lo que se firma",
+      "condition": "Firma el certificado con una causa que la ley acepta y los hechos no."
+    },
+    {
+      "id": "medir",
+      "title": "Lo que no cierra",
+      "condition": "Mide hasta demostrarlo. La demostración no sirve para nada."
+    },
+    {
+      "id": "caminar",
+      "title": "Lo que camina",
+      "condition": "Camina el alambrado del oeste de punta a punta. Exposición muy alta."
+    },
+    {
+      "id": "llevarse",
+      "title": "Lo que se lleva",
+      "condition": "Se va con los papeles y sin la explicación."
+    },
+    {
+      "id": "borrar",
+      "title": "Lo que se borra",
+      "condition": "Hace desaparecer la mensura de 1903 para que el pleito muera con ella."
+    }
+  ],
+  "opening": "El break del pueblo {lo} deja en el portón a las nueve y cuarto y el cochero no baja del pescante.\n\n—{Lo} esperan —dice, y señala con la barbilla la galería, donde hay tres personas que no están juntas: una mujer de vestido oscuro, un hombre de alpargatas parado en el escalón más bajo, y un viejo de traje que llegó por su cuenta y que nadie llamó.\n\nLa Perseverancia es una casa larga, tres eucaliptos y un campo que desde acá parece un campo. Del otro lado del potrero, chiquito y nítido, se ve un molino.\n\nA usted {lo} mandaron a firmar un certificado de defunción. Fermín Arce, treinta y cuatro años, muerto de sed a doscientos metros de un tanque lleno. Para firmarlo hay que consignar el lugar del hecho.\n\nY ése, va a descubrir en las próximas horas, es el problema."
+}

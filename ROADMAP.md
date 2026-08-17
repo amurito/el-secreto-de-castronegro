@@ -253,12 +253,21 @@ Chaosium sigue sin poder entrar al repositorio público — eso no cambia.
 
 ## 4. Sistema
 
-### 4.1 Contenido fuera del código ✔ HECHO (Agua Quieta; falta migrar La Legua)
+### 4.1 Contenido fuera del código ✔ HECHO — las dos aventuras
 
-Agua Quieta vive en `agua-quieta.contenido.json`: lugares, objetos, NPC,
-documentos, línea de tiempo, temas de conversación, botones, desenlaces, y
-las condiciones de CUÁNDO responde cada escena. Pasó de cuatro archivos
-TypeScript (~1200 líneas) a un JSON más `aguaquieta.logica.ts`.
+Agua Quieta y La Legua Perdida viven en `agua-quieta.contenido.json` /
+`la-legua-perdida.contenido.json`: lugares, objetos, NPC, documentos, línea de
+tiempo, temas de conversación, botones, desenlaces, y las condiciones de
+CUÁNDO responde cada escena. Juntas pasaron de ocho archivos TypeScript
+(~2200 líneas) a dos JSON más `aguaquieta.logica.ts` / `legua.logica.ts`.
+
+La Legua se migró segunda, con la receta ya probada en Agua Quieta, y salió
+mecánico: el mismo lenguaje de condiciones alcanzó sin agregar NINGÚN
+operador nuevo. `contradicciones` —la mecánica que La Legua vino a estrenar—
+ya estaba en el catálogo desde que se diseñó, junto a `exposicion`, que Agua
+Quieta ya usaba para el desenlace de sostener la mirada. Esa reutilización
+sin fricción es la confirmación de que el catálogo salió de mirar el uso
+real y no de adivinar.
 
 **Qué sigue siendo código, y por qué.** `resolver` —la prosa que se arma
 distinto según el grado de la tirada y lo que ya se descubrió— no es una
@@ -283,10 +292,12 @@ Es una capa distinta de `prueba-auditoria.ts` y las dos hacen falta: ésta
 pregunta «¿la forma es correcta y las referencias existen?», aquélla «¿todo
 lo declarado tiene camino real en el juego?».
 
-**Falta:** migrar La Legua Perdida con la misma receta. Es mecánico ahora que
-el camino está probado, y hasta que se haga las dos formas conviven sin
-problema —lo cual es en sí mismo la prueba de que el motor no se enteró del
-cambio.
+No queda contenido jugable en TypeScript: las dos aventuras son datos. Lo
+único que sigue en código es lo que genuinamente tiene que serlo —`resolver`
+de cada escena, en `aguaquieta.logica.ts` / `legua.logica.ts`— y la
+infraestructura que lo carga (`condiciones.ts`, `contenido.schema.ts`,
+`validarContenido.ts`, `cargarAventura.ts`), que no crece con cada aventura
+nueva: ya está escrita.
 
 ### 4.2 CI de verdad
 
