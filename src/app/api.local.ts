@@ -48,6 +48,27 @@ const rivalesDe = (state: GameState) =>
 /** Un turno por vez, igual que el lock del servidor. */
 const enCurso = new Set<string>();
 
+/**
+ * Deja presente SÓLO al rival elegido. Los otros dos están en el galpón
+ * como opciones del menú, no como una emboscada: sin esto, el motor —que
+ * desde el orden de asalto por DES hace pelear a TODO combatiente presente,
+ * no sólo al blanco declarado— los sumaba a la pelea aunque el jugador
+ * hubiera elegido pelear con uno solo. Es lo mismo que ya hace el motor
+ * para una aventura de verdad, sólo que acá «presente» lo decide el menú,
+ * no la escena.
+ */
+function aislarRival(turn: Turn, npcId: string): void {
+  for (const n of Object.values(turn.state.npcs)) {
+    if (!n.combate) continue;
+    const debeEstar = n.id === npcId;
+    if (n.present !== debeEstar) {
+      turn.executeTool('change_npc_state', {
+        npc_id: n.id, present: String(debeEstar), cause: 'sólo pelea el elegido en el simulador',
+      });
+    }
+  }
+}
+
 export function createLocalApi(): GameApi {
   useStore(browserStore);
 
@@ -222,6 +243,7 @@ export function createLocalApi(): GameApi {
       enCurso.add(id);
       try {
         const turn = await Turn.open(id);
+        aislarRival(turn, npcId);
         const antes = turn.state.rolls.length;
         const r = turn.executeTool('resolve_attack', {
           npc_id: npcId, weapon_id: armaId,
@@ -244,11 +266,12 @@ export function createLocalApi(): GameApi {
       }
     },
 
-    async huir(id, armaId) {
+    async huir(id, armaId, npcId) {
       if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
       enCurso.add(id);
       try {
         const turn = await Turn.open(id);
+        aislarRival(turn, npcId);
         const antes = turn.state.rolls.length;
         const r = turn.executeTool('resolve_flee', { weapon_id: armaId });
         await turn.commit();
@@ -267,6 +290,7 @@ export function createLocalApi(): GameApi {
       enCurso.add(id);
       try {
         const turn = await Turn.open(id);
+        aislarRival(turn, npcId);
         const antes = turn.state.rolls.length;
         const r = turn.executeTool('resolve_maneuver', { npc_id: npcId, type: tipo });
         await turn.commit();

@@ -77,8 +77,8 @@ export function createHttpApi(): GameApi {
     atacar: async (id, npcId, armaId, mods) =>
       json(await post(`/api/campaigns/${id}/atacar`, { npcId, armaId, mods })),
 
-    huir: async (id, armaId) =>
-      json(await post(`/api/campaigns/${id}/huir`, { armaId })),
+    huir: async (id, armaId, npcId) =>
+      json(await post(`/api/campaigns/${id}/huir`, { armaId, npcId })),
 
     maniobra: async (id, npcId, tipo) =>
       json(await post(`/api/campaigns/${id}/maniobra`, { npcId, tipo })),

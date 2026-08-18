@@ -460,6 +460,19 @@ un botón para entrar directo y otro para borrarlo.
 Todo verificado por `prueba-combate.ts` y probado a mano en el simulador del
 navegador antes de darlo por bueno.
 
+**Corregido: el simulador ya no mezclaba a los tres rivales en la misma
+pelea.** Los tres matones del galpón están siempre `present: true` —son
+opciones de menú, no una emboscada—, pero la regla nueva de orden de asalto
+hace actuar a cualquier presente con estadísticas de combate. Resultado: al
+atacar al muchacho asustado, el hombre con cuchillo (más rápido por DES)
+también atacaba y podía matar al investigador sin que el jugador lo hubiera
+elegido. `aislarRival()` (en `api.local.ts` y `server/index.ts`, duplicado a
+propósito porque son dos entornos de ejecución separados) deja presente sólo
+al rival elegido en la pantalla antes de cada `atacar`/`huir`/`maniobra`: en
+el simulador, «presente» pasa a significar «seleccionado en la interfaz».
+La regla del motor en sí —cualquier presente pelea— queda intacta, porque es
+correcta para una escena real con varios enemigos.
+
 **No entra por ahora, a propósito:** escopetas y rifles largos, porque su
 daño depende del tramo de distancia y el motor no tiene distancias dentro de
 una escena; meterlas con un solo número sería inventar una regla. Armas de

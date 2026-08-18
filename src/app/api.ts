@@ -88,8 +88,12 @@ export interface GameApi {
    * es lo único que sirve para decidir si las reglas se sienten bien.
    */
   atacar(id: string, npcId: string, armaId: string, mods?: ModsDeFuego): Promise<AttackResult>;
-  /** Salir de la pelea a mitad de asalto: cada rival en pie se lleva un golpe de oportunidad. */
-  huir(id: string, armaId: string): Promise<AttackResult>;
+  /**
+   * Salir de la pelea a mitad de asalto: cada rival en pie se lleva un golpe
+   * de oportunidad. `npcId` es contra quién se estaba peleando —en el
+   * simulador, el elegido: los otros dos ni están en el cuarto.
+   */
+  huir(id: string, armaId: string, npcId: string): Promise<AttackResult>;
   /** Una maniobra contra alguien que puede pelear: desarmar, derribar, sujetar. */
   maniobra(id: string, npcId: string, tipo: 'desarmar' | 'derribar' | 'sujetar'): Promise<AttackResult>;
   /**

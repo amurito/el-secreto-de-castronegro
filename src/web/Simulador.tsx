@@ -77,7 +77,7 @@ export function Simulador({
     setOcupado(true);
     setError(null);
     try {
-      agregarAlRegistro(await api.huir(campaignId, arma));
+      agregarAlRegistro(await api.huir(campaignId, arma, rival));
     } catch (e) {
       setError((e as Error).message);
     } finally {

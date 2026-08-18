@@ -56,6 +56,25 @@ const rivalesDe = (state: GameState) =>
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
       derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
     }));
+
+/**
+ * Deja presente SÓLO al rival elegido — ver el mismo comentario en
+ * `app/api.local.ts`. Los otros dos rivales del galpón son opciones del
+ * menú, no una emboscada; sin esto, el orden de asalto por DES los suma a
+ * la pelea aunque el jugador haya elegido pelear con uno solo.
+ */
+function aislarRival(turn: Turn, npcId: string): void {
+  for (const n of Object.values(turn.state.npcs)) {
+    if (!n.combate) continue;
+    const debeEstar = n.id === npcId;
+    if (n.present !== debeEstar) {
+      turn.executeTool('change_npc_state', {
+        npc_id: n.id, present: String(debeEstar), cause: 'sólo pelea el elegido en el simulador',
+      });
+    }
+  }
+}
+
 const BRIEFINGS = { 'agua-quieta': AGUA_QUIETA_KEEPER };
 const app = Fastify({ logger: false });
 const locks = new Set<string>();
@@ -197,6 +216,7 @@ app.post<{
   '/api/campaigns/:id/atacar',
   async (req) => {
     const turn = await Turn.open(req.params.id);
+    aislarRival(turn, req.body.npcId);
     const antes = turn.state.rolls.length;
     const m = req.body.mods;
     const r = turn.executeTool('resolve_attack', {
@@ -218,10 +238,11 @@ app.post<{
 );
 
 /** Salir de una pelea a mitad de asalto. */
-app.post<{ Params: { id: string }; Body: { armaId: string } }>(
+app.post<{ Params: { id: string }; Body: { armaId: string; npcId: string } }>(
   '/api/campaigns/:id/huir',
   async (req) => {
     const turn = await Turn.open(req.params.id);
+    aislarRival(turn, req.body.npcId);
     const antes = turn.state.rolls.length;
     const r = turn.executeTool('resolve_flee', { weapon_id: req.body.armaId });
     await turn.commit();
@@ -238,6 +259,7 @@ app.post<{ Params: { id: string }; Body: { npcId: string; tipo: string } }>(
   '/api/campaigns/:id/maniobra',
   async (req) => {
     const turn = await Turn.open(req.params.id);
+    aislarRival(turn, req.body.npcId);
     const antes = turn.state.rolls.length;
     const r = turn.executeTool('resolve_maneuver', { npc_id: req.body.npcId, type: req.body.tipo });
     await turn.commit();
