@@ -7,6 +7,8 @@ import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/accio
 import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
 import { Creacion } from './Creacion.tsx';
 import { Simulador } from './Simulador.tsx';
+import { listarPlantillas, guardarPlantilla, borrarPlantilla, type Plantilla } from '../app/plantillas.ts';
+import type { Investigator } from '../shared/types.ts';
 import { leerPreferenciaDados, guardarPreferenciaDados, prefiereMenosMovimiento } from './dados.tsx';
 
 type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
@@ -103,6 +105,8 @@ export function App() {
   const [creando, setCreando] = useState<string | null>(null);
   /** Campaña del simulador de combate. null = no estamos en el galpón. */
   const [simulando, setSimulando] = useState<string | null>(null);
+  /** Personajes de prueba guardados para el simulador. Viven en localStorage. */
+  const [plantillas, setPlantillas] = useState<Plantilla[]>(() => listarPlantillas());
   /**
    * Qué panel se ve EN MÓVIL. En pantalla grande no se usa: las tres columnas
    * están a la vista y este estado lo ignora el CSS.
@@ -198,14 +202,22 @@ export function App() {
   /**
    * Abre el galpón. `creando === 'simulador'` significa que el jugador quiso
    * probarlo con un investigador propio; sin eso, va con Elena.
+   *
+   * `guardar` sólo es true cuando el investigador viene RECIÉN armado por el
+   * formulario rápido: reabrir con Elena o con una plantilla ya guardada no
+   * tiene que volver a guardar nada, o cada partida dejaría una copia nueva.
    */
-  async function abrirSimulador(investigador?: unknown) {
+  async function abrirSimulador(investigador?: unknown, guardar = false) {
     if (!api) return;
     setBusy(true); setError(null);
     try {
       const data = investigador
         ? await api.createCampaignConFicha('simulador', investigador)
         : await api.createCampaign('simulador');
+      if (guardar && investigador) {
+        guardarPlantilla(investigador as Investigator);
+        setPlantillas(listarPlantillas());
+      }
       setCreando(null);
       setSimulando(data.campaignId);
     } catch (e) {
@@ -316,8 +328,9 @@ export function App() {
           <Creacion
             scenarioTitulo={alGalpon ? 'Simulador de combate' : entradaDe(creando)?.scenario.title ?? ''}
             ocupado={busy}
+            rapido={alGalpon}
             onCancelar={() => setCreando(null)}
-            onListo={(inv) => (alGalpon ? abrirSimulador(inv) : newCampaignConFicha(creando, inv))}
+            onListo={(inv) => (alGalpon ? abrirSimulador(inv, true) : newCampaignConFicha(creando, inv))}
           />
           {error && <div className="error error-inicio">{error}</div>}
         </div>
@@ -387,6 +400,34 @@ export function App() {
                 Crear investigador
               </button>
             </div>
+
+            {plantillas.length > 0 && (
+              <div className="sim-plantillas">
+                <div className="sim-plantillas-titulo">Personajes de prueba guardados</div>
+                {plantillas.map((p) => (
+                  <div className="sim-plantilla-row" key={p.id}>
+                    <button
+                      className="sim-plantilla-usar"
+                      onClick={() => abrirSimulador(p.investigador)}
+                      disabled={busy || !api}
+                    >
+                      {p.nombre}
+                      <span className="sim-plantilla-datos">
+                        {p.investigador.occupation} · Pelea {p.investigador.skills['pelea']?.base ?? 25}%
+                      </span>
+                    </button>
+                    <button
+                      className="sim-plantilla-borrar"
+                      onClick={() => { borrarPlantilla(p.id); setPlantillas(listarPlantillas()); }}
+                      disabled={busy}
+                      title="Borrar esta plantilla"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Sin esto, un fallo del almacenamiento dejaba el botón muerto y sin

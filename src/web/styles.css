@@ -948,3 +948,23 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 860px) {
   .sim-maniobras { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── Plantillas de investigador para el simulador ─────────────────────── */
+.sim-plantillas { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+.sim-plantillas-titulo {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.5rem;
+}
+.sim-plantilla-row { display: flex; gap: 0.4rem; margin-bottom: 0.4rem; }
+.sim-plantilla-usar {
+  flex: 1; display: flex; justify-content: space-between; align-items: center;
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 3px;
+  padding: 0.5rem 0.8rem; color: var(--text); font-family: inherit; text-align: left;
+}
+.sim-plantilla-usar:hover:not(:disabled) { border-color: var(--accent-dim); }
+.sim-plantilla-datos { font-family: var(--mono); font-size: 0.7rem; color: var(--text-faint); }
+.sim-plantilla-borrar {
+  background: var(--bg-panel); border: 1px solid var(--line); color: var(--text-faint);
+  border-radius: 3px; width: 2.2rem; font-size: 1.1rem; line-height: 1;
+}
+.sim-plantilla-borrar:hover { border-color: var(--accent-dim); color: var(--accent); }

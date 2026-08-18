@@ -413,6 +413,19 @@ contenido real, y con un **simulador jugable en el navegador**
 tres rivales de dificultad creciente, para probar las reglas con las manos
 antes de meterlas en una aventura de verdad.
 
+**Creación rápida y plantillas** (`Creacion.tsx` con `rapido`, `app/plantillas.ts`):
+crear un investigador para el simulador ya no pasa por trasfondo ni conexión
+clave —un personaje de prueba no tiene campaña de la que recuperar Cordura,
+y preguntárselo era pedirle al jugador que inventara una historia para tirar
+un dado—. Quedan sólo los tres pasos que sí cambian un asalto: quién es, los
+dados, y el reparto de habilidades. Por dentro se le arma un trasfondo de
+relleno que nunca se muestra —`crearInvestigador` lo exige igual, es el
+mismo validador para cualquier ficha— y se guarda solo, sin pedirlo, en
+`localStorage` (aparte del log de campañas, que vive en IndexedDB: uno es un
+registro con muerte permanente, el otro una ficha que se puede pisar y
+reusar). La próxima vez que se abre el galpón, ese personaje está ahí, con
+un botón para entrar directo y otro para borrarlo.
+
 **HECHO TAMBIÉN: orden de turno, huir, maniobras y modificadores de fuego.**
 
 - **Herida Grave** (p. 119, no estaba pedida pero es la mitad de la pregunta

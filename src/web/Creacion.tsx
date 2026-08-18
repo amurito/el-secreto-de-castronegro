@@ -47,13 +47,32 @@ const CLASES_TRASFONDO: Array<{ kind: BackstoryAspect['kind']; label: string; ay
 
 type Paso = 'quien' | 'dados' | 'puntos' | 'trasfondo';
 
+/**
+ * Trasfondo de relleno para el modo rápido. `crearInvestigador` exige al
+ * menos tres entradas —de ahí sale la Cordura que se recupera entre
+ * aventuras— pero un personaje del simulador no tiene campaña de la que
+ * recuperarse: nunca se van a leer. Existen sólo para que la ficha sea
+ * válida según el mismo reglamento que valida cualquier otra.
+ */
+const TRASFONDO_RAPIDO: BackstoryAspect[] = [
+  { id: 'personas', kind: 'personas', text: '(personaje de prueba, sin trasfondo)' },
+  { id: 'lugares', kind: 'lugares', text: '(personaje de prueba, sin trasfondo)' },
+  { id: 'rasgos', kind: 'rasgos', text: '(personaje de prueba, sin trasfondo)' },
+];
+
 export function Creacion({
-  scenarioTitulo, onListo, onCancelar, ocupado,
+  scenarioTitulo, onListo, onCancelar, ocupado, rapido = false,
 }: {
   scenarioTitulo: string;
   onListo: (investigador: unknown) => void;
   onCancelar: () => void;
   ocupado: boolean;
+  /**
+   * Para el simulador: sólo tiradas principales y habilidades, sin
+   * descripción ni trasfondo — nada que no afecte a un asalto. Salta
+   * directo de repartir habilidades a armar la ficha.
+   */
+  rapido?: boolean;
 }) {
   const catalogo = useMemo(catalogoCreacion, []);
   const [paso, setPaso] = useState<Paso>('quien');
@@ -91,9 +110,11 @@ export function Creacion({
 
   function crear() {
     if (!tirada) return;
-    const aspectos: BackstoryAspect[] = CLASES_TRASFONDO
-      .filter((c) => (trasfondo[c.kind] ?? '').trim())
-      .map((c) => ({ id: c.kind, kind: c.kind, text: trasfondo[c.kind]!.trim() }));
+    const aspectos: BackstoryAspect[] = rapido
+      ? TRASFONDO_RAPIDO
+      : CLASES_TRASFONDO
+        .filter((c) => (trasfondo[c.kind] ?? '').trim())
+        .map((c) => ({ id: c.kind, kind: c.kind, text: trasfondo[c.kind]!.trim() }));
 
     const r = armar(tirada, {
       nombre, genero, edad, descripcion, ocupacionId,
@@ -102,7 +123,9 @@ export function Creacion({
       restaJuventud: restaJuventud as never,
       reparto: { ocupacion: ocupPuntos, personal: persPuntos },
       trasfondo: aspectos,
-      conexionClave: aspectos.some((a) => a.id === conexion) ? conexion : (aspectos[0]?.id ?? null),
+      conexionClave: rapido
+        ? aspectos[0]!.id
+        : (aspectos.some((a) => a.id === conexion) ? conexion : (aspectos[0]?.id ?? null)),
     });
     if (!r.ok) { setProblemas(r.problemas); return; }
     onListo(r.investigador);
@@ -124,12 +147,17 @@ export function Creacion({
         <h2>Crear investigador</h2>
         <div className="creacion-sub">para {scenarioTitulo}</div>
         <div className="creacion-pasos">
-          {(['quien', 'dados', 'puntos', 'trasfondo'] as Paso[]).map((p, i) => (
+          {(rapido ? (['quien', 'dados', 'puntos'] as Paso[]) : (['quien', 'dados', 'puntos', 'trasfondo'] as Paso[])).map((p, i) => (
             <span key={p} className={`creacion-paso ${paso === p ? 'on' : ''}`}>
               {i + 1}. {{ quien: 'Quién es', dados: 'Los dados', puntos: 'Qué sabe', trasfondo: 'De qué se agarra' }[p]}
             </span>
           ))}
         </div>
+        {rapido && (
+          <div className="creacion-sub">
+            Modo rápido: sólo lo que afecta a un asalto. Sin trasfondo — este personaje es para probar reglas, no para jugar una historia.
+          </div>
+        )}
       </div>
 
       {/* ── 1. QUIÉN ES ─────────────────────────────────────────────────── */}
@@ -162,13 +190,15 @@ export function Creacion({
             />
           </label>
 
-          <label className="campo">
-            <span>Una línea sobre quién es</span>
-            <textarea
-              rows={2} value={descripcion} onChange={(e) => setDescripcion(e.target.value)}
-              placeholder="Se recibió en Buenos Aires y eligió el campo."
-            />
-          </label>
+          {!rapido && (
+            <label className="campo">
+              <span>Una línea sobre quién es</span>
+              <textarea
+                rows={2} value={descripcion} onChange={(e) => setDescripcion(e.target.value)}
+                placeholder="Se recibió en Buenos Aires y eligió el campo."
+              />
+            </label>
+          )}
 
           <div className="campo-titulo">Ocupación</div>
           <div className="ocupaciones">
@@ -326,9 +356,22 @@ export function Creacion({
             ))}
           </div>
 
+          {rapido && problemas.length > 0 && (
+            <div className="creacion-problemas">
+              <div className="creacion-problemas-titulo">El reglamento no acepta esta ficha:</div>
+              {problemas.map((p, i) => <div key={i}>· {p.mensaje}</div>)}
+            </div>
+          )}
+
           <div className="creacion-pie">
             <button className="ghost" onClick={() => setPaso('dados')}>Atrás</button>
-            <button className="primary" onClick={() => setPaso('trasfondo')}>Seguir</button>
+            {rapido ? (
+              <button className="primary" onClick={crear} disabled={ocupado}>
+                {ocupado ? 'Empezando…' : 'Entrar al galpón'}
+              </button>
+            ) : (
+              <button className="primary" onClick={() => setPaso('trasfondo')}>Seguir</button>
+            )}
           </div>
         </div>
       )}
