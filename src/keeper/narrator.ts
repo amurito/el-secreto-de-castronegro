@@ -125,7 +125,22 @@ export function describeScene(state: GameState, detailed: boolean): string {
     parts.push(`A la vista: ${items.map((i) => i.name.toLowerCase()).join(', ')}.`);
   }
 
-  const npcs = Object.values(state.npcs).filter((n) => n.present && n.status === 'alive');
+  // Un NPC está acá si ESTA localización lo lista. Antes se filtraba sólo por
+  // `present`, que es global: con cuatro personajes repartidos en cinco
+  // lugares, el narrador los ponía a los cuatro en cada lugar. `acciones.ts`
+  // ya usaba `npcsPresent` para decidir con quién se puede hablar, así que la
+  // narración contradecía a los botones.
+  //
+  // Los NPC creados durante la partida (`create_npc`) no figuran en la lista
+  // de ninguna localización: ésos siguen contándose como presentes, porque
+  // aparecieron donde está el investigador.
+  const conLugarPropio = new Set(
+    Object.values(state.world.locations).flatMap((l) => l.npcsPresent),
+  );
+  const npcs = Object.values(state.npcs).filter(
+    (n) => n.present && n.status === 'alive'
+      && (loc.npcsPresent.includes(n.id) || !conLugarPropio.has(n.id)),
+  );
   if (npcs.length) {
     parts.push(`${npcs.map((n) => n.name).join(' y ')} ${npcs.length > 1 ? 'están' : 'está'} acá.`);
     const reaccion = reaccionANPCsPresentes(state, npcs[0]!.name.split(' ')[0]!);

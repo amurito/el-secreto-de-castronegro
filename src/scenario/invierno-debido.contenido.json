@@ -1,0 +1,1923 @@
+{
+  "id": "invierno-debido",
+  "title": "El Invierno Debido",
+  "surfacePremise": "El escribano de Villa Requena escribió una carta pidiendo que alguien fuera a verlo, y sabe demasiado sobre dónde estuvo el investigador el último año y medio. Hay una obligación que su familia hereda desde hace tres generaciones, que se cumple en la semana de San Juan y que este año lleva dos semanas de atraso. Quiere que alguien lo ayude a dejar de cumplirla. No sabe —nadie sabe— si cumplirla sirve para algo.",
+  "startLocation": "plaza",
+  "startTime": {
+    "iso": "1926-07-09T10:00:00",
+    "precision": "minute",
+    "display": "las diez de la mañana"
+  },
+  "startUmbralPermeability": 12,
+  "items": [
+    {
+      "id": "it-llave",
+      "name": "La llave del cajón",
+      "aliases": [
+        "llave",
+        "llavecita",
+        "llave del cajon"
+      ],
+      "shortDescription": "Una llave chica, de bronce, gastada de tanto pulgar. Aurelio la tiene en el bolsillo del chaleco y la toca cuando habla de otra cosa.",
+      "owner": "npc-aurelio",
+      "carried": true,
+      "publicProperties": [
+        {
+          "id": "p-llave-basico",
+          "description": "Bronce, de las de cajón de escritorio. No abre una puerta: abre un mueble.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-almagre",
+      "name": "El tarro de almagre",
+      "aliases": [
+        "almagre",
+        "tarro",
+        "pintura",
+        "tarro de pintura",
+        "pintura roja"
+      ],
+      "shortDescription": "Un tarro de lata con almagre seco al fondo y una brocha de cerda dura apoyada encima, en un estante de la escribanía, entre legajos.",
+      "owner": "escribania",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-almagre-basico",
+          "description": "Tierra roja molida, del color de la sangre vieja. La brocha está limpia.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-almagre-seco",
+          "description": "El almagre del fondo está seco y agrietado en una costra pareja, sin una sola marca de brocha encima. Este tarro no se abrió el invierno pasado. Y la brocha está limpia porque nunca se mojó.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-retrato",
+      "name": "Retrato de Evaristo Requena",
+      "aliases": [
+        "retrato",
+        "cuadro",
+        "foto de evaristo",
+        "el abuelo",
+        "retrato del abuelo"
+      ],
+      "shortDescription": "Un daguerrotipo enmarcado, colgado detrás del escritorio: un hombre de patillas, de pie junto a una mesa con un libro abierto. Abajo, en tinta: «E. R., escribano, 1887».",
+      "owner": "escribania",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-retrato-basico",
+          "description": "El hombre no mira a la cámara. Mira el libro que tiene al lado, como si lo hubieran interrumpido.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-retrato-mano",
+          "description": "La mano derecha de Evaristo Requena está apoyada sobre el libro abierto, y el dorso tiene una mancha oscura que el daguerrotipo no logra resolver del todo. No es sombra: la sombra cae para el otro lado. Es almagre, en la mano, el día que se sentó a hacerse el retrato.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "descubrir",
+            "difficulty": "hard"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-aurelio",
+      "name": "Aurelio Requena",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cincuenta y cuatro años, escribano de Villa Requena como lo fueron su padre y su abuelo. Habla despacio, elige las palabras como si alguien las fuera a copiar, y no duerme bien desde hace un año.",
+      "motivation": "Que alguien de afuera le diga que puede dejar de hacerlo, o que le diga que no puede, pero que se lo diga alguien.",
+      "fears": [
+        "Que sea verdad. Y que no lo sea."
+      ],
+      "refusals": [
+        "No va a decir, sin que lo aprieten, que el invierno pasado no lo pintó."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-aurelio-salto",
+          "statement": "El invierno pasado no repintó el círculo. No pasó nada. Eso lo asusta más que si hubiera pasado algo, porque significa que su padre y su abuelo perdieron la vida en algo que quizás nunca hizo nada — o que lo que iba a pasar todavía no terminó de llegar.",
+          "disclosure": "KEEPER_SECRET",
+          "canon": {
+            "truth": "CANON_SETTING",
+            "disclosure": "KEEPER_SECRET",
+            "source": "scenario"
+          }
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-ramona",
+      "name": "Ramona Sosa",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Setenta y un años. La otra familia con turno. Tiene las uñas y las cutículas teñidas de un rojo que no sale con jabón, y las manos quietas de alguien que decidió hace mucho no discutir.",
+      "motivation": "Cumplir mientras el cuerpo le dé, y que su hijo no tenga que decidir nada mientras ella viva.",
+      "fears": [
+        "Que Cirilo se entere de cuánto hace que ella viene haciendo los dos turnos."
+      ],
+      "refusals": [
+        "No va a explicar para qué sirve. Dice que no lo sabe, y es verdad."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-ramona-dos",
+          "statement": "Sabe que Aurelio no pintó el invierno pasado, porque fue ella a pintarlo. Hizo los dos turnos, a los setenta años, de noche, sin decírselo a nadie. Lo cubrió por lástima y porque le pareció más fácil que discutir.",
+          "disclosure": "KEEPER_SECRET",
+          "canon": {
+            "truth": "CANON_SETTING",
+            "disclosure": "KEEPER_SECRET",
+            "source": "scenario"
+          }
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-cirilo",
+      "name": "Cirilo Sosa",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Treinta y tres años, hijo de Ramona. Trabaja de a caballo y tiene el rebenque en la mano incluso adentro de la casa. No cree en nada de esto; lo que no soporta es ver a la madre haciéndolo sola.",
+      "motivation": "Que alguien más cargue con lo que carga su madre, aunque él mismo piense que es una estupidez.",
+      "fears": [
+        "Que la madre se muera haciendo esto y que él no haya hecho nada."
+      ],
+      "refusals": [
+        "No va a dejar que se lleven el libro del pueblo."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "combate": {
+        "hp": 13,
+        "maxHp": 13,
+        "pelea": 50,
+        "esquivar": 35,
+        "armaId": "rebenque",
+        "bonificacionDano": "1d4",
+        "defensaPorDefecto": "contraataca",
+        "dex": 65,
+        "build": 1
+      }
+    },
+    {
+      "id": "npc-delfina",
+      "name": "Delfina Arce",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Veintiséis años, maestra, hace dos que llegó de La Plata a la escuela de una sola aula. Es la única persona del pueblo que no heredó nada acá, y por eso la única que mira todo esto de frente.",
+      "motivation": "Entender el pueblo donde vive, y no quedarse callada como se quedan todos.",
+      "fears": [
+        "Que en diez años esto le parezca normal."
+      ],
+      "refusals": [
+        "No va a fingir que le parece bien."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-carta",
+      "title": "Carta de Aurelio Requena",
+      "author": "Aurelio Requena, escribano",
+      "date": "22 de junio de 1926",
+      "location": "La que trajo al investigador hasta acá",
+      "kind": "letter",
+      "content": "Señor:\n\nLe escribo sin conocerlo y con una molestia que le pido me disculpe de antemano.\n\nSoy escribano en Villa Requena, como lo fue mi padre y como lo fue mi abuelo. Por razones que no puedo poner por escrito sin que suenen a locura, en esta escribanía se lleva desde hace mucho un registro que no es de propiedades ni de sucesiones, y en ese registro figuran, entre otras cosas, las consultas que se hacen en la provincia sobre ciertas marcas antiguas.\n\nEl año pasado y éste llegaron tres avisos con su nombre.\n\nNo lo escribo para amenazarlo. Lo escribo porque llevo cincuenta y cuatro años acá y usted es la primera persona que preguntó por esas marcas sin que se le muriera nadie encima, y porque yo necesito hablar con alguien que las haya visto y no sea de una de las dos familias de este pueblo.\n\nSi puede venir, venga antes de fin de mes. Después de fin de mes ya no va a servir de nada, y le voy a tener que decir que no vino nadie.\n\nCon respeto,\nAurelio Requena",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-turnos",
+      "title": "Libro de turnos",
+      "author": "Cuatro letras distintas, en orden",
+      "date": "1841 – 1925",
+      "location": "El cajón cerrado de la escribanía",
+      "kind": "file",
+      "content": "Un libro de tapas de cartón, rayado como un libro de cuentas. Dos columnas: un año, y un apellido. Nada más.\n\n1841 REQUENA · 1842 SOSA · 1843 REQUENA · 1844 SOSA…\n\nY así, alternándose sin faltar un año, ochenta y cuatro renglones, cuatro letras distintas que se van reemplazando de a una: la primera hasta 1889, la segunda hasta 1907, la tercera hasta 1919, y de ahí en adelante la de Aurelio.\n\nHay tres cosas raras.\n\nLa primera: los renglones de 1852, 1878 y 1904 están tachados y reescritos con el otro apellido. Alguien no pudo, y el otro fue.\n\nLa segunda: el renglón de 1925 dice SOSA. Y el de 1924 también dice SOSA. Dos años seguidos, cuando la regla evidente de las ocho décadas anteriores es que se alternan. En ochenta y cuatro renglones no había pasado nunca.\n\nLa tercera es la primera página, que está antes de 1841 y no tiene años. Es una lista de nueve apellidos, de los cuales siete no existen en este pueblo ni existieron nunca según los padrones, escrita con una letra más vieja que el libro. Al pie dice, en la misma letra: «Los que quedan. Que se sepa que quedaron pocos y que ninguno quiso».",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-procedimiento",
+      "title": "El procedimiento",
+      "author": "Sin firma; copiado y recopiado",
+      "date": "sin fecha",
+      "location": "El cajón cerrado de la escribanía, debajo del libro",
+      "kind": "manuscript",
+      "content": "Cuatro hojas cosidas con hilo, en la letra de Evaristo Requena, que a su vez dice estar copiando de otra copia.\n\nLAS TRES PRIMERAS HOJAS son instrucciones, y son de una sencillez humillante. Cuándo: en la semana de San Juan, entre la puesta y la medianoche, no antes. Con qué: almagre de la barranca, molido en seco, sin aceite. Dónde: la cara interna, la que queda tapada. Cuánto: hasta cubrir, sin repasar el borde. Quién: el que tiene el turno, solo, y si no puede, el otro, y que quede anotado.\n\nY después: «No se dice nada mientras se pinta. Lo que se diga se anota igual».\n\nLA CUARTA HOJA no es una instrucción. Es una explicación, y está escrita con otra intención, más apretada y sin renglones. Empieza así:\n\n«Al que lea esto y no tenga turno: no lo lea. Cierre acá. Lo que sigue no es un secreto que se guarda, es un peso que se pasa, y una vez que lo levantás no hay a quién devolvérselo.\n\nAl que tenga turno y quiera saber para qué: acá está, y que Dios me perdone por escribirlo…»",
+      "authenticity": "authentic",
+      "accuracy": "partially_accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "plaza": {
+      "id": "plaza",
+      "name": "La plaza de Villa Requena",
+      "aliases": [
+        "plaza",
+        "pueblo",
+        "centro"
+      ],
+      "description": "Cuatro manzanas de casas bajas alrededor de una plaza con dos tipas peladas por el invierno. Es 9 de julio y está todo cerrado; el almacén tiene la persiana a media asta y adentro hay tres hombres tomando en silencio. En el medio de la plaza hay un brocal de aljibe que ya no se usa: el pueblo tiene bomba desde el año diecinueve.",
+      "atmosphere": [
+        "El aire está quieto y frío y huele a leña. Nadie cruza la plaza.",
+        "Del almacén sale un ruido de vasos, y nada más.",
+        "La escarcha de la mañana todavía no se fue del lado sur del brocal."
+      ],
+      "connections": [
+        "escribania",
+        "casa-sosa",
+        "escuela",
+        "mojon"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sight": "Un pueblo cerrado en un día de fiesta patria, sin una bandera colgada.",
+        "sound": "Vasos, lejos. Un perro que no ladra dos veces seguidas.",
+        "smell": "Leña húmeda."
+      },
+      "features": [
+        {
+          "id": "f-brocal",
+          "names": [
+            "brocal",
+            "aljibe",
+            "aljibe de la plaza",
+            "pozo"
+          ],
+          "description": "Un brocal de ladrillo asentado en cal, con la boca tapada por una chapa y una piedra encima. Alrededor, el pasto está pisado en un anillo angosto: alguien le da la vuelta caminando, y no hace mucho.",
+          "closerLook": "Levantando la chapa, la cara interna del brocal —la que sólo se ve desde arriba y con el sol de frente— tiene un círculo pintado en almagre, del ancho de dos manos. La pintura está fresca de este invierno en un tramo y desvaída de varios inviernos en el resto: alguien lo repasó apurado, de noche, sin terminar de cubrir.",
+          "examineSkill": "descubrir",
+          "exposure": 3,
+          "clue": {
+            "description": "El círculo del brocal de la plaza está repintado a medias: un tramo fresco de este invierno y el resto gastado de varios. Quien lo hizo trabajó apurado y a oscuras.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-almacen",
+          "names": [
+            "almacen",
+            "boliche",
+            "los hombres",
+            "persiana"
+          ],
+          "description": "Tres hombres en la barra, con el sombrero puesto adentro. Cuando {lo} ven en la plaza, de espaldas al almacén y mirando el brocal, uno de ellos se corre para no quedar en la línea de la puerta.",
+          "closerLook": "Los tres tienen el vaso servido y ninguno de los tres toma. Están esperando que te vayas de la plaza para volver a hablar. El que se corrió de la línea de la puerta lo hizo para no quedar en el ángulo desde el que se ve el brocal.",
+          "examineSkill": "psicologia",
+          "clue": {
+            "description": "Los hombres del almacén dejaron de hablar cuando el investigador se paró frente al brocal, y uno se corrió para no quedar en el ángulo desde el que se lo ve.",
+            "kind": "testimonial",
+            "reliability": "unreliable"
+          }
+        }
+      ]
+    },
+    "escribania": {
+      "id": "escribania",
+      "name": "La escribanía Requena",
+      "aliases": [
+        "escribania",
+        "escritorio",
+        "oficina",
+        "la escribania"
+      ],
+      "description": "Una casa de altos, la única del pueblo, con la chapa de bronce lustrada al lado de la puerta. Adentro: un mostrador, un escritorio de roble, tres paredes de legajos atados con cinta, y un brasero encendido que no alcanza. Aurelio Requena está de pie cuando {lo} ve entrar, como si llevara un rato esperando de pie.",
+      "atmosphere": [
+        "Huele a papel y a carbón.",
+        "El bronce del brasero está impecable. Los legajos, no.",
+        "Aurelio se toca el bolsillo del chaleco cuando se queda callado."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [
+        "it-retrato",
+        "it-almagre"
+      ],
+      "npcsPresent": [
+        "npc-aurelio"
+      ],
+      "visited": false,
+      "umbralIntensity": 4,
+      "senses": {
+        "sight": "Ochenta años de papeles atados en cintas de distinto color según la década.",
+        "sound": "El brasero. La pluma cuando la apoya.",
+        "smell": "Papel viejo y carbón."
+      },
+      "features": [
+        {
+          "id": "f-cajon",
+          "names": [
+            "cajon",
+            "cajón cerrado",
+            "escritorio",
+            "cerradura"
+          ],
+          "description": "El cajón del medio del escritorio tiene una cerradura de bronce y está cerrado. Los otros dos no tienen llave y están abiertos.",
+          "closerLook": "La madera alrededor de la cerradura está limpia y sin marcas, cuando todo el resto del escritorio tiene ochenta años de rayones. Este cajón no se fuerza ni se abre seguido: se mira. El polvo del frente está corrido en dos medialunas, del tamaño de dos pulgares apoyados.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "El cajón cerrado de la escribanía tiene el polvo corrido en dos marcas de pulgar sobre el frente. Aurelio se apoya ahí, seguido, sin abrirlo.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-legajos",
+          "names": [
+            "legajos",
+            "estantes",
+            "papeles",
+            "archivo"
+          ],
+          "description": "Cintas celestes para el siglo pasado, rojas para éste. Escrituras, mensuras, sucesiones. El archivo de tres generaciones de un partido entero.",
+          "closerLook": "En el estante más alto, aparte, hay una fila de carpetas finitas con cinta roja y sin rótulo de año. Adentro hay recortes, cartas de otros escribanos, notas sueltas: informes de gente que preguntó, en otros pueblos, por marcas parecidas. El sistema del que habla la carta existe, es de papel, y lo sostiene un hombre solo.",
+          "examineSkill": "buscar_libros",
+          "exposure": 2,
+          "clue": {
+            "description": "La escribanía guarda una fila de carpetas sin año con informes de otros escribanos sobre quién preguntó, dónde, por qué marcas. El registro de la carta es real y es de papel.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "casa-sosa": {
+      "id": "casa-sosa",
+      "name": "La casa de los Sosa",
+      "aliases": [
+        "casa de los sosa",
+        "los sosa",
+        "casa de ramona",
+        "rancho"
+      ],
+      "description": "En la última cuadra, donde el pueblo se termina sin aviso y empieza el campo. Una casa de ladrillo sin revocar, con un patio de tierra barrida y un alero con dos sillas. Ramona está sentada en una. Cirilo está parado, y no se sienta en todo el rato.",
+      "atmosphere": [
+        "Hay olor a puchero y son las diez de la mañana.",
+        "El patio está barrido en círculos concéntricos, como se barre cuando se barre todos los días.",
+        "Cirilo golpea el rebenque contra la bota, despacio, sin darse cuenta."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-ramona",
+        "npc-cirilo"
+      ],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": {
+        "sight": "Dos sillas, una ocupada. Un caballo atado que no es de trabajo.",
+        "sound": "El rebenque contra la bota.",
+        "smell": "Puchero y humo."
+      },
+      "features": [
+        {
+          "id": "f-manos",
+          "names": [
+            "manos",
+            "manos de ramona",
+            "unas",
+            "dedos"
+          ],
+          "description": "Ramona tiene las manos quietas sobre la falda. Las uñas y las cutículas están teñidas de un rojo ladrillo que no es esmalte.",
+          "closerLook": "No es de una vez: son capas. El rojo está metido en el borde de la uña, en los pliegues de los nudillos y en la grieta del pulgar derecho, en tonos distintos según cuánto hace. Las manos de una mujer de setenta y uno que pintó hace dos semanas, y también en junio del año pasado, y también antes.",
+          "examineSkill": "descubrir"
+        },
+        {
+          "id": "f-caballo",
+          "names": [
+            "caballo",
+            "el caballo",
+            "atado"
+          ],
+          "description": "Un tordillo joven atado corto al palenque, ensillado a media mañana de un día en que nadie trabaja. Está listo para salir, o recién volvió."
+        }
+      ]
+    },
+    "escuela": {
+      "id": "escuela",
+      "name": "La escuela",
+      "aliases": [
+        "escuela",
+        "aula",
+        "la escuelita"
+      ],
+      "description": "Un aula sola, con doce pupitres de dos y una estufa a leña. Es feriado y no hay chicos; Delfina Arce está igual, corrigiendo, con el sobretodo puesto adentro.",
+      "atmosphere": [
+        "Hay un mapa de la provincia clavado con cuatro chinches.",
+        "Doce pupitres para un pueblo que tuvo cuarenta chicos.",
+        "Delfina corrige con lápiz, no con tinta roja."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-delfina"
+      ],
+      "visited": false,
+      "umbralIntensity": 1,
+      "senses": {
+        "sight": "Tiza, un mapa, y una maestra con sobretodo.",
+        "sound": "El lápiz. La estufa.",
+        "smell": "Leña y tiza."
+      },
+      "features": [
+        {
+          "id": "f-mapa",
+          "names": [
+            "mapa",
+            "mapa de la provincia",
+            "chinches"
+          ],
+          "description": "Un mapa escolar de la provincia de Buenos Aires, edición del veinte. Villa Requena está marcada a lápiz por la maestra, porque el mapa no la trae impresa.",
+          "closerLook": "Alrededor del punto a lápiz de Villa Requena hay otros cuatro puntos a lápiz, más chicos, sin nombre, en un arco de unas veinte leguas. Preguntarle qué son es la única manera de saberlo: el mapa no lo dice.",
+          "examineSkill": "descubrir"
+        }
+      ]
+    },
+    "mojon": {
+      "id": "mojon",
+      "name": "El mojón viejo",
+      "aliases": [
+        "mojon",
+        "el mojon",
+        "la barranca",
+        "afuera"
+      ],
+      "description": "Media legua al oeste del pueblo, donde el campo hace una barranca corta contra un cauce seco. Al borde hay un mojón de piedra asentada que no marca ningún límite: los alambrados de los dos lados pasan derecho a treinta metros, ignorándolo. Es más viejo que el pueblo, que el alambre y que la provincia.",
+      "atmosphere": [
+        "No hay nada alrededor. El pasto está más alto acá que en el resto del campo.",
+        "La barranca deja ver la tierra colorada de abajo: de acá sale el almagre.",
+        "El viento no llega al fondo del cauce. Se queda arriba."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sight": "Una piedra parada donde no hace falta ninguna piedra parada.",
+        "sound": "Viento arriba, silencio abajo.",
+        "smell": "Tierra colorada, húmeda de escarcha."
+      },
+      "features": [
+        {
+          "id": "f-mojon-piedra",
+          "names": [
+            "mojon",
+            "piedra",
+            "la piedra"
+          ],
+          "description": "Piedra de una pieza, de la altura de un hombre sentado, con la cara norte más lisa que las otras tres de tanta mano encima.",
+          "closerLook": "La cara norte tiene un círculo en almagre, y debajo del almagre —donde la pintura saltó— hay un círculo grabado en la piedra, más viejo, más chico y más profundo de lo que se puede rayar con un cuchillo. La pintura de arriba es de este invierno. El grabado de abajo no es de ningún invierno que nadie recuerde.",
+          "examineSkill": "descubrir",
+          "exposure": 5,
+          "clue": {
+            "description": "Debajo del círculo pintado del mojón hay otro círculo grabado en la piedra, mucho más viejo y más profundo que cualquier marca hecha con herramienta de mano.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-barranca",
+          "names": [
+            "barranca",
+            "tierra colorada",
+            "cauce",
+            "cauce seco"
+          ],
+          "description": "El corte de la barranca muestra una veta de tierra colorada de un metro de espesor. Está picada a pala en un solo lugar, del ancho de un balde, y esa picadura tiene ochenta años de vueltas encima.",
+          "exposure": 2,
+          "closerLook": "La picadura del ancho de un balde no es de una vez: son ochenta años de baldes, y el hueco tiene forma de hueco hecho por gente distinta con la misma pala corta. Debajo del nivel al que llega un brazo, la veta colorada sigue bajando y no se termina. Nadie va a quedarse sin almagre nunca, y quien eligió este lugar lo sabía.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "La barranca está picada en un solo punto por ochenta años de gente distinta, y la veta de almagre sigue más abajo de lo que alcanza un brazo: la provisión no se agota.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "id": "te-1841",
+      "description": "Primer renglón del libro de turnos: REQUENA. El libro empieza cuarenta años antes de que Villa Requena sea un pueblo.",
+      "when": {
+        "iso": "1841-06-24T00:00:00",
+        "precision": "vague",
+        "display": "junio de 1841"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1887",
+      "description": "Evaristo Requena, escribano, sella con un círculo el margen de un título de propiedad en otro partido, a ciento veinte leguas de acá.",
+      "when": {
+        "iso": "1887-05-03T00:00:00",
+        "precision": "day",
+        "display": "3 de mayo de 1887"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1919",
+      "description": "Muere el padre de Aurelio y el turno pasa a él. Ese mismo año el pueblo instala la bomba y el aljibe de la plaza deja de usarse para sacar agua.",
+      "when": {
+        "iso": "1919-03-01T00:00:00",
+        "precision": "vague",
+        "display": "marzo de 1919"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1925",
+      "description": "Aurelio no cumple su turno. Ramona Sosa lo cubre sin decírselo a nadie, y el libro queda anotado SOSA dos años seguidos.",
+      "when": {
+        "iso": "1925-06-24T21:00:00",
+        "precision": "day",
+        "display": "la semana de San Juan de 1925"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "KEEPER_SECRET",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1926",
+      "description": "Pasa la semana de San Juan de 1926 y el círculo no se repinta. Ramona hace una parte de noche, apurada, y no termina.",
+      "when": {
+        "iso": "1926-06-24T21:00:00",
+        "precision": "day",
+        "display": "hace dos semanas"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "a-carta",
+      "npc": "npc-aurelio",
+      "orden": 1,
+      "etiqueta": "Preguntarle por la carta",
+      "intencion": "Le pregunto a Aurelio por la carta que me mandó",
+      "claves": [
+        "la carta",
+        "por que me escribio",
+        "por que me llamo"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Le agradezco que haya venido. No estaba seguro de que fuera a venir. —Se sienta, y recién ahí se da cuenta de que estaba de pie desde que {lo} vio cruzar la plaza.\n\n—Le escribí porque necesito hablar con alguien que haya visto una de esas marcas y no sea de acá. En este pueblo hay dos familias que saben de qué estoy hablando, y con las dos ya hablé todo lo que se puede hablar en cincuenta y cuatro años."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Le agradezco que haya venido. No estaba seguro"
+      }
+    },
+    {
+      "id": "a-como-sabe",
+      "npc": "npc-aurelio",
+      "orden": 2,
+      "etiqueta": "Preguntarle cómo supo dónde estuve",
+      "intencion": "Le pregunto a Aurelio cómo supo dónde estuve preguntando",
+      "claves": [
+        "como supo",
+        "como sabe de mi",
+        "los tres avisos",
+        "quien le conto"
+      ],
+      "disponible": {
+        "op": "consecuencia",
+        "contiene": "del Círculo Rojo"
+      },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Papel —dice—. No es nada más misterioso que eso, y le pido que no se haga una idea equivocada.\n\n—Un escribano de campo se entera de todo lo que se pregunta en un juzgado de paz, porque el que atiende el mostrador del juzgado escribe a la escribanía de al lado y la de al lado escribe a la siguiente. Hace ochenta años que en esta escribanía se anota una cosa muy chiquita: quién pregunta por un círculo. Nada más que eso. Ni por qué, ni para qué.\n\n—Su nombre llegó tres veces. Con eso me alcanzó para saber que usted es la única persona viva que las vio en tres lugares distintos y siguió preguntando."
+        ],
+        "pista": {
+          "description": "La escribanía Requena lleva ochenta años anotando quién pregunta por las marcas, con informes de otros escribanos de la provincia. El investigador figura tres veces.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Después le explico eso. Ahora no."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Papel —dice—. No es nada más misterioso que eso"
+      }
+    },
+    {
+      "id": "a-obligacion",
+      "npc": "npc-aurelio",
+      "orden": 3,
+      "etiqueta": "Preguntarle qué es lo que hay que hacer",
+      "intencion": "Le pregunto a Aurelio en qué consiste la obligación",
+      "claves": [
+        "que hay que hacer",
+        "en que consiste",
+        "la obligacion",
+        "el turno"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Se repinta un círculo. Una vez por año, en la semana de San Juan, entre la puesta del sol y la medianoche, con almagre de la barranca del oeste. El del brocal de la plaza y el del mojón. Le toca a una familia un año y a la otra el siguiente, y queda anotado.\n\n—Eso es todo. Le juro que eso es todo. Cuando lo digo en voz alta suena a nada.\n\n—Mi abuelo lo hizo cuarenta y ocho años. Mi padre, treinta. Yo llevo siete."
+        ],
+        "pista": {
+          "description": "La obligación es repintar dos círculos —el del brocal de la plaza y el del mojón— una vez por año en la semana de San Juan, alternando entre las familias Requena y Sosa, y anotarlo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Se repinta un círculo. Una vez por año, en la s"
+      }
+    },
+    {
+      "id": "a-para-que",
+      "npc": "npc-aurelio",
+      "orden": 4,
+      "etiqueta": "Preguntarle para qué sirve",
+      "intencion": "Le pregunto a Aurelio para qué sirve repintar el círculo",
+      "claves": [
+        "para que sirve",
+        "que pasa si no",
+        "por que hay que hacerlo"
+      ],
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "Se toma un tiempo largo.\n\n—Está escrito. Está escrito en la cuarta hoja de un papel que tengo en ese cajón, y yo lo leí a los veintiséis años, cuando mi padre me lo dio, y le voy a decir la única cosa útil que le puedo decir hoy: no lo lea.\n\n—Yo lo leí y desde entonces sé para qué sirve. Y no me sirvió de nada saberlo, porque saber para qué sirve no me dice si sirve."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Se toma un tiempo largo."
+      }
+    },
+    {
+      "id": "a-salirse",
+      "npc": "npc-aurelio",
+      "orden": 5,
+      "etiqueta": "Preguntarle qué quiere de mí",
+      "intencion": "Le pregunto a Aurelio qué es lo que quiere que yo haga",
+      "claves": [
+        "que quiere de mi",
+        "que espera",
+        "para que me trajo",
+        "lo que quiere que yo haga"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Quiero dejar de hacerlo. —Lo dice rápido, como si lo hubiera ensayado y tuviera miedo de perder el envión.\n\n—No tengo hijos. Cuando yo me muera, el turno de los Requena se termina solo, y a los Sosa les va a quedar todo, y son una vieja de setenta y uno y un muchacho que no cree una palabra. Así que se va a terminar igual, con o sin mí. Lo único que estoy pidiendo es no ser yo el que lo hace un año más por costumbre.\n\n—Y no me animo a decidirlo solo. Ésa es la parte fea de lo que le estoy pidiendo."
+        ],
+        "pista": {
+          "description": "Aurelio no tiene hijos: el turno de los Requena se termina con él de todos modos. Lo que pide no es una solución, es no decidirlo solo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Quiero dejar de hacerlo. —Lo dice rápido, como"
+      }
+    },
+    {
+      "id": "a-salto",
+      "npc": "npc-aurelio",
+      "orden": 6,
+      "etiqueta": "Preguntarle si el año pasado lo pintó",
+      "intencion": "Le pregunto a Aurelio si el invierno pasado cumplió su turno",
+      "claves": [
+        "el ano pasado lo pinto",
+        "cumplio su turno",
+        "lo hizo el ano pasado"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "que admita lo que no puso por escrito en la carta"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "No contesta enseguida. Se toca el bolsillo del chaleco.\n\n—No. El año pasado no lo pinté.\n\n—Me quedé sentado en esta silla desde la puesta del sol hasta las dos de la mañana, con el tarro ahí en el estante, esperando a tener miedo suficiente para levantarme. Y no lo tuve. Y me acosté.\n\n—Y no pasó nada, señor. Ése es el asunto. No pasó absolutamente nada en trescientos sesenta y cinco días.\n\nSe queda mirando el brasero.\n\n—Mi abuelo hizo esto cuarenta y ocho años. Si no pasa nada, ¿qué hizo mi abuelo cuarenta y ocho años? ¿Y si lo que iba a pasar tarda más de un año en llegar?"
+        ],
+        "pista": {
+          "description": "Aurelio no repintó el círculo el invierno pasado y no pasó nada en todo el año. No sabe si eso prueba que no sirve o que la consecuencia tarda.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-aurelio-salto"
+      },
+      "esquiva": {
+        "texto": [
+          "—Lo pinté como lo pinté siempre —dice, y es la primera vez desde que {lo} recibió que contesta rápido."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "No contesta enseguida. Se toca el bolsillo del c"
+      }
+    },
+    {
+      "id": "a-procedimiento",
+      "npc": "npc-aurelio",
+      "orden": 7,
+      "etiqueta": "Pedirle que me deje ver el papel",
+      "intencion": "Le pido a Aurelio que me muestre lo que guarda bajo llave",
+      "claves": [
+        "lo que guarda",
+        "bajo llave",
+        "que me muestre",
+        "el procedimiento"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "Saca la llave del bolsillo del chaleco. Le lleva un rato encontrar la cerradura, no porque le tiemble la mano, sino porque no la busca.\n\nAdentro hay dos cosas: un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.\n\n—El libro léalo todo lo que quiera. Es un libro de cuentas, es lo más aburrido que hay en esta casa.\n\nApoya la mano abierta sobre las cuatro hojas y no la saca.\n\n—Esto son cuatro hojas. Las tres primeras son instrucciones y no le van a hacer nada, léalas. La cuarta es la explicación.\n\n—Se lo digo una sola vez y después hago como que no se lo dije: si da vuelta la tercera hoja, no hay manera de volver atrás. Yo la di vuelta a los veintiséis y desde entonces duermo distinto. Usted vino de afuera. Puede irse de acá sin haberla dado vuelta."
+        ],
+        "pista": {
+          "description": "Aurelio abrió el cajón del escritorio: adentro hay un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.",
+          "kind": "physical",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Ese cajón no lo abro. —Y se queda con la mano cerca del bolsillo del chaleco, sin darse cuenta."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "Aurelio no tiene hijos"
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Saca la llave del bolsillo del chaleco. Le lleva"
+      }
+    },
+    {
+      "id": "a-ramona",
+      "npc": "npc-aurelio",
+      "orden": 8,
+      "etiqueta": "Preguntarle por Ramona Sosa",
+      "intencion": "Le pregunto a Aurelio por Ramona Sosa",
+      "claves": [
+        "ramona",
+        "los sosa",
+        "la otra familia"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Ramona cree. Yo no sé si eso es una suerte o una desgracia, pero es la diferencia entre ella y yo, y es toda la diferencia.\n\n—Nunca la oí preguntar para qué sirve. Ni una vez en cincuenta años. Le tocó y lo hace, como se hace de comer.\n\n—El hijo es otra cosa. El hijo me odia y tiene razón."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Ramona cree. Yo no sé si eso es una suerte o un"
+      }
+    },
+    {
+      "id": "r-obligacion",
+      "npc": "npc-ramona",
+      "orden": 20,
+      "etiqueta": "Preguntarle por el círculo",
+      "intencion": "Le pregunto a Ramona por lo que se repinta cada invierno",
+      "claves": [
+        "lo que se repinta",
+        "cada invierno",
+        "san juan",
+        "la pintura"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Se pinta en San Juan —dice, sin moverse—. Un año ellos, un año nosotros. Este año era de ellos.\n\nDeja pasar un segundo justo.\n\n—Y no me pregunte para qué, porque no sé para qué. Mi madre tampoco sabía y lo hizo cuarenta años."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Se pinta en San Juan —dice, sin moverse—. Un añ"
+      }
+    },
+    {
+      "id": "r-para-que",
+      "npc": "npc-ramona",
+      "orden": 21,
+      "etiqueta": "Insistirle con para qué sirve",
+      "intencion": "Le insisto a Ramona con para qué sirve pintar el círculo",
+      "claves": [
+        "para que sirve",
+        "usted cree que sirve",
+        "y si no sirve"
+      ],
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "Por primera vez mueve las manos.\n\n—Usted me está preguntando si soy tonta. No se ofenda, no lo digo con rabia: me está preguntando eso y está bien preguntado.\n\n—Yo no sé si sirve. Nadie sabe si sirve. Lo que sé es que hay una cosa que se hace hace más años que este pueblo, que se hace de noche, sola, en el frío, sin que nadie te lo agradezca, y que la gente que la empezó no era tonta.\n\n—Y sé una cosa más, que es la que le va a servir a usted: si sirve y dejamos de hacerlo, no lo vamos a saber en el momento. Lo van a saber otros, después. Ésa es toda la trampa."
+        ],
+        "pista": {
+          "description": "Ramona no sostiene que la obligación sirva: sostiene que si sirviera, el daño de abandonarla no se notaría a tiempo. Nadie de esta generación podría saberlo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Por primera vez mueve las manos."
+      }
+    },
+    {
+      "id": "r-dos-turnos",
+      "npc": "npc-ramona",
+      "orden": 22,
+      "etiqueta": "Preguntarle por el almagre en sus manos",
+      "intencion": "Le pregunto a Ramona quién lo pintó este año",
+      "claves": [
+        "quien lo pinto",
+        "quien pinto este ano",
+        "usted lo pinto"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 2,
+        "razon": "que admita lo que le viene ocultando al hijo"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Se mira las manos como si fueran de otra persona. Después mira hacia adentro de la casa, para asegurarse de dónde está Cirilo.\n\n—Baje la voz.\n\n—El año pasado le tocaba a él y no fue. Yo lo esperé hasta la una de la mañana en la plaza, con el tarro, para ver si aparecía. No apareció. Y lo pinté yo.\n\n—Y este año, que también era de ellos, empecé a pintarlo hace dos semanas y no lo terminé, porque a mí a las once de la noche ya no me da la mano y no veo. Está la mitad.\n\n—Si mi hijo se entera de esto, va a la escribanía. Y no va a ir a conversar."
+        ],
+        "pista": {
+          "description": "Ramona hizo el turno de Aurelio el año pasado y empezó el de este año sin poder terminarlo. Le oculta las dos cosas a su hijo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-ramona-dos"
+      },
+      "esquiva": {
+        "texto": [
+          "—Del tomate —dice, y se acomoda la falda."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Se mira las manos como si fueran de otra persona"
+      }
+    },
+    {
+      "id": "r-cirilo",
+      "npc": "npc-ramona",
+      "orden": 23,
+      "etiqueta": "Preguntarle por su hijo",
+      "intencion": "Le pregunto a Ramona por Cirilo",
+      "claves": [
+        "su hijo",
+        "cirilo",
+        "el muchacho"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—No cree en nada de esto y hace bien. Yo tampoco querría creer si tuviera treinta y tres años.\n\n—Lo que le pasa a él no es el círculo. Lo que le pasa es que me ve salir de noche.\n\n—Cuando yo me muera, esto se termina. Él no lo va a hacer. Y me parece bien, y a la vez no me deja dormir, y las dos cosas al mismo tiempo."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—No cree en nada de esto y hace bien. Yo tampoco"
+      }
+    },
+    {
+      "id": "c-madre",
+      "npc": "npc-cirilo",
+      "orden": 30,
+      "etiqueta": "Preguntarle qué piensa de todo esto",
+      "intencion": "Le pregunto a Cirilo qué piensa de la obligación",
+      "claves": [
+        "que piensa",
+        "usted cree",
+        "que opina de esto"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Pienso que es una pavada de vieja y que nadie en este pueblo tiene los huevos de decirlo en voz alta.\n\nGolpea el rebenque contra la bota.\n\n—Pero mi vieja tiene setenta y uno y sale sola de noche en junio a pintar un ladrillo. Y el escribano, que tiene una casa de altos y un brasero de bronce, se queda adentro.\n\n—Así que no me venga a preguntar si creo. Pregúnteme si me importa."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Pienso que es una pavada de vieja y que nadie e"
+      }
+    },
+    {
+      "id": "c-aurelio",
+      "npc": "npc-cirilo",
+      "orden": 31,
+      "etiqueta": "Preguntarle por Aurelio Requena",
+      "intencion": "Le pregunto a Cirilo por Aurelio Requena",
+      "claves": [
+        "aurelio",
+        "el escribano",
+        "requena"
+      ],
+      "cede": {
+        "actitud": -1,
+        "texto": [
+          "—El escribano. —Escupe al costado, sin dramatismo, como quien se saca algo de la boca.\n\n—Nosotros le limpiamos el campo, le arreamos la hacienda y le pintamos el ladrillo. Su familia hace ochenta años que nos hace un lugar en el libro.\n\n—Un día de éstos ese libro se quema y se termina el problema."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—El escribano. —Escupe al costado, sin dramatism"
+      }
+    },
+    {
+      "id": "c-libro",
+      "npc": "npc-cirilo",
+      "orden": 32,
+      "etiqueta": "Preguntarle qué haría si el libro saliera del pueblo",
+      "intencion": "Le pregunto a Cirilo qué haría si alguien se llevara el libro",
+      "claves": [
+        "llevarse el libro",
+        "sacar el libro",
+        "si el libro sale",
+        "si alguien se llevara el libro"
+      ],
+      "cede": {
+        "actitud": -2,
+        "texto": [
+          "Se para derecho por primera vez.\n\n—Ese libro tiene el apellido de mi madre ochenta y cuatro veces.\n\n—Si sale del pueblo, sale conmigo atrás. Y no va a ser una conversación."
+        ],
+        "pista": {
+          "description": "Cirilo avisó de frente que si alguien saca el libro de turnos del pueblo, va a impedirlo por la fuerza.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Se para derecho por primera vez."
+      }
+    },
+    {
+      "id": "d-pueblo",
+      "npc": "npc-delfina",
+      "orden": 40,
+      "etiqueta": "Preguntarle cómo es el pueblo",
+      "intencion": "Le pregunto a Delfina cómo es Villa Requena",
+      "claves": [
+        "como es el pueblo",
+        "hace cuanto esta",
+        "que tal el pueblo",
+        "como es villa requena"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Hace dos años que estoy y todavía me hablan de usted.\n\n—Le voy a decir lo que noté el primer mes, porque después una se acostumbra y ya no sirve como testigo: en este pueblo hay dos familias que no se hablan y que hacen la misma cosa. Y todos los demás miran para otro lado con una prolijidad que no es casual.\n\n—Los chicos saben. No saben qué, pero saben que hay algo que no se pregunta."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Hace dos años que estoy y todavía me hablan de"
+      }
+    },
+    {
+      "id": "d-puntos",
+      "npc": "npc-delfina",
+      "orden": 41,
+      "etiqueta": "Preguntarle por los puntos del mapa",
+      "intencion": "Le pregunto a Delfina por los puntos que marcó en el mapa",
+      "claves": [
+        "los puntos del mapa",
+        "el mapa",
+        "que marco en el mapa"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Ah, eso. —Se levanta y va hasta el mapa.\n\n—Los chicos vienen de los campos de alrededor. Al principio les pedía que me contaran de dónde venían, para ubicarme, y me contaban cosas de la casa. Y hubo cuatro que me contaron, sin conocerse entre ellos, que en la casa hay un lugar que se pinta y no se toca.\n\n—Cuatro campos distintos, en veinte leguas a la redonda. Un aljibe, un mojón, la base de un molino y —éste me impresionó— el marco de una puerta que ya no tiene puerta.\n\n—Marqué los puntos porque soy maestra y porque me dio impresión. Nunca supe qué hacer con eso."
+        ],
+        "pista": {
+          "description": "Delfina reunió, sin buscarlo, cuatro casos independientes en veinte leguas a la redonda: un aljibe, un mojón, la base de un molino y el marco de una puerta sin puerta, todos pintados y no tocados.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Ah, eso. —Se levanta y va hasta el mapa."
+      }
+    },
+    {
+      "id": "d-opinion",
+      "npc": "npc-delfina",
+      "orden": 42,
+      "etiqueta": "Preguntarle qué cree que es",
+      "intencion": "Le pregunto a Delfina qué cree que es todo esto",
+      "claves": [
+        "que cree que es",
+        "usted que piensa",
+        "es supersticion"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Creo que es una superstición de campo, como el mal de ojo y como no barrer para afuera de noche. Lo creo de verdad, no lo digo para tranquilizarlo.\n\n—Y también creo que a Ramona Sosa le va a agarrar una neumonía una de estas noches, y que eso va a pasar por una superstición, y que va a estar igual de muerta que si el asunto fuera cierto.\n\n—Yo con eso ya tengo bastante problema. Lo otro se lo dejo a usted."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Creo que es una superstición de campo, como el"
+      }
+    },
+    {
+      "id": "a-abrir",
+      "npc": "npc-aurelio",
+      "orden": 9,
+      "etiqueta": "Decirle que ya no tiene nada que proteger",
+      "intencion": "Le digo a Aurelio que ya no tiene nada que proteger",
+      "claves": [
+        "nada que proteger",
+        "ya me lo dijo todo",
+        "abralo"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "Aurelio no repintó el círculo el invierno pasado"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Se queda mirándote un momento y después se ríe una sola vez, sin ganas.\n\n—Tiene razón. Ya le conté lo peor que tengo para contar.\n\nSaca la llave del bolsillo del chaleco y abre el cajón sin ceremonia, como quien abre una alacena. Adentro hay un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.\n\n—El libro es un libro de cuentas. Las cuatro hojas son otra cosa. Las tres primeras son instrucciones. La cuarta es la explicación, y ésa se la voy a pedir que no la lea, y después voy a hacer como que no se lo pedí."
+        ],
+        "pista": {
+          "description": "Aurelio abrió el cajón del escritorio: adentro hay un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.",
+          "kind": "physical",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Se queda mirándote un momento y después se ríe u"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-carta",
+      "prioridad": 40,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "(releo|leo|miro|reviso|saco) la carta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "examinar-brocal",
+      "prioridad": 50,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "lugar",
+                "es": [
+                  "plaza"
+                ]
+              },
+              {
+                "op": "texto",
+                "patron": "brocal|aljibe|pozo"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "examinar-mojon",
+      "prioridad": 50,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "lugar",
+                "es": [
+                  "mojon"
+                ]
+              },
+              {
+                "op": "texto",
+                "patron": "mojon|piedra|circulo|grabado"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "examinar-retrato",
+      "prioridad": 50,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "lugar",
+                "es": [
+                  "escribania"
+                ]
+              },
+              {
+                "op": "texto",
+                "patron": "retrato|cuadro|daguerrotipo|evaristo|abuelo"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "examinar-almagre",
+      "prioridad": 50,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "lugar",
+                "es": [
+                  "escribania"
+                ]
+              },
+              {
+                "op": "texto",
+                "patron": "tarro|almagre|pintura|brocha"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-turnos",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "documento",
+                "id": "doc-turnos"
+              },
+              {
+                "op": "texto",
+                "patron": "libro|turnos|renglones|apellidos"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-procedimiento",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "documento",
+                "id": "doc-procedimiento"
+              },
+              {
+                "op": "texto",
+                "patron": "cuarta hoja|dar vuelta|doy vuelta|explicacion|leo el procedimiento|leer entero"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "contarle-a-ramona",
+      "prioridad": 65,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "casa-sosa"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "aurelio no|no lo pinto|no cumplio|le cuento lo de aurelio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "contarle-a-cirilo",
+      "prioridad": 68,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "casa-sosa"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "su madre|la vieja|los dos turnos|lo que hace su madre"
+          },
+          {
+            "op": "pista",
+            "contiene": "Ramona hizo el turno de Aurelio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pintar-circulo",
+      "prioridad": 80,
+      "final": true,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "pinto|pintar|repinto|repintar|lo pinto yo|tomo el turno"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "lugar",
+                "es": [
+                  "plaza"
+                ]
+              },
+              {
+                "op": "lugar",
+                "es": [
+                  "mojon"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ayudar-a-irse",
+      "prioridad": 80,
+      "final": true,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escribania"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "vayase|que se vaya|lo ayudo a irse|deje de hacerlo|no lo pinte"
+          }
+        ]
+      }
+    },
+    {
+      "id": "convencer-un-ano",
+      "prioridad": 80,
+      "final": true,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escribania"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "un ano mas|que lo pinte|cumpla|hagalo este ano|pintelo usted"
+          }
+        ]
+      }
+    },
+    {
+      "id": "llevar-el-libro",
+      "prioridad": 85,
+      "final": true,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "documento",
+            "id": "doc-turnos"
+          },
+          {
+            "op": "texto",
+            "patron": "me llevo el libro|llevar el libro|al juzgado|denuncio|denunciar|a la prensa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "irse-del-pueblo",
+      "prioridad": 78,
+      "final": true,
+      "cuando": {
+        "op": "texto",
+        "patron": "me voy del pueblo|me vuelvo|tomo el tren|me voy sin"
+      }
+    },
+    {
+      "id": "abrir-cajon",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "Aurelio abrió el cajón"
+              },
+              {
+                "op": "pista",
+                "contiene": "Aurelio no tiene hijos"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "documento",
+              "id": "doc-turnos"
+            }
+          },
+          {
+            "op": "texto",
+            "patron": "cajon|libro|hojas|papeles|lo que hay adentro"
+          }
+        ]
+      }
+    },
+    {
+      "id": "agarrar-procedimiento",
+      "prioridad": 71,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "documento",
+            "id": "doc-turnos"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "documento",
+              "id": "doc-procedimiento"
+            }
+          },
+          {
+            "op": "texto",
+            "patron": "hojas|papel|procedimiento|lo que hay debajo|cosidas"
+          }
+        ]
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "carta",
+      "grupo": "observar",
+      "lugar": "plaza",
+      "orden": 1,
+      "intencion": "Releo la carta que me trajo hasta acá",
+      "etiqueta": "Releer la carta que lo trajo",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-carta"
+      }
+    },
+    {
+      "id": "ir-escribania",
+      "grupo": "ir",
+      "lugar": "plaza",
+      "orden": 10,
+      "intencion": "Voy a la escribanía",
+      "etiqueta": "Ir a la escribanía"
+    },
+    {
+      "id": "ir-sosa",
+      "grupo": "ir",
+      "lugar": "plaza",
+      "orden": 11,
+      "intencion": "Voy a la casa de los Sosa",
+      "etiqueta": "Ir a la casa de los Sosa"
+    },
+    {
+      "id": "ir-escuela",
+      "grupo": "ir",
+      "lugar": "plaza",
+      "orden": 12,
+      "intencion": "Voy a la escuela",
+      "etiqueta": "Ir a la escuela"
+    },
+    {
+      "id": "ir-mojon",
+      "grupo": "ir",
+      "lugar": "plaza",
+      "orden": 13,
+      "intencion": "Voy al mojón viejo",
+      "etiqueta": "Ir al mojón, media legua al oeste"
+    },
+    {
+      "id": "retrato",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 3,
+      "intencion": "Miro el retrato de Evaristo Requena",
+      "etiqueta": "Mirar el retrato del abuelo",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-retrato"
+      }
+    },
+    {
+      "id": "tarro",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 4,
+      "intencion": "Miro el tarro de almagre del estante",
+      "etiqueta": "Mirar el tarro de almagre",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-almagre"
+      }
+    },
+    {
+      "id": "libro",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 6,
+      "intencion": "Leo el libro de turnos renglón por renglón",
+      "etiqueta": "Leer el libro de turnos",
+      "visible": {
+        "op": "documento",
+        "id": "doc-turnos"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "nueve apellidos"
+      }
+    },
+    {
+      "id": "cuarta-hoja",
+      "grupo": "hacer",
+      "lugar": "escribania",
+      "orden": 7,
+      "intencion": "Doy vuelta la tercera hoja y leo la cuarta",
+      "etiqueta": "Dar vuelta la tercera hoja y leer la explicación",
+      "visible": {
+        "op": "documento",
+        "id": "doc-procedimiento"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "leyó la cuarta hoja"
+      }
+    },
+    {
+      "id": "volver-plaza-e",
+      "grupo": "ir",
+      "lugar": "escribania",
+      "orden": 20,
+      "intencion": "Vuelvo a la plaza",
+      "etiqueta": "Volver a la plaza"
+    },
+    {
+      "id": "volver-plaza-s",
+      "grupo": "ir",
+      "lugar": "casa-sosa",
+      "orden": 20,
+      "intencion": "Vuelvo a la plaza",
+      "etiqueta": "Volver a la plaza"
+    },
+    {
+      "id": "volver-plaza-x",
+      "grupo": "ir",
+      "lugar": "escuela",
+      "orden": 20,
+      "intencion": "Vuelvo a la plaza",
+      "etiqueta": "Volver a la plaza"
+    },
+    {
+      "id": "volver-plaza-m",
+      "grupo": "ir",
+      "lugar": "mojon",
+      "orden": 20,
+      "intencion": "Vuelvo al pueblo",
+      "etiqueta": "Volver al pueblo"
+    },
+    {
+      "id": "adentro",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 6,
+      "intencion": "Miro lo que hay adentro del cajón",
+      "etiqueta": "Mirar lo que hay en el cajón abierto",
+      "visible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Aurelio abrió el cajón"
+          },
+          {
+            "op": "pista",
+            "contiene": "Aurelio no tiene hijos"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-turnos"
+      }
+    },
+    {
+      "id": "hojas",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 7,
+      "intencion": "Levanto las cuatro hojas cosidas",
+      "etiqueta": "Levantar las cuatro hojas que están debajo del libro",
+      "visible": {
+        "op": "documento",
+        "id": "doc-turnos"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-procedimiento"
+      }
+    },
+    {
+      "id": "manos",
+      "grupo": "observar",
+      "lugar": "casa-sosa",
+      "orden": 3,
+      "intencion": "Miro las manos de Ramona",
+      "etiqueta": "Mirar las manos de Ramona"
+    },
+    {
+      "id": "mapa",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 3,
+      "intencion": "Miro el mapa de la pared",
+      "etiqueta": "Mirar el mapa de la provincia"
+    },
+    {
+      "id": "legajos",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 5,
+      "intencion": "Reviso los legajos de los estantes",
+      "etiqueta": "Revisar los legajos del archivo"
+    },
+    {
+      "id": "barranca",
+      "grupo": "observar",
+      "lugar": "mojon",
+      "orden": 4,
+      "intencion": "Miro la barranca de tierra colorada",
+      "etiqueta": "Mirar la barranca"
+    }
+  ],
+  "endings": [
+    {
+      "id": "pintar",
+      "title": "Lo que se repinta",
+      "condition": "El investigador cumple el turno él mismo, y queda anotado en el libro."
+    },
+    {
+      "id": "soltar",
+      "title": "Lo que se suelta",
+      "condition": "El investigador le dice a Aurelio que deje de hacerlo, y alguien más carga con eso."
+    },
+    {
+      "id": "otro-ano",
+      "title": "Lo que se posterga",
+      "condition": "El investigador convence a Aurelio de cumplir un año más, y nada cambia."
+    },
+    {
+      "id": "denunciar",
+      "title": "Lo que se lleva al juzgado",
+      "condition": "El investigador saca el libro del pueblo para que la cosa deje de ser privada."
+    },
+    {
+      "id": "irse",
+      "title": "Lo que no se toca",
+      "condition": "El investigador se va de Villa Requena sin decidir nada."
+    }
+  ],
+  "opening": "El tren de trocha angosta lo deja en Villa Requena a las diez de la mañana de un 9 de julio, y el andén son cuatro tablones y un cartel. No hay nadie esperando: la carta decía «venga antes de fin de mes», no decía un día.\n\nEl pueblo son cuatro manzanas alrededor de una plaza con dos tipas peladas. Está todo cerrado por la fiesta patria y no hay una sola bandera colgada. En el medio de la plaza hay un brocal de aljibe con la boca tapada por una chapa y una piedra encima, y alrededor del brocal el pasto está pisado en un anillo angosto, como si alguien le diera la vuelta caminando.\n\nEn el almacén hay tres hombres tomando en silencio con el sombrero puesto. Cuando {lo} ven en la plaza, de espaldas al almacén y mirando el brocal, uno se corre para no quedar en la línea de la puerta.\n\nEn la esquina, la única casa de altos tiene una chapa de bronce lustrada al lado de la puerta: ESCRIBANÍA REQUENA. Detrás del vidrio hay un hombre de pie, mirando hacia la plaza, que lleva un rato ahí."
+}

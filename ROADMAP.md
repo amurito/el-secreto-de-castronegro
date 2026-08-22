@@ -324,6 +324,59 @@ registro la puso alguien que sigue vivo. Es la premisa de la cuarta aventura
 —llamaste la atención— convertida en estado del mundo en vez de en una
 suposición del guion.
 
+### 3.2-quinquies Cuarta aventura ✔ HECHA — *El Invierno Debido*
+
+Julio de 1926, Villa Requena: un pueblo de cuatro manzanas con juzgado,
+escribanía, parroquia y dos familias que heredaron una obligación. Se repinta
+un círculo en almagre, una vez por año, en la semana de San Juan. Este año
+lleva dos semanas de atraso.
+
+**Es la primera que sabe lo que hiciste en las otras.** Las tres marcas del
+Círculo Rojo dejan consecuencia de alcance mundo (§3.2-quater), y la escena
+`leer-carta` se escribe distinta según cuántas encontró el investigador —de
+cero a tres—. Sin ninguna la aventura se juega igual; con las tres, la primera
+línea que lee es una respuesta a algo que hizo en 1924. `prueba-invierno-debido.ts`
+juega las dos partidas y verifica que el texto salga distinto.
+
+**Es la primera que cobra Mitos de Cthulhu.** Leer la cuarta hoja del
+procedimiento da cuatro puntos y baja el techo de Cordura a 95, para siempre y
+para toda la campaña. Está detrás de un aviso que el jugador tiene que ignorar
+a propósito, y ese aviso vive en la escena por la que hay que pasar sí o sí
+—no en un tema de conversación—, porque hay dos caminos para abrir el cajón y
+el costo sólo es justo si el aviso llegó siempre.
+
+**Es la primera con combate evitable.** Cirilo Sosa tiene estadísticas (Pelea
+50, rebenque) y una razón legítima: ve a la madre de setenta y uno saliendo
+sola de noche a hacer el trabajo de otro. Se lo puede desactivar hablando,
+huir, o pelear.
+
+**La pregunta central no se contesta en ninguna de las cinco ramas.** Aurelio
+salteó un año y no pasó nada; Ramona sostiene que si sirviera, el daño no se
+notaría a tiempo. Las dos cosas son ciertas y ninguna prueba nada. La suite
+tiene una comprobación explícita de que ningún desenlace afirma que la
+obligación sirva — la regla de oro (§15) como aserción, no como intención.
+
+**Bugs de contenido que destapó, todos de la misma familia** («declarado sin
+camino», §1.2):
+
+- El narrador listaba a los NPC por `present`, que es global: con cuatro
+  personajes en cinco lugares los ponía a los cuatro en cada lugar, y
+  contradecía a los botones, que sí filtran por `npcsPresent`. **Afectaba
+  también a La Firma Ajena.** Arreglado en `keeper/narrator.ts`.
+- Ninguno de los 19 temas tenía `agotado`, así que se podían volver a
+  preguntar para siempre y gastaban la paciencia del NPC antes de llegar a los
+  temas siguientes. Se los generó a partir de la primera línea de cada
+  respuesta.
+- Un tema de conversación **no puede entregar un documento**. El cajón se abría
+  hablando y adentro no había nada: hizo falta una escena aparte (`abrir-cajon`).
+- Un detalle se marca como examinado aunque la tirada falle, así que da UNA
+  sola oportunidad. Dos pistas obligatorias colgaban de un dado único; ahora
+  salen de preguntarle a la persona, que además es mejor investigación.
+- Y el más caro: el contenido central —el libro, el procedimiento, los Mitos y
+  dos de los cinco desenlaces— dependía de una sola tirada de Persuasión que,
+  fallada una vez, cerraba media aventura. Ahora el cajón tiene dos llaves y
+  ninguna es un dado.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

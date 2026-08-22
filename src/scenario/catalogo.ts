@@ -19,6 +19,7 @@ import type { Scenario } from './types.ts';
 import { AGUA_QUIETA } from './aguaquieta.ts';
 import { LA_LEGUA } from './legua.ts';
 import { TERCER_UMBRAL } from './tercerumbral.ts';
+import { INVIERNO_DEBIDO } from './inviernodebido.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -56,6 +57,19 @@ const ENTRADAS: EntradaCatalogo[] = [
     // Tampoco es requisito duro: es historia paralela a La Legua, mismo
     // lustro, sin personajes en común salvo el investigador encadenado.
     requiere: ['legua-perdida'],
+  },
+  {
+    scenario: INVIERNO_DEBIDO,
+    cuando: '1926-07-09',
+    epoca: 'Julio de 1926 · Villa Requena',
+    duracion: 'Una hora y media aproximadamente',
+    // La única de las cuatro que de verdad LEE lo que pasó en las anteriores:
+    // las tres marcas del Círculo Rojo dejan consecuencia permanente y la
+    // carta de apertura cambia según cuántas encontró el investigador. Se
+    // puede jugar sola —la carta llega igual— pero es la primera vez que
+    // «recomendamos jugar la anterior» tiene una consecuencia mecánica y no
+    // sólo narrativa.
+    requiere: ['tercer-umbral'],
   },
 ];
 

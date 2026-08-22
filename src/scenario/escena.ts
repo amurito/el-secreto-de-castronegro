@@ -101,6 +101,17 @@ export interface EfectoEscena {
       afecta: Array<{ skill: string; dados: number }>;
     };
   };
+  /**
+   * Puntos de Mitos de Cthulhu. Baja el techo de Cordura PARA SIEMPRE
+   * (99 − Mitos) y recorta la Cordura actual si queda por encima — ver
+   * `apply_mythos_knowledge` en `engine.ts`.
+   *
+   * Una escena sólo puede pedirlo cuando el jugador eligió deliberadamente
+   * leer, mirar o escuchar algo que le fue advertido. Nunca por sorpresa y
+   * nunca como castigo por investigar bien: es la única pérdida del juego
+   * que no se recupera de ninguna manera.
+   */
+  mitos?: { amount: number; source: string };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   pregunta?: string;
