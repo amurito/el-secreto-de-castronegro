@@ -84,6 +84,7 @@ export type GameEventType =
   | 'INVESTIGATOR_WENT_INSANE'
   | 'INVESTIGATOR_INTRODUCED'
   | 'SKILL_IMPROVED'
+  | 'MYTHOS_GAINED'
   | 'BACKSTORY_REVISED'
   | 'DEVELOPMENT_PHASE_COMPLETED'
   | 'CONSEQUENCE_RECORDED'
@@ -347,6 +348,25 @@ export interface SkillImprovedPayload {
   check: number;
   gain: number;
   proof: { index: number; hmac: string };
+}
+
+/**
+ * Mitos de Cthulhu subió, y con él bajó el techo de Cordura (p. 169:
+ * Cordura máxima = 99 − Mitos). Evento propio y no `SKILL_IMPROVED` porque
+ * no es una mejora: es la única habilidad que cuesta algo tenerla, y el
+ * recorte del techo tiene que quedar en el log al lado de su causa.
+ */
+export interface MythosGainedPayload {
+  investigatorId: InvestigatorId;
+  from: number;
+  to: number;
+  maxSanFrom: number;
+  maxSanTo: number;
+  /** La Cordura actual, recortada si quedó por encima del techo nuevo. */
+  sanFrom: number;
+  sanTo: number;
+  /** Qué se leyó o se vio. Va a la narración y al log. */
+  source: string;
 }
 
 export interface BackstoryRevisedPayload {

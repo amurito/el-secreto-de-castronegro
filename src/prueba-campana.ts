@@ -26,6 +26,7 @@ import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import { STABILITY_RECOVERY, techoDeEstabilidad } from './rules/umbral.config.ts';
 import { exposicionTrasMeses, pisoDeExposicion } from './rules/umbral.ts';
+import { evaluarCondicion } from './scenario/condiciones.ts';
 import { OCUPACION_POR_ID } from './scenario/ocupaciones.ts';
 import { crearInvestigador } from './rules/ficha.ts';
 import type { GameState, Characteristics, Investigator } from './shared/types.ts';
@@ -53,6 +54,21 @@ async function turno(id: string, escenario: any, intencion: string) {
 /** Juega Agua Quieta hasta un desenlace y pasa la fase de desarrollo. */
 async function primeraAventura(semilla: string) {
   const id = await createCampaign(AGUA_QUIETA, 'CAMPAÑA 1', semilla.repeat(64).slice(0, 64));
+
+  // Una consecuencia de alcance MUNDO y permanente: el único mecanismo por el
+  // que una aventura le puede contar algo concreto a la siguiente. Es lo que
+  // usa el Círculo Rojo para que la cuarta aventura sepa qué marcas encontró
+  // el investigador en las tres anteriores, sin que el jugador lo declare.
+  {
+    const t = await Turn.open(id);
+    t.executeTool('record_consequence', {
+      description: 'El investigador reconoció la marca en almagre del brocal.',
+      scope: 'world', permanent: 'true',
+      world_reminder: 'Sabe qué es ese círculo, y no lo va a poder desver.',
+    });
+    await t.commit();
+  }
+
   const usadas = new Set<string>();
   for (let n = 0; n < 45; n++) {
     const t = await Turn.open(id);
@@ -119,7 +135,7 @@ async function main() {
   check('la EXPOSICIÓN decae hacia el piso permanente, no se queda igual sola',
     invDos.umbral.exposure === exposicionEsperada,
     `${invUno.umbral.exposure} → ${invDos.umbral.exposure} (esperada ${exposicionEsperada}, piso ${piso})`);
-  check('nunca baja del piso —la mitad del pico histórico—',
+  check('nunca baja del piso —una fracción del pico histórico—',
     invDos.umbral.exposure >= piso, `${invDos.umbral.exposure} vs piso ${piso}`);
   check('el pico histórico no baja', invDos.umbral.peakExposure === invUno.umbral.peakExposure,
     `${invDos.umbral.peakExposure} vs ${invUno.umbral.peakExposure}`);
@@ -128,6 +144,19 @@ async function main() {
     invDos.umbral.thresholdsCrossed.join(', ') || 'ninguno');
   check('el trasfondo cruza, con las revisiones que haya sufrido',
     JSON.stringify(invDos.backstory.aspects) === JSON.stringify(invUno.backstory.aspects));
+
+  // Esto es la tesis del proyecto: que una aventura pueda afectar a la
+  // siguiente de una manera que el CONTENIDO pueda consultar, no sólo que el
+  // Keeper lea de refilón. Sin las dos mitades —que la consecuencia cruce Y
+  // que una condición la pueda mirar— la cuarta aventura no puede reaccionar
+  // a las marcas del Círculo Rojo que el investigador encontró en las otras.
+  check('la consecuencia de alcance mundo cruza a la aventura siguiente',
+    dos.consequences.some((c) => c.description.includes('la marca en almagre')),
+    `${dos.consequences.length} consecuencia(s) del otro lado`);
+  check('y el operador `consecuencia` la ve desde la aventura nueva',
+    evaluarCondicion({ op: 'consecuencia', contiene: 'la marca en almagre' }, { estado: dos }));
+  check('una consecuencia que nadie registró sigue sin verse',
+    !evaluarCondicion({ op: 'consecuencia', contiene: 'el anillo de rubí' }, { estado: dos }));
 
   console.log('\nLO QUE SE RECUPERA');
   check('los PV se curan', invDos.derived.hp === invDos.derived.maxHp,

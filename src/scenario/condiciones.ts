@@ -66,6 +66,21 @@ export type Condicion =
    * reales lo necesitan y no vale la pena rediseñarlas para esta migración.
    */
   | { op: 'narrado'; contiene: string }
+  /**
+   * Ya hay registrada una consecuencia cuya descripción contiene este
+   * fragmento.
+   *
+   * Es el ÚNICO operador que puede ver algo de una aventura ANTERIOR.
+   * `sembrarHerencia` (engine.ts) vuelve a emitir, al abrir la aventura
+   * siguiente, las consecuencias marcadas `permanent` con alcance `campaign`
+   * o `world`. Se busca por texto y no por id a propósito: al reemitirlas el
+   * motor les genera un id nuevo, y lo único que sobrevive intacto es la
+   * descripción.
+   *
+   * Con esto una aventura puede preguntar «¿esta persona ya vio la marca en
+   * otro campo?» sin que el jugador tenga que declararlo.
+   */
+  | { op: 'consecuencia'; contiene: string }
   | { op: 'y'; de: Condicion[] }
   | { op: 'o'; de: Condicion[] }
   | { op: 'no'; de: Condicion };
@@ -145,6 +160,8 @@ export function evaluarCondicion(cond: Condicion, ctx: ContextoCondicion): boole
     }
     case 'narrado':
       return narradoContiene(s, cond.contiene);
+    case 'consecuencia':
+      return s.consequences.some((c) => c.description.includes(cond.contiene));
     case 'y':
       return cond.de.every((c) => evaluarCondicion(c, ctx));
     case 'o':

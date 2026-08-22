@@ -132,6 +132,21 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'MYTHOS_GAINED': {
+      const p = ev.payload as P.MythosGainedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      // `origin: 'granted'` y no `'growth'`: Mitos no se compra en la creación
+      // ni se marca por uso (`NUNCA_SE_MARCAN`, rules/desarrollo.ts). Entra
+      // sólo por entender algo que no convenía entender.
+      inv.skills = { ...inv.skills, mitos: { base: p.to, origin: 'granted' } };
+      // El techo de Cordura baja con Mitos, y si la Cordura actual queda por
+      // encima del techo nuevo, baja con él. Sin esto la ficha mostraría
+      // «82/79», que además de imposible haría mentir a la barra.
+      inv.derived = { ...inv.derived, maxSan: p.maxSanTo, san: p.sanTo };
+      break;
+    }
+
     case 'BACKSTORY_REVISED': {
       const p = ev.payload as P.BackstoryRevisedPayload;
       const inv = cloneInvestigator(s, p.investigatorId);

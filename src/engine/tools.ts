@@ -143,6 +143,23 @@ export const KEEPER_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'apply_mythos_knowledge',
+    description:
+      'Suma puntos de Mitos de Cthulhu: el investigador entendió algo del marco que explica el fenómeno. ' +
+      'BAJA PARA SIEMPRE el techo de Cordura (99 − Mitos) y recorta la Cordura actual si queda por encima. ' +
+      'Es irreversible y no se recupera nunca. Usala SÓLO cuando el jugador eligió deliberadamente leer, ' +
+      'mirar o escuchar algo que le fue advertido, nunca como castigo por investigar bien ni por sorpresa.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        amount: int('Puntos de Mitos (1-10). Un texto completo del culto: 3-5. Un fragmento: 1-2.', 1, 10),
+        source: str('Qué leyó, vio o entendió. Va a la narración y queda en el log.'),
+      },
+      required: ['amount', 'source'],
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'apply_umbral_exposure',
     description:
       'Aumenta la EXPOSICIÓN al Umbral: contacto acumulado con el fenómeno. No es cordura y no es miedo. ' +

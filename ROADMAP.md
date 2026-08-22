@@ -582,6 +582,52 @@ El tablero avisa con un contador cuando aparecen pistas nuevas y el jugador
 está leyendo, y tocar una acción devuelve a la historia — que es donde va a
 pasar algo.
 
+### 4.6 Las dos piezas que pedía la cuarta aventura ✔ HECHAS
+
+Se escribieron antes que la aventura, a propósito: son mecánica, y la mecánica
+tiene que existir y estar probada antes de que el contenido se apoye en ella.
+
+**El operador `consecuencia` — que una aventura pueda mirar a la anterior.**
+El proyecto decía tener continuidad entre aventuras, pero el CONTENIDO no podía
+consultarla: `sembrarHerencia` cruza el desenlace anterior y las consecuencias
+`permanent` de alcance `campaign`/`world`, y el lenguaje de condiciones tenía
+18 operadores, ninguno capaz de mirar una consecuencia. Ahora son 19. Busca por
+fragmento de la descripción y no por id, porque al reemitirlas el motor les
+genera un id nuevo y lo único que sobrevive intacto es el texto.
+
+Con eso, la cuarta aventura puede preguntar «¿esta persona ya vio la marca en
+otro campo?» sin que el jugador lo declare — que es la tesis del proyecto
+(«¿una aventura puede afectar de verdad a la siguiente?») probada de punta a
+punta y no sólo afirmada. `prueba-campana.ts` verifica las dos mitades: que la
+consecuencia cruce, y que el operador la vea del otro lado.
+
+De paso, el validador ahora rechaza `pista`/`narrado`/`consecuencia` con
+`contiene` vacío: `String.includes('')` da `true` siempre, así que la escena se
+dispararía desde el primer turno. Es el peor tipo de bug de contenido, porque
+no rompe nada — sólo pasa antes de tiempo.
+
+**`apply_mythos_knowledge` — la única habilidad que cuesta tenerla.**
+`mitos` existía en el catálogo desde el principio con base 0, con la Cordura
+máxima ya atada a ella (`99 − Mitos`, `rules/derived.ts`), prohibida de comprar
+en la creación y excluida de las marcas de desarrollo… y **sin ninguna forma de
+subir**. Era una mecánica completa a la que le faltaba la puerta de entrada.
+
+La herramienta nueva la sube, baja el techo de Cordura y **recorta la Cordura
+actual si quedó por encima del techo nuevo** — sin ese recorte la ficha
+mostraría «82 de 79». Emite su propio evento (`MYTHOS_GAINED`) en vez de
+`SKILL_IMPROVED`, porque no es una mejora por uso y el recorte del techo tiene
+que quedar en el log al lado de su causa. No tira dados a propósito: no es una
+tirada fallida, es el precio de una decisión que el jugador tomó sabiendo, y su
+descripción le exige a quien la usa haber avisado antes.
+
+Se prueba en `prueba-mitos.ts` (suite 23), incluido lo que la hace permanente
+de verdad: que los puntos y el techo bajo **crucen a la aventura siguiente**.
+
+**Sobre nombrar los Mitos:** `keeper/validate.ts` prohíbe la frase «los Mitos»
+en la narración, y no hace falta levantar esa restricción. La prosa describe lo
+que el investigador leyó; «Mitos de Cthulhu» es la etiqueta mecánica de la
+ficha, no una palabra que nadie diga en 1925.
+
 ---
 
 ## Orden sugerido

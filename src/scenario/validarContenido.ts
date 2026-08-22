@@ -65,6 +65,13 @@ function formaDeCondicion(cond: unknown, donde: string, out: string[]): void {
     case 'hora':
       if (c.minimo === undefined && c.maximo === undefined) out.push(`${donde}: \`hora\` sin \`minimo\` ni \`maximo\` no filtra nada.`);
       break;
+    // Los tres buscan un fragmento dentro de un texto. Con `contiene` vacío
+    // `String.includes('')` da true SIEMPRE, así que la condición se cumple
+    // sola y la escena se dispara desde el primer turno: el peor tipo de bug
+    // de contenido, porque no rompe nada — sólo pasa antes de tiempo.
+    case 'pista': case 'narrado': case 'consecuencia':
+      if (!c.contiene) out.push(`${donde}: \`${c.op}\` necesita un fragmento en \`contiene\`; vacío se cumple siempre.`);
+      break;
     case 'y': case 'o':
       if (!Array.isArray(c.de) || c.de.length === 0) out.push(`${donde}: \`${c.op}\` necesita al menos una condición en \`de\`.`);
       else c.de.forEach((sub, n) => formaDeCondicion(sub, `${donde} → ${c.op}[${n}]`, out));

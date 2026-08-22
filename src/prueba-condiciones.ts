@@ -92,6 +92,28 @@ async function main() {
 
   check('narrado: nada narrado al empezar', !evalCon({ op: 'narrado', contiene: 'Un aljibe hace ruido' }, inicial));
 
+  // `consecuencia` es el único operador que mira algo capaz de sobrevivir a la
+  // aventura: es lo que deja que la cuarta sepa qué encontró el investigador en
+  // las tres anteriores. Acá se prueba dentro de una partida; que CRUCE de una
+  // aventura a la otra lo prueba `prueba-campana.ts`, que es donde vive el
+  // encadenado.
+  check('consecuencia: no hay ninguna al empezar',
+    !evalCon({ op: 'consecuencia', contiene: 'la marca en almagre' }, inicial));
+  {
+    const t = await Turn.open(id);
+    t.executeTool('record_consequence', {
+      description: 'El investigador reconoció la marca en almagre del brocal.',
+      scope: 'world', permanent: 'true',
+      world_reminder: 'Sabe qué es ese círculo, y no lo va a poder desver.',
+    });
+    await t.commit();
+    const conMarca = (await Turn.open(id)).state;
+    check('consecuencia: la encuentra por fragmento de su descripción',
+      evalCon({ op: 'consecuencia', contiene: 'la marca en almagre' }, conMarca));
+    check('consecuencia: rechaza un fragmento que no está',
+      !evalCon({ op: 'consecuencia', contiene: 'el anillo de rubí' }, conMarca));
+  }
+
   // Compuestos
   const verdadero: Condicion = { op: 'lugar', es: ['patio'] };
   const falso: Condicion = { op: 'lugar', es: ['cuarto'] };

@@ -673,6 +673,7 @@ export class Turn {
         case 'resolve_flee': return this.toolResolveFlee(raw);
         case 'resolve_maneuver': return this.toolResolveManeuver(raw);
         case 'apply_sanity_loss': return this.toolApplySanityLoss(raw);
+        case 'apply_mythos_knowledge': return this.toolApplyMythos(raw);
         case 'apply_umbral_exposure': return this.toolApplyExposure(raw);
         case 'apply_stability_shift': return this.toolApplyStability(raw);
         case 'apply_condition': return this.toolApplyCondition(raw);
@@ -1399,6 +1400,55 @@ export class Turn {
     }
 
     return { ok: true, message: `Cordura ${from} → ${to} de ${inv.derived.maxSan}${extraNote}.${note}` };
+  }
+
+  /**
+   * MITOS DE CTHULHU — la única habilidad que cuesta tenerla.
+   *
+   * CoC 7e p. 169: la Cordura máxima es 99 menos Mitos. Subir Mitos baja ese
+   * techo PARA SIEMPRE, y si la Cordura actual queda por encima del techo
+   * nuevo, baja con él — sin eso la ficha mostraría «82 de 79».
+   *
+   * No emite `SKILL_IMPROVED`, que es para las mejoras por uso de la fase de
+   * desarrollo: Mitos no se compra en la creación (`rules/creacion.ts`) ni se
+   * marca por uso (`NUNCA_SE_MARCAN`). Entra por acá y sólo por acá.
+   *
+   * Deliberadamente NO tira dados: no es una tirada fallida, es el precio de
+   * una decisión que el jugador tomó sabiendo. Quien la pide tiene que haber
+   * avisado antes.
+   */
+  private toolApplyMythos(raw: Record<string, unknown>): ToolOutcome {
+    const amount = Math.abs(Number(raw.amount ?? 0));
+    const source = String(raw.source ?? '').trim();
+    const inv = this.investigator;
+
+    if (amount <= 0) return { ok: false, message: 'Mitos de Cthulhu sube de a puntos positivos.' };
+    if (!source) return { ok: false, message: 'Decí qué leyó o entendió: queda en el log y en la narración.' };
+
+    const from = inv.skills['mitos' as SkillId]?.base ?? 0;
+    const to = clamp(from + amount, 0, 99);
+    if (to === from) {
+      return { ok: false, message: `Mitos de Cthulhu ya está en ${from} y no puede subir más.` };
+    }
+
+    const maxSanFrom = inv.derived.maxSan;
+    const maxSanTo = 99 - to;
+    const sanFrom = inv.derived.san;
+    const sanTo = Math.min(sanFrom, maxSanTo);
+
+    this.emit('MYTHOS_GAINED', {
+      investigatorId: inv.id, from, to, maxSanFrom, maxSanTo, sanFrom, sanTo, source,
+    });
+
+    const recorte = sanTo < sanFrom
+      ? ` La Cordura actual bajó con el techo: ${sanFrom} → ${sanTo}.`
+      : '';
+    return {
+      ok: true,
+      message:
+        `Mitos de Cthulhu ${from} → ${to}: ${source}. El techo de Cordura baja de ${maxSanFrom} a ${maxSanTo}, ` +
+        `y no vuelve a subir nunca.${recorte}`,
+    };
   }
 
   private toolApplyExposure(raw: Record<string, unknown>): ToolOutcome {

@@ -32,11 +32,12 @@
     "prueba:fobias": "tsx src/prueba-fobias.ts",
     "prueba:permeabilidad": "tsx src/prueba-permeabilidad.ts",
     "prueba:combate": "tsx src/prueba-combate.ts",
+    "prueba:mitos": "tsx src/prueba-mitos.ts",
     "prueba:condiciones": "tsx src/prueba-condiciones.ts",
     "prueba:contenido": "tsx src/prueba-carga-contenido.ts",
     "revisar:bundle": "tsx src/revisar-bundle.ts",
     "desplegar": "tsx src/desplegar.ts",
-    "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run prueba:desenlaces && npm run prueba:social && npm run prueba:umbral && npm run prueba:desarrollo && npm run prueba:desacople && npm run prueba:legua && npm run prueba:tercer-umbral && npm run prueba:campana && npm run prueba:creacion && npm run prueba:tiradas && npm run prueba:auditoria && npm run prueba:tratamiento && npm run prueba:critico && npm run prueba:cordura && npm run prueba:fobias && npm run prueba:permeabilidad && npm run prueba:combate && npm run prueba:condiciones && npm run prueba:contenido && npm run build && npm run revisar:bundle"
+    "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run prueba:desenlaces && npm run prueba:social && npm run prueba:umbral && npm run prueba:desarrollo && npm run prueba:desacople && npm run prueba:legua && npm run prueba:tercer-umbral && npm run prueba:campana && npm run prueba:creacion && npm run prueba:tiradas && npm run prueba:auditoria && npm run prueba:tratamiento && npm run prueba:critico && npm run prueba:cordura && npm run prueba:fobias && npm run prueba:permeabilidad && npm run prueba:combate && npm run prueba:mitos && npm run prueba:condiciones && npm run prueba:contenido && npm run build && npm run revisar:bundle"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.70.0",
