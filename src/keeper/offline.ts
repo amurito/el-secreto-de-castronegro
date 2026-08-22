@@ -29,6 +29,7 @@ import { resolverTema, temasDisponibles } from './social.ts';
 import { propiedadPorTirada, tieneAlgoMas } from '../rules/cuando-tirar.ts';
 import { escenaPara, ejecutarEscena, leerIntencion } from './escenas.ts';
 import { conTrato } from '../rules/tratamiento.ts';
+import { apply } from '../engine/reducers.ts';
 
 type Runner = (tool: string, args: Record<string, unknown>) => { ok: boolean; message: string };
 
@@ -55,10 +56,40 @@ export async function runOfflineTurn(
   // la escena. Un solo lugar para toda la narración de un turno.
   const narration = conTrato(out.filter(Boolean).join('\n\n'), turn.investigator);
   emit({ kind: 'narration_delta', data: narration });
-  // Las opciones las calcula el motor desde el estado ya actualizado.
+
+  // Las opciones las calcula el motor desde el estado ya actualizado — con
+  // UNA excepción: la narración de ESTE turno todavía no está en
+  // `turn.state.narrative`. Eso lo agrega recién quien llama a esta función,
+  // después, con `turn.narrate()`. Sin este ajuste, cualquier `agotado`,
+  // `visible` o `disponible` que dependa de `narrado` (por ejemplo, un tema
+  // de conversación que se da por contestado cuando ya se narró su propia
+  // respuesta) queda UN TURNO ATRASADO: el botón que se acaba de contestar se
+  // sigue ofreciendo una vez más, y recién desaparece al turno siguiente.
+  //
+  // Bug real, reportado jugando: en «El Invierno Debido» —que apoya los 19
+  // temas en `agotado: {op:'narrado', ...}»— cada tema pedía una repregunta
+  // de sobra antes de darse por hecho.
+  //
+  // La corrección es local: se simula el estado COMO SI la narración de este
+  // turno ya estuviera aplicada, sólo para calcular las opciones. No se toca
+  // `turn.state` ni se emite nada — el evento real lo sigue emitiendo, una
+  // sola vez, quien llama a `runOfflineTurn` vía `turn.narrate()`.
+  const comoSiYaNarrado = apply(turn.state, {
+    seq: 0,
+    id: 'sintetico:opciones',
+    campaignId: turn.state.campaignId,
+    session: turn.state.session,
+    type: 'NARRATION_EMITTED',
+    payload: { text: narration, options: [] },
+    actor: { type: 'keeper' },
+    occurredAt: new Date().toISOString(),
+    worldTime: turn.state.world.time,
+    schemaVer: 1,
+  });
+
   return {
     narration,
-    options: accionesDisponibles(turn.state, scenario),
+    options: accionesDisponibles(comoSiYaNarrado, scenario),
     usedModel: false,
   };
 }

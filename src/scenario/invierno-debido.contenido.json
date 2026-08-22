@@ -1874,22 +1874,6 @@
       "orden": 3,
       "intencion": "Miro el mapa de la pared",
       "etiqueta": "Mirar el mapa de la provincia"
-    },
-    {
-      "id": "legajos",
-      "grupo": "observar",
-      "lugar": "escribania",
-      "orden": 5,
-      "intencion": "Reviso los legajos de los estantes",
-      "etiqueta": "Revisar los legajos del archivo"
-    },
-    {
-      "id": "barranca",
-      "grupo": "observar",
-      "lugar": "mojon",
-      "orden": 4,
-      "intencion": "Miro la barranca de tierra colorada",
-      "etiqueta": "Mirar la barranca"
     }
   ],
   "endings": [

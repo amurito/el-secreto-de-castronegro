@@ -376,6 +376,24 @@ camino», §1.2):
   dos de los cinco desenlaces— dependía de una sola tirada de Persuasión que,
   fallada una vez, cerraba media aventura. Ahora el cajón tiene dos llaves y
   ninguna es un dado.
+- Dos botones para el mismo detalle (`legajos`, `barranca`, `manos`, `mapa`
+  duplicaban lo que ya generaba solo su `feature`). Consolidados en uno.
+
+**Un bug de MOTOR, no de contenido, encontrado jugando de verdad.**
+`runOfflineTurn` calculaba las opciones de respuesta ANTES de que la
+narración de ESE MISMO turno quedara aplicada al estado —eso lo hacía recién
+quien llama, después, con `turn.narrate()`—. Cualquier condición `narrado`
+(la que usa `agotado` en sus 19 temas) veía el estado de un turno atrás: el
+botón que se acababa de contestar se seguía ofreciendo una vez más, y recién
+desaparecía al turno siguiente. **Ya afectaba a 3 temas de Agua Quieta y 5 de
+La Legua Perdida** —invisible hasta ahora porque ningún tema anterior
+dependía tanto de `narrado`—.
+
+Arreglado en `keeper/offline.ts`: se simula el estado post-narración sólo
+para calcular las opciones (`apply()` sobre una copia, sin tocar `turn.state`
+ni emitir nada de más). Verificado con un caso mínimo en `prueba-social.ts`
+§7 —un tema inventado, sin nada de Invierno Debido de por medio— para que la
+prueba sobreviva aunque el contenido que lo destapó cambie.
 
 ### 3.3 La aventura original publicada
 

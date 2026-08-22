@@ -158,6 +158,51 @@ async function main() {
   check('con la actitud por debajo del piso, el tema no aparece',
     actitud >= piso || !ofrecido, `actitud ${actitud}, piso ${piso}, ofrecido ${ofrecido}`);
 
+  // ── 7. Un tema recién contestado no se ofrece OTRA VEZ en la misma respuesta ─
+  //
+  // Bug real, reportado jugando «El Invierno Debido»: un tema con
+  // `agotado: {op:'narrado', contiene: ...}` —el patrón que usan sus 19
+  // temas— seguía apareciendo en la MISMA respuesta que lo acababa de
+  // contestar. Hacía falta preguntarlo dos veces: la primera daba la
+  // respuesta buena, la segunda un genérico «ya le contesté eso» que además
+  // cobraba paciencia de más.
+  //
+  // La causa: `runOfflineTurn` calculaba las opciones ANTES de que la
+  // narración de ese mismo turno quedara aplicada al estado —eso lo hacía
+  // recién quien llama, después, con `turn.narrate()`—, así que cualquier
+  // condición `narrado` veía el estado de UN TURNO ATRÁS. Se corrigió
+  // simulando el estado post-narración sólo para calcular las opciones
+  // (`keeper/offline.ts`), sin tocar el estado real ni emitir nada de más.
+  console.log('\n7. UN TEMA CONTESTADO NO SE REPITE EN LA MISMA RESPUESTA');
+  const conNarrado: Scenario = {
+    ...AGUA_QUIETA,
+    id: 'prueba-narrado',
+    conversations: [
+      {
+        id: 'tema-narrado', npc: 'npc-rosa',
+        etiqueta: 'Preguntarle por el pozo viejo',
+        intencion: 'Le pregunto a Rosa por el pozo viejo',
+        claves: ['pozo viejo'],
+        // Sin `prueba`: cede directo, para que la única variable sea si el
+        // texto ya narrado alcanza para marcarlo agotado.
+        cede: { texto: ['POZO-VIEJO-RESPUESTA, palabras que no aparecen en ningún otro lado.'] },
+        // `Scenario.conversations` es la forma ya compilada (una función),
+        // no el DSL de condiciones del JSON: acá se prueba el MISMO criterio
+        // —`narrado`— que compila `cargarAventura`, escrito a mano.
+        agotado: (s) => s.narrative.some((n) => n.kind === 'keeper' && n.text.includes('POZO-VIEJO-RESPUESTA')),
+      },
+    ],
+  };
+  const id7 = await createCampaign(conNarrado, 'NARRADO', 's'.repeat(64));
+  const t7 = await Turn.open(id7);
+  t7.submitIntent('Le pregunto a Rosa por el pozo viejo', 'p1');
+  const r7 = await runOfflineTurn(t7, conNarrado, 'Le pregunto a Rosa por el pozo viejo', noop);
+  check('la respuesta de este turno es la correcta', r7.narration.includes('POZO-VIEJO-RESPUESTA'),
+    r7.narration.slice(0, 60));
+  check('y ESE MISMO turno ya no vuelve a ofrecer el tema que acaba de contestar',
+    !r7.options.some((o) => o.id === 'tema:tema-narrado'),
+    r7.options.map((o) => o.id).join(', '));
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }
