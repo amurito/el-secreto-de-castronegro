@@ -1,5 +1,6 @@
 import React from 'react';
 import { DadosPercentiles, useRevelacionTardia } from './dados.tsx';
+import { pisoDeExposicion } from '../rules/umbral.ts';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FICHA
@@ -35,7 +36,9 @@ export function Sheet({ inv }: { inv: any }) {
       <h3 className="sub-title">Umbral</h3>
       <Bar label="Exposición" value={inv.umbral.exposure} max={100} tone="exposure" invert />
       {inv.umbral.peakExposure > 0 && (
-        <div className="umbral-peak">Nunca vuelve a bajar del todo: llegó a {inv.umbral.peakExposure} alguna vez.</div>
+        <div className="umbral-peak">
+          Entre aventuras nunca baja de {pisoDeExposicion(inv.umbral.peakExposure)} — llegó a {inv.umbral.peakExposure} alguna vez.
+        </div>
       )}
       <Bar label="Estabilidad" value={inv.umbral.stability} max={100} tone="stability" />
       {inv.umbral.thresholdsCrossed.length > 0 && (

@@ -198,12 +198,15 @@ export const TECHO_ESTABILIDAD_POR_EXPOSICION: number = 4;
  *                             piso permanente: por debajo de eso, ningún
  *                             tiempo la baja más. El pico en sí nunca baja.
  *
- * Con el piso al 50%, un investigador que llegó a 80 nunca vuelve a estar
- * mejor que 40, por más meses de rutina que pasen — el cuerpo se acostumbra
- * un poco, la marca no se borra.
+ * Con el piso al 10%, un investigador que llegó a 60 nunca vuelve a estar
+ * mejor que 6 — una marca chica y permanente, no media vida cargando la
+ * mitad de lo peor que le pasó. (Antes estaba al 50%: para ese mismo pico de
+ * 60 el piso quedaba en 30, que es el propio umbral de RECIPROCIDAD y hacía
+ * que UN solo cruce dejara al investigador contaminado de por vida a los
+ * ojos de esta variable. Bajado tras jugarlo — v. ROADMAP §2.1-bis.)
  */
 export const EXPOSURE_DECAY_PER_MONTH: number = 3;
-export const EXPOSURE_FLOOR_FRACTION: number = 0.5;
+export const EXPOSURE_FLOOR_FRACTION: number = 0.1;
 
 export const techoDeEstabilidad = (exposicion: number): number =>
   TECHO_ESTABILIDAD_POR_EXPOSICION === 0

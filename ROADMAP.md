@@ -129,13 +129,22 @@ Con la fuga tapada, las que quedan son de diseño y salen de jugar:
 - **El arrastre entre aventuras ✔ DECIDIDO.** Ampliación de canon aprobada
   explícitamente: la Exposición SÍ decae entre aventuras (meses lejos de un
   Umbral no son descanso cualquiera, pero tampoco son nada), pero nunca por
-  debajo de un piso permanente — la mitad del pico histórico que ese
+  debajo de un piso permanente — una fracción del pico histórico que ese
   investigador alcanzó alguna vez (`peakExposure`, que en sí nunca baja).
   Los umbrales cruzados (`thresholdsCrossed`) siguen siendo irreversibles y
   no se tocan. Números en `EXPOSURE_DECAY_PER_MONTH` / `EXPOSURE_FLOOR_FRACTION`
   (`rules/umbral.config.ts`), lógica en `exposicionTrasMeses`/`pisoDeExposicion`
   (`rules/umbral.ts`), aplicado en `heredarInvestigador` (`engine/engine.ts`).
   Verificado por `prueba-campana.ts`.
+  **Piso bajado al 10% del pico ✔ AJUSTADO tras jugarlo** (era 50%): con el
+  pico en 60, medio piso quedaba en 30 —el propio umbral de RECIPROCIDAD—, así
+  que un solo cruce dejaba al investigador «contaminado» de por vida a los
+  ojos de esta variable sola, sin que ninguna cantidad de meses lo aflojara
+  más. Al 10% el mismo pico deja un piso de 6: una marca chica y permanente
+  («ya lo vivió»), no media vida cargando la mitad de lo peor que le pasó.
+  De paso se corrigió el texto de la ficha, que mostraba el PICO justo
+  después de decir «nunca baja de», leyéndose como si el pico fuera el piso
+  —ahora muestra el piso real, calculado con `pisoDeExposicion`.
 
 ### 2.2 Qué pasa después de Disolución ✔ HECHO
 
