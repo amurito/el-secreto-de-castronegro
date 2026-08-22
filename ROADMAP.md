@@ -258,6 +258,36 @@ Sigue siendo la prueba de fuego, pero ahora de la ESCRITURA, no de la
 arquitectura: cuánto cuesta escribir una aventura buena, no cuánto cuesta
 hacerla funcionar.
 
+### 3.2-quater Profundidad de culto ✔ HECHO — el Círculo Rojo
+
+El canon (Biblia §5.1, §7, línea temporal) ya nombraba «El Círculo Rojo» como
+el grupo que recuperó conocimiento del anillo hacia 1650–1675, y decía que el
+linaje Díaz «deformó las prácticas» en los siglos siguientes. Eso nunca había
+llegado a una aventura jugable. Esta pasada lo siembra como hilo abierto, no
+como revelación: un símbolo distinto del círculo-con-raya del Primer Rostro
+—un círculo pintado en almagre, sin explicación— que aparece tres veces,
+cada vez un poco más cerca de nombrarse, exactamente como pide la regla de
+oro del canon (§15: más cerca de la verdad, más información y menos certeza):
+
+- **Agua Quieta** (`doc-cuaderno`): Rosa repinta el círculo en el brocal
+  todos los inviernos, «para que el agua se quede quieta», herencia de su
+  madre y de la madre de su madre. Ni ella sabe qué significa.
+- **La Legua Perdida** (`doc-mensura1924`): el agrimensor encuentra el mismo
+  círculo, ya viejo, pintado sobre el mojón imposible del oeste. Un peón dice
+  que «lo cuidan los del Círculo desde antes que hubiera alambre» y los otros
+  lo hacen callar.
+- **La Firma Ajena** (`doc-partida`): primera vez que el nombre completo
+  aparece en el juego, en una hoja suelta metida en un registro parroquial:
+  el Círculo Rojo «corrige» a quienes nacen zurdos en cierta sangre, «para
+  que la mano que escribe sea la mano que el resto del mundo espera ver» —no
+  es la primera vez que se anota, ni va a ser la última.
+
+Ningún NPC lo explica, ninguna escena lo resuelve: es contenido de documento
+puro, alcanzable con el mismo camino que ya usaba cada aventura, así que no
+tocó el motor ni el validador. Verificado con `npm run check` y
+`npm run prueba:todo` (22 suites en verde, bundle correcto) sin cambiar
+ninguna aserción existente.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
