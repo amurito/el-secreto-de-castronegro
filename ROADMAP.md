@@ -189,8 +189,22 @@ reserva para la muerte permanente.
 **Las ocupaciones son nuestras.** La lista del manual es contenido de Chaosium y
 además está escrita para otro mundo: un piloto y un hacker no ayudan a jugar en
 la provincia de Buenos Aires en 1924. Se toma la estructura —ocho habilidades,
-puntos según características, rango de Crédito—, que es mecánica. Diez
-ocupaciones propias, en `src/scenario/ocupaciones.ts`.
+puntos según características, rango de Crédito—, que es mecánica. Trece
+ocupaciones propias, en `src/scenario/ocupaciones.ts`, verificadas contra el
+manual (Investigator Handbook, cap. 4, pp. 68–93) para elegir cuáles tenían
+sentido en este mundo: se sumaron **detective privado**, **ocultista**
+(sabor Mythos directo, buen contraste con el anticuario), **boxeador** y
+**domador**, las cuatro armadas sólo con habilidades que ya existían en el
+catálogo reducido del proyecto, sin agregar ninguna nueva.
+
+**Género es una elección del jugador, con una excepción de mundo.** Cada
+ocupación tiene tratamiento en los dos géneros, salvo **cura de pueblo**: en
+el clero católico de 1920 no hay forma femenina de esa ocupación, así que
+`Ocupacion.soloGenero` la fija en masculino. La interfaz lo aplica solo
+—elegir «cura de pueblo» fuerza el género y deshabilita el otro botón—, pero
+la garantía real está en `crearInvestigador` (`rules/ficha.ts`): si de
+alguna manera llegara un género que no corresponde, el reglamento rechaza la
+ficha igual que rechaza cualquier otro reparto ilegal.
 
 **La validación es del motor.** Es el único momento en que el jugador propone
 números y el juego los acepta; si la validación viviera en la interfaz,

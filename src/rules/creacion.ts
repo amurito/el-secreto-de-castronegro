@@ -200,6 +200,8 @@ export interface Ocupacion {
    * debe respeto y no título.
    */
   tratamiento?: { m: string; f: string };
+  /** Si está, esta ocupación sólo admite ese género en el mundo de 1920. */
+  soloGenero?: 'm' | 'f';
 }
 
 export interface ProblemaReparto {

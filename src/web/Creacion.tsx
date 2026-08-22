@@ -173,13 +173,26 @@ export function Creacion({
               Cómo se dirige a {nombre.trim() ? 'ella' : 'él o ella'} la gente de campo
             </span>
             <div className="eleccion">
-              <button className={`chip ${genero === 'f' ? 'chip-on' : ''}`} onClick={() => setGenero('f')}>
+              <button
+                className={`chip ${genero === 'f' ? 'chip-on' : ''}`}
+                onClick={() => setGenero('f')}
+                disabled={ocupacion.soloGenero === 'm'}
+              >
                 {tratamientoPreview(ocupacionId, 'f', catalogo, nombre)}
               </button>
-              <button className={`chip ${genero === 'm' ? 'chip-on' : ''}`} onClick={() => setGenero('m')}>
+              <button
+                className={`chip ${genero === 'm' ? 'chip-on' : ''}`}
+                onClick={() => setGenero('m')}
+                disabled={ocupacion.soloGenero === 'f'}
+              >
                 {tratamientoPreview(ocupacionId, 'm', catalogo, nombre)}
               </button>
             </div>
+            {ocupacion.soloGenero && (
+              <div className="creacion-nota">
+                {ocupacion.nombre} sólo admite género {ocupacion.soloGenero === 'm' ? 'masculino' : 'femenino'} en este mundo.
+              </div>
+            )}
           </div>
 
           <label className="campo">
@@ -206,7 +219,10 @@ export function Creacion({
               <button
                 key={o.id}
                 className={`ocupacion ${ocupacionId === o.id ? 'ocupacion-on' : ''}`}
-                onClick={() => { setOcupacionId(o.id); setElegida(undefined); setOcupPuntos({}); }}
+                onClick={() => {
+                  setOcupacionId(o.id); setElegida(undefined); setOcupPuntos({});
+                  if (o.soloGenero) setGenero(o.soloGenero);
+                }}
               >
                 <div className="ocupacion-nombre">{o.nombre}</div>
                 <div className="ocupacion-desc">{o.descripcion}</div>

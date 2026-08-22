@@ -126,6 +126,55 @@ export const OCUPACIONES: Ocupacion[] = [
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['DEX', 'POW'], multiplicador: 2 } },
   },
   {
+    id: 'detective',
+    nombre: 'Detective privado',
+    descripcion:
+      'Trabaja para quien pague: maridos que quieren pruebas, comercios con robos internos, familias que ' +
+      'buscan a alguien que se fue sin avisar. Aprendió a hacer preguntas sin parecer que las está haciendo, ' +
+      'y a las que no puede hacer sin parecerlo las hace igual.',
+    habilidades: ['descubrir', 'escuchar', 'intimidar', 'pelea',
+      'armas_fuego', 'psicologia', 'sigilo', 'credito'],
+    credito: { min: 20, max: 45 },
+    formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
+  },
+  {
+    id: 'ocultista',
+    nombre: 'Ocultista',
+    descripcion:
+      'Coleccionó demasiados libros raros como para llamarlo afición. Corresponde con anticuarios de otras ' +
+      'provincias, sabe leer un símbolo que nadie más reconoce en la mesa, y no siempre distingue con ' +
+      'claridad dónde termina el estudio y empieza la obsesión.',
+    habilidades: ['ocultismo', 'historia', 'biblioteca', 'buscar_libros',
+      'antropologia', 'persuasion', 'descubrir', 'credito'],
+    credito: { min: 9, max: 30 },
+    formula: { fijos: { EDU: 4 } },
+  },
+  {
+    id: 'boxeador',
+    nombre: 'Boxeador',
+    descripcion:
+      'Pelea por plata en clubes de barrio y ferias de pueblo, a veces con reglas y a veces sin ellas. El ' +
+      'cuerpo lleva la cuenta de cada pelea antes que la memoria, y eso también sirve para leer a un ' +
+      'contrincante que todavía no levantó las manos.',
+    habilidades: ['pelea', 'esquivar', 'intimidar', 'saltar',
+      'psicologia', 'descubrir', 'arrojar', 'credito'],
+    credito: { min: 9, max: 30 },
+    formula: { fijos: { EDU: 2, STR: 2 } },
+  },
+  {
+    id: 'domador',
+    nombre: 'Domador',
+    descripcion:
+      'Amansa lo que otros ya dieron por perdido: caballos, sobre todo, aunque en el campo eso incluye ' +
+      'saber tratar con cualquier cosa que no quiere ser tocada. Conoce cada estancia de la zona por sus ' +
+      'animales antes que por sus dueños.',
+    habilidades: ['pelea', 'mecanica', 'trepar', 'orientarse',
+      'ciencia_naturales', 'primeros_auxilios', 'escuchar', 'credito'],
+    credito: { min: 9, max: 25 },
+    formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
+    tratamiento: { m: 'domador', f: 'domadora' },
+  },
+  {
     id: 'cura',
     nombre: 'Cura de pueblo',
     descripcion:
@@ -135,9 +184,10 @@ export const OCUPACIONES: Ocupacion[] = [
       'ocultismo', 'escuchar', 'primeros_auxilios', 'credito'],
     credito: { min: 9, max: 60 },
     formula: { fijos: { EDU: 4 } },
-    // «Padre» para los dos géneros: en el clero católico de 1920 no hay forma
-    // femenina de esta ocupación. Elegir «cura de pueblo» siendo mujer es
-    // anacrónico en los términos del propio mundo, no un error de esta tabla.
+    // Sólo varón: en el clero católico de 1920 no existe forma femenina de
+    // esta ocupación. La pantalla de creación fuerza el género a 'm' cuando
+    // se elige «cura de pueblo» — no es un error de esta tabla, es el mundo.
+    soloGenero: 'm',
     tratamiento: { m: 'padre', f: 'padre' },
   },
 ];

@@ -87,6 +87,12 @@ export function crearInvestigador(
   if (!decisiones.nombre.trim()) {
     problemas.push({ campo: 'nombre', mensaje: 'Un investigador necesita nombre.' });
   }
+  if (ocupacion.soloGenero && decisiones.genero !== ocupacion.soloGenero) {
+    problemas.push({
+      campo: 'genero',
+      mensaje: `${ocupacion.nombre} sólo admite género ${ocupacion.soloGenero === 'm' ? 'masculino' : 'femenino'} en este mundo.`,
+    });
+  }
   if (decisiones.edad < EDAD_MINIMA || decisiones.edad > EDAD_MAXIMA) {
     problemas.push({
       campo: 'edad',
