@@ -138,6 +138,16 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
             'sin que nadie se la pidiera.',
           ],
           exposicion: { amount: 3, source: 'partida:margen', cause: 'una nota al margen que confirma un detalle nadie fue a buscar' },
+          // Tercera y última de las marcas sembradas, y la única donde el
+          // nombre aparece completo. Ver la nota en `aguaquieta.logica.ts`.
+          consecuencia: {
+            description: 'Encontró la hoja del Círculo Rojo suelta en el registro parroquial de Los Cardales.',
+            scope: 'world',
+            permanent: true,
+            worldReminder:
+              'Leyó una hoja sin firma que dice que al Círculo Rojo le corresponde anotar lo que la parroquia ' +
+              'no puede, y que no es la primera vez ni va a ser la última. Esa hoja la puso alguien que sigue vivo.',
+          },
         },
       ];
     },

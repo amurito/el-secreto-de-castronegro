@@ -311,6 +311,19 @@ tocó el motor ni el validador. Verificado con `npm run check` y
 `npm run prueba:todo` (22 suites en verde, bundle correcto) sin cambiar
 ninguna aserción existente.
 
+**Después: las tres marcas dejan rastro (para la cuarta aventura).** Cada una
+de las tres escenas donde aparece la marca registra ahora una consecuencia
+`permanent` de alcance `world`, que es lo único que `sembrarHerencia` deja
+cruzar a la aventura siguiente. Las tres comparten el fragmento «del Círculo
+Rojo», así que una condición puede preguntar por cualquiera (`o`), por todas
+(`y`), o por una en particular.
+
+Lo que se registra **no es «aprendiste algo»: es que quedaste anotado.** Rosa
+se calló cuando le preguntaron, al peón lo hicieron callar, y la hoja del
+registro la puso alguien que sigue vivo. Es la premisa de la cuarta aventura
+—llamaste la atención— convertida en estado del mundo en vez de en una
+suposición del guion.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

@@ -148,6 +148,17 @@ async function main() {
 
   check('el cuaderno quedó obtenido, y su acción se marca hecha',
     Boolean(accion('cuaderno').hecha?.(s)), 'hecha = true');
+
+  // La primera de las tres marcas del Círculo Rojo, JUGADA de verdad: leer el
+  // cuaderno tiene que dejar la consecuencia de alcance mundo que la cuarta
+  // aventura va a consultar. Que el campo `consecuencia` exista en el tipo no
+  // alcanza — lo que importa es que la escena real lo emita al jugarla.
+  check('leer el cuaderno registró la marca del Círculo Rojo',
+    evalCon({ op: 'consecuencia', contiene: 'del Círculo Rojo' }, s),
+    s.consequences.map((c) => c.description).join(' | ') || 'ninguna consecuencia');
+  check('y quedó con alcance mundo y permanente, que es lo que cruza',
+    s.consequences.some((c) =>
+      c.description.includes('del Círculo Rojo') && c.scope === 'world' && c.permanent));
   check('«revisar hoja por hoja» ya es visible (depende del cuaderno)',
     Boolean(accion('paginas').visible?.(s)));
   check('«cavar» todavía NO está hecha', !accion('cavar').hecha?.(s));

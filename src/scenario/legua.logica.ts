@@ -391,7 +391,21 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
           texto: ['En la letra M del fichero, las dos carpetas. Y en el estante de abajo, el legajo del título.'],
           documento: { id: 'doc-mensura1903', how: 'estaba en la letra M, con el lomo gastado' },
         },
-        { documento: { id: 'doc-mensura1924', how: 'al lado de la anterior, impecable salvo una esquina doblada' } },
+        {
+          documento: { id: 'doc-mensura1924', how: 'al lado de la anterior, impecable salvo una esquina doblada' },
+          // Segunda de las tres marcas. Ver la nota en `aguaquieta.logica.ts`:
+          // alcance mundo y permanente para que cruce, y el fragmento «del
+          // Círculo Rojo» para que las condiciones de más adelante la
+          // encuentren sin depender del id, que se regenera al cruzar.
+          consecuencia: {
+            description: 'Leyó lo que el agrimensor anotó sobre la marca del Círculo Rojo en el mojón del oeste.',
+            scope: 'world',
+            permanent: true,
+            worldReminder:
+              'Sabe que hay un círculo en almagre repasado muchas veces sobre el mojón que no cierra, y que ' +
+              'un peón dijo «eso lo cuidan los del Círculo» antes de que los otros lo hicieran callar.',
+          },
+        },
         {
           documento: { id: 'doc-titulo', how: 'en el estante de abajo, con el resto de los legajos de 1887' },
           pistas: [{

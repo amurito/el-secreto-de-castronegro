@@ -581,6 +581,19 @@ export const AGUA_QUIETA_LOGICA: LogicaDeEscenas = [
         ],
         pregunta: '¿Qué quiso decir Ignacio con "tengo que ver si estoy"?',
         estabilidad: { amount: -5, cause: 'la última entrada del cuaderno' },
+        // La consecuencia NO es «aprendiste algo»: es que quedaste anotado.
+        // Alcance mundo y permanente, que es lo único que `sembrarHerencia`
+        // deja cruzar a la aventura siguiente — y lo que le permite al
+        // Círculo Rojo saber, más adelante, quién anduvo preguntando. El
+        // fragmento «del Círculo Rojo» es el que buscan las condiciones.
+        consecuencia: {
+          description: 'Leyó lo que Ignacio anotó sobre la marca del Círculo Rojo en el brocal de Los Álamos.',
+          scope: 'world',
+          permanent: true,
+          worldReminder:
+            'Sabe que Rosa repinta ese círculo todos los inviernos y que se calló cuando le preguntaron si ' +
+            'había visto otro igual en otro campo. Ese silencio tiene dueño, y el dueño se entera.',
+        },
       };
     },
   },
