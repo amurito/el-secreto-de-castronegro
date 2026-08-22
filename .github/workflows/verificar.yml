@@ -1,0 +1,58 @@
+# Corre TODA la batería en cada push a main y en cada pull request.
+#
+# QUÉ HACE Y QUÉ NO. Verifica; no publica. Publicar sigue siendo
+# `npm run desplegar` desde la máquina de Nicolás, que empuja el sitio
+# construido a la rama `gh-pages` — que es de donde GitHub Pages sirve hoy.
+# Son dos cosas separadas a propósito: si el CI se cae un martes, se puede
+# seguir publicando igual.
+#
+# POR QUÉ UN SOLO PASO PARA LAS 22 SUITES. La lista vive en `prueba:todo`
+# (package.json) y en ningún otro lado. Enumerarlas acá una por una daría
+# lindos tildes verdes en la interfaz de GitHub, a cambio de dos listas que
+# se desincronizan en silencio la primera vez que se agregue una suite y se
+# toque sólo una. El log nombra cada suite igual.
+#
+# `prueba:todo` termina con `build` y `revisar:bundle`, así que la auditoría
+# que impide publicar la solución de la aventura también corre acá.
+
+name: Verificar
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Si llegan dos pushes seguidos, sólo interesa el último.
+concurrency:
+  group: verificar-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # La misma versión con la que se desarrolla. El proyecto importa
+          # JSON con `with { type: 'json' }`, que necesita Node 20.10 o más.
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # Primero el typecheck: tarda segundos y ataja los errores más comunes
+      # antes de gastar varios minutos en jugar veintidós partidas enteras.
+      - name: Typecheck
+        run: npm run check
+
+      # Las 22 suites + construcción + auditoría del bundle público.
+      - name: Toda la batería
+        run: npm run prueba:todo

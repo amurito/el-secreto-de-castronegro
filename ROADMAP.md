@@ -366,16 +366,41 @@ infraestructura que lo carga (`condiciones.ts`, `contenido.schema.ts`,
 `validarContenido.ts`, `cargarAventura.ts`), que no crece con cada aventura
 nueva: ya está escrita.
 
-### 4.2 CI de verdad
+### 4.2 CI de verdad ✔ HECHO — verifica, no publica
 
-`.github/workflows/publicar.yml` está escrito y sin usar. Necesita, de tu lado:
+`.github/workflows/verificar.yml` corre el typecheck y **las 22 suites** en cada
+push a `main` y en cada pull request. Reemplaza a `publicar.yml`, que estaba
+escrito, commiteado y **nunca corrió una sola vez**.
+
+**Por qué nunca corrió.** No era un problema del workflow: `main` nunca se había
+pusheado. `npm run desplegar` empuja el sitio *construido* a la rama `gh-pages`
+—que es de donde Pages sirve— y nunca toca `main`. El resultado era que el sitio
+publicado estaba al día y el código fuente en GitHub estaba doce commits atrás,
+en «La Legua Perdida también pasa a contenido en datos»: la tercera aventura, el
+combate, el simulador y el Círculo Rojo existían sólo en la máquina de Nicolás y
+dentro del bundle minificado.
+
+**Verifica y no publica**, por decisión. `publicar.yml` terminaba en
+`deploy-pages@v4`, que exige Settings → Pages → Source: *GitHub Actions*; hoy
+apunta a la rama `gh-pages` (`build_type: legacy`), así que su paso de
+publicación habría fallado igual. Separar las dos cosas significa que si el CI se
+cae un martes, se puede seguir publicando con `npm run desplegar`.
+
+**Una sola lista de suites.** El workflow corre `npm run prueba:todo`, no
+veintidós pasos nombrados. Los pasos nombrados dan mejores tildes en la interfaz
+de GitHub a cambio de dos listas que se desincronizan la primera vez que alguien
+agregue una suite y toque sólo una de las dos. `prueba:todo` termina en `build` +
+`revisar:bundle`, así que la auditoría que impide publicar la solución de la
+aventura también corre en CI.
+
+**Requiere, de tu lado, una sola vez:**
 
 ```bash
 gh auth refresh -s workflow
 ```
 
-Después commitear el workflow y poner Settings → Pages → Source: GitHub Actions.
-Mientras tanto `npm run desplegar` hace lo mismo desde tu máquina.
+El token actual tiene `gist`, `read:org` y `repo`; sin el scope `workflow`,
+GitHub rechaza cualquier push que toque `.github/workflows/`.
 
 ### 4.3 Tablas propietarias de CoC 7e ✔ VERIFICADAS
 
