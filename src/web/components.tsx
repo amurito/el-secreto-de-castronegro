@@ -190,6 +190,47 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// RIVALES EN PELEA — combate de verdad, dentro de la historia (no el simulador)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ESTADO_LABEL: Record<string, string> = {
+  entero: 'Entero', lastimado: 'Lastimado', malherido: 'Malherido', fuera_de_combate: 'Fuera de combate',
+};
+
+/**
+ * Cuatro escalones, no una barra de PV. El servidor nunca manda el número
+ * —`sanitize.ts` lo recorta a propósito, misma decisión que ya regía para
+ * la paciencia de un NPC—: en la mesa nadie ve la ficha del rival, ve cómo
+ * se mueve. Esto es la versión visual de esa regla, no una excepción.
+ */
+export function Rivales({ npcs }: { npcs: any[] }) {
+  const enPelea = npcs.filter((n) => n.aqui && n.status === 'alive' && n.estadoCombate);
+  if (!enPelea.length) return null;
+  return (
+    <div className="rivales">
+      {enPelea.map((n) => (
+        <div key={n.id} className={`rival rival-${n.estadoCombate}`}>
+          <div className="rival-nombre">{n.name}</div>
+          {n.arma && <div className="rival-arma">{n.arma}</div>}
+          <div className="rival-estado-fila">
+            {(['entero', 'lastimado', 'malherido', 'fuera_de_combate'] as const).map((tramo, i) => (
+              <span
+                key={tramo}
+                className={`rival-tramo ${
+                  ['entero', 'lastimado', 'malherido', 'fuera_de_combate'].indexOf(n.estadoCombate) >= i
+                    ? 'rival-tramo-on' : ''
+                }`}
+              />
+            ))}
+            <span className="rival-estado-label">{ESTADO_LABEL[n.estadoCombate] ?? n.estadoCombate}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // PESTAÑAS DE LA DERECHA
 // ─────────────────────────────────────────────────────────────────────────────
 

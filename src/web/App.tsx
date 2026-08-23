@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Sheet, RollCard, Board, Inventory, Documents, RollHistory } from './components.tsx';
+import { Sheet, RollCard, Board, Inventory, Documents, RollHistory, Rivales } from './components.tsx';
 import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
 import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
@@ -482,6 +482,8 @@ export function App() {
           {streaming && <div className="line line-keeper line-streaming">{streaming}</div>}
           {busy && !streaming && <div className="thinking">El Keeper está resolviendo…</div>}
         </div>
+
+        {state?.npcs && <Rivales npcs={state.npcs} />}
 
         {lastRoll && <RollCard roll={lastRoll} big animar={animarDados} />}
 

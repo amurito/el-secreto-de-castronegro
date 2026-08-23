@@ -16,6 +16,21 @@
 
 import type { GameState } from '../shared/types.ts';
 import { toClientRoll } from '../shared/protocol.ts';
+import { ARMA_POR_ID } from '../rules/armas.ts';
+
+/**
+ * Cuatro escalones, no un número. «Entero» exige el máximo exacto —un solo
+ * golpe ya lo baja a «lastimado»—, que es la misma pregunta que se hace en
+ * la mesa mirando a alguien pelear: ¿está entero, está tocado, está mal, o
+ * ya no sigue?
+ */
+export type EstadoDeCombate = 'entero' | 'lastimado' | 'malherido' | 'fuera_de_combate';
+
+function estadoDeCombate(hp: number, maxHp: number): EstadoDeCombate {
+  if (hp <= 0) return 'fuera_de_combate';
+  if (hp === maxHp) return 'entero';
+  return hp > maxHp / 3 ? 'lastimado' : 'malherido';
+}
 
 export interface ClientState {
   campaignId: string;
@@ -31,6 +46,10 @@ export interface ClientState {
     id: string; name: string; description: string; present: boolean; status: string;
     aqui: boolean; sinPaciencia: boolean;
     puedePelear: boolean; fueraDeCombate: boolean;
+    /** Sólo si tiene estadísticas de combate. Nunca el PV exacto. */
+    estadoCombate?: EstadoDeCombate;
+    /** Nombre del arma que empuña, para la ficha del rival. */
+    arma?: string;
   }>;
   documents: unknown[];
   board: unknown;
@@ -126,6 +145,10 @@ export function sanitizeForClient(state: GameState): ClientState {
       sinPaciencia: n.patience <= 0,
       puedePelear: Boolean(n.combate && n.combate.hp > 0),
       fueraDeCombate: Boolean(n.combate && n.combate.hp <= 0),
+      ...(n.combate ? {
+        estadoCombate: estadoDeCombate(n.combate.hp, n.combate.maxHp),
+        arma: ARMA_POR_ID[n.combate.armaId]?.nombre ?? n.combate.armaId,
+      } : {}),
     })),
 
     documents: Object.values(state.documents)

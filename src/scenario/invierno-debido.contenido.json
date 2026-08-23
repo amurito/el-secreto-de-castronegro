@@ -981,6 +981,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "—Se pinta en San Juan —dice, sin moverse—. Un añ"
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1008,6 +1015,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "Por primera vez mueve las manos."
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1047,6 +1061,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "Se mira las manos como si fueran de otra persona"
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1069,6 +1090,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "—No cree en nada de esto y hace bien. Yo tampoco"
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1091,6 +1119,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "—Pienso que es una pavada de vieja y que nadie e"
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1113,6 +1148,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "—El escribano. —Escupe al costado, sin dramatism"
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1141,6 +1183,13 @@
       "agotado": {
         "op": "narrado",
         "contiene": "Se para derecho por primera vez."
+      },
+      "disponible": {
+        "op": "no",
+        "de": {
+          "op": "npcFuera",
+          "npc": "npc-cirilo"
+        }
       }
     },
     {
@@ -1302,6 +1351,38 @@
       "esquiva": {
         "texto": [
           "-No -dice, y no se corre-. Hoy no me sirve que me hablen despacio."
+        ]
+      }
+    },
+    {
+      "id": "r-cirilo-inconsciente",
+      "npc": "npc-ramona",
+      "orden": 24,
+      "etiqueta": "Preguntarle algo",
+      "intencion": "Le pregunto algo a Ramona",
+      "claves": [
+        "lo que se repinta",
+        "cada invierno",
+        "san juan",
+        "la pintura",
+        "para que sirve",
+        "usted cree que sirve",
+        "y si no sirve",
+        "quien lo pinto",
+        "quien pinto este ano",
+        "usted lo pinto",
+        "su hijo",
+        "cirilo",
+        "el muchacho"
+      ],
+      "disponible": {
+        "op": "npcFuera",
+        "npc": "npc-cirilo"
+      },
+      "cede": {
+        "actitud": -3,
+        "texto": [
+          "No te deja terminar la pregunta.\n\n—Salga de mi casa.\n\nEstá arrodillada al lado de Cirilo, con la mano en la nuca de él, y no te mira cuando lo dice. Lo dice al piso, a la nuca de su hijo, a cualquier cosa que no seas vos.\n\n—Lo que haya venido a preguntar, pregúntelo en otro lado. Acá no."
         ]
       }
     }

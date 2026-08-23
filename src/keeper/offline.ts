@@ -603,6 +603,14 @@ function talkTo(turn: Turn, i: Intent, out: string[], run: Runner, scenario: Sce
     out.push('No hay nadie acá con quien hablar.');
     return;
   }
+  // `status !== 'alive'` cubre muerto/loco, pero no inconsciente: eso es un
+  // estado de PELEA (`combate.hp`), no de la ficha. Sin este chequeo, un NPC
+  // que se acaba de dejar en el piso seguía contestando preguntas como si
+  // nada — el motor de combate y el de conversación no se hablaban entre sí.
+  if (npc.combate && npc.combate.hp <= 0) {
+    out.push(`${npc.name} está fuera de combate. No te va a contestar nada mientras siga así.`);
+    return;
+  }
 
   const tema = temaPorFrase(scenario.conversations, npc.id, i.norm, s);
   if (!tema) {

@@ -267,6 +267,35 @@ async function main() {
   const huida = await jugar('HUIR-CIRILO', 'g', [...AL_CONFLICTO, 'Me voy corriendo de la casa de los Sosa']);
   check('huir también tira: el golpe de oportunidad', huida.estado.rolls.length > conflicto.estado.rolls.length);
 
+  // ── 8. GANAR LA PELEA TIENE CONSECUENCIA: CIRILO YA NO CONTESTA, Y RAMONA TAMPOCO ──
+  console.log('\n8. DEJAR A CIRILO INCONSCIENTE CAMBIA LO QUE SE PUEDE HABLAR DESPUÉS');
+
+  const ko = await jugar('KO-CIRILO', 'x', [...AL_CONFLICTO, ...insistir('Enfrento a Cirilo', 20)]);
+  const pvFinal = ko.estado.npcs['npc-cirilo']?.combate?.hp ?? 13;
+  const invKo = invDe(ko.estado);
+  check('la insistencia alcanza para dejarlo fuera de combate —si no, subir la semilla o la cuenta—',
+    pvFinal <= 0,
+    `PV final de Cirilo: ${pvFinal} · investigador: ${invKo.status} ${invKo.derived.hp}/${invKo.derived.maxHp} · tiradas: ${ko.estado.rolls.length} · ending: ${ko.estado.ending ?? 'ninguno'}`);
+
+  if (pvFinal <= 0) {
+    const idKo = ko.estado.campaignId;
+    const t1 = await Turn.open(idKo);
+    t1.submitIntent('Le hablo a Cirilo', 'p1');
+    const r1 = await runOfflineTurn(t1, INVIERNO_DEBIDO, 'Le hablo a Cirilo', noop);
+    t1.narrate(r1.narration, r1.options);
+    await t1.commit();
+    check('a Cirilo inconsciente ya no se le puede hablar',
+      r1.narration.toLowerCase().includes('fuera de combate'), r1.narration);
+
+    const t2 = await Turn.open(idKo);
+    t2.submitIntent('Le pregunto a Ramona por Cirilo', 'p1');
+    const r2 = await runOfflineTurn(t2, INVIERNO_DEBIDO, 'Le pregunto a Ramona por Cirilo', noop);
+    t2.narrate(r2.narration, r2.options);
+    await t2.commit();
+    check('Ramona ya no quiere hablar, con su hijo tirado en el piso',
+      r2.narration.includes('Salga de mi casa'), r2.narration);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

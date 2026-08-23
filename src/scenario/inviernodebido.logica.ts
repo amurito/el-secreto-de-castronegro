@@ -410,8 +410,16 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'combate-cirilo',
-    resolver: () => ({
-      texto: ['Da un paso, y no es para atrás.'],
+    resolver: ({ variante }) => ({
+      // Con Cirilo hostil, este botón se puede tocar varias veces seguidas
+      // —cada click es un asalto entero—; sin variar el texto, la MISMA
+      // frase de arranque se repetía asalto tras asalto y leía robótico.
+      texto: [variante([
+        'Da un paso, y no es para atrás.',
+        'No hay más para hablar. Vas.',
+        'Otra vez. Esta vez de verdad.',
+        'No queda otra que seguir.',
+      ])],
       // A mano limpia: nadie en esta historia le puso un arma al
       // investigador, y no corresponde que la escena le invente una.
       combate: { accion: 'atacar', npcId: 'npc-cirilo', armaId: 'desarmado' },

@@ -307,6 +307,41 @@ button { font-family: inherit; cursor: pointer; }
 .roll-ok { border-left-color: var(--ok); }
 .roll-bad { border-left-color: var(--bad); }
 
+/* ── Rivales en pelea, dentro de la historia (no el simulador) ──────────
+   Cuatro escalones visibles, nunca un número: la ficha del rival que la
+   mesa de verdad tampoco ve, ver `Rivales` en components.tsx. */
+.rivales {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  margin: 0 2rem 1rem; max-width: 42rem; align-self: center; width: calc(100% - 4rem);
+}
+.rival {
+  display: flex; align-items: center; gap: 0.7rem;
+  background: var(--bg-panel); border: 1px solid var(--line); border-left: 3px solid var(--line);
+  border-radius: 3px; padding: 0.6rem 0.9rem;
+}
+.rival-entero { border-left-color: var(--ok); }
+.rival-lastimado { border-left-color: var(--hp); }
+.rival-malherido { border-left-color: var(--bad); }
+.rival-fuera_de_combate { border-left-color: var(--line); opacity: 0.55; }
+.rival-nombre { font-size: 0.85rem; }
+.rival-arma { font-size: 0.75rem; color: var(--text-dim); }
+.rival-estado-fila { display: flex; align-items: center; gap: 0.3rem; margin-left: auto; }
+.rival-tramo { width: 0.9rem; height: 0.35rem; border-radius: 1px; background: var(--line); }
+.rival-entero .rival-tramo-on { background: var(--ok); }
+.rival-lastimado .rival-tramo-on { background: var(--hp); }
+.rival-malherido .rival-tramo-on { background: var(--bad); }
+.rival-fuera_de_combate .rival-tramo-on { background: var(--text-faint); }
+.rival-estado-label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text-faint); margin-left: 0.3rem;
+}
+
+@media (max-width: 860px) {
+  .rivales { margin: 0 1rem 1rem; width: calc(100% - 2rem); }
+  .rival { flex-wrap: wrap; }
+  .rival-estado-fila { margin-left: 0; }
+}
+
 .roll-head { display: flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; }
 .roll-skill { color: var(--text); letter-spacing: 0.04em; }
 .roll-base { color: var(--text-dim); }

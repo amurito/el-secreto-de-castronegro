@@ -490,6 +490,46 @@ fallar varias veces seguidas en una corrida y no en otra; el motor
 determinista (`prueba-invierno-debido.ts`, semillas fijas) es la
 verificación de fondo.
 
+**Cuarta ronda: el combate en la historia se ve como el combate, y ganarlo
+pesa.** Dos pedidos, jugando: que el enfrentamiento con Cirilo no se
+mostrara como texto plano repetido sino con la misma cara del simulador
+(dados, ficha del rival), y que noquearlo tuviera consecuencia real, no
+cosmética.
+
+La ficha del rival (`Rivales`, nuevo en `web/components.tsx`, montado en
+`App.tsx` arriba del `RollCard`) muestra nombre, arma y un estado en
+CUATRO escalones —entero / lastimado / malherido / fuera de combate—, sin
+un solo número. Es la misma decisión que ya regía en `sanitize.ts` desde
+antes de este MVP («en la mesa nadie ve la ficha del rival»): el cliente
+nunca recibe el PV exacto de un NPC, sólo `estadoCombate` (nuevo,
+`server/sanitize.ts`) calculado en el servidor. Confirmada por vos mismo,
+explícitamente, contra la alternativa de exponer el número: **barra
+cualitativa, sin números**.
+
+Ganar la pelea ahora corta dos conversaciones, no una sola:
+
+- **Hablar con Cirilo inconsciente ya no funciona.** El motor —no esta
+  aventura puntual— nunca chequeaba `combate.hp`: `talkTo()` en
+  `keeper/offline.ts` sólo miraba `status !== 'alive'` (muerto/loco), así
+  que un NPC tirado en el piso seguía contestando preguntas como si nada.
+  Corregido a nivel motor, agnóstico de aventura: cualquier NPC con
+  `combate.hp <= 0` corta la conversación con un aviso, antes de que se
+  evalúe ningún tema.
+- **Ramona deja de hablar de lo que sea que tenga que ver con su hijo.**
+  Sus cuatro temas existentes (`r-obligacion`, `r-para-que`,
+  `r-dos-turnos`, `r-cirilo`) y los tres de Cirilo (`c-madre`, `c-aurelio`,
+  `c-libro`) se gatearon con el operador `npcFuera` para dejar de estar
+  disponibles en cuanto Cirilo cae; en su lugar, un tema nuevo
+  (`r-cirilo-inconsciente`) la muestra arrodillada al lado de él,
+  pidiéndote que te vayas. Cirilo mismo no necesitó un tema de reemplazo:
+  el corte de `talkTo()` ya lo intercepta antes de llegar a clasificar
+  ningún tema suyo.
+
+Verificado jugando de punta a punta, con semilla fija (`x`, 20 asaltos):
+Cirilo cae, hablarle narra que está fuera de combate, y preguntarle
+cualquier cosa a Ramona narra su negativa — la misma secuencia que jugaste
+vos mismo y mandaste por captura.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
