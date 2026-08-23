@@ -21,7 +21,7 @@ import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
 import { dieValues, damageDice, generateSeed, commitmentOf } from './rng.ts';
 import { ARMAS, ARMA_POR_ID, dadosQuePide, type Arma } from '../rules/armas.ts';
-import { resolverEnfrentamiento, danoDeAtaque } from '../rules/combate.ts';
+import { resolverEnfrentamiento, danoDeAtaque, type Defensa } from '../rules/combate.ts';
 import {
   combineD100, degreeFor, meetsDifficulty, tensDiceNeeded, thresholdsFor,
   DEGREE_LABEL, DIFFICULTY_LABEL, canPush,
@@ -1069,7 +1069,19 @@ export class Turn {
     }
 
     const inv = this.investigator;
-    const defensa = npc.combate.defensaPorDefecto;
+
+    // Un arma de fuego no se «contraataca» a mano, salvo a quemarropa —ahí
+    // ya no es un disparo a distancia, es forcejeo, y devolver el golpe
+    // vuelve a tener sentido. Sin este ajuste, un NPC con
+    // `defensaPorDefecto: 'contraataca'` le pegaba de vuelta con un palo a
+    // un balazo tirado desde lejos, lo cual no es una regla de CoC 7e: es
+    // que el motor no distinguía qué arma usó quien ataca. Reportado
+    // jugando, en el simulador.
+    const puntoBlanco = String(raw.punto_blanco ?? 'false') === 'true';
+    const defensa: Defensa =
+      arma.habilidad === 'armas_fuego' && !puntoBlanco
+        ? 'esquiva'
+        : npc.combate.defensaPorDefecto;
 
     // ── Modificadores de armas de fuego (sólo si el arma es de fuego) ──
     // «Apuntando» confía en que ya se declaró el turno anterior — el motor
@@ -1079,7 +1091,7 @@ export class Turn {
     const notasFuego: string[] = [];
     if (arma.habilidad === 'armas_fuego') {
       if (String(raw.apuntando ?? 'false') === 'true') { bonusFuego++; notasFuego.push('apuntando'); }
-      if (String(raw.punto_blanco ?? 'false') === 'true') { bonusFuego++; notasFuego.push('a quemarropa'); }
+      if (puntoBlanco) { bonusFuego++; notasFuego.push('a quemarropa'); }
       if (String(raw.cubierto ?? 'false') === 'true') { penaltyFuego++; notasFuego.push('el blanco se cubre'); }
       if (String(raw.blanco_movil ?? 'false') === 'true') { penaltyFuego++; notasFuego.push('el blanco se mueve'); }
     }

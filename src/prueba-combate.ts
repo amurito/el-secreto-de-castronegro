@@ -600,6 +600,42 @@ async function main() {
       JSON.stringify(tirAtaque3?.commitment.modifiers));
   }
 
+  console.log('\nUN ARMA DE FUEGO NO SE CONTRAATACA A MANO, SALVO A QUEMARROPA');
+  {
+    // Reportado jugando el simulador: el matón tiene `defensaPorDefecto:
+    // 'contraataca'` —le pega de vuelta con el palo— pero eso no puede
+    // valer contra un disparo hecho desde lejos: no hay con qué devolverlo.
+    // A quemarropa ya es forcejeo, y ahí sí vuelve a tener sentido.
+    const id = await createCampaign(conMaton, 'FUEGO-DEFENSA-LEJOS', 'fd'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'revolver-38' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    const tirDefensa = s.rolls.filter((x) => x.investigatorId === 'npc-maton').at(-1);
+    check('a distancia, el matón esquiva —no devuelve el golpe—',
+      tirDefensa?.commitment.skill === 'Esquivar', tirDefensa?.commitment.skill);
+
+    const id2 = await createCampaign(conMaton, 'FUEGO-DEFENSA-CERCA', 'fc'.repeat(32));
+    const t2 = await Turn.open(id2);
+    t2.executeTool('resolve_attack', {
+      npc_id: 'npc-maton', weapon_id: 'revolver-38', punto_blanco: 'true',
+    });
+    await t2.commit();
+    const s2 = (await Turn.open(id2)).state;
+    const tirDefensa2 = s2.rolls.filter((x) => x.investigatorId === 'npc-maton').at(-1);
+    check('a quemarropa, vuelve a devolver el golpe —es forcejeo, no a distancia—',
+      tirDefensa2?.commitment.skill === 'Pelea', tirDefensa2?.commitment.skill);
+
+    const id3 = await createCampaign(conMaton, 'MELEE-DEFENSA', 'me'.repeat(32));
+    const t3 = await Turn.open(id3);
+    t3.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+    await t3.commit();
+    const s3 = (await Turn.open(id3)).state;
+    const tirDefensa3 = s3.rolls.filter((x) => x.investigatorId === 'npc-maton').at(-1);
+    check('cuerpo a cuerpo no cambia nada: el matón sigue devolviendo el golpe',
+      tirDefensa3?.commitment.skill === 'Pelea', tirDefensa3?.commitment.skill);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

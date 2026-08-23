@@ -664,6 +664,18 @@ el simulador, «presente» pasa a significar «seleccionado en la interfaz».
 La regla del motor en sí —cualquier presente pelea— queda intacta, porque es
 correcta para una escena real con varios enemigos.
 
+**Corregido: un arma de fuego ya no se contraataca a mano, salvo a
+quemarropa.** `defensaPorDefecto` era una preferencia FIJA por NPC —«esquiva»
+o «contraataca»— sin mirar nunca con qué lo estaban atacando. Un NPC con
+`contraataca` le devolvía el golpe con un palo a un disparo hecho desde
+lejos, que no es una regla de CoC 7e: es que el motor no distinguía el arma
+de quien ataca. Reportado jugando el simulador. Ahora, si el arma que ataca
+es de fuego y NO es a quemarropa (`punto_blanco`), la defensa se fuerza a
+Esquivar sin importar la preferencia del NPC; a quemarropa —que ya es
+forcejeo, no distancia— vuelve a valer la preferencia normal. Verificado en
+`prueba-combate.ts` contra el matón de siempre, en los tres casos: lejos,
+a quemarropa, y cuerpo a cuerpo (sin cambios).
+
 **No entra por ahora, a propósito:** escopetas y rifles largos, porque su
 daño depende del tramo de distancia y el motor no tiene distancias dentro de
 una escena; meterlas con un solo número sería inventar una regla. Armas de
