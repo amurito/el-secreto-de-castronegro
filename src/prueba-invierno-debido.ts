@@ -18,6 +18,7 @@ import { INVIERNO_DEBIDO } from './scenario/inviernodebido.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
+import { accionesDisponibles } from './scenario/acciones.ts';
 import type { GameState, SkillId } from './shared/types.ts';
 
 useStore(fileStore);
@@ -168,6 +169,39 @@ async function main() {
   const denuncia = await jugar('DENUNCIA', 'c', [...ABRIR_CAJON, 'Me llevo el libro al juzgado']);
   check('«Lo que se lleva al juzgado» se alcanza', denuncia.estado.ending?.id === 'denunciar',
     denuncia.estado.ending?.title ?? 'sin final');
+
+  // Que las cinco frases funcionen NO alcanza: en modo motor —el modo
+  // público, sin API— no hay caja de texto libre, así que un final que sólo
+  // existe como patrón de texto es imposible de alcanzar de verdad. Bug
+  // real, reportado jugando: la aventura entera quedaba sin salida.
+  console.log('\n4-BIS. Y LOS CINCO TIENEN BOTÓN, NO SÓLO FRASE LIBRE');
+  const idFinal = await createCampaign(INVIERNO_DEBIDO, 'BOTONES', 'd'.repeat(64));
+  for (const intencion of ABRIR_CAJON) {
+    const t = await Turn.open(idFinal);
+    if (t.state.ending) break;
+    t.submitIntent(intencion, 'p1');
+    const r = await runOfflineTurn(t, INVIERNO_DEBIDO, intencion, noop);
+    t.narrate(r.narration, r.options);
+    await t.commit();
+  }
+  const conCajon = (await Turn.open(idFinal)).state;
+  const botonesEscribania = accionesDisponibles(conCajon, INVIERNO_DEBIDO).map((o) => o.id);
+  for (const id of ['fin-irse', 'fin-otro-ano', 'fin-soltar', 'fin-denunciar']) {
+    check(`el botón «${id}» está entre las opciones reales`, botonesEscribania.includes(id), botonesEscribania.join(', '));
+  }
+  // `fin-pintar` sólo vale en la plaza o el mojón —ahí es donde se pinta—,
+  // no en la escribanía: se comprueba en su propio lugar.
+  {
+    const t = await Turn.open(idFinal);
+    t.submitIntent('Vuelvo a la plaza', 'p1');
+    const r = await runOfflineTurn(t, INVIERNO_DEBIDO, 'Vuelvo a la plaza', noop);
+    t.narrate(r.narration, r.options);
+    await t.commit();
+    const enPlaza = (await Turn.open(idFinal)).state;
+    const botonesPlaza = accionesDisponibles(enPlaza, INVIERNO_DEBIDO).map((o) => o.id);
+    check('el botón «fin-pintar» está entre las opciones de la plaza',
+      botonesPlaza.includes('fin-pintar'), botonesPlaza.join(', '));
+  }
 
   // ── 5. LA PREGUNTA CENTRAL NO SE CONTESTA EN NINGUNA RAMA ────────────────
   console.log('\n5. NINGÚN DESENLACE CONTESTA SI SIRVE — REGLA DE ORO (§15)');

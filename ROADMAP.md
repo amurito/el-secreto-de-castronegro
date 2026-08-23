@@ -395,6 +395,35 @@ ni emitir nada de más). Verificado con un caso mínimo en `prueba-social.ts`
 §7 —un tema inventado, sin nada de Invierno Debido de por medio— para que la
 prueba sobreviva aunque el contenido que lo destapó cambie.
 
+**Segunda ronda, jugada por vos: la aventura no tenía salida.** El más grave
+de los tres hallazgos. Los cinco desenlaces existían sólo como patrones de
+texto libre —`{op:'texto', patron:'pinto|pintar|...'}`— y ninguno tenía un
+botón registrado. El modo motor (el modo público, sin API) no muestra caja de
+texto libre a propósito, así que la aventura entera era imposible de terminar
+jugando como se juega de verdad: agotaste los 19 temas y no quedó nada que
+hacer. Se agregaron los cinco botones (`fin-pintar`, `fin-soltar`,
+`fin-otro-ano`, `fin-denunciar`, `fin-irse`), cada uno con la misma
+`intencion` exacta que ya reconocía la escena, y una comprobación nueva en
+`prueba-invierno-debido.ts` que verifica —con `accionesDisponibles`, no con
+texto libre disparado a mano— que los cinco están entre los botones reales.
+Ningún otro `prueba-*` de las cuatro aventuras revisaba esto: probaban que la
+FRASE resolvía bien, nunca que hubiera un BOTÓN para escribirla.
+
+De paso, `grupo: "hacer"` en 17 acciones no era un valor válido —el real es
+`"usar"`—; funcionaba de pura casualidad porque nada valida `grupo` al cargar
+y el CSS pone el título en mayúsculas. Corregido.
+
+**Y una narración duplicada, también encontrada jugando.** El cajón se puede
+abrir por dos llaves (pedírselo a Aurelio, o que ya haya dicho que quiere
+dejarlo). La primera llave (`a-procedimiento`, tema de conversación) narraba
+la apertura completa Y el aviso de la cuarta hoja entero; la escena que
+entrega el documento (`agarrar-procedimiento`) volvía a narrar lo mismo. Si
+el jugador entraba por la SEGUNDA llave primero, después el tema seguía
+ofreciéndose y repetía la apertura como si fuera la primera vez. Se recortó
+el tema a sólo la apertura (sin adelantar el aviso, que ahora vive en un solo
+lugar: el momento de tocar la hoja de verdad) y se le agregó la condición de
+no ofrecerse si el cajón ya se abrió por la otra vía.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

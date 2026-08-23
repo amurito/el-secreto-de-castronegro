@@ -904,7 +904,7 @@
       "cede": {
         "actitud": 1,
         "texto": [
-          "Saca la llave del bolsillo del chaleco. Le lleva un rato encontrar la cerradura, no porque le tiemble la mano, sino porque no la busca.\n\nAdentro hay dos cosas: un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.\n\n—El libro léalo todo lo que quiera. Es un libro de cuentas, es lo más aburrido que hay en esta casa.\n\nApoya la mano abierta sobre las cuatro hojas y no la saca.\n\n—Esto son cuatro hojas. Las tres primeras son instrucciones y no le van a hacer nada, léalas. La cuarta es la explicación.\n\n—Se lo digo una sola vez y después hago como que no se lo dije: si da vuelta la tercera hoja, no hay manera de volver atrás. Yo la di vuelta a los veintiséis y desde entonces duermo distinto. Usted vino de afuera. Puede irse de acá sin haberla dado vuelta."
+          "Saca la llave del bolsillo del chaleco. Le lleva un rato encontrar la cerradura, no porque le tiemble la mano, sino porque no la busca.\n\nAdentro hay dos cosas: un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.\n\n—El libro léalo todo lo que quiera. Es un libro de cuentas, es lo más aburrido que hay en esta casa.\n\nApoya la mano abierta sobre las cuatro hojas y no la saca.\n\n—Esto son cuatro hojas. Léalas las que quiera. Cuando llegue a la última, antes de tocarla, hablamos otra vez."
         ],
         "pista": {
           "description": "Aurelio abrió el cajón del escritorio: adentro hay un libro de tapas de cartón y, debajo, cuatro hojas cosidas con hilo.",
@@ -918,8 +918,20 @@
         ]
       },
       "disponible": {
-        "op": "pista",
-        "contiene": "Aurelio no tiene hijos"
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Aurelio no tiene hijos"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "documento",
+              "id": "doc-turnos"
+            }
+          }
+        ]
       },
       "agotado": {
         "op": "narrado",
@@ -1772,7 +1784,7 @@
     },
     {
       "id": "cuarta-hoja",
-      "grupo": "hacer",
+      "grupo": "usar",
       "lugar": "escribania",
       "orden": 7,
       "intencion": "Doy vuelta la tercera hoja y leo la cuarta",
@@ -1874,6 +1886,68 @@
       "orden": 3,
       "intencion": "Miro el mapa de la pared",
       "etiqueta": "Mirar el mapa de la provincia"
+    },
+    {
+      "id": "fin-pintar",
+      "grupo": "decidir",
+      "lugar": [
+        "plaza",
+        "mojon"
+      ],
+      "orden": 90,
+      "final": true,
+      "intencion": "Lo pinto yo",
+      "etiqueta": "Pintar el círculo esta noche, con sus propias manos",
+      "visible": {
+        "op": "pista",
+        "contiene": "La obligación es repintar dos círculos"
+      }
+    },
+    {
+      "id": "fin-soltar",
+      "grupo": "decidir",
+      "lugar": "escribania",
+      "orden": 91,
+      "final": true,
+      "intencion": "Le digo que deje de hacerlo",
+      "etiqueta": "Decirle a Aurelio que deje de hacerlo",
+      "visible": {
+        "op": "pista",
+        "contiene": "Aurelio no tiene hijos"
+      }
+    },
+    {
+      "id": "fin-otro-ano",
+      "grupo": "decidir",
+      "lugar": "escribania",
+      "orden": 92,
+      "final": true,
+      "intencion": "Le digo que lo pinte este año, un año más",
+      "etiqueta": "Decirle a Aurelio que lo pinte, un año más",
+      "visible": {
+        "op": "pista",
+        "contiene": "Aurelio no tiene hijos"
+      }
+    },
+    {
+      "id": "fin-denunciar",
+      "grupo": "decidir",
+      "orden": 93,
+      "final": true,
+      "intencion": "Me llevo el libro al juzgado",
+      "etiqueta": "Llevarse el libro de turnos al juzgado",
+      "visible": {
+        "op": "documento",
+        "id": "doc-turnos"
+      }
+    },
+    {
+      "id": "fin-irse",
+      "grupo": "decidir",
+      "orden": 94,
+      "final": true,
+      "intencion": "Me voy del pueblo",
+      "etiqueta": "Irse de Villa Requena sin decidir nada"
     }
   ],
   "endings": [
