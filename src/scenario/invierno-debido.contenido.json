@@ -1245,6 +1245,65 @@
         "op": "narrado",
         "contiene": "Se queda mirándote un momento y después se ríe u"
       }
+    },
+    {
+      "id": "c-calmar",
+      "npc": "npc-cirilo",
+      "orden": 34,
+      "etiqueta": "Tratar de calmarlo",
+      "intencion": "Le hablo a Cirilo para calmarlo",
+      "claves": [
+        "calmarlo",
+        "calmarse",
+        "tranquilo",
+        "bajar el rebenque",
+        "no hace falta pelear",
+        "hablar con cirilo"
+      ],
+      "disponible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Cirilo bloqueó la salida del patio"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "npcFuera",
+              "npc": "npc-cirilo"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "pista",
+              "contiene": "Cirilo se aparta y deja pasar"
+            }
+          }
+        ]
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que baje el rebenque sin que nadie salga lastimado"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Le hablas despacio, sin acercarte, con las manos donde las pueda ver.\n\nCirilo no contesta enseguida. Mira el rebenque en su propia mano como si recien ahora lo viera.\n\n-Esta bien -dice, al final, y lo deja colgando de la muneca otra vez-. Esta bien. No es con usted.\n\nSe corre de la tranquera."
+        ],
+        "pista": {
+          "description": "Cirilo se aparta y deja pasar sin pelear: la enojada era la situacion, no el investigador.",
+          "kind": "experiential",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "-No -dice, y no se corre-. Hoy no me sirve que me hablen despacio."
+        ]
+      }
     }
   ],
   "scenes": [
@@ -1695,6 +1754,40 @@
           }
         ]
       }
+    },
+    {
+      "id": "combate-cirilo",
+      "prioridad": 82,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Cirilo bloqueó la salida del patio"
+          },
+          {
+            "op": "texto",
+            "patron": "enfrento a cirilo|me defiendo|peleo con cirilo|lo enfrento"
+          }
+        ]
+      }
+    },
+    {
+      "id": "huir-de-cirilo",
+      "prioridad": 82,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Cirilo bloqueó la salida del patio"
+          },
+          {
+            "op": "texto",
+            "patron": "me voy corriendo de la casa|salgo corriendo|huyo de cirilo"
+          }
+        ]
+      }
     }
   ],
   "actions": [
@@ -1948,6 +2041,92 @@
       "final": true,
       "intencion": "Me voy del pueblo",
       "etiqueta": "Irse de Villa Requena sin decidir nada"
+    },
+    {
+      "id": "decirle-a-ramona",
+      "grupo": "usar",
+      "lugar": "casa-sosa",
+      "orden": 4,
+      "intencion": "Le cuento lo de Aurelio",
+      "etiqueta": "Contarle a Ramona que Aurelio no cumplió",
+      "visible": {
+        "op": "pista",
+        "contiene": "Aurelio no repintó el círculo el invierno pasado"
+      }
+    },
+    {
+      "id": "decirle-a-cirilo",
+      "grupo": "usar",
+      "lugar": "casa-sosa",
+      "orden": 5,
+      "intencion": "Le cuento a Cirilo lo que hace su madre",
+      "etiqueta": "Contarle a Cirilo lo que hace su madre",
+      "visible": {
+        "op": "pista",
+        "contiene": "Ramona hizo el turno de Aurelio"
+      }
+    },
+    {
+      "id": "enfrentar-cirilo",
+      "grupo": "usar",
+      "lugar": "casa-sosa",
+      "orden": 6,
+      "intencion": "Enfrento a Cirilo",
+      "etiqueta": "Enfrentar a Cirilo",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Cirilo bloqueó la salida del patio"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "npcFuera",
+              "npc": "npc-cirilo"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "pista",
+              "contiene": "Cirilo se aparta y deja pasar"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "huir-cirilo",
+      "grupo": "usar",
+      "lugar": "casa-sosa",
+      "orden": 7,
+      "intencion": "Me voy corriendo de la casa de los Sosa",
+      "etiqueta": "Salir corriendo",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Cirilo bloqueó la salida del patio"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "npcFuera",
+              "npc": "npc-cirilo"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "pista",
+              "contiene": "Cirilo se aparta y deja pasar"
+            }
+          }
+        ]
+      }
     }
   ],
   "endings": [

@@ -382,8 +382,8 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
         'Se lo decís a Cirilo, con la madre sentada a tres metros.',
         'No grita. Eso es lo peor: no grita. Se queda quieto un segundo entero, mirando a Ramona, que no levanta la vista de la falda.\n\n—¿Vos fuiste el año pasado? —le pregunta a la madre. Y después, más bajo—: ¿Vos fuiste sola, de noche, en junio, a hacerle el trabajo a ése?',
         'Ramona no contesta, y no contestar es contestar.',
-        'Cirilo se da vuelta hacia vos y el rebenque ya no le golpea la bota: lo tiene quieto en la mano, que es distinto.\n\n—Usted vino a arreglar algo, ¿no? —dice—. Bueno. Vamos los dos a la escribanía y lo arreglamos.',
-        'Y no está esperando que le digas que sí.',
+        'Cirilo se da vuelta hacia vos y el rebenque ya no le golpea la bota: lo tiene quieto en la mano, que es distinto.\n\n—Usted vino a arreglar algo, ¿no? —dice—. A usted no lo dejo salir de este patio hasta que sepa qué va a hacer con lo que acaba de averiguar.',
+        'No es una amenaza gritada. Es peor: la dice bajito, como quien ya lo decidió.',
       ],
       npc: { id: 'npc-cirilo', attitudeDelta: -4, patienceDelta: -2, cause: 'se enteró de que su madre viene haciendo los dos turnos' },
       estabilidad: { amount: -2, cause: 'haber sido quien lo dijo' },
@@ -391,12 +391,38 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
         description: 'Cirilo Sosa se enteró de que su madre cumplió el turno de Aurelio Requena, y fue el investigador quien se lo dijo.',
         scope: 'campaign',
         permanent: true,
-        worldReminder: 'Cirilo está dispuesto a ir a la escribanía y no a conversar. Lo que pase ahí lo desencadenó el investigador.',
+        worldReminder: 'Cirilo bloqueó la salida del patio. No va a dejar pasar al investigador hasta que la situación se resuelva de una de tres maneras: hablando, peleando, o huyendo.',
       },
       pistas: [{
-        description: 'Cirilo se enteró por el investigador de que su madre hizo los dos turnos, y fue a buscar a Aurelio con el rebenque en la mano.',
+        description: 'Cirilo bloqueó la salida del patio: no deja pasar al investigador hasta que la situación se resuelva de una manera u otra.',
         kind: 'experiential', source: 'el patio de los Sosa', reliability: 'reliable',
       }],
+    }),
+  },
+
+  // ══ CIRILO BLOQUEA LA SALIDA: EL ÚNICO COMBATE DE LA AVENTURA ═══════════════
+  //
+  // Hasta acá, `resolve_attack`/`resolve_flee`/`resolve_maneuver` sólo los
+  // llamaba el simulador: ninguna aventura los conectaba. Cirilo tenía
+  // estadísticas de combate declaradas y ningún camino real para pelearlas.
+  // Estas dos escenas son el cable que faltaba —usan `efecto.combate`, que
+  // termina en las MISMAS herramientas del motor, con dados reales—.
+
+  {
+    id: 'combate-cirilo',
+    resolver: () => ({
+      texto: ['Da un paso, y no es para atrás.'],
+      // A mano limpia: nadie en esta historia le puso un arma al
+      // investigador, y no corresponde que la escena le invente una.
+      combate: { accion: 'atacar', npcId: 'npc-cirilo', armaId: 'desarmado' },
+    }),
+  },
+
+  {
+    id: 'huir-de-cirilo',
+    resolver: () => ({
+      texto: ['Le das la espalda a la tranquera y corrés.'],
+      combate: { accion: 'huir' },
     }),
   },
 

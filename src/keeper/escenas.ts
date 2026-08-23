@@ -157,6 +157,31 @@ function aplicarEfecto(
       amount: efecto.mitos.amount, source: efecto.mitos.source,
     });
   }
+  if (efecto.combate) {
+    // A diferencia de `descubre`/`documento` —donde el resultado exitoso ya
+    // lo cuenta la prosa de la escena y sólo hace falta mostrar un rechazo—,
+    // acá el MENSAJE DEL MOTOR ES la narración: los dados y el daño no los
+    // puede predecir ningún texto escrito de antemano. Se muestra siempre.
+    const c = efecto.combate;
+    let r: ReturnType<Runner>;
+    if (c.accion === 'atacar') {
+      r = run('resolve_attack', {
+        npc_id: c.npcId ?? '', weapon_id: c.armaId ?? 'desarmado',
+        reason: 'lo dispuso la escena',
+        apuntando: String(Boolean(c.apuntando)),
+        punto_blanco: String(Boolean(c.puntoBlanco)),
+        cubierto: String(Boolean(c.cubierto)),
+        blanco_movil: String(Boolean(c.blancoMovil)),
+      });
+    } else if (c.accion === 'huir') {
+      r = run('resolve_flee', { weapon_id: c.armaId ?? 'desarmado' });
+    } else {
+      r = run('resolve_maneuver', {
+        npc_id: c.npcId ?? '', type: c.tipo ?? 'derribar', reason: 'lo dispuso la escena',
+      });
+    }
+    out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+  }
   if (efecto.dano) {
     run('apply_damage', { amount: efecto.dano.amount, cause: efecto.dano.cause });
   }

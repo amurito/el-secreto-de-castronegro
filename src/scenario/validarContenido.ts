@@ -36,6 +36,7 @@ function referenciasDe(cond: Condicion, donde: string): Array<{ tipo: string; id
     case 'lugar': return cond.es.map((id) => ({ tipo: 'lugar', id, donde }));
     case 'destino': return [{ tipo: 'lugar', id: cond.id, donde }];
     case 'detalleVisto': return [{ tipo: 'lugar', id: cond.lugar, donde }];
+    case 'npcFuera': return [{ tipo: 'npc', id: cond.npc, donde }];
     case 'y': case 'o': return cond.de.flatMap((c) => referenciasDe(c, donde));
     case 'no': return referenciasDe(cond.de, donde);
     default: return [];

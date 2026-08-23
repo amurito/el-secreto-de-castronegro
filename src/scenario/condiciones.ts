@@ -59,6 +59,8 @@ export type Condicion =
   | { op: 'detalleVisto'; lugar: string; feature: string }
   /** La hora del mundo (0-23). Cruza medianoche componiendo con `o`. */
   | { op: 'hora'; minimo?: number; maximo?: number }
+  /** Un NPC con estadísticas de combate quedó fuera de pelea (PV en 0). */
+  | { op: 'npcFuera'; npc: string }
   /**
    * Ya se narró un párrafo que contiene este fragmento. Frágil a propósito
    * como último recurso —comparar contra texto ya emitido es del tipo de
@@ -158,6 +160,8 @@ export function evaluarCondicion(cond: Condicion, ctx: ContextoCondicion): boole
       if (cond.maximo !== undefined && h > cond.maximo) return false;
       return true;
     }
+    case 'npcFuera':
+      return (s.npcs[cond.npc]?.combate?.hp ?? 1) <= 0;
     case 'narrado':
       return narradoContiene(s, cond.contiene);
     case 'consecuencia':

@@ -424,6 +424,72 @@ el tema a sólo la apertura (sin adelantar el aviso, que ahora vive en un solo
 lugar: el momento de tocar la hoja de verdad) y se le agregó la condición de
 no ofrecerse si el cajón ya se abrió por la otra vía.
 
+**Tercera ronda: el combate nunca estuvo conectado a ninguna historia.**
+Preguntaste por qué nunca llegabas a pelear con Cirilo, y la respuesta fue
+peor que un bug de contenido: `resolve_attack`/`resolve_flee`/`resolve_maneuver`
+—las herramientas de combate reales, con dados, PV y todo— **sólo las
+llamaba el simulador**. Ninguna de las cuatro aventuras las conectaba a su
+propia narrativa. Cirilo tenía Pelea y PV declarados y la escena que lo
+ponía hostil terminaba en «vamos a arreglarlo» sin ningún lado adonde ir.
+
+Se construyó el cable que faltaba: `EfectoEscena.combate` (nuevo campo en
+`scenario/escena.ts`), wireado en `keeper/escenas.ts` a las mismas tres
+herramientas del simulador. A diferencia de `descubre`/`documento` —donde el
+resultado ya lo cuenta la prosa de la escena—, acá el MENSAJE DEL MOTOR ES
+la narración: los dados no los puede predecir ningún texto escrito de
+antemano, así que se muestra siempre, éxito o fracaso.
+
+Contenido nuevo en Los Sosa: Cirilo bloquea la salida del patio (en vez de
+«vamos a la escribanía», que no llevaba a ningún lado) y ofrece tres salidas
+reales — **hablarle** (persuasión, tema `c-calmar`), **huir** (`resolve_flee`,
+golpe de oportunidad incluido) o **pelear** (`resolve_attack`, a mano
+limpia). Un operador nuevo del DSL, `npcFuera` (mira `combate.hp` de un NPC
+directamente, más robusto que tirar de texto narrado), cierra el conflicto
+cuando corresponde. Encontrados y corregidos en el camino, todos jugando:
+
+- Otras DOS escenas sin botón —`contarle-a-ramona` y `contarle-a-cirilo`—,
+  mismo bug que los cinco desenlaces: existían sólo como patrón de texto.
+- La primera versión de «Trato de calmar a Cirilo» no tenía un verbo de
+  habla explícito (ningún stem de `hablar` en el texto), así que ni
+  llegaba al tema: cayó en el genérico «hacés eso, el campo no tiene
+  opinión». Y «Me voy corriendo **de la casa de los Sosa**» se clasificaba
+  como intento de IR a la casa de los Sosa —el lugar donde ya se está—, no
+  como huida: el nombre del lugar en la frase le ganaba al verbo. Las dos
+  reescritas para calzar con cómo clasifica el motor, no con cómo suena
+  mejor en español.
+- La pista que abría los tres caminos («Cirilo bloqueó la salida») sólo
+  vivía en el `worldReminder` de una consecuencia, nunca en una pista de
+  verdad: nada la encontraba nunca. Corregido.
+- El primer intento de «hablarle» pedía Persuasión difícil, y con la actitud
+  de Cirilo recién hundida (-4 por la revelación) eso resultó casi
+  imposible: 0 éxitos en 15 semillas seguidas. Bajado a Persuasión regular
+  —sigue siendo dura, con penalización por la actitud, pero deja de ser
+  teórica—.
+
+Un efecto colateral esperado, no un bug: `prueba-auditoria.ts`'s andador
+—que prueba TODO lo que encuentra, insistiendo— ahora puede morir de
+verdad peleando con Cirilo (semilla fija `j`), exactamente como le pasaría
+a un jugador real. Se le enseñó a cortar el recorrido ahí (mismo criterio
+que ya usa el juego real para bloquear las acciones de un investigador
+muerto) y a no exigir cobertura completa del mapa cuando eso pasa: no es
+que algo esté mal declarado, es que el personaje se murió en el intento.
+
+**Y de paso, un arma de fuego dejó de contraatacarse a mano.** Encontrado en
+el simulador, no en esta aventura: un NPC con `defensaPorDefecto: 'contraataca'`
+le devolvía el golpe con un palo a un balazo tirado desde lejos.
+`defensaPorDefecto` era una preferencia fija por NPC que nunca miraba el
+arma de quien atacaba. Ahora, si el arma es de fuego y no es a quemarropa,
+la defensa se fuerza a Esquivar; a quemarropa —que ya es forcejeo, no
+distancia— la preferencia normal vuelve a valer. Verificado en
+`prueba-combate.ts` en los tres casos.
+
+24 suites en verde. Verificado contra el servidor real (HTTP), no sólo el
+motor en Node — con la salvedad de que el servidor de desarrollo usa una
+semilla aleatoria por campaña, así que una tirada social difícil puede
+fallar varias veces seguidas en una corrida y no en otra; el motor
+determinista (`prueba-invierno-debido.ts`, semillas fijas) es la
+verificación de fondo.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

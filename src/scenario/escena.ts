@@ -112,6 +112,31 @@ export interface EfectoEscena {
    * que no se recupera de ninguna manera.
    */
   mitos?: { amount: number; source: string };
+  /**
+   * Dispara un asalto de combate de verdad contra un NPC con estadísticas
+   * de pelea, usando las mismas herramientas del motor que el simulador
+   * (`resolve_attack`/`resolve_flee`/`resolve_maneuver`) — no una tirada de
+   * mentira ni un coin-flip narrado a mano.
+   *
+   * Hasta ahora estas tres herramientas SÓLO las llamaba el simulador de
+   * combate; ninguna aventura las conectaba. Un NPC podía tener PV y Pelea
+   * declarados y ser, en la práctica, imposible de pelear de verdad dentro
+   * de la historia. Este campo es el cable que faltaba.
+   */
+  combate?: {
+    accion: 'atacar' | 'huir' | 'maniobra';
+    /** Requerido para 'atacar' y 'maniobra'. 'huir' pelea contra todos los presentes. */
+    npcId?: string;
+    /** Arma del investigador. Por defecto, a mano limpia. */
+    armaId?: string;
+    /** Sólo para 'maniobra'. */
+    tipo?: 'desarmar' | 'derribar' | 'sujetar';
+    /** Sólo para 'atacar' con arma de fuego. */
+    apuntando?: boolean;
+    puntoBlanco?: boolean;
+    cubierto?: boolean;
+    blancoMovil?: boolean;
+  };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   pregunta?: string;

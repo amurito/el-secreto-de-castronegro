@@ -227,6 +227,46 @@ async function main() {
     && !irse.estado.npcs['npc-ramona']?.combate
     && !irse.estado.npcs['npc-delfina']?.combate);
 
+  // ── 7. CIRILO SE PUEDE PELEAR DE VERDAD, NO SÓLO EN LA FICHA ─────────────
+  //
+  // Bug real, encontrado jugando: Cirilo tenía Pelea y PV declarados, pero
+  // ningún camino de la aventura llamaba a `resolve_attack`/`resolve_flee`.
+  // La escalada terminaba en «vamos a arreglarlo» y ahí se cortaba —ni
+  // siquiera había manera de intentar evitarlo, porque tampoco había forma
+  // de HABLARLE al respecto—. Estas pruebas verifican las tres salidas por
+  // BOTÓN, con el motor de combate real.
+  console.log('\n7. CIRILO SE PELEA DE VERDAD, Y TIENE TRES SALIDAS');
+
+  const AL_CONFLICTO = [
+    'Voy a la casa de los Sosa',
+    'Le pregunto a Ramona por lo que se repinta cada invierno',
+    'Le pregunto a Ramona por Cirilo',
+    ...insistir('Le pregunto a Ramona quién lo pintó este año', 5),
+    'Le cuento a Cirilo lo que hace su madre',
+  ];
+
+  const conflicto = await jugar('CONFLICTO', 'e', AL_CONFLICTO);
+  check('Cirilo bloquea la salida', pista(conflicto.estado, 'Cirilo bloqueó la salida del patio'));
+  const botonesConflicto = accionesDisponibles(conflicto.estado, INVIERNO_DEBIDO).map((o) => o.id);
+  check('«Enfrentar a Cirilo» es un botón real', botonesConflicto.includes('enfrentar-cirilo'), botonesConflicto.join(', '));
+  check('«Salir corriendo» es un botón real', botonesConflicto.includes('huir-cirilo'), botonesConflicto.join(', '));
+  check('«Tratar de calmarlo» es un botón real', botonesConflicto.includes('tema:c-calmar'), botonesConflicto.join(', '));
+
+  // Un solo intercambio puede salir en blanco —los dos fallan, o los dos se
+  // estorban— sin que eso sea un bug; se insiste como en `prueba-combate.ts`
+  // hasta que alguno de los dos PV se mueva de verdad.
+  const pelea = await jugar('PELEAR-CIRILO', 'f', [...AL_CONFLICTO, ...insistir('Enfrento a Cirilo', 4)]);
+  check('pelear tira dados de verdad', pelea.estado.rolls.some((r) => r.investigatorId === 'npc-cirilo'),
+    `${pelea.estado.rolls.length} tiradas en total`);
+  const pvCirilo = pelea.estado.npcs['npc-cirilo']?.combate?.hp ?? 13;
+  const pvInvestigador = invDe(pelea.estado).derived.hp;
+  check('y el combate deja daño de verdad en alguno de los dos lados',
+    pvCirilo !== 13 || pvInvestigador !== invDe(pelea.estado).derived.maxHp,
+    `Cirilo ${pvCirilo}/13 · investigador ${pvInvestigador}/${invDe(pelea.estado).derived.maxHp}`);
+
+  const huida = await jugar('HUIR-CIRILO', 'g', [...AL_CONFLICTO, 'Me voy corriendo de la casa de los Sosa']);
+  check('huir también tira: el golpe de oportunidad', huida.estado.rolls.length > conflicto.estado.rolls.length);
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }
