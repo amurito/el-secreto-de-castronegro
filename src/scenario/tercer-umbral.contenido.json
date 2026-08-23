@@ -28,7 +28,7 @@
           "description": "La oreja izquierda del chico de la foto tiene el lóbulo pegado, sin separación. Es un rasgo de familia, chico pero real. No es algo que se pueda saber de memoria: hay que mirar la foto para saberlo.",
           "discoveryCondition": {
             "kind": "skill_check",
-            "skill": "descubrir",
+            "skill": "fotografia",
             "difficulty": "hard"
           },
           "disclosure": "DISCOVERABLE"

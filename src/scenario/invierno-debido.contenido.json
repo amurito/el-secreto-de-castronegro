@@ -107,7 +107,7 @@
           "description": "La mano derecha de Evaristo Requena está apoyada sobre el libro abierto, y el dorso tiene una mancha oscura que el daguerrotipo no logra resolver del todo. No es sombra: la sombra cae para el otro lado. Es almagre, en la mano, el día que se sentó a hacerse el retrato.",
           "discoveryCondition": {
             "kind": "skill_check",
-            "skill": "descubrir",
+            "skill": "fotografia",
             "difficulty": "hard"
           },
           "disclosure": "DISCOVERABLE"
@@ -1487,6 +1487,34 @@
                 "irse"
               ]
             }
+          }
+        ]
+      }
+    },
+    {
+      "id": "interpretar-mojon",
+      "prioridad": 55,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "lugar",
+                "es": [
+                  "mojon"
+                ]
+              },
+              {
+                "op": "pista",
+                "contiene": "otro círculo grabado"
+              }
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "que (es|significa)|reconozco|s[ií]mbolo|ocultis|marca ritual|de qu[eé] (tipo|clase) de marca"
           }
         ]
       }

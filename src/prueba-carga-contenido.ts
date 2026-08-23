@@ -57,7 +57,7 @@ function main() {
     check('agua-quieta.contenido.json es válido', false, String(e));
   }
   check('y se carga a un Scenario completo',
-    AGUA_QUIETA.scenes.length === 20 && AGUA_QUIETA.conversations.length === 8
+    AGUA_QUIETA.scenes.length === 20 && AGUA_QUIETA.conversations.length === 9
     && AGUA_QUIETA.actions.length === 19 && AGUA_QUIETA.endings.length === 5,
     `${AGUA_QUIETA.scenes.length} escenas · ${AGUA_QUIETA.conversations.length} temas · ${AGUA_QUIETA.actions.length} acciones · ${AGUA_QUIETA.endings.length} desenlaces`);
 

@@ -368,8 +368,8 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
   {
     id: 'leer-mensuras',
     prueba: (s) => s.documents['doc-mensura1903']?.obtainedAt ? null : ({
-      skill: 'buscar_libros', difficulty: 'regular',
-      reason: 'ordenar veinte años de papeles de campo',
+      skill: 'biblioteca', difficulty: 'regular',
+      reason: 'ordenar veinte años de papeles de campo en el archivo de la escribanía',
       stakes_success: 'encontrás las dos mensuras y el título',
       stakes_failure: 'boletos de marca y cuentas del almacén',
     }),

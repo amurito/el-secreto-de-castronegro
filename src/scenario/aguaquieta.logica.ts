@@ -488,8 +488,8 @@ export const AGUA_QUIETA_LOGICA: LogicaDeEscenas = [
   {
     id: 'placa-fotografica',
     prueba: (s) => propiedadVista(s, 'it-fotoreciente') ? null : ({
-      skill: 'descubrir', difficulty: 'regular',
-      reason: 'examinar la placa que Ignacio dejó dada vuelta',
+      skill: 'fotografia', difficulty: 'regular',
+      reason: 'leer la placa como quien revela una foto, no como quien mira un objeto',
       stakes_success: 'notás lo que hay en el círculo de agua',
       stakes_failure: 'sólo ves un aljibe fotografiado con demasiado cuidado',
     }),

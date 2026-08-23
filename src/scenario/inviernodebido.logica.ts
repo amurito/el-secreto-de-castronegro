@@ -202,10 +202,44 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    // Vía alternativa a `examinar-mojon`, no un reemplazo: el chequeo de
+    // Descubrir encuentra el grabado (es táctil, es notar una textura bajo la
+    // pintura). Éste, en cambio, es para quien ya lo encontró y pregunta qué
+    // ES, no qué hay. Por eso pide la pista del grabado como condición y no
+    // repite el trabajo de encontrarlo.
+    id: 'interpretar-mojon',
+    prueba: (s) => pista(s, 'no es un adorno') ? null : ({
+      skill: 'ocultismo', difficulty: 'regular',
+      reason: 'reconocer de qué clase de marca se trata, no sólo que hay una',
+      stakes_success: 'sabés para qué sirve un dibujo así',
+      stakes_failure: 'un círculo grabado, y ninguna idea de qué es',
+    }),
+    resolver: ({ estado, tirada }) => {
+      if (pista(estado, 'no es un adorno')) {
+        return { texto: ['Ya lo pensaste. Sigue siendo lo mismo: un círculo cerrado, sin entrada.'] };
+      }
+      if (!tirada?.exito) {
+        return { texto: ['Un círculo grabado en piedra. Podría ser cualquier cosa: una marca de cantera, un juego de niños, una casualidad de la erosión. No hay manera de saber cuál, mirándolo.'] };
+      }
+      return {
+        texto: [
+          'No es un adorno, y no es casual: un círculo grabado sin ninguna abertura, sin punto de entrada ni de salida, es una forma que se usa a propósito y con una sola intención. No para dejar pasar algo. Para que algo se quede adentro, o se quede afuera, y desde acá no hay manera de saber cuál de las dos.',
+          'El círculo pintado de arriba —el de todos los inviernos— lo copia línea por línea. Quien empezó esta costumbre no inventó nada: repitió un dibujo que ya sabía para qué servía.',
+        ],
+        pistas: [{
+          description: 'El grabado del mojón no es decorativo: es un círculo cerrado sin abertura, la forma que se usa para contener algo —adentro o afuera, sin poder saber cuál—. El círculo que se repinta cada invierno lo copia exactamente.',
+          kind: 'physical', source: 'el grabado del mojón, leído como lo que es', reliability: 'reliable',
+        }],
+        estabilidad: { amount: -3, cause: 'entender para qué sirve un dibujo, no sólo verlo' },
+      };
+    },
+  },
+
+  {
     id: 'examinar-retrato',
     prueba: (s) => propiedadVista(s, 'it-retrato') ? null : ({
-      skill: 'descubrir', difficulty: 'hard',
-      reason: 'mirar la mano del retratado, no su cara',
+      skill: 'fotografia', difficulty: 'hard',
+      reason: 'leer un retrato de estudio de 1887 con ojo de fotógrafo, no sólo mirarlo',
       stakes_success: 'notás lo que tiene en el dorso de la mano',
       stakes_failure: 'un escribano de patillas, de 1887',
     }),

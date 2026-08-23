@@ -24,8 +24,8 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
   {
     id: 'examinar-foto',
     prueba: (s) => propiedadVista(s, 'it-foto') ? null : ({
-      skill: 'descubrir', difficulty: 'hard',
-      reason: 'notar algo en la foto que no salta a la vista',
+      skill: 'fotografia', difficulty: 'hard',
+      reason: 'leer la foto como una imagen, no como un objeto',
       stakes_success: 'notás el detalle',
       stakes_failure: 'un chico y un hombre mayor, nada más',
     }),
@@ -105,7 +105,7 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
   {
     id: 'buscar-partida',
     prueba: (s) => s.documents['doc-partida']?.obtainedAt ? null : ({
-      skill: 'buscar_libros', difficulty: 'regular',
+      skill: 'biblioteca', difficulty: 'regular',
       reason: 'seguir el orden del registro parroquial hasta 1895',
       stakes_success: 'encontrás la partida de Alejo',
       stakes_failure: 'bautismos y defunciones de otras familias',

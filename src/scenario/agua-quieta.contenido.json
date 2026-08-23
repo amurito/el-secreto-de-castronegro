@@ -74,7 +74,7 @@
           "description": "En el círculo de agua hay un reflejo. No es el de Ignacio: la posición no corresponde con la del que sostiene la cámara. Es un hombre, de pie, mirando hacia arriba. Hacia la cámara. Y no hay nadie más en el patio: la sombra de los álamos cae sobre tierra vacía.",
           "discoveryCondition": {
             "kind": "skill_check",
-            "skill": "descubrir",
+            "skill": "fotografia",
             "difficulty": "regular"
           },
           "disclosure": "DISCOVERABLE"
@@ -865,6 +865,50 @@
       "esquiva": {
         "texto": [
           "—Estaba podrida —dice—. Se cortó sola.\n\nY vuelve al repasador. Una soga podrida no se corta a cuchillo, y las dos lo saben, pero ella lo dijo primero y ahora hay que desarmarlo."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "cortada a cuchillo"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "tres días DESPUÉS"
+      }
+    },
+    {
+      "id": "confrontar-soga",
+      "npc": "npc-rosa",
+      "orden": 16,
+      "etiqueta": "Encararla con que la soga está cortada, no podrida",
+      "intencion": "Le digo a Rosa que sé que la soga está cortada a cuchillo, no podrida",
+      "claves": [
+        "se que la cortaste",
+        "no se corto sola",
+        "es mentira que se pudrio",
+        "dejese de mentir",
+        "esta cortada a cuchillo"
+      ],
+      "prueba": {
+        "skill": "intimidar",
+        "difficulty": "regular",
+        "razon": "no darle margen para seguir sosteniendo que se pudrió sola"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Rosa deja de doblar el repasador de golpe, no despacio como otras veces.\n\n—La saqué yo —dice, cortante—. Tres días después. Ya está. ¿Contenta?\n\nSe la ganó, pero se la ganó mal: le queda la información y le queda también que Rosa no le va a volver a hablar así de fácil el resto de la visita."
+        ],
+        "pista": {
+          "description": "Rosa retiró la soga de la roldana tres días DESPUÉS de la desaparición de Ignacio, no antes.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": -4,
+        "texto": [
+          "—No sé qué se cree que sabe —dice, y esta vez no vuelve al repasador: se queda mirándo{lo} fijo—. Estaba podrida. Se cortó sola. Y no le voy a decir una palabra más si me va a tratar así en mi propia cocina."
         ]
       },
       "disponible": {
