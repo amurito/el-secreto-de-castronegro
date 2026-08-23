@@ -521,6 +521,13 @@ button { font-family: inherit; cursor: pointer; }
   margin: 0.4rem 0 0.8rem; line-height: 1.5;
 }
 
+/* Una continuación directa no es lo mismo que «se lee distinto después de»:
+   se avisa con un borde, para que se distinga de un vistazo en la lista. */
+.scenario-continuacion {
+  border-left: 2px solid var(--accent); padding-left: 0.7rem;
+  color: var(--text-dim); font-style: normal;
+}
+
 .nota-social {
   font-size: 0.78rem; color: var(--text-faint); font-style: italic;
   border-left: 2px solid var(--line); padding-left: 0.7rem; margin: 0.2rem 0 0.6rem;

@@ -410,7 +410,7 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'combate-cirilo',
-    resolver: ({ variante }) => ({
+    resolver: ({ variante, estado }) => ({
       // Con Cirilo hostil, este botón se puede tocar varias veces seguidas
       // —cada click es un asalto entero—; sin variar el texto, la MISMA
       // frase de arranque se repetía asalto tras asalto y leía robótico.
@@ -423,6 +423,25 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
       // A mano limpia: nadie en esta historia le puso un arma al
       // investigador, y no corresponde que la escena le invente una.
       combate: { accion: 'atacar', npcId: 'npc-cirilo', armaId: 'desarmado' },
+      // HABER DECIDIDO PELEAR ES LO QUE QUEDA, no quién ganó el asalto. Se
+      // registra en el primero y sólo en el primero: cada click es un asalto
+      // y sin este chequeo quedaban ocho copias de la misma consecuencia.
+      //
+      // Existe porque una aventura POSTERIOR la lee —El Sueño Debido vuelve a
+      // este patio un año después, y Ramona no le habla igual a alguien que
+      // le levantó la mano al hijo—. Antes de esto, elegir pelear no dejaba
+      // ningún rastro que cruzara el puente entre aventuras: se agotaba en
+      // los PV de esa tarde.
+      ...(estado.consequences.some((c) => c.description.includes('le fue encima a Cirilo Sosa'))
+        ? {}
+        : {
+          consecuencia: {
+            description: 'En el patio de los Sosa, el investigador le fue encima a Cirilo Sosa a mano limpia, delante de la madre.',
+            scope: 'campaign' as const,
+            permanent: true,
+            worldReminder: 'Ramona Sosa vio al investigador pelearse con su hijo en su propio patio. Eso no se descuenta con el tiempo.',
+          },
+        }),
     }),
   },
 

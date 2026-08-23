@@ -530,6 +530,115 @@ Cirilo cae, hablarle narra que está fuera de combate, y preguntarle
 cualquier cosa a Ramona narra su negativa — la misma secuencia que jugaste
 vos mismo y mandaste por captura.
 
+### 3.2-sexies Quinta aventura ✔ HECHA — *El Sueño Debido*
+
+Julio de 1927, Villa Requena otra vez, un año y dos días después. Aurelio
+Requena cumplió lo que había prometido —la carta llega— pero no pide que
+alguien pinte nada: pide que alguien venga a mirarlo, porque hace catorce
+días que no se despierta y sigue levantándose de noche.
+
+**El tema no lo elegí yo: estaba escrito.** La Biblia de Canon v0.7 §11 fija
+los Siete Umbrales con un tema cada uno, y las cuatro aventuras ya venían
+calzando en orden sin que el catálogo lo dijera —tiempo y observación en Agua
+Quieta, espacio en La Legua Perdida, identidad en La Firma Ajena, muerte en El
+Invierno Debido—. El quinto es **sueño**. Los nombres geográficos de los otros
+Umbrales no son canon definitivo; el tema sí.
+
+**Lo que estrena, y por qué es la quinta y no otra:**
+
+1. **Es la primera continuación directa.** La cuarta leía CUÁNTAS marcas del
+   Círculo Rojo traías; ésta lee CUÁL de los cinco desenlaces elegiste, y la
+   carta de apertura y el renglón de 1926 del libro se escriben distintos en
+   las cinco ramas. La de «se lo llevó al juzgado» es la más trabajosa: el
+   libro no está, así que lo que se lee es la copia a mano que sacó Delfina
+   Arce antes de que el original saliera del pueblo. Se puede empezar acá:
+   entonces cae en la rama de irse sin decidir, que para Villa Requena es
+   indistinguible de no haber venido nunca.
+2. **Dos mundos que sólo cierran cruzados.** Tres noches, tres escenas de
+   sueño, y lo que se trae de cada una no significa nada hasta que se apoya en
+   algo de la vigilia: la ronda del brocal no dice nada hasta fechar una
+   tachadura de 1878, y la quinta hoja no dice nada hasta ver quién salió
+   movido en una foto de 1880.
+3. **Reparte las tiradas, que era una deuda tuya y tenías razón.** Un conteo
+   sobre las cuatro aventuras publicadas daba `descubrir` doce veces,
+   `psicologia` y `buscar_libros` tres, `persuasion` dos, y **catorce
+   habilidades del sistema sin usar ni una sola vez**. Acá entran por primera
+   vez Primeros Auxilios, Escuchar, Historia, Uso de Bibliotecas, Fotografía,
+   Ocultismo, Antropología, Intimidar y Labia, más POD para el clímax. Si la
+   campaña nunca pone a prueba lo que el jugador eligió al repartir puntos, la
+   creación de personaje es un formulario.
+4. **Las habilidades caras enriquecen y NUNCA bloquean.** Ninguna ficha
+   pregenerada trae Ocultismo ni Antropología —salen en base 5 y 1—, así que
+   gatear contenido detrás de ellas habría sido peor que no usarlas. Fallarlas
+   cambia qué se entiende, jamás si se puede seguir; los tres desenlaces se
+   alcanzan con las dos en base, y hay una prueba que lo verifica. Lo que sí
+   hacen es pagar el trabajo de vigilia: haber mirado el polvo del tarro
+   contra la luz y el grano de la foto da dados de bonificación en el sueño.
+5. **La rama hostil existe de verdad.** Si el año pasado le fuiste encima a
+   Cirilo, Ramona no colabora: el tema por Persuasión desaparece y aparece uno
+   por Intimidar, que da la misma información, cuesta actitud en vez de
+   ganarla y termina con ella parándose y echándote. Eso obligó a un arreglo
+   retroactivo en El Invierno Debido: **elegir pelear no dejaba ningún rastro
+   que cruzara el puente entre aventuras**, se agotaba en los PV de esa tarde.
+   Ahora deja consecuencia de alcance campaña, registrada una sola vez por más
+   asaltos que se peleen.
+
+**Tres desenlaces, no cinco.** «Lo que se despierta» (vuelve, y se trae
+puesto algo que no era suyo), «Lo que se queda dormido» (te vas, y el pueblo
+queda con un hombre que respira y no está) y «Lo que se paga con otro sueño»
+(te ponés en su lugar: él despierta entero y la deuda cambia de dueño, que
+sos vos). Ninguno contesta si la obligación sirve —§15 otra vez—, y hay una
+prueba automática que lo verifica sobre el texto de los tres.
+
+**Los cuatro puntos a lápiz del mapa de la escuela, resueltos.** Estaban
+plantados en la cuarta como atmósfera. Ahora son cinco, Delfina explica de
+dónde salen —tres años anotando rumores de viajeros en un almacén, por manía
+de no dormir— y tres de ellos caen donde estuvo el investigador en las tres
+primeras aventuras. El cuarto y el quinto quedan sin resolver a propósito.
+
+**Bugs encontrados construyéndola, todos jugando o auditando:**
+
+- **Un tema de conversación no puede entregar un documento.** `EfectoTema`
+  deja cambiar actitud, dejar pista y revelar secreto, y nada más. La partida
+  parroquial de 1878 estaba declarada, Delfina la contaba, y el papel no
+  llegaba nunca a la carpeta —y su `agotado`, que chequeaba justamente ese
+  documento, no se cumplía jamás—. Lo encontró la auditoría de
+  alcanzabilidad, no una partida. Se le escribió escena propia.
+- **La auditoría no sembraba las pistas de las conversaciones.** Su banco de
+  estados hipotéticos sólo cargaba las pistas de los detalles de lugar, así
+  que una escena que ramifica por algo que contó un NPC se veía siempre por
+  su rama pobre, y un desenlace que sólo existe en la rama rica quedaba
+  reportado como inalcanzable aunque una partida lo alcanzara sin problema.
+  Falso positivo, que en una prueba es tan malo como un falso negativo.
+  Arreglado en `prueba-auditoria.ts`: ahora siembra también lo que dejan los
+  temas, en sus cuatro salidas.
+- **«Hay cinco desenlaces» estaba escrito a mano en la interfaz.** Con una
+  aventura de tres, mentía. Ahora cuenta los del escenario.
+- **La tarjeta del inicio prometía «se puede jugar sola» a cualquier aventura
+  con `requiere`.** En una continuación directa eso es falso, y una promesa
+  falsa en la pantalla de entrada es peor que no decir nada. Entrada nueva de
+  catálogo (`continuacion`) y un texto distinto.
+- **El reloj del mundo y el reloj de la pantalla se contradecían por el huso
+  horario.** `advanceTimeBy` guardaba el `iso` con `toISOString()` —UTC— y
+  armaba el display con `getHours()` —local—, así que en Argentina el estado
+  iba tres horas adelantado respecto del reloj visible. Sobrevivió cuatro
+  aventuras porque todas empiezan a las diez de la mañana y el corrimiento no
+  cruzaba ningún umbral. La quinta arranca 16:20, el ISO decía 19:20, y el
+  motor narraba «ya es de noche» a media tarde. Afectaba a todo lo que lee la
+  hora: `isNight`, `lightNote` y el operador `hora` del DSL. Arreglado y con
+  prueba de regresión en `prueba-permeabilidad.ts`.
+
+**Una decisión de ingeniería, explicada porque se ve poco:** el sueño son
+escenas y no localizaciones. `move_to_location` exige conexión declarada y el
+motor genera un botón «Ir a» por cada conexión, así que un mapa onírico
+navegable pedía dos features de motor —conexiones ocultas y un efecto
+`mueve`— para conseguir algo además peor de narrar. Un sueño no se recorre:
+te lleva. Cada visita es una escena con tirada propia que ramifica por GRADO
+y no sólo por éxito, que es más control del que daría una sala.
+
+26 suites en verde, incluida la auditoría de alcanzabilidad sobre las cinco
+aventuras. Verificado además en el navegador real.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

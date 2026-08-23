@@ -366,9 +366,13 @@ export function App() {
                 {e.epoca} · {e.duracion} · Muerte permanente
               </div>
               {e.requiere?.length ? (
-                <div className="scenario-antes">
-                  Se puede jugar sola. Se lee distinto después de{' '}
-                  {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.
+                <div className={`scenario-antes${e.continuacion ? ' scenario-continuacion' : ''}`}>
+                  {e.continuacion
+                    ? <>Continúa directamente después de{' '}
+                      {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.
+                      Se puede empezar acá, pero está escrita para quien ya estuvo.</>
+                    : <>Se puede jugar sola. Se lee distinto después de{' '}
+                      {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.</>}
                 </div>
               ) : null}
               <div className="scenario-botones">
@@ -527,7 +531,15 @@ export function App() {
           </div>
         ) : (
           <div className="input-area">
-            <Acciones options={options} nuevas={marcas.pendientes} busy={busy} onPick={send} />
+            <Acciones
+              options={options}
+              nuevas={marcas.pendientes}
+              busy={busy}
+              onPick={send}
+              cuantosFinales={
+                entradaDe(state?.scenarioId ?? '')?.scenario.endings.length ?? 5
+              }
+            />
 
             {/* Sin esto, los temas desaparecían de golpe y parecía un bug.
                 Ahora la interfaz dice lo que la prosa ya dijo: no es que no
@@ -924,13 +936,20 @@ function Continuar({
   );
 }
 
+/** Para el pie del bloque de desenlaces, que antes decía «cinco» a mano. */
+const EN_LETRAS: Record<number, string> = {
+  2: 'dos', 3: 'tres', 4: 'cuatro', 5: 'cinco', 6: 'seis', 7: 'siete',
+};
+
 function Acciones({
-  options, nuevas, busy, onPick,
+  options, nuevas, busy, onPick, cuantosFinales,
 }: {
   options: Opcion[];
   nuevas: Set<string>;
   busy: boolean;
   onPick: (intencion: string, id: string) => void;
+  /** Cuántos desenlaces tiene ESTA aventura. No son cinco en todas. */
+  cuantosFinales: number;
 }) {
   // Un desenlace cierra la aventura y no hay rebobinado. Elegirlo sin saber
   // que lo era es la peor sorpresa posible, así que van aparte y piden un
@@ -990,7 +1009,12 @@ function Acciones({
             ))}
           </div>
           <div className="nota-final">
-            Hay cinco desenlaces. Ninguno es perder: son cinco maneras distintas de que esto termine.
+            {cuantosFinales > 1 ? (
+              <>Hay {EN_LETRAS[cuantosFinales] ?? cuantosFinales} desenlaces. Ninguno es perder:
+                {' '}son {EN_LETRAS[cuantosFinales] ?? cuantosFinales} maneras distintas de que esto termine.</>
+            ) : (
+              <>Elegir un desenlace cierra la aventura. No hay rebobinado.</>
+            )}
           </div>
         </div>
       )}

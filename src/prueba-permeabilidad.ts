@@ -94,6 +94,28 @@ async function main() {
     check('el mensaje no menciona permeabilidad', !/el mundo está permeable/.test(r.message));
   }
 
+  // ── El reloj del estado y el reloj de la pantalla son el mismo ───────────
+  //
+  // Regresión de un bug que vivió cuatro aventuras sin que nadie lo viera: el
+  // `iso` del mundo se guardaba con `toISOString()` —UTC— mientras el display
+  // se armaba con `getHours()` —local—, así que en cualquier huso distinto de
+  // Greenwich el estado decía una hora y el reloj otra. Lo destapó la quinta
+  // aventura, que empieza 16:20 y hacía que el motor narrara «ya es de noche»
+  // a media tarde, porque el ISO corrido decía 19:20.
+  console.log('\nEL RELOJ DEL ESTADO Y EL DE LA PANTALLA NO SE CONTRADICEN');
+  {
+    const id = await createCampaign(AGUA_QUIETA, 'RELOJ-HUSO', 's'.repeat(64));
+    const t = await Turn.open(id);
+    t.executeTool('advance_time', { minutes: 3, reason: 'prueba' });
+    await t.commit();
+    const time = (await Turn.open(id)).state.world.time;
+    const horaIso = time.iso.slice(11, 13);
+    check('la hora del ISO es la misma que muestra el reloj',
+      horaIso === time.display.slice(0, 2), `iso ${time.iso} · display ${time.display}`);
+    check('y el ISO no arrastra zona horaria',
+      !time.iso.endsWith('Z') && !/[+-]\d\d:\d\d$/.test(time.iso), time.iso);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

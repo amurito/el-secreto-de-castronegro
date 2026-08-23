@@ -52,8 +52,30 @@ const check = (n: string, ok: boolean, d = '') => {
  *     el cuarto, y con el banco parado en el patio la auditoría lo daba por
  *     inalcanzable — un falso positivo, que en una prueba es tan malo como un
  *     falso negativo porque enseña a ignorarla.
+ *
+ * Las pistas del banco salen de DOS fuentes, y la segunda se agregó tarde: los
+ * detalles de cada lugar, y lo que dejan los temas de conversación. Sin la
+ * segunda, una escena que ramifica por algo que contó un NPC —«esto ya pasó
+ * una vez, hace cuarenta y nueve años»— se veía siempre por su rama pobre, y
+ * un desenlace que sólo existe en la rama rica quedaba reportado como
+ * inalcanzable aunque una partida de verdad lo alcanzara sin problema. Otro
+ * falso positivo, encontrado escribiendo la quinta aventura.
  */
 function estadosDeBanco(s: GameState, esc: Scenario): GameState[] {
+  const pistasDeDetalles = Object.values(esc.locations).flatMap((l) =>
+    (l.features ?? []).filter((f) => f.clue).map((f) => ({
+      id: `banco-${l.id}-${f.id}`, description: f.clue!.description,
+      kind: f.clue!.kind, reliability: f.clue!.reliability,
+    })));
+  // Un tema puede dejar pista en cualquiera de sus salidas, no sólo al ceder.
+  const pistasDeTemas = esc.conversations.flatMap((t) =>
+    [t.cede, t.esquiva, t.critico, t.pifia]
+      .flatMap((e) => (e?.pista ? [e.pista] : []))
+      .map((p, n) => ({
+        id: `banco-tema-${t.id}-${n}`, description: p.description,
+        kind: p.kind, reliability: p.reliability,
+      })));
+
   const todoVisto: GameState = {
     ...s,
     items: Object.fromEntries(Object.entries(s.items).map(([k, i]) => [k, {
@@ -67,12 +89,11 @@ function estadosDeBanco(s: GameState, esc: Scenario): GameState[] {
       .map(([k, d]) => [k, { ...d, obtainedAt: 'banco' }])),
     board: {
       ...s.board,
-      clues: esc.locations && Object.values(esc.locations).flatMap((l) =>
-        (l.features ?? []).filter((f) => f.clue).map((f, n) => ({
-          id: `banco-${l.id}-${n}`, description: f.clue!.description, kind: f.clue!.kind,
-          discoveredBy: s.activeInvestigator, discoveredAt: 'banco', source: 'banco',
-          reliability: f.clue!.reliability, reliabilityKnown: false, disclosure: 'PUBLIC' as const,
-        }))),
+      clues: [...pistasDeDetalles, ...pistasDeTemas].map((p) => ({
+        ...p,
+        discoveredBy: s.activeInvestigator, discoveredAt: 'banco', source: 'banco',
+        reliabilityKnown: false, disclosure: 'PUBLIC' as const,
+      })),
     },
   };
   // Cada base, parada en cada lugar del mapa.

@@ -1908,10 +1908,21 @@ export class Turn {
     const from = this.state.world.time;
     const d = new Date(from.iso);
     d.setMinutes(d.getMinutes() + minutes);
-    const iso = d.toISOString().slice(0, 19);
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-    const to: WorldTime = { iso, precision: 'minute', display: `${hh}:${mm}` };
+    // EL ISO DEL MUNDO ES HORA DE PARED, NO UTC. Un `iso` sin zona se parsea
+    // como local, así que `toISOString()` lo devolvía corrido por el huso
+    // —tres horas en Argentina— y el estado quedaba diciendo una hora
+    // distinta de la que mostraba el reloj. Nadie lo vio en cuatro aventuras
+    // porque todas empiezan a las diez de la mañana y el corrimiento no
+    // cruzaba ningún umbral; la quinta arranca 16:20, el ISO decía 19:20, y
+    // el motor narraba «ya es de noche» a media tarde. Todo lo que lee la
+    // hora —`isNight`, `lightNote`, el operador `hora` del DSL— leía el
+    // número corrido.
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const iso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+      + `T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    const to: WorldTime = {
+      iso, precision: 'minute', display: `${pad(d.getHours())}:${pad(d.getMinutes())}`,
+    };
     this.emit('TIME_ADVANCED', { from, to, minutes, reason });
     this.recoverPatience(minutes);
     this.abrirElMundo(minutes);

@@ -20,6 +20,7 @@ import { AGUA_QUIETA } from './aguaquieta.ts';
 import { LA_LEGUA } from './legua.ts';
 import { TERCER_UMBRAL } from './tercerumbral.ts';
 import { INVIERNO_DEBIDO } from './inviernodebido.ts';
+import { SUENO_DEBIDO } from './suenodebido.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -31,6 +32,17 @@ export interface EntradaCatalogo {
   duracion: string;
   /** IDs de aventuras que conviene haber jugado antes. */
   requiere?: string[];
+  /**
+   * Es una CONTINUACIÓN DIRECTA, no una historia suelta que se lee distinto.
+   *
+   * La diferencia importa en la tarjeta del inicio: hasta la cuarta, «se puede
+   * jugar sola» era literalmente cierto en todas, y la interfaz lo daba por
+   * hecho para cualquier aventura con `requiere`. La quinta vuelve al mismo
+   * pueblo un año después de un desenlace concreto, así que esa frase pasaría
+   * a ser mentira — y una promesa falsa en la pantalla de entrada es peor que
+   * no decir nada.
+   */
+  continuacion?: true;
 }
 
 const ENTRADAS: EntradaCatalogo[] = [
@@ -70,6 +82,19 @@ const ENTRADAS: EntradaCatalogo[] = [
     // «recomendamos jugar la anterior» tiene una consecuencia mecánica y no
     // sólo narrativa.
     requiere: ['tercer-umbral'],
+  },
+  {
+    scenario: SUENO_DEBIDO,
+    cuando: '1927-07-11',
+    epoca: 'Julio de 1927 · Villa Requena',
+    duracion: 'Una hora y media aproximadamente',
+    // La primera que NO se puede jugar suelta del todo. Se juega igual —la
+    // carta llega en las cinco ramas, incluida la de no haber jugado la
+    // anterior— pero es la primera vez que la aventura previa no es una
+    // lectura opcional sino el punto de partida: vuelve al mismo pueblo, con
+    // la misma gente, un año después de lo que el investigador haya decidido.
+    requiere: ['invierno-debido'],
+    continuacion: true,
   },
 ];
 

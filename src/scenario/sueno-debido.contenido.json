@@ -1,0 +1,1582 @@
+{
+  "id": "sueno-debido",
+  "title": "El Sueño Debido",
+  "surfacePremise": "Aurelio Requena cumplió su palabra: la carta llegó, un año después, tal como dijo que iba a llegar. No pide que alguien vuelva a pintar nada. Pide que alguien venga a ver qué le pasa: desde la noche en que se cumplió el turno de 1926, Aurelio no volvió a dormir bien, y hace dos semanas dejó de despertarse del todo. A veces se levanta con los ojos cerrados, camina hasta la plaza, y hace con las manos algo que nadie le enseñó. Nadie sabe si sueña, si recuerda, o si está pagando la misma deuda de otra manera.",
+  "startLocation": "plaza",
+  "startTime": {
+    "iso": "1927-07-11T16:20:00",
+    "precision": "minute",
+    "display": "las cuatro y veinte de la tarde"
+  },
+  "startUmbralPermeability": 18,
+  "items": [
+    {
+      "id": "it-almagre",
+      "name": "El tarro de almagre",
+      "aliases": [
+        "almagre",
+        "tarro",
+        "pintura",
+        "tarro de pintura",
+        "pintura roja"
+      ],
+      "shortDescription": "El mismo tarro de lata, en el mismo estante de la escribanía. Este año está abierto y la brocha está sucia: alguien lo usó y no lo guardó bien.",
+      "owner": "escribania",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-almagre-basico",
+          "description": "Tierra roja molida. La brocha tiene la cerda apelmazada de almagre seco, de este invierno.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-almagre-molido",
+          "description": "El almagre no es sólo tierra colorada. Contra la luz, entre el polvo rojo hay una fracción más clara y más fina, molida aparte y mezclada después: mineral, no vegetal, y no de esta barranca. Alguien agrega algo a la mezcla, y lo viene agregando desde antes de que existiera el pueblo, porque la proporción es la misma en la costra del fondo que en la brocha de este año.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "ocultismo",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-foto",
+      "name": "La foto de la comisión del centenario",
+      "aliases": [
+        "foto",
+        "fotografia",
+        "la foto",
+        "comision",
+        "centenario",
+        "foto vieja"
+      ],
+      "shortDescription": "Una copia montada en cartón, clavada con chinches en la pared del aula: catorce hombres formados delante de la escuela recién levantada. Al pie, a mano: «Comisión pro-templo y escuela, Villa Requena, 1880».",
+      "owner": "escuela",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-foto-basico",
+          "description": "Catorce hombres de galera y sobretodo, en dos filas, con la cara seria de quien está quieto veinte segundos. Delfina la heredó con el aula.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-foto-borroso",
+          "description": "El de la punta izquierda de la fila de atrás está movido, y no está movido como se mueve alguien que respira: los otros trece tienen el mismo grano y él tiene el contorno abierto hacia un solo lado, como si durante los veinte segundos de pose hubiera estado en dos lugares y la placa hubiera guardado los dos. Los pies, en cambio, salieron nítidos. Están firmes. Lo que se movió fue el resto.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "fotografia",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-aurelio",
+      "name": "Aurelio Requena",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cincuenta y cinco años, escribano. Está acostado en un catre armado en la escribanía, vestido, con los zapatos al lado. Respira despacio y parejo. Hace catorce días que no contesta cuando le hablan, y hace catorce noches que se levanta igual.",
+      "motivation": "Ninguna que se le pueda preguntar. La que dejó escrita hace tres semanas era que alguien viniera a mirarlo.",
+      "fears": [
+        "Lo dejó por escrito: no morirse. Que lo sigan levantando."
+      ],
+      "refusals": [
+        "No contesta. No es que no quiera."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-ramona",
+      "name": "Ramona Sosa",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Setenta y dos años. Este invierno tiene las manos limpias por primera vez desde que era joven, y no parece aliviada: parece alguien a quien le sacaron algo de las manos sin preguntarle.",
+      "motivation": "Que esto se termine con ella y no siga con su hijo. Ya falló una vez en eso, hace cuarenta y nueve años.",
+      "fears": [
+        "Que lo de 1878 vuelva a pasar, y que otra vez sea por algo que ella dejó que pasara."
+      ],
+      "refusals": [
+        "No va a hablar de 1878 con alguien que le levantó la mano a su hijo."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-ramona-1878",
+          "statement": "En 1878 le tocaba el turno a su padre y su padre no pudo. Fue un Requena joven en su lugar, y ese Requena no volvió a despertarse del todo. Ramona tenía veintitrés años y lo vio. Desde entonces cumplió cada turno propio sin faltar uno, y en 1925 cumplió también el ajeno, sabiendo exactamente lo que estaba arriesgando y eligiendo arriesgarlo ella.",
+          "disclosure": "KEEPER_SECRET",
+          "canon": {
+            "truth": "CANON_SETTING",
+            "disclosure": "KEEPER_SECRET",
+            "source": "scenario"
+          }
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-cirilo",
+      "name": "Cirilo Sosa",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Treinta y cuatro años. Sigue sin creer una palabra de nada. Este año tiene las uñas y las cutículas teñidas de un rojo que no sale con jabón, y si {lo} ve mirándole las manos se las mete en el bolsillo.",
+      "motivation": "Que la madre de setenta y dos no salga más de noche. Lo consiguió del único modo que se le ocurrió, y no piensa admitirlo.",
+      "fears": [
+        "Que haberlo hecho signifique que ahora cree."
+      ],
+      "refusals": [
+        "No va a decir que fue él. Menos delante de la madre."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-cirilo-pinto",
+          "statement": "El círculo de 1927 lo pintó él, solo, la noche del 24 de junio, sin decírselo a nadie y puteando todo el tiempo. Lo hizo para que la madre no saliera. No cree que sirva para nada y lo hizo igual, y ésa es la parte que no puede explicarse ni a sí mismo.",
+          "disclosure": "KEEPER_SECRET",
+          "canon": {
+            "truth": "CANON_SETTING",
+            "disclosure": "KEEPER_SECRET",
+            "source": "scenario"
+          }
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-delfina",
+      "name": "Delfina Arce",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Veintisiete años, maestra, tres años en Villa Requena. Fue ella la que despachó la carta. Es la única persona del pueblo que trata esto como un problema que se puede averiguar, y por eso es la única que sirve de algo.",
+      "motivation": "Averiguarlo. No por Aurelio: porque lleva tres años anotando cosas que no cierran y necesita que alguna cierre.",
+      "fears": [
+        "Haber tardado. Haber tenido la carta tres semanas en el cajón antes de despacharla."
+      ],
+      "refusals": [
+        "No va a decir que es cosa de campo y ya está."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-carta",
+      "title": "Carta de Aurelio Requena",
+      "author": "Aurelio Requena, escribano",
+      "date": "19 de junio de 1927",
+      "location": "En el bolsillo del sobretodo, desde que llegó",
+      "kind": "letter",
+      "content": "Escrita con letra de escribano hasta la mitad, y con otra letra —la misma mano, otro pulso— de la mitad para abajo.\n\n«Si esta carta le llega es porque le pedí a la señorita Arce que la despachara en el caso de que yo no pudiera despacharla por mi cuenta. Le pido disculpas por el método. No se me ocurrió otro que no fuera pedirle a alguien que juzgara si hacía falta.\n\nDesde la noche en que se cumplió el turno del año pasado no duermo como dormía antes. No es insomnio, señor: duermo. El asunto es de dónde vuelvo.\n\nLas dos últimas semanas de mayo me desperté tres veces en la plaza, de pie, con frío, sin zapatos, y la tercera vez con las manos ocupadas. No le voy a describir en qué. Le voy a decir solamente que las tenía ocupadas de una manera que a mí me llevó cincuenta y cuatro años aprender y que dormido me sale mejor.\n\nUsted estuvo acá. Usted vio el libro. No conozco a nadie más que haya visto el libro y no lleve el apellido adentro.\n\nSi cuando llegue yo no estoy en condiciones de recibirlo, no se vaya enseguida. Espere a la noche. Es de noche que se entiende.»\n\nAbajo, con la letra del pulso peor, una sola línea agregada después: «Y no le pregunte a Ramona por el año setenta y ocho hasta que no tenga otra cosa. Se lo pido yo.»",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-turnos",
+      "title": "Libro de turnos",
+      "author": "Cinco letras distintas, en orden",
+      "date": "1841 – 1927",
+      "location": "El cajón de la escribanía, que este año está sin llave",
+      "kind": "file",
+      "content": "Un libro de tapas de cartón, rayado como un libro de cuentas. Dos columnas: un año, y un apellido.\n\n1841 REQUENA · 1842 SOSA · 1843 REQUENA · 1844 SOSA…\n\nOchenta y seis renglones, alternándose sin faltar un año, con cuatro letras que se van reemplazando de a una: la primera hasta 1889, la segunda hasta 1907, la tercera hasta 1919, y de ahí en adelante la de Aurelio.\n\nTres renglones están tachados y reescritos con el otro apellido: 1852, 1878 y 1904. Alguien no pudo, y el otro fue.\n\nLa primera página está antes de 1841 y no tiene años. Es una lista de nueve apellidos, de los cuales siete no existen en este pueblo ni existieron nunca según los padrones, escrita con una letra más vieja que el libro. Al pie dice, en la misma letra: «Los que quedan. Que se sepa que quedaron pocos y que ninguno quiso».",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-parroquial",
+      "title": "Copia de la partida y el asiento de 1878",
+      "author": "Parroquia de Del Valle, copiado a mano por D. Arce",
+      "date": "1856 – 1881, copiado en 1927",
+      "location": "La carpeta que Delfina trajo del curato",
+      "kind": "file",
+      "content": "Dos asientos copiados con letra de maestra, prolija y sin abreviar, y una nota al pie que no está en el original.\n\nBAUTISMO. «Benicio Requena, nacido el 4 de agosto de 1856 en el paraje de Agua Blanca, hijo legítimo de…» El renglón sigue con los padres y los padrinos.\n\nEl segundo asiento no es de defunción. Es una nota marginal del párroco, fechada el 2 de febrero de 1881, al lado del bautismo, del modo en que se anotan las cosas que hay que dejar dichas y no tienen casillero: «Consta a este curato que el arriba nombrado no ha fallecido. Consta asimismo que la familia lo da por ausente desde junio de 1878 y que no ha vuelto a ser visto en misa ni en padrón. No se asienta defunción por no haber cuerpo ni certeza, y se deja constancia a pedido de su hermano.»\n\nAl pie, con lápiz, la letra de Delfina: «El hermano es Evaristo Requena. En 1878 Benicio tenía veintiún años. En el padrón de 1881 la casa figura con una persona más de las que declara.»",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "plaza": {
+      "id": "plaza",
+      "name": "La plaza de Villa Requena",
+      "aliases": [
+        "plaza",
+        "pueblo",
+        "centro"
+      ],
+      "description": "Las mismas cuatro manzanas, las mismas dos tipas peladas, el mismo brocal tapado con una chapa y una piedra. Lo que cambió es que este año la gente {lo} saluda al cruzar, con una cortesía corta que no invita a conversar, y que hay una silla de paja apoyada contra el brocal que nadie retira.",
+      "atmosphere": [
+        "El aire está quieto y frío y huele a leña, como el año pasado y como todos los julios.",
+        "La silla contra el brocal tiene el asiento hundido de tanto uso, y está a la intemperie.",
+        "Del almacén sale ruido de vasos. Cuando {lo} ven, el ruido no se corta: sigue igual, que es peor."
+      ],
+      "connections": [
+        "escribania",
+        "casa-sosa",
+        "escuela"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 4,
+      "senses": {
+        "sight": "Un pueblo que ya {lo} vio una vez y decidió qué hacer con eso.",
+        "sound": "Vasos, lejos. El viento en la chapa del brocal.",
+        "smell": "Leña húmeda."
+      },
+      "features": [
+        {
+          "id": "f-brocal",
+          "names": [
+            "brocal",
+            "aljibe",
+            "circulo",
+            "pozo"
+          ],
+          "description": "El brocal de siempre. Levantando la chapa, el círculo de almagre está entero: repintado en toda la vuelta, sin un tramo desvaído, cosa que no pasaba desde hacía años.",
+          "closerLook": "Está entero y está mal hecho. La mano que lo dio es firme pero no tiene el oficio: la línea arranca gruesa y se adelgaza donde el pulso se cansó, y en dos lugares se pisó a sí misma porque quien lo pintó no sabía por dónde había empezado. Se hizo de una sola vez, de noche, por alguien que nunca lo había hecho antes y que igual lo terminó.",
+          "examineSkill": "descubrir",
+          "exposure": 2,
+          "clue": {
+            "description": "El círculo de 1927 está completo, pintado de una sola vez y por una mano sin práctica: no lo hizo ninguno de los dos que lo vinieron haciendo siempre.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-silla",
+          "names": [
+            "silla",
+            "silla de paja",
+            "la silla"
+          ],
+          "description": "Una silla de paja apoyada contra el brocal, del lado del viento. Está a la intemperie y nadie la levanta.",
+          "closerLook": "El asiento está hundido y las patas delanteras se hunden más en la tierra que las traseras: quien se sienta ahí se sienta inclinado hacia adelante, mirando el brocal, y se queda. Al lado, en el pasto, hay una cuarta marca —redonda, de un palmo— del tarro apoyado durante horas. No de una noche: de muchas.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "Alguien viene sentándose de noche frente al brocal, muchas noches, con el tarro al lado, y el pueblo dejó la silla ahí en vez de retirarla.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-almacen",
+          "names": [
+            "almacen",
+            "boliche",
+            "los hombres"
+          ],
+          "description": "Los mismos tres hombres, o tres parecidos, con el sombrero puesto adentro. Este año no se corren de la línea de la puerta.",
+          "closerLook": "No se corren porque ya no hace falta: se acomodaron de entrada mirando para el otro lado, y el que está en la punta tiene la silla girada de modo que el brocal le quede a la espalda. Lo hicieron antes de que {lo} vieran llegar. Es una costumbre nueva y ya la tienen aprendida.",
+          "examineSkill": "psicologia",
+          "clue": {
+            "description": "En el almacén ya no evitan mirar el brocal cuando hay alguien de afuera: lo evitan siempre, y se sientan de entrada para no tenerlo de frente.",
+            "kind": "testimonial",
+            "reliability": "unreliable"
+          }
+        }
+      ]
+    },
+    "escribania": {
+      "id": "escribania",
+      "name": "La escribanía Requena",
+      "aliases": [
+        "escribania",
+        "escritorio",
+        "oficina",
+        "la escribania"
+      ],
+      "description": "El mostrador, el roble, las tres paredes de legajos. En el medio, donde antes había lugar para atender, hay un catre de tijera armado con dos frazadas. Aurelio Requena está acostado encima, vestido, con los zapatos alineados al lado. El brasero está encendido y alguien lo viene cebando.",
+      "atmosphere": [
+        "Huele a papel, a carbón y —abajo de todo— a tierra mojada, que no se explica.",
+        "Alguien barrió el piso hoy. Alguien que no vive acá.",
+        "Aurelio respira despacio y parejo, y en algún momento se le mueven los dedos de las dos manos a la vez."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [
+        "it-almagre"
+      ],
+      "npcsPresent": [
+        "npc-aurelio"
+      ],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sight": "Un archivo de tres generaciones, y en el medio una cama que no debería estar ahí.",
+        "sound": "El brasero. Una respiración lenta que ocupa toda la habitación.",
+        "smell": "Papel viejo, carbón, y tierra mojada."
+      },
+      "features": [
+        {
+          "id": "f-catre",
+          "names": [
+            "catre",
+            "aurelio",
+            "cama",
+            "el escribano"
+          ],
+          "description": "Aurelio en el catre, boca arriba, las manos sobre el pecho. Tiene mejor color del que corresponde a alguien que lleva dos semanas así.",
+          "closerLook": "No hay fiebre, no hay rigidez de un lado, no hay caída de la boca: esto no es la apoplejía que todos suponen. El pulso es lento y firme, la lengua está húmeda, no se deshidrató. Alguien lo hidrata. Y hay dos cosas que no encajan con estar acostado catorce días: tiene las plantas de los pies sucias de tierra fresca, y las uñas de las dos manos con almagre metido abajo, del lado de la carne.",
+          "examineSkill": "primeros_auxilios",
+          "exposure": 3,
+          "clue": {
+            "description": "Aurelio no está enfermo de nada que se pueda diagnosticar: no hay apoplejía ni fiebre. Pero tiene tierra fresca en las plantas de los pies y almagre bajo las uñas, y lleva catorce días sin levantarse.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-escritorio",
+          "names": [
+            "escritorio",
+            "roble",
+            "cajon",
+            "pluma"
+          ],
+          "description": "El escritorio de roble, con la pluma apoyada y el tintero destapado. El cajón del medio, el de la cerradura de bronce, está entreabierto: este año nadie lo cerró.",
+          "closerLook": "El tintero está destapado desde hace tanto que la tinta se hizo una costra. La última hoja escrita quedó abajo de la pluma, con la fecha del 19 de junio y la letra cambiando de pulso a la mitad. Y en el borde del roble, a la altura del que se sienta, hay tres marcas de uña: alguien se agarró del canto del escritorio y apretó hasta rayar la madera, tres veces, en tres lugares distintos.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "La última vez que Aurelio escribió fue el 19 de junio, con el pulso cambiándole a la mitad de la hoja, y se agarró del canto del escritorio con fuerza suficiente para marcar el roble tres veces.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "casa-sosa": {
+      "id": "casa-sosa",
+      "name": "La casa de los Sosa",
+      "aliases": [
+        "casa de los sosa",
+        "los sosa",
+        "casa sosa",
+        "el patio"
+      ],
+      "description": "La casa de ladrillo sin revocar, el patio de tierra barrida, el alero con dos sillas. Ramona está sentada en una y no está haciendo nada con las manos, que es lo primero que llama la atención. Cirilo está parado, como siempre, y esta vez el rebenque está colgado de un clavo y no en la mano.",
+      "atmosphere": [
+        "No hay olor a puchero. Hay olor a mate lavado.",
+        "Ramona tiene las manos quietas arriba de la falda y limpias.",
+        "Cirilo se acomoda para que el alero le quede entre él y la plaza."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-ramona",
+        "npc-cirilo"
+      ],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": {
+        "sight": "Dos personas esperando en su propio patio a que {lo} vayan.",
+        "sound": "Un caballo que se mueve atrás y no relincha.",
+        "smell": "Tierra barrida y mate lavado."
+      },
+      "features": [
+        {
+          "id": "f-manos",
+          "names": [
+            "manos",
+            "las manos",
+            "manos de cirilo",
+            "unas"
+          ],
+          "description": "Las manos de Ramona están limpias, con las uñas cortas y pálidas. Es la primera vez en cincuenta años que las tiene así, y no las esconde: las tiene arriba de la falda, a la vista, casi puestas ahí a propósito.",
+          "closerLook": "Las de ella están limpias. Las de él, no. Cirilo tiene almagre metido en las cutículas y en la raya de las uñas, del rojo que no sale con jabón y que hay que esperar a que salga solo, y cuando nota que {lo} está mirando se las mete en el bolsillo del pantalón sin apuro, como quien hace otra cosa.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "Este invierno las manos manchadas de almagre no son las de Ramona: son las de Cirilo, que las esconde cuando lo notan.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-clavo",
+          "names": [
+            "rebenque",
+            "clavo",
+            "el rebenque"
+          ],
+          "description": "El rebenque colgado de un clavo en el poste del alero, a la altura de la mano, donde antes estaba el sombrero.",
+          "closerLook": "El clavo es nuevo: la madera alrededor está limpia y el resto del poste tiene cincuenta años de intemperie. Alguien lo puso este año, a propósito, para tener dónde dejar el rebenque en vez de tenerlo en la mano. No es que se le haya olvidado: es que decidió que estuviera ahí.",
+          "examineSkill": "psicologia",
+          "clue": {
+            "description": "Cirilo clavó un clavo nuevo este año para colgar el rebenque en vez de andar con él en la mano. Fue una decisión, no una casualidad.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "escuela": {
+      "id": "escuela",
+      "name": "La escuela",
+      "aliases": [
+        "escuela",
+        "aula",
+        "la escuelita"
+      ],
+      "description": "Un aula sola, doce pupitres de dos, la estufa a leña. Julio, vacaciones, sin chicos. Delfina Arce está igual, con el sobretodo puesto adentro, y arriba del escritorio no hay cuadernos para corregir: hay una carpeta de cartón atada con hilo y un mapa desplegado encima.",
+      "atmosphere": [
+        "El mapa de la provincia sigue clavado con cuatro chinches, y hay otro desplegado sobre el escritorio.",
+        "La estufa está encendida para una sola persona.",
+        "Delfina habla más rápido que todo el resto del pueblo junto."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [
+        "it-foto"
+      ],
+      "npcsPresent": [
+        "npc-delfina"
+      ],
+      "visited": false,
+      "umbralIntensity": 1,
+      "senses": {
+        "sight": "Tiza, dos mapas, una carpeta atada con hilo y una maestra con sobretodo.",
+        "sound": "La estufa. El hilo de la carpeta cuando lo desata y lo vuelve a atar.",
+        "smell": "Leña y tiza."
+      },
+      "features": [
+        {
+          "id": "f-mapa",
+          "names": [
+            "mapa",
+            "mapa de la provincia",
+            "chinches",
+            "puntos"
+          ],
+          "description": "El mapa escolar de la provincia, edición del veinte, con Villa Requena marcada a lápiz porque el mapa no la trae impresa. Alrededor hay otros puntos a lápiz, más chicos, sin nombre.",
+          "closerLook": "El año pasado eran cuatro. Ahora son cinco, y el quinto está hecho con otro lápiz, más nuevo. Los cinco caen en un arco de unas veinte leguas alrededor de Villa Requena, y tres de ellos —{lo} sabe aunque el mapa no lo diga— quedan donde estuvo {lo}: el campo de Los Álamos, el cuadro de la estancia grande al oeste, y Los Cardales. El cuarto y el quinto no le dicen nada. Todavía.",
+          "examineSkill": "descubrir",
+          "exposure": 2,
+          "clue": {
+            "description": "El mapa de la escuela tiene cinco puntos a lápiz alrededor de Villa Requena, en un arco de veinte leguas. Tres coinciden con lugares donde el investigador ya estuvo. Dos no le dicen nada.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "id": "te-1878",
+      "description": "Le toca el turno a un Sosa y el Sosa no puede. Va Benicio Requena, de veintiún años, en su lugar. El renglón queda tachado y reescrito.",
+      "when": {
+        "iso": "1878-06-24T21:00:00",
+        "precision": "day",
+        "display": "la semana de San Juan de 1878"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1881",
+      "description": "El párroco de Del Valle deja constancia, a pedido de Evaristo Requena, de que su hermano Benicio no ha fallecido y de que la familia lo da por ausente desde junio de 1878.",
+      "when": {
+        "iso": "1881-02-02T00:00:00",
+        "precision": "day",
+        "display": "2 de febrero de 1881"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1926",
+      "description": "Se cumple el turno de 1926 y el libro se anota. Es la primera vez en ochenta y cinco renglones que el asunto lo resuelve alguien que no lleva ninguno de los dos apellidos.",
+      "when": {
+        "iso": "1926-07-09T21:00:00",
+        "precision": "day",
+        "display": "julio de 1926"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1927-mayo",
+      "description": "Aurelio Requena se despierta tres veces en la plaza, de noche, descalzo. La tercera vez con las manos ocupadas.",
+      "when": {
+        "iso": "1927-05-20T03:00:00",
+        "precision": "vague",
+        "display": "las dos últimas semanas de mayo"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1927-junio",
+      "description": "Cirilo Sosa pinta el círculo entero él solo, de noche, sin decírselo a nadie. Es el primer turno de su vida y no cree en ninguna parte de él.",
+      "when": {
+        "iso": "1927-06-24T22:00:00",
+        "precision": "day",
+        "display": "la noche de San Juan de 1927"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "KEEPER_SECRET",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-1927-julio",
+      "description": "Aurelio deja de despertarse. Sigue levantándose de noche.",
+      "when": {
+        "iso": "1927-06-27T00:00:00",
+        "precision": "vague",
+        "display": "hace catorce días"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "d-carta",
+      "npc": "npc-delfina",
+      "orden": 1,
+      "etiqueta": "Preguntarle por la carta",
+      "intencion": "Le pregunto a Delfina por la carta que despachó",
+      "claves": [
+        "la carta",
+        "por que la despacho",
+        "usted despacho",
+        "quien mando la carta"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—La tuve tres semanas en el cajón —dice, y no se disculpa, que es distinto de no importarle—. Él me la dio en mayo y me dijo: si un día no puedo despacharla yo, despáchela usted, y si me ve bien, no la despache nunca.\n\n—Yo lo veía bien. Estaba flaco y no dormía, pero en este pueblo eso es la mitad de la gente.\n\nSe queda un segundo con la mano sobre la carpeta.\n\n—La despaché el veintisiete de junio a la mañana, cuando fui a preguntarle una cosa de la escuela y no me contestó. La despaché desde el almacén y volví a sentarme al lado de él hasta que se hizo de noche, porque no se me ocurrió otra cosa que hacer."
+        ],
+        "pista": {
+          "description": "Delfina tuvo la carta tres semanas guardada por pedido del propio Aurelio, y la despachó el 27 de junio, el día en que él dejó de contestar.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—La tuve tres semanas en el cajón"
+      }
+    },
+    {
+      "id": "d-que-le-pasa",
+      "npc": "npc-delfina",
+      "orden": 2,
+      "etiqueta": "Preguntarle qué le pasa a Aurelio",
+      "intencion": "Le pregunto a Delfina qué le pasa a Aurelio",
+      "claves": [
+        "que le pasa",
+        "que tiene aurelio",
+        "esta enfermo",
+        "el escribano"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—El médico de Del Valle vino dos veces. La primera dijo apoplejía y la segunda dijo que no era apoplejía y no dijo qué era. Cobró las dos.\n\n—Yo le voy a decir lo que veo, que es distinto de lo que sé. Duerme. De día duerme y no se despierta ni gritándole. De noche se levanta.\n\n—No sonámbulo de cuento, señor, no con los brazos adelante. Se levanta como se levanta usted: se sienta en el catre, busca los zapatos, no los encuentra porque yo se los saco, y sale igual. Camina hasta la plaza, se sienta en una silla que le puse yo, y hace algo con las manos durante horas.\n\n—Y a la mañana está otra vez en el catre. Y yo no lo llevé."
+        ],
+        "pista": {
+          "description": "Aurelio se levanta cada noche, camina a la plaza, hace algo con las manos durante horas y vuelve solo al catre. De día no hay manera de despertarlo. Ningún médico le puso nombre.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—El médico de Del Valle vino dos veces."
+      }
+    },
+    {
+      "id": "d-mapa",
+      "npc": "npc-delfina",
+      "orden": 3,
+      "etiqueta": "Preguntarle por los puntos del mapa",
+      "intencion": "Le pregunto a Delfina por los puntos a lápiz del mapa",
+      "claves": [
+        "los puntos",
+        "puntos a lapiz",
+        "el mapa",
+        "que son los puntos",
+        "el quinto punto"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "razon": "darse cuenta de que no es que no quiera contarlo, es que le da vergüenza"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Tarda en contestar, y no es que esté decidiendo qué decir: está decidiendo si le da vergüenza. Le da.\n\n—Es una manía. Ya está, lo dije. Cuando llegué acá no dormía —el cambio, la casa sola, lo que sea— y me acostumbré a que si un viajero paraba en el almacén yo le preguntaba de dónde venía y si había algo raro por ahí. Por hablar. Por no estar callada tres años.\n\nDesata el hilo de la carpeta y lo vuelve a atar.\n\n—Y cuando me contaban algo raro yo lo marcaba. Sin nombre, porque no son lugares: son cosas que me contaron en un almacén. Un campo donde no crece el pasto en una vuelta. Un alambrado que mide distinto según de qué lado lo caminás. Un velorio de alguien que después apareció.\n\n—Son cinco. Hace tres años que junto cinco. Y hasta que usted no vino el año pasado y me preguntó por el brocal, yo no había puesto el punto de acá."
+        ],
+        "pista": {
+          "description": "Los puntos del mapa son rumores de viajeros que Delfina anotó por costumbre durante tres años, sin nombre y sin conectarlos entre sí. Villa Requena no era uno de ellos hasta que alguien de afuera preguntó por el brocal.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Cosas mías —dice, y corre el mapa un poco, lo justo para que quede tapado por la carpeta—. Nada que sirva para lo del escribano."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Tarda en contestar, y no es que esté decidiendo"
+      }
+    },
+    {
+      "id": "d-1878",
+      "npc": "npc-delfina",
+      "orden": 4,
+      "etiqueta": "Pedirle que averigüe qué pasó en 1878",
+      "intencion": "Le pregunto a Delfina si puede averiguar lo del setenta y ocho",
+      "claves": [
+        "setenta y ocho",
+        "1878",
+        "averiguar 1878",
+        "el ano setenta y ocho",
+        "que paso en 1878"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "1878"
+      },
+      "prueba": {
+        "skill": "biblioteca",
+        "difficulty": "regular",
+        "razon": "saber qué pedirle exactamente, y en qué archivo se pide"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Del pueblo no va a sacar nada. Acá no hay archivo: hay memoria, y la memoria de acá es de una sola pieza y no se abre.\n\nPero ya está desatando el hilo de la carpeta.\n\n—El curato de Del Valle sí. Bautismos, matrimonios, defunciones, y las notas al margen, que son las que sirven. Yo voy una vez por mes por lo de las libretas. Si me dice qué busco, lo busco.\n\nLe decís qué buscás: un renglón tachado del año setenta y ocho, y quién fue en lugar de quién.\n\n—Eso no está en el curato —dice—. Pero quién faltó de misa desde junio del setenta y ocho, sí.\n\nVuelve al día siguiente antes de que salga el sol, con dos asientos copiados a mano y una nota al pie que agregó ella."
+        ],
+        "pista": {
+          "description": "Delfina copió del curato de Del Valle el bautismo de Benicio Requena y una nota marginal de 1881: no consta defunción, la familia lo da por ausente desde junio de 1878, y el padrón de 1881 declara una persona menos de las que hay en la casa.",
+          "kind": "documentary",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Puedo mirar —dice—. Pero si le pido al párroco «todo lo del setenta y ocho» me va a dar cuatro tomos y las libretas de la escuela sin firmar. Dígame qué busco y voy a buscar eso."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Del pueblo no va a sacar nada."
+      }
+    },
+    {
+      "id": "r-manos",
+      "npc": "npc-ramona",
+      "orden": 10,
+      "etiqueta": "Preguntarle por qué este año tiene las manos limpias",
+      "intencion": "Le pregunto a Ramona por qué tiene las manos limpias",
+      "claves": [
+        "manos limpias",
+        "sus manos",
+        "no pinto este ano",
+        "quien pinto este ano",
+        "el circulo de este ano"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "Se mira las manos como si se las hubiera prestado alguien.\n\n—Este año no me tocó salir.\n\nEs todo lo que dice, y lo dice de una manera que cierra la puerta sin cerrarla de un golpe. Después, un poco más bajo, como para ella:\n\n—Cincuenta años yendo. Y este año me quedé sentada acá y a las once de la noche no sabía qué hacer con las manos."
+        ],
+        "pista": {
+          "description": "Ramona no salió a pintar este año por primera vez en cincuenta años, y no lo cuenta como un alivio.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Se mira las manos como si se las hubiera prestado"
+      }
+    },
+    {
+      "id": "r-aurelio",
+      "npc": "npc-ramona",
+      "orden": 11,
+      "etiqueta": "Preguntarle por Aurelio",
+      "intencion": "Le pregunto a Ramona por Aurelio",
+      "claves": [
+        "por aurelio",
+        "el escribano",
+        "que piensa de aurelio",
+        "lo fue a ver"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—No lo fui a ver —dice—. Que quede claro que no es por rencor. Es que yo ya vi eso una vez y no lo quiero ver otra.\n\nY ahí se da cuenta de lo que acaba de decir, y se le nota en la cara que se da cuenta, y no lo arregla.\n\n—La señorita lo cuida bien. Mejor que yo."
+        ],
+        "pista": {
+          "description": "Ramona no fue a ver a Aurelio, y dice que es porque ya vio «eso» una vez antes. Se dio cuenta de que lo dijo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—No lo fui a ver —dice—. Que quede claro"
+      }
+    },
+    {
+      "id": "r-1878",
+      "npc": "npc-ramona",
+      "orden": 12,
+      "etiqueta": "Preguntarle qué pasó en 1878",
+      "intencion": "Le pregunto a Ramona qué pasó el año setenta y ocho",
+      "claves": [
+        "setenta y ocho",
+        "1878",
+        "lo que vio una vez",
+        "que paso en 1878",
+        "el otro que fue"
+      ],
+      "disponible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "1878"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "le fue encima a Cirilo Sosa"
+            }
+          }
+        ]
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 1,
+        "razon": "que cuente lo que decidió no contar durante cuarenta y nueve años"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Yo tenía veintitrés —dice—. Le tocaba a mi padre y mi padre estaba en cama y no se levantó más. No es que no quiso: no pudo. Es distinto y en este pueblo nadie hace la diferencia.\n\n—Fue el chico de los Requena. Benicio. Veintiuno tenía. Vino él a ofrecerse, mi padre le dijo que no y él lo hizo igual, y a mí me pareció el hombre más grande del mundo esa noche.\n\nSe acomoda la falda, que es lo que hace cuando lo que sigue no le gusta.\n\n—Después no se despertó bien nunca más. Dos años y medio así. Se levantaba de noche y de día no había. Y un día la familia dijo que se había ido a Bahía y todos dijimos qué bien, se fue a Bahía.\n\n—Yo tenía veintitrés años y también dije qué bien.\n\nMira hacia la plaza por primera vez desde que {lo} recibió.\n\n—Por eso fui todos los años. Todos. Y el año que fui por Aurelio sabía perfectamente lo que estaba haciendo, y lo hice igual, porque prefería que me pasara a mí antes que volver a decir qué bien."
+        ],
+        "pista": {
+          "description": "En 1878 el turno era del padre de Ramona, que estaba muriéndose. Fue Benicio Requena, de veintiún años, por su cuenta. No volvió a despertarse bien: dos años y medio levantándose de noche, hasta que la familia dijo que se había ido a Bahía. Ramona tenía veintitrés y lo vio.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-ramona-1878"
+      },
+      "esquiva": {
+        "texto": [
+          "—Del setenta y ocho no me acuerdo —dice—. Tenía veintitrés años y una tiene otras cosas en la cabeza a esa edad.\n\nY se queda mirando el patio, y no se levanta, y no cambia de tema, que en ella es otra cosa."
+        ]
+      },
+      "cerrado": {
+        "texto": [
+          "—Usted acaba de llegar —dice, sin levantar la vista—. Deje que le convide un mate antes de preguntarme por el año setenta y ocho."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Yo tenía veintitrés —dice—. Le tocaba a mi padre"
+      }
+    },
+    {
+      "id": "r-1878-forzado",
+      "npc": "npc-ramona",
+      "orden": 13,
+      "etiqueta": "Apretarla con lo del setenta y ocho",
+      "intencion": "Le hablo a Ramona del setenta y ocho hasta que conteste",
+      "claves": [
+        "setenta y ocho",
+        "1878",
+        "lo que vio una vez",
+        "que paso en 1878",
+        "el otro que fue",
+        "apretarla"
+      ],
+      "disponible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "1878"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "le fue encima a Cirilo Sosa"
+          }
+        ]
+      },
+      "prueba": {
+        "skill": "intimidar",
+        "difficulty": "regular",
+        "razon": "sacarle por presión lo que no va a dar por las buenas a quien le pegó al hijo"
+      },
+      "cede": {
+        "actitud": -2,
+        "texto": [
+          "—Usted en esta casa levantó la mano una vez —dice—. Y ahora viene a preguntarme del setenta y ocho.\n\nLe decís que Aurelio se está muriendo despierto, y que ella sabe algo, y que si no lo dice ahora lo va a decir en catorce días delante de un cajón. Se lo decís con la voz que hace falta para decirlo.\n\nCirilo hace un movimiento y ella lo para sin mirarlo, con dos dedos.\n\n—Está bien. Le voy a contestar, y después se va de mi patio.\n\n—Setenta y ocho. Le tocaba a mi padre y mi padre estaba en cama. Fue el chico de los Requena, Benicio, veintiún años, por su cuenta y contra lo que le dijeron. Después no se despertó bien nunca más: dos años y medio levantándose de noche y de día no había nadie adentro. Y un día la familia dijo que se fue a Bahía y todo el pueblo dijo qué bien.\n\n—Yo también dije qué bien. Tenía veintitrés.\n\nSe para. Es la primera vez que se para desde que {lo} recibió.\n\n—Ya está. Ahora váyase."
+        ],
+        "pista": {
+          "description": "En 1878 el turno era del padre de Ramona, que estaba en cama. Fue Benicio Requena, de veintiún años, por su cuenta. No volvió a despertarse bien: dos años y medio levantándose de noche, hasta que la familia dijo que se había ido a Bahía. Ramona tenía veintitrés y lo vio.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-ramona-1878"
+      },
+      "esquiva": {
+        "texto": [
+          "—No —dice, y no dice nada más.\n\nCirilo se corre medio paso y se pone entre vos y la silla, sin apuro y sin levantar la voz, y la conversación se termina ahí aunque nadie la haya terminado."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Usted en esta casa levantó la mano una vez"
+      }
+    },
+    {
+      "id": "c-quien-pinto",
+      "npc": "npc-cirilo",
+      "orden": 20,
+      "etiqueta": "Preguntarle quién pintó el círculo este año",
+      "intencion": "Le pregunto a Cirilo quién pintó el círculo este año",
+      "claves": [
+        "quien pinto",
+        "quien pinto el circulo",
+        "el circulo de este ano",
+        "las manos rojas",
+        "fue usted"
+      ],
+      "prueba": {
+        "skill": "labia",
+        "difficulty": "regular",
+        "razon": "dejarle una salida por la que pueda admitirlo sin admitirlo"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Y qué sé yo quién lo pintó —dice, con las manos en el bolsillo—. Alguno lo pintó. El pueblo está lleno de gente que no tiene nada que hacer en junio.\n\nNo le discutís. Le decís que quien lo haya hecho lo hizo mal, que se le nota que era la primera vez, y que igual lo terminó, que es más de lo que hizo nadie en dos años.\n\nSe queda callado el tiempo que hace falta.\n\n—Estaba mal hecho, sí —dice al final—. El que lo hizo no sabía por dónde había empezado.\n\nY después, mirando el poste del alero y no a vos:\n\n—Setenta y dos años tiene. Salía a las once de la noche con un tarro. Yo no creo en nada de esto, que quede claro. No creo nada. Pero de acá en adelante, si hay que salir a las once de la noche, salgo yo."
+        ],
+        "pista": {
+          "description": "El círculo de 1927 lo pintó Cirilo, solo y de noche, para que su madre no saliera. Sigue sin creer en nada de esto y lo hizo igual.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-cirilo-pinto"
+      },
+      "esquiva": {
+        "texto": [
+          "—Pregúntele al que tenga las manos sucias —dice, con las manos en el bolsillo, y se queda esperando a ver si {lo} nota que acaba de decir eso con las manos en el bolsillo."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Y qué sé yo quién lo pintó"
+      }
+    },
+    {
+      "id": "c-aurelio",
+      "npc": "npc-cirilo",
+      "orden": 21,
+      "etiqueta": "Preguntarle qué piensa de lo del escribano",
+      "intencion": "Le pregunto a Cirilo qué piensa de lo que le pasa a Aurelio",
+      "claves": [
+        "que piensa del escribano",
+        "lo de aurelio",
+        "que le pasa a aurelio",
+        "el escribano"
+      ],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Se enfermó —dice—. La gente se enferma.\n\nY se queda ahí, y como no {lo} ve conforme, agrega:\n\n—Mi vieja dice otra cosa. Mi vieja dice cosas desde que yo tengo memoria y yo hace treinta y cuatro años que le digo que son cosas de vieja.\n\n—El problema es que a mí no se me está durmiendo nadie en un catre."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "—Se enfermó —dice—. La gente se enferma."
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-carta",
+      "prioridad": 40,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "(releo|leo|miro|reviso|saco) la carta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "examinar-brocal",
+      "prioridad": 50,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "plaza"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "brocal|aljibe|pozo|circulo"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-aurelio",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escribania"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "reviso a aurelio|examino a aurelio|le tomo el pulso|lo reviso"
+          }
+        ]
+      }
+    },
+    {
+      "id": "escuchar-aurelio",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escribania"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "escucho|oigo|me acerco a oir|presto atencion a lo que dice"
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-libro",
+      "prioridad": 55,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escribania"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "libro de turnos|el libro|los renglones"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "fechar-tachadura",
+      "prioridad": 65,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "documento",
+            "id": "doc-turnos"
+          },
+          {
+            "op": "texto",
+            "patron": "tachadura|tachados|1852|1878|1904|setenta y ocho"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-parroquial",
+      "prioridad": 62,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Benicio Requena"
+          },
+          {
+            "op": "texto",
+            "patron": "lo que trajo del curato|la carpeta de delfina|los asientos copiados|la partida"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-foto",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escuela"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "foto|fotografia|comision|centenario"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-almagre",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escribania"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "almagre|tarro|la pintura|la brocha"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "dormir-uno",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "me duermo con el almagre|duermo con la mano manchada|paso la primera noche"
+      }
+    },
+    {
+      "id": "dormir-dos",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "vuelvo a dormirme con el almagre|paso la segunda noche"
+      }
+    },
+    {
+      "id": "dormir-tres",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "me duermo por ultima vez|paso la tercera noche"
+      }
+    },
+    {
+      "id": "fin-despertarlo",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "lo saco de ahi|lo traigo de vuelta|lo despierto"
+      }
+    },
+    {
+      "id": "fin-dejarlo",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me voy del pueblo|lo dejo donde esta|me subo al tren"
+      }
+    },
+    {
+      "id": "fin-cambiarlo",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me pongo en su lugar|lo cambio por mi|ofrezco el mio"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "carta",
+      "grupo": "observar",
+      "lugar": "plaza",
+      "orden": 1,
+      "intencion": "Releo la carta que me trajo hasta acá",
+      "etiqueta": "Releer la carta que lo trajo",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-carta"
+      }
+    },
+    {
+      "id": "revisar-aurelio",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 2,
+      "intencion": "Reviso a Aurelio",
+      "etiqueta": "Revisarlo como se revisa a un enfermo",
+      "hecha": {
+        "op": "pista",
+        "contiene": "no está enfermo de nada que se pueda diagnosticar"
+      }
+    },
+    {
+      "id": "oir-aurelio",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 3,
+      "intencion": "Escucho lo que dice dormido",
+      "etiqueta": "Acercarse a oír lo que dice dormido",
+      "hecha": {
+        "op": "pista",
+        "contiene": "repite una secuencia"
+      }
+    },
+    {
+      "id": "libro",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 4,
+      "intencion": "Leo el libro de turnos renglón por renglón",
+      "etiqueta": "Leer el libro de turnos",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-turnos"
+      }
+    },
+    {
+      "id": "tachadura",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 5,
+      "intencion": "Miro de cerca los renglones tachados",
+      "etiqueta": "Fechar los tres renglones tachados",
+      "visible": {
+        "op": "documento",
+        "id": "doc-turnos"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "once años después"
+      }
+    },
+    {
+      "id": "tarro",
+      "grupo": "observar",
+      "lugar": "escribania",
+      "orden": 6,
+      "intencion": "Miro el tarro de almagre del estante",
+      "etiqueta": "Mirar el tarro de almagre",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-almagre"
+      }
+    },
+    {
+      "id": "parroquial",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 8,
+      "intencion": "Leo los asientos copiados que trajo del curato",
+      "etiqueta": "Leer lo que Delfina trajo del curato",
+      "visible": {
+        "op": "pista",
+        "contiene": "Benicio Requena"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-parroquial"
+      }
+    },
+    {
+      "id": "foto",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 7,
+      "intencion": "Miro la foto de la comisión del centenario",
+      "etiqueta": "Mirar la foto de la comisión",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-foto"
+      }
+    },
+    {
+      "id": "noche-uno",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 30,
+      "intencion": "Me duermo con el almagre en la mano",
+      "etiqueta": "Quedarse a dormir ahí, con la mano en el almagre",
+      "visible": {
+        "op": "pista",
+        "contiene": "no está enfermo de nada que se pueda diagnosticar"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "la ronda del brocal"
+      }
+    },
+    {
+      "id": "noche-dos",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 31,
+      "intencion": "Vuelvo a dormirme con el almagre",
+      "etiqueta": "Volver a pasar la noche ahí",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "la ronda del brocal"
+          },
+          {
+            "op": "pista",
+            "contiene": "once años después"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "una quinta hoja"
+      }
+    },
+    {
+      "id": "noche-tres",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 32,
+      "intencion": "Me duermo por última vez",
+      "etiqueta": "Bajar a buscarlo",
+      "visible": {
+        "op": "pista",
+        "contiene": "una quinta hoja"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "encontró en el fondo"
+      }
+    },
+    {
+      "id": "fin-sacarlo",
+      "grupo": "decidir",
+      "lugar": "escribania",
+      "final": true,
+      "orden": 90,
+      "intencion": "Lo saco de ahí",
+      "etiqueta": "Sacarlo de ahí y traerlo de vuelta",
+      "visible": {
+        "op": "pista",
+        "contiene": "encontró en el fondo"
+      }
+    },
+    {
+      "id": "fin-ofrecer",
+      "grupo": "decidir",
+      "lugar": "escribania",
+      "final": true,
+      "orden": 91,
+      "intencion": "Me pongo en su lugar",
+      "etiqueta": "Ponerse en su lugar",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "encontró en el fondo"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "Benicio Requena"
+              },
+              {
+                "op": "pista",
+                "contiene": "volvió a despertarse bien"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-tren",
+      "grupo": "decidir",
+      "final": true,
+      "orden": 99,
+      "intencion": "Me voy del pueblo",
+      "etiqueta": "Irse de Villa Requena y dejarlo donde está"
+    }
+  ],
+  "endings": [
+    {
+      "id": "despertar",
+      "title": "Lo que se despierta",
+      "condition": "El investigador lo saca del sueño, y Aurelio vuelve trayéndose puesto algo que no era suyo."
+    },
+    {
+      "id": "dormido",
+      "title": "Lo que se queda dormido",
+      "condition": "El investigador se va, y Villa Requena queda con un hombre que respira y no está."
+    },
+    {
+      "id": "cambio",
+      "title": "Lo que se paga con otro sueño",
+      "condition": "El investigador se pone en su lugar. Aurelio despierta entero y la deuda cambia de dueño."
+    }
+  ],
+  "opening": "El mismo tren de trocha angosta, el mismo andén de cuatro tablones, un año y dos días después. Esta vez hay alguien esperando: una mujer joven con sobretodo de hombre y una carpeta de cartón atada con hilo, que {lo} reconoce desde el estribo y no se acerca hasta que {lo} baja.\n\n—Llegó —dice—. Yo despaché esa carta hace catorce días y no sabía si era una locura.\n\nEl pueblo son las mismas cuatro manzanas y las mismas dos tipas peladas. La diferencia se ve enseguida y cuesta un rato entenderla: el círculo del brocal está entero. Repintado en toda la vuelta, este invierno, cuando el año pasado estaba a medias y llevaba años estándolo.\n\nY contra el brocal, del lado del viento, hay una silla de paja que nadie retira."
+}
