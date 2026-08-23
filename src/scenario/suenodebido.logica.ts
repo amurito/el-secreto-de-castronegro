@@ -160,12 +160,23 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           : 'Le mirás las manos porque sí, sin buscar nada, y las volvés a apoyar donde estaban.',
       ],
       exposicion: { amount: 3, source: 'aurelio:catre', cause: 'catorce días dormido y los pies sucios' },
-      ...(tirada?.exito ? {
-        pistas: [{
+      // La primera pista es INCONDICIONAL, a propósito: es la que abre la
+      // puerta de dormir con el almagre, y esa puerta no puede depender de
+      // acertar una tirada de Primeros Auxilios al 30-35%. Fallarla cambia
+      // qué se entiende —nada, en vez de dos detalles concretos— y nunca si
+      // se puede seguir. Antes de este arreglo, un jugador con mala suerte se
+      // quedaba sin botón para dormir después de agotar el resto del
+      // contenido: bug real, reportado jugando.
+      pistas: [
+        {
+          description: 'Revisó a Aurelio de cerca, buscando algo que lo explicara.',
+          kind: 'physical' as const, source: 'el catre de la escribanía', reliability: 'reliable' as const,
+        },
+        ...(tirada?.exito ? [{
           description: 'Aurelio no está enfermo de nada que se pueda diagnosticar: no hay apoplejía ni fiebre, y no tiene las marcas que deja estar acostado dos semanas. Tiene tierra fresca en las plantas de los pies y almagre bajo las uñas.',
           kind: 'physical' as const, source: 'el catre de la escribanía', reliability: 'reliable' as const,
-        }],
-      } : {}),
+        }] : []),
+      ],
     }),
   },
 

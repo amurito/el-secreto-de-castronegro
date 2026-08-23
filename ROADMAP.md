@@ -639,6 +639,50 @@ y no sólo por éxito, que es más control del que daría una sala.
 26 suites en verde, incluida la auditoría de alcanzabilidad sobre las cinco
 aventuras. Verificado además en el navegador real.
 
+**Segunda ronda, jugando de verdad: cuatro bugs más, dos de motor.**
+
+- **El clasificador le atribuía la pregunta al NPC equivocado.** «Le pregunto
+  a Delfina qué le pasa a Aurelio», dicho en la escuela, resolvía el
+  objetivo contra AURELIO —que ni está ahí— y devolvía su genérico de
+  paciencia agotada en vez del tema de Delfina. La causa: el bloque 0 de
+  `classify()` (`keeper/intent.ts`) filtraba candidatos a destinatario por
+  `npc.present` —«sigue en la historia», nunca se murió ni se fue— y no por
+  `loc.npcsPresent` —«está EN ESTE LUGAR»—, así que cualquier NPC nombrado
+  en la frase, estuviera donde estuviera, competía por el objetivo. Con
+  cuatro NPCs y una sola aventura previa por escenario nunca había hecho
+  falta nombrar a un segundo personaje dentro de una pregunta a un tercero;
+  la quinta lo hizo por primera vez y el bug salió a la luz. Corregido en
+  los dos bloques de `intent.ts` que buscan destinatario por nombre —el de
+  hablarle directo y el de reconocimiento genérico—, con prueba de
+  regresión jugando la escena exacta donde apareció.
+- **El botón para dormir dependía de acertar una tirada.** `noche-uno`
+  exigía la pista rica de `mirar-aurelio`, y esa pista sólo se agregaba en
+  la rama de ÉXITO de Primeros Auxilios —30-35% en las dos fichas
+  pregeneradas—. Fallarla, sin insistir lo suficiente, dejaba a un jugador
+  sin ningún camino a las tres noches después de agotar el resto del
+  contenido: la aventura entera depende de esa puerta. Va exactamente en
+  contra de la regla que el propio diseño se había puesto («las habilidades
+  raras enriquecen, nunca bloquean») y se me pasó en el propio mecanismo
+  central. Arreglado separando una pista incondicional —la que abre la
+  puerta— de la pista rica —la que sólo llega acertando, y que sigue
+  premiando la tirada con más detalle—, con regresión sobre una semilla que
+  falla la tirada en el primer intento.
+- **El texto de Delfina prometía un viaje sin dueño mecánico.** «Vuelve al
+  día siguiente antes de que salga el sol» narraba una noche de por medio
+  que el juego nunca hacía pasar: la pista y el documento estaban
+  disponibles en el mismo turno. Reescrito para que ella entregue lo que ya
+  tenía copiado —consistente con que ya se estableció como archivista por
+  costumbre—, sin prometer una espera que la mecánica no cumple.
+- **«PISTAS» quedaba más chico que «el mundo recuerda» y «usted lo nota».**
+  `.tab-body` (el tablero, con `overflow-y:auto`) tiene mínimo automático
+  cero por CSS; `.consequences` y `.aparte`, sin `overflow` propio, tienen
+  mínimo igual a su contenido. En una campaña larga —varias consecuencias
+  más una nota de jugador— esas dos secciones de altura libre se comían
+  casi toda la columna y dejaban el tablero reducido a dos tarjetas.
+  Envueltas juntas en `.col-right-pie` con techo propio (38% de la columna,
+  scroll interno) y un piso explícito en `.tab-body` (40%), para que ninguna
+  de las dos se lleve puesto a la otra.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

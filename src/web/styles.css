@@ -674,7 +674,20 @@ button { font-family: inherit; cursor: pointer; }
 }
 .tab-on { color: var(--text); border-bottom-color: var(--accent); }
 
-.tab-body { flex: 1; overflow-y: auto; padding: 1rem; }
+/* `min-height` explícito porque un flex item con overflow-y:auto tiene
+   mínimo automático CERO: sin esto, el contenido de altura libre de abajo
+   (`.col-right-pie`) se lo comía entero cuando la partida acumulaba varias
+   consecuencias. */
+.tab-body { flex: 1 1 auto; min-height: 40%; overflow-y: auto; padding: 1rem; }
+
+/* Envoltura de «el mundo recuerda» + «usted lo nota»: altura tope y scroll
+   propio, para que no le saquen espacio al tablero de arriba sin límite. */
+.col-right-pie {
+  flex: 0 1 auto; max-height: 38%; overflow-y: auto;
+  border-top: 1px solid var(--line);
+}
+.col-right-pie .consequences, .col-right-pie .aparte { border-top: none; }
+.col-right-pie .aparte { border-top: 1px dashed var(--exposure); }
 .empty { color: var(--text-faint); font-size: 0.85rem; font-style: italic; padding: 1rem 0; }
 
 .group { margin-bottom: 1.4rem; }

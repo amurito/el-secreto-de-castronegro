@@ -166,8 +166,18 @@ export function classify(state: GameState, raw: string): Intent {
 
   // 0. Hablarle a alguien apunta a la persona, aunque el tema nombre un objeto.
   //    "Le pregunto a Rosa por la soga" es hablar con Rosa, no mirar la soga.
+  //
+  //    `n.present` es «sigue en la historia» —no se murió, no se fue para
+  //    siempre— y NO es «está en este lugar ahora»: eso lo dice
+  //    `loc.npcsPresent`, la misma fuente que ya usa `sanitize.ts` para la
+  //    ficha del rival. Sin filtrar por acá, «Le pregunto a Delfina qué le
+  //    pasa a Aurelio» en la ESCUELA resolvía el objetivo contra Aurelio —que
+  //    sigue existiendo en la historia, dormido en la escribanía— en vez de
+  //    Delfina, sólo porque Aurelio aparece antes en el objeto de NPCs y su
+  //    nombre también está en la frase. Bug real, reportado jugando.
   if (SPEECH.includes(verb)) {
-    const present = Object.values(state.npcs).filter((n) => n.present && n.status === 'alive');
+    const present = Object.values(state.npcs)
+      .filter((n) => n.present && n.status === 'alive' && loc.npcsPresent.includes(n.id));
     const named = present.find((n) => t.includes(norm(n.name.split(' ')[0]!)));
     if (named) target = { kind: 'npc', npc: named };
     else if (present.length === 1) target = { kind: 'npc', npc: present[0]! };
@@ -205,10 +215,11 @@ export function classify(state: GameState, raw: string): Intent {
     if (mejor) target = mejor.target;
   }
 
-  // 3. Personajes presentes.
+  // 3. Personajes presentes. Mismo criterio que el bloque 0: acá también hace
+  // falta `loc.npcsPresent`, no sólo `n.present`.
   if (target.kind === 'none') {
     for (const n of Object.values(state.npcs)) {
-      if (!n.present) continue;
+      if (!n.present || !loc.npcsPresent.includes(n.id)) continue;
       const first = norm(n.name.split(' ')[0]!);
       if (t.includes(first) || anyOf(t, ['ella', 'la mujer', 'la casera', 'la señora', 'la senora'])) {
         target = { kind: 'npc', npc: n };

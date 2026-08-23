@@ -222,6 +222,48 @@ async function main() {
     b.includes('fin-sacarlo') && b.includes('fin-ofrecer') && b.includes('fin-tren'),
     'los tres botones están con Ocultismo y Antropología en base');
 
+  // ── 7. FALLAR PRIMEROS AUXILIOS NO TE DEJA SIN BOTÓN PARA DORMIR ─────────
+  //
+  // Bug real, reportado jugando: la primera versión dejaba «Revisó a Aurelio
+  // de cerca» —el gatillo del botón de dormir— sólo en la rama de ÉXITO de
+  // `mirar-aurelio`. Con Primeros Auxilios en 30-35% en las dos fichas
+  // pregeneradas, un jugador con mala suerte agotaba el resto del contenido
+  // sin encontrar nunca el camino a la primera noche. Semilla `a`: la tirada
+  // falla en el primer intento (verificado por separado).
+  console.log('\n7. FALLAR PRIMEROS AUXILIOS NO BLOQUEA EL CAMINO AL SUEÑO');
+
+  const fallaAurelio = await jugar('FALLA-AURELIO', 'a', [
+    'Voy a la escribanía',
+    'Reviso a Aurelio',
+  ]);
+  const ultimaTirada = fallaAurelio.estado.rolls.at(-1);
+  check('la tirada de Primeros Auxilios efectivamente falló',
+    ultimaTirada?.commitment.skill === 'primeros_auxilios' && !['critical', 'extreme', 'hard', 'regular'].includes(ultimaTirada.execution.degree),
+    `${ultimaTirada?.commitment.skill} — ${ultimaTirada?.execution.degree}`);
+  const bFalla = botones(fallaAurelio.estado);
+  check('y aun así aparece el botón para dormir con el almagre',
+    bFalla.includes('noche-uno'), bFalla.join(', '));
+
+  // ── 8. EL CLASIFICADOR RESUELVE AL NPC CORRECTO, NO AL PRIMER NOMBRE QUE APARECE ─
+  //
+  // Bug real, reportado jugando: «Le pregunto a Delfina qué le pasa a
+  // Aurelio», dicho en la escuela, resolvía el objetivo contra AURELIO —que
+  // ni está en la escuela— porque el motor sólo miraba `npc.present`
+  // (sigue en la historia) y no `loc.npcsPresent` (está EN ESTE LUGAR), y
+  // Aurelio aparece antes que Delfina en el objeto de NPCs. La respuesta
+  // era el genérico de paciencia agotada de Aurelio, no el tema de Delfina.
+  console.log('\n8. PREGUNTARLE A ALGUIEN POR UN TERCERO NO SE LE ATRIBUYE AL TERCERO');
+
+  const enEscuela = await jugar('CLASIFICADOR-DESTINATARIO', 'g', [
+    'Voy a la escuela',
+    'Le pregunto a Delfina qué le pasa a Aurelio',
+  ]);
+  check('la respuesta es de Delfina, no un genérico de paciencia de Aurelio',
+    enEscuela.narrado.includes('El médico de Del Valle vino dos veces'),
+    enEscuela.narrado.slice(-200));
+  check('y no aparece el texto de paciencia agotada mal atribuido',
+    !enEscuela.narrado.includes('contesta lo justo'), enEscuela.narrado.slice(-200));
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

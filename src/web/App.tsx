@@ -619,23 +619,34 @@ export function App() {
             </>
           )}
         </div>
-        {state?.consequences?.length > 0 && (
-          <div className="consequences">
-            <div className="cons-title">El mundo recuerda</div>
-            {state.consequences.map((c: any, i: number) => (
-              <div key={i} className="cons">{c.permanent ? '● ' : '○ '}{c.description}</div>
-            ))}
-          </div>
-        )}
-        {/* Aparte, y a propósito distinto de la ficha: esto no es lo que el
-            investigador sabe, es lo que USTED —quien lee— nota. El
-            investigador no da señales de haberlo entendido. */}
-        {inv?.playerKnowledge?.length > 0 && (
-          <div className="aparte">
-            <div className="aparte-title">Usted lo nota. Su investigador, todavía no.</div>
-            {inv.playerKnowledge.map((k: string, i: number) => (
-              <div key={i} className="aparte-item">{k}</div>
-            ))}
+        {/* Envueltos juntos y con su propio scroll: sin esto, «el mundo
+            recuerda» y «usted lo nota» —de altura libre, sin tope— le
+            robaban espacio a `.tab-body` (que sí puede achicarse, porque su
+            `overflow-y:auto` le da mínimo cero) hasta dejar Pistas
+            reducido a dos tarjetas visibles con una campaña larga encima.
+            Reportado jugando: con cinco consecuencias y un párrafo de nota,
+            el tablero quedaba más chico que las dos secciones fijas juntas. */}
+        {((state?.consequences?.length ?? 0) > 0 || (inv?.playerKnowledge?.length ?? 0) > 0) && (
+          <div className="col-right-pie">
+            {state?.consequences?.length > 0 && (
+              <div className="consequences">
+                <div className="cons-title">El mundo recuerda</div>
+                {state.consequences.map((c: any, i: number) => (
+                  <div key={i} className="cons">{c.permanent ? '● ' : '○ '}{c.description}</div>
+                ))}
+              </div>
+            )}
+            {/* Aparte, y a propósito distinto de la ficha: esto no es lo que el
+                investigador sabe, es lo que USTED —quien lee— nota. El
+                investigador no da señales de haberlo entendido. */}
+            {inv?.playerKnowledge?.length > 0 && (
+              <div className="aparte">
+                <div className="aparte-title">Usted lo nota. Su investigador, todavía no.</div>
+                {inv.playerKnowledge.map((k: string, i: number) => (
+                  <div key={i} className="aparte-item">{k}</div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </aside>
