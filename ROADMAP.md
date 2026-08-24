@@ -762,7 +762,7 @@ Se agregó el campo, se conectó en `keeper/social.ts` con el mismo
 tema futuro de cualquier aventura, no sólo ésta.
 
 **Pedirle a Delfina que investigue ahora cuesta un día de verdad —y una
-segunda visita.** `d-1878` avanza el reloj 26 horas y NO entrega ya nada:
+segunda visita.** `d-1878` avanza el reloj 8 horas y NO entrega ya nada:
 sólo dice que ella se ofreció a buscar, sin prometer cuándo. Lo que
 encontró se entrega en un tema nuevo, `parroquial`, servido como una
 pregunta aparte («¿ya volvió del curato?»), que exige haber vuelto a la
@@ -782,6 +782,31 @@ verifica las tres partes por separado: que preguntarle a Delfina no
 entrega nada en el mismo turno pero sí adelanta el reloj, que sin volver a
 preguntarle (ni hablar con Ramona) la tercera noche no se ofrece, y que
 con cualquiera de los dos caminos hecho sí se ofrece.
+
+**Quinta ronda: el propio arreglo de la cuarta rompió el primer sueño.**
+Reportado jugando, el mismo día que salió la cuarta ronda: «agoté todos los
+diálogos y no puedo llegar al primer sueño», y la Permeabilidad del mundo
+en 96/100 después de una sesión de investigación normal.
+
+La causa era el arreglo anterior. `PERMEABILIDAD_MINUTOS_POR_PUNTO = 20`
+(`rules/umbral.config.ts`): un punto de Permeabilidad cada veinte minutos
+de reloj. Las 26 horas (1560 minutos) que le puse a `d-1878` para que
+Delfina viajara a Del Valle eran **78 puntos de Permeabilidad en un solo
+click** —el medidor entero casi de una vez—, y la Permeabilidad alta
+encarece CADA tirada siguiente vía `extraExposureFromPermeability`: más
+Exposición por cada contacto, lo que empuja la Estabilidad hacia abajo, lo
+que mete dados de penalización en TODO lo que se tire después —incluida
+la de Primeros Auxilios que abre la primera noche—. Un jugador con mala
+suerte en esa tirada, después de pedirle a Delfina que investigara,
+quedaba con odds mucho peor que las publicadas y sin saber por qué.
+
+Bajado a 8 horas (480 minutos, 24 puntos), el mismo orden de magnitud que
+ya usan las escenas de «dormir» en otras aventuras (`aguaquieta.logica.ts`,
+`tercerumbral.logica.ts`): un salto de tiempo real, sin desproporcionar el
+medidor que después condiciona toda la partida. Verificado jugando una
+sesión larga y comparable a la que reportó el problema: Permeabilidad
+pasó de 96 a 42, Estabilidad se mantuvo en 100, y «Me duermo con el
+almagre en la mano» quedó disponible.
 
 ### 3.3 La aventura original publicada
 
