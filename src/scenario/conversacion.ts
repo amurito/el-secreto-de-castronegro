@@ -59,6 +59,17 @@ export interface EfectoTema {
   };
   /** Ver el mismo campo en `scenario/escena.ts`. */
   jugadorNota?: { statement: string; source: string; reliability?: 'reliable' | 'unreliable' | 'false' | 'unknown' };
+  /**
+   * Ver el mismo campo en `scenario/escena.ts`. Para cuando la respuesta a una
+   * pregunta no es información: es que el NPC se va a hacer algo y vuelve
+   * después. «Le pido que averigüe tal cosa» no puede resolverse en el mismo
+   * minuto en que se lo pide sin que la promesa de la propia prosa («vuelvo
+   * mañana») quede desmentida por el reloj. Antes de este campo, ningún tema
+   * de conversación podía hacer pasar el tiempo — sólo las escenas—, así que
+   * cualquier «esto lleva un día» dicho por un NPC era una frase sin dueño
+   * mecánico. Reportado jugando.
+   */
+  tiempo?: { minutes: number; reason: string };
 }
 
 export interface TemaConversacion {

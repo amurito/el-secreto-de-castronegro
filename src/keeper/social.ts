@@ -83,6 +83,9 @@ function aplicar(
       reliability: efecto.jugadorNota.reliability ?? 'unknown',
     });
   }
+  if (efecto.tiempo) {
+    run('advance_time', { minutes: efecto.tiempo.minutes, reason: efecto.tiempo.reason });
+  }
   if (efecto.exposicion) {
     run('apply_umbral_exposure', {
       amount: efecto.exposicion, cause: `lo que dijo ${npc.name}`,

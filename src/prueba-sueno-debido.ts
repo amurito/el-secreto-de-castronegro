@@ -89,6 +89,10 @@ const HASTA_EL_FONDO = [
   'Voy a la escuela',
   'Miro la foto de la comisión del centenario',
   ...insistir('Le pregunto a Delfina si puede averiguar lo del setenta y ocho', 4),
+  // El tiempo pasa de verdad acá adentro —`d-1878` avanza el reloj del
+  // mundo— y lo que encontró no está disponible hasta la visita SIGUIENTE:
+  // por eso hace falta un paso más, no basta con haber preguntado.
+  'Le pregunto a Delfina si ya volvió del curato',
   'Vuelvo a la plaza',
   'Voy a la escribanía',
   'Me duermo con el almagre en la mano',
@@ -308,6 +312,72 @@ async function main() {
   check('y el bloqueo de decisión se activa igual, por cualquiera de las dos ramas',
     bAlt.every((id) => ['fin-sacarlo', 'fin-ofrecer', 'fin-tren'].includes(id)) && bAlt.length > 0,
     bAlt.join(', '));
+
+  // ── 10. LA VIGILIA REAL ENTRE EL SUEÑO 2 Y EL SUEÑO 3 ────────────────────
+  //
+  // Bug real, reportado jugando: pedirle a Delfina que investigue entregaba
+  // la respuesta en el mismo turno, y del sueño 2 se pasaba derecho al sueño
+  // 3 y al final —tres clicks seguidos sin nada de vigilia entre medio—.
+  // Ahora `d-1878` hace pasar el reloj del mundo de verdad (nuevo:
+  // `EfectoTema.tiempo`) sin entregar todavía lo que encontró, y la tercera
+  // noche exige haber vuelto a preguntarle —o haber sacado lo mismo de
+  // Ramona, más difícil— antes de ofrecerse.
+  console.log('\n10. LA VIGILIA REAL ENTRE EL SUEÑO 2 Y EL SUEÑO 3');
+
+  const preguntaSola = await jugar('PREGUNTA-SOLA', 'i', [
+    'Voy a la escribanía',
+    ...insistir('Miro de cerca los renglones tachados', 8),
+    'Vuelvo a la plaza',
+    'Voy a la escuela',
+    ...insistir('Le pregunto a Delfina si puede averiguar lo del setenta y ocho', 4),
+  ]);
+  check('preguntarle NO entrega la información en el mismo turno',
+    !pista(preguntaSola.estado, 'Benicio Requena'), '');
+  check('pero sí hace pasar el reloj del mundo de verdad',
+    preguntaSola.estado.world.time.iso > '1927-07-11T20:00:00', preguntaSola.estado.world.time.display);
+
+  const sinVolver = await jugar('SIN-VOLVER', 'i', [
+    'Voy a la escribanía',
+    ...insistir('Reviso a Aurelio', 6),
+    ...insistir('Escucho lo que dice dormido', 4),
+    'Leo el libro de turnos renglón por renglón',
+    ...insistir('Miro de cerca los renglones tachados', 8),
+    'Vuelvo a la plaza',
+    'Voy a la escuela',
+    ...insistir('Le pregunto a Delfina si puede averiguar lo del setenta y ocho', 4),
+    // Nunca vuelve a preguntarle si ya volvió del curato, y nunca habla con
+    // Ramona: se salta la vigilia entre el sueño 2 y el sueño 3 a propósito.
+    'Vuelvo a la plaza',
+    'Voy a la escribanía',
+    'Me duermo con el almagre en la mano',
+    'Me acerco a la fila y miro de cerca',
+    'Vuelvo a dormirme con el almagre',
+    'Agarro la hoja y la leo',
+  ]);
+  const bSinVolver = botones(sinVolver.estado);
+  check('sin la vigilia intermedia, la tercera noche NO se ofrece',
+    !bSinVolver.includes('noche-tres'), bSinVolver.join(', '));
+
+  const conBridge = await jugar('CON-BRIDGE', 'i', [
+    'Voy a la escribanía',
+    ...insistir('Reviso a Aurelio', 6),
+    ...insistir('Escucho lo que dice dormido', 4),
+    'Leo el libro de turnos renglón por renglón',
+    ...insistir('Miro de cerca los renglones tachados', 8),
+    'Vuelvo a la plaza',
+    'Voy a la escuela',
+    ...insistir('Le pregunto a Delfina si puede averiguar lo del setenta y ocho', 4),
+    'Le pregunto a Delfina si ya volvió del curato',
+    'Vuelvo a la plaza',
+    'Voy a la escribanía',
+    'Me duermo con el almagre en la mano',
+    'Me acerco a la fila y miro de cerca',
+    'Vuelvo a dormirme con el almagre',
+    'Agarro la hoja y la leo',
+  ]);
+  const bConBridge = botones(conBridge.estado);
+  check('con la vigilia intermedia hecha, la tercera noche SÍ se ofrece',
+    bConBridge.includes('noche-tres'), bConBridge.join(', '));
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

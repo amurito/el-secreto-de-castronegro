@@ -346,14 +346,25 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     // Sin esto, el documento existía declarado y no se entregaba nunca —lo
     // encontró la auditoría de alcanzabilidad, no una partida—.
     id: 'leer-parroquial',
+    // La respuesta no puede llegar en el mismo turno en que se pidió —eso era
+    // el bug: «vuelva mañana» y la información ya estaba en la mano—. Esta
+    // escena es la visita SIGUIENTE, aparte de aquella en que se le pidió que
+    // investigara, y sólo entonces entrega lo que encontró. `d-1878` hizo
+    // pasar el reloj del mundo; esta escena es la que hace pasar al jugador
+    // por el gesto de volver a preguntar.
     resolver: () => ({
       texto: [
-        'Desata el hilo y te da las dos hojas para que las leas vos, que es su manera de no leerlas otra vez.',
+        'Delfina levanta la vista de la carpeta antes de que termines de preguntar.\n\n—Fui. Encontré algo, no sé si es lo que busca, pero es algo.',
+        'Desata el hilo y te da dos hojas copiadas a mano para que las leas vos, que es su manera de no leerlas otra vez.',
         'Un bautismo de 1856 y una nota al margen de 1881 que no es un acta de defunción y que está escrita como se escriben las cosas que hay que dejar dichas y no tienen casillero.',
         'Y al pie, con lápiz y con la letra de ella, la línea que no está en el original: que en el padrón de 1881 la casa de los Requena figura con una persona más de las que declara.',
       ],
       documento: { id: 'doc-parroquial', how: 'copiado del curato de Del Valle por Delfina Arce' },
       exposicion: { amount: 2, source: 'parroquial:1881', cause: 'un hombre sin defunción y sin ausencia' },
+      pistas: [{
+        description: 'Delfina copió del curato de Del Valle el bautismo de Benicio Requena y una nota marginal de 1881: no consta defunción, la familia lo da por ausente desde junio de 1878, y el padrón de 1881 declara una persona menos de las que hay en la casa.',
+        kind: 'documentary' as const, source: 'la carpeta de Delfina, después del viaje a Del Valle', reliability: 'reliable' as const,
+      }],
     }),
   },
 

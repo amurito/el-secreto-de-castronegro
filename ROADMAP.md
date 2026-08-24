@@ -745,6 +745,44 @@ fragmento que hacía falta matchear, no en el medio.
 y que la rama alternativa de cada noche encadene exactamente igual que la
 principal. Verificado además jugando las dos ramas en el navegador real.
 
+**Cuarta ronda: la vigilia entre sueño y sueño tiene que pesar de verdad.**
+Reportado jugando, otra vez, después de la tercera ronda: pedirle a Delfina
+que investigue 1878 seguía sin esperar que pasara un día —contestaba en el
+mismo turno—, y del sueño 2 se pasaba derecho al sueño 3 y al desenlace,
+tres clicks seguidos sin ninguna vigilia real entre medio. El pedido:
+llegar al pueblo, investigar, soñar, volver a la vigilia con pistas nuevas,
+volver a soñar, y que algunas de esas pistas cuesten más que otras.
+
+**`EfectoTema.tiempo`, nuevo en el motor.** Hasta ahora sólo las escenas
+podían hacer pasar el reloj del mundo (`EfectoEscena.tiempo`); un tema de
+conversación no tenía manera de hacerlo, así que cualquier «vuelvo mañana»
+dicho por un NPC en cualquier aventura era una promesa sin dueño mecánico.
+Se agregó el campo, se conectó en `keeper/social.ts` con el mismo
+`advance_time` que ya usan las escenas, y queda disponible para cualquier
+tema futuro de cualquier aventura, no sólo ésta.
+
+**Pedirle a Delfina que investigue ahora cuesta un día de verdad —y una
+segunda visita.** `d-1878` avanza el reloj 26 horas y NO entrega ya nada:
+sólo dice que ella se ofreció a buscar, sin prometer cuándo. Lo que
+encontró se entrega en un tema nuevo, `parroquial`, servido como una
+pregunta aparte («¿ya volvió del curato?»), que exige haber vuelto a la
+escuela después de que el tiempo pasara. Antes, la pista y el documento
+llegaban en la misma frase que el pedido.
+
+**La tercera noche ya no cuelga directamente de la segunda.** Su gate pasó
+de exigir sólo «una quinta hoja» (lo que deja el sueño 2) a exigir además
+saber quién es Benicio Requena — por el camino de Delfina (arriba) o por
+el camino más difícil de Ramona (`r-1878`/`r-1878-forzado`, una tirada de
+Persuasión o Intimidar contra alguien que no quiere hablar de esto). Es la
+«pista más difícil o escondida» que pediste: no agrega una habilidad
+nueva, usa la que ya estaba ahí y la vuelve obligatoria en vez de opcional.
+
+26 suites en verde, con una sección nueva en `prueba-sueno-debido.ts` que
+verifica las tres partes por separado: que preguntarle a Delfina no
+entrega nada en el mismo turno pero sí adelanta el reloj, que sin volver a
+preguntarle (ni hablar con Ramona) la tercera noche no se ofrece, y que
+con cualquiera de los dos caminos hecho sí se ofrece.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

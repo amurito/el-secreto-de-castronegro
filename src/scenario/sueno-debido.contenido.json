@@ -782,12 +782,16 @@
       "cede": {
         "actitud": 2,
         "texto": [
-          "—Del pueblo no va a sacar nada. Acá no hay archivo: hay memoria, y la memoria de acá es de una sola pieza y no se abre.\n\nPero ya está desatando el hilo de la carpeta.\n\n—Del curato de Del Valle sí, en cambio. Bautismos, matrimonios, defunciones, y las notas al margen, que son las que sirven. Voy una vez por mes por lo de las libretas de la escuela, y de paso copio lo que me parece que puede servir después. No sabía para qué iba a servir esto, pero lo copié.\n\nLe decís qué buscás: un renglón tachado del año setenta y ocho, y quién fue en lugar de quién.\n\n—Eso lo tengo yo. Espere.\n\nDesata el hilo del todo y busca entre las hojas hasta que encuentra dos asientos copiados a mano, con una nota al pie que agregó ella misma."
+          "—Del pueblo no va a sacar nada. Acá no hay archivo: hay memoria, y la memoria de acá es de una sola pieza y no se abre.\n\n—Del curato de Del Valle sí, en cambio. Bautismos, matrimonios, defunciones, y las notas al margen, que son las que sirven. No voy hoy: hoy no hay tren de vuelta a tiempo para las clases de mañana. Voy en cuanto pueda, y si encuentro algo se lo traigo.\n\nLe decís qué buscás: un renglón tachado del año setenta y ocho, y quién fue en lugar de quién.\n\n—Eso se puede buscar. No le prometo nada, y no le prometo cuándo. Vuelva por acá dentro de un tiempo."
         ],
+        "tiempo": {
+          "minutes": 1560,
+          "reason": "esperar a que Delfina pueda viajar al curato de Del Valle y volver"
+        },
         "pista": {
-          "description": "Delfina copió del curato de Del Valle el bautismo de Benicio Requena y una nota marginal de 1881: no consta defunción, la familia lo da por ausente desde junio de 1878, y el padrón de 1881 declara una persona menos de las que hay en la casa.",
-          "kind": "documentary",
-          "reliability": "reliable"
+          "description": "Delfina Arce se ofreció a buscar en el curato de Del Valle quién fue en lugar de quién en el renglón tachado de 1878. No prometió cuándo iba a tener novedades.",
+          "kind": "testimonial",
+          "reliability": "unknown"
         }
       },
       "esquiva": {
@@ -1208,19 +1212,17 @@
         "de": [
           {
             "op": "pista",
-            "contiene": "Benicio Requena"
+            "contiene": "se ofreció a buscar"
           },
           {
             "op": "texto",
-            "patron": "lo que trajo del curato|la carpeta de delfina|los asientos copiados|la partida"
+            "patron": "si ya volvio del curato|si volvio del curato|lo que trajo del curato|la carpeta de delfina|los asientos copiados|la partida"
           },
           {
             "op": "no",
             "de": {
               "op": "verbo",
               "es": [
-                "preguntar",
-                "hablar",
                 "mostrar",
                 "mentir",
                 "ir",
@@ -1476,11 +1478,11 @@
       "grupo": "observar",
       "lugar": "escuela",
       "orden": 8,
-      "intencion": "Leo los asientos copiados que trajo del curato",
-      "etiqueta": "Leer lo que Delfina trajo del curato",
+      "intencion": "Le pregunto a Delfina si ya volvió del curato",
+      "etiqueta": "Preguntarle si ya volvió del curato",
       "visible": {
         "op": "pista",
-        "contiene": "Benicio Requena"
+        "contiene": "se ofreció a buscar"
       },
       "hecha": {
         "op": "documento",
@@ -1612,8 +1614,26 @@
       "intencion": "Me duermo por última vez",
       "etiqueta": "Bajar a buscarlo",
       "visible": {
-        "op": "pista",
-        "contiene": "una quinta hoja"
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "una quinta hoja"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "Benicio Requena"
+              },
+              {
+                "op": "pista",
+                "contiene": "volvió a despertarse bien"
+              }
+            ]
+          }
+        ]
       },
       "hecha": {
         "op": "pista",
