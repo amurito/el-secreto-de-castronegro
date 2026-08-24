@@ -1578,5 +1578,9 @@
       "condition": "El investigador se pone en su lugar. Aurelio despierta entero y la deuda cambia de dueño."
     }
   ],
-  "opening": "El mismo tren de trocha angosta, el mismo andén de cuatro tablones, un año y dos días después. Esta vez hay alguien esperando: una mujer joven con sobretodo de hombre y una carpeta de cartón atada con hilo, que {lo} reconoce desde el estribo y no se acerca hasta que {lo} baja.\n\n—Llegó —dice—. Yo despaché esa carta hace catorce días y no sabía si era una locura.\n\nEl pueblo son las mismas cuatro manzanas y las mismas dos tipas peladas. La diferencia se ve enseguida y cuesta un rato entenderla: el círculo del brocal está entero. Repintado en toda la vuelta, este invierno, cuando el año pasado estaba a medias y llevaba años estándolo.\n\nY contra el brocal, del lado del viento, hay una silla de paja que nadie retira."
+  "opening": "El mismo tren de trocha angosta, el mismo andén de cuatro tablones, un año y dos días después. Esta vez hay alguien esperando: una mujer joven con sobretodo de hombre y una carpeta de cartón atada con hilo, que {lo} reconoce desde el estribo y no se acerca hasta que {lo} baja.\n\n—Llegó —dice—. Yo despaché esa carta hace catorce días y no sabía si era una locura.\n\nEl pueblo son las mismas cuatro manzanas y las mismas dos tipas peladas. La diferencia se ve enseguida y cuesta un rato entenderla: el círculo del brocal está entero. Repintado en toda la vuelta, este invierno, cuando el año pasado estaba a medias y llevaba años estándolo.\n\nY contra el brocal, del lado del viento, hay una silla de paja que nadie retira.",
+  "bloqueoDecision": {
+    "op": "pista",
+    "contiene": "encontró en el fondo"
+  }
 }

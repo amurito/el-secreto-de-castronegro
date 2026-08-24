@@ -121,5 +121,6 @@ export function cargarAventura(
     actions,
     endings: contenido.endings,
     opening: contenido.opening,
+    ...(contenido.bloqueoDecision ? { bloqueoDecision: conEstado(contenido.bloqueoDecision) } : {}),
   };
 }

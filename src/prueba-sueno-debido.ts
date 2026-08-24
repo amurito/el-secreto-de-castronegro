@@ -148,6 +148,13 @@ async function main() {
   check('«Sacarlo de ahí» es un botón real', b.includes('fin-sacarlo'), b.join(', '));
   check('«Ponerse en su lugar» es un botón real', b.includes('fin-ofrecer'), b.join(', '));
   check('«Irse» es un botón real', b.includes('fin-tren'), b.join(', '));
+  // La tercera noche BLOQUEA la decisión: llegado al fondo, no hay mirar,
+  // hablar, hacer ni ir — sólo los tres desenlaces. Antes de esto, el mismo
+  // turno que narraba «estás en el fondo del brocal, con Aurelio enfrente»
+  // seguía ofreciendo «Ir a la escuela», que no tiene ningún sentido estando
+  // dormido. Reportado jugando.
+  check('y NO queda ninguna otra opción —ni mirar, ni hablar, ni irse a otro lado—',
+    b.every((id) => ['fin-sacarlo', 'fin-ofrecer', 'fin-tren'].includes(id)), b.join(', '));
 
   const sacar = await jugar('FIN-SACAR', 'c', [...HASTA_EL_FONDO, 'Lo saco de ahí']);
   check('«Lo que se despierta» se alcanza', sacar.estado.ending?.id === 'despertar', sacar.estado.ending?.title ?? 'sin desenlace');

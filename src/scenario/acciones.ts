@@ -114,6 +114,27 @@ export function accionesDisponibles(s: GameState, escenario: Scenario): Opcion[]
   const aqui = s.world.currentLocation;
   const out: Array<Opcion & { orden: number }> = [];
 
+  // ── Bloqueo de decisión ────────────────────────────────────────────────
+  // Cuando la escena lo pide (ver `Scenario.bloqueoDecision`), no hay mirar,
+  // hablar, hacer ni ir: sólo los desenlaces del catálogo, en el mismo orden
+  // y con las mismas condiciones que siempre —esto no inventa un desenlace
+  // nuevo, sólo apaga todo lo que no sea uno—.
+  if (escenario.bloqueoDecision?.(s)) {
+    return catalogo
+      .filter((a) => a.grupo === 'decidir')
+      .filter((a) => !a.lugar || (Array.isArray(a.lugar) ? a.lugar : [a.lugar]).includes(aqui))
+      .filter((a) => !a.visible || a.visible(s))
+      .filter((a) => !a.hecha?.(s))
+      .sort((a, b) => (a.orden ?? 40) - (b.orden ?? 40))
+      .map((a) => ({
+        id: a.id,
+        etiqueta: typeof a.etiqueta === 'function' ? a.etiqueta(s) : a.etiqueta,
+        intencion: a.intencion,
+        grupo: a.grupo,
+        ...(a.final ? { final: a.final } : {}),
+      }));
+  }
+
   // ── Preguntas, desde el catálogo de conversación de la aventura ───────────
   // Sólo de los NPC que están ACÁ y que todavía aguantan que les pregunten.
   // Cuando alguien se queda sin paciencia sus temas desaparecen enteros: es el

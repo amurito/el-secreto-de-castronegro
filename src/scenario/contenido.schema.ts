@@ -92,6 +92,8 @@ export interface ContenidoAventura {
   actions: AccionJSON[];
   endings: ScenarioEnding[];
   opening: string;
+  /** Ver `Scenario.bloqueoDecision`. Opcional: sin esto, nada cambia. */
+  bloqueoDecision?: Condicion;
 }
 
 /** Re-exportado para que el companion de lógica no tenga que importar de dos lugares. */

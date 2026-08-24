@@ -122,6 +122,7 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
   const REINTENTOS = 4;
 
   let murio = false;
+  let atrapado = false;
   for (let n = 0; n < turnos; n++) {
     const t = await Turn.open(id);
     if (t.state.ending) break;
@@ -134,7 +135,8 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
     // corta acá, y la cobertura del mapa deja de ser un requisito: no es que
     // algo esté mal declarado, es que el personaje se murió en el intento.
     if (t.investigator.status !== 'alive') { murio = true; break; }
-    const disp = accionesDisponibles(t.state, esc).filter((o) => !o.final);
+    const todas = accionesDisponibles(t.state, esc);
+    const disp = todas.filter((o) => !o.final);
     const sinAgotar = (o: { id: string }) => (veces.get(o.id) ?? 0) < REINTENTOS;
 
     const aqui = disp.filter((o) => o.grupo !== 'mover' && sinAgotar(o));
@@ -149,7 +151,17 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
       });
       sig = noVisitado ?? salidas.find(sinAgotar);
     }
-    if (!sig) break;
+    if (!sig) {
+      // Mismo espíritu que `murio`: si lo único que queda es elegir un
+      // desenlace —`Scenario.bloqueoDecision` apagó mirar, hablar, hacer e
+      // ir a propósito—, el andador no lo va a tocar (nunca elige un
+      // `final`, eso lo audita `entregable.desenlaces` aparte) y se queda
+      // sin nada que hacer ahí mismo, aunque el mapa no esté agotado. No es
+      // que algo esté mal declarado: es que la aventura, a propósito, no
+      // deja seguir explorando desde ese punto.
+      if (todas.length > 0 && todas.every((o) => o.final)) atrapado = true;
+      break;
+    }
 
     veces.set(sig.id, (veces.get(sig.id) ?? 0) + 1);
     t.submitIntent(sig.intencion, 'p1');
@@ -157,7 +169,7 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
     t.narrate(r.narration, r.options);
     await t.commit();
   }
-  return { state: (await loadState(id)).state, murio };
+  return { state: (await loadState(id)).state, murio, atrapado };
 }
 
 async function auditar(esc: Scenario) {
@@ -225,10 +237,14 @@ async function auditar(esc: Scenario) {
 
   // ── 3. Recorrido real ────────────────────────────────────────────────────
   console.log('\nEL RECORRIDO REAL');
-  const { state: final, murio } = await recorrerAFondo(esc, 'j');
+  const { state: final, murio, atrapado } = await recorrerAFondo(esc, 'j');
   if (murio) {
     console.log('  el investigador murió en el intento —recorrido cortado ahí, a propósito—');
   }
+  if (atrapado) {
+    console.log('  la aventura obligó a decidir un desenlace ahí mismo —recorrido cortado a propósito, no exploró más—');
+  }
+  const cortado = murio || atrapado;
   const conseguidas = new Set(final.board.clues.map((c) => c.description));
   const docsObtenidos = Object.values(final.documents).filter((d) => d.obtainedAt).length;
   const propsVistas = Object.values(final.items)
@@ -238,10 +254,10 @@ async function auditar(esc: Scenario) {
   console.log(`  ${conseguidas.size} pistas · ${docsObtenidos}/${esc.documents.length} documentos · ${propsVistas} propiedades · ${lugaresVisitados}/${Object.keys(esc.locations).length} lugares`);
 
   check('el recorrido visita todo el mapa',
-    murio || lugaresVisitados === Object.keys(esc.locations).length,
+    cortado || lugaresVisitados === Object.keys(esc.locations).length,
     `${lugaresVisitados}/${Object.keys(esc.locations).length}`);
   check('el recorrido obtiene todos los documentos',
-    murio || docsObtenidos === esc.documents.length, `${docsObtenidos}/${esc.documents.length}`);
+    cortado || docsObtenidos === esc.documents.length, `${docsObtenidos}/${esc.documents.length}`);
 
   // Las pistas de features son las más fáciles de romper: dependen de que el
   // detalle se ofrezca y de que la tirada salga alguna de las tres veces.
@@ -250,7 +266,7 @@ async function auditar(esc: Scenario) {
   const faltantes = pistasDeFeature.filter((p) => !conseguidas.has(p));
   for (const p of faltantes) console.log(`   ⚠ no salió: «${p.slice(0, 70)}…»`);
   check('el recorrido consigue las pistas de los detalles del mapa',
-    murio || faltantes.length === 0, `${pistasDeFeature.length - faltantes.length}/${pistasDeFeature.length}`);
+    cortado || faltantes.length === 0, `${pistasDeFeature.length - faltantes.length}/${pistasDeFeature.length}`);
 }
 
 /**
