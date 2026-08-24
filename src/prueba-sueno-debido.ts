@@ -259,6 +259,23 @@ async function main() {
   check('y aun así aparece el botón para dormir con el almagre',
     bFalla.includes('noche-uno'), bFalla.join(', '));
 
+  // Mismo bug, mismo arreglo, en la puerta de la SEGUNDA noche: fechar la
+  // tachadura pedía Historia y sólo dejaba la pista que abre `noche-dos` en
+  // la rama de éxito. Reportado jugando: «¿acceder al segundo sueño es sí o
+  // sí pasando esa tirada? debería haber otra forma». Semilla `a`: la
+  // Historia falla en el primer intento (verificado por separado).
+  const fallaTachadura = await jugar('FALLA-TACHADURA', 'a', [
+    'Voy a la escribanía',
+    'Leo el libro de turnos renglón por renglón',
+    'Miro de cerca los renglones tachados',
+  ]);
+  const tiradaTachadura = fallaTachadura.estado.rolls.at(-1);
+  check('la tirada de Historia efectivamente falló',
+    tiradaTachadura?.commitment.skill === 'historia' && !['critical', 'extreme', 'hard', 'regular'].includes(tiradaTachadura.execution.degree),
+    `${tiradaTachadura?.commitment.skill} — ${tiradaTachadura?.execution.degree}`);
+  check('y aun así deja la pista que hace falta para seguir investigando',
+    pista(fallaTachadura.estado, 'Vio de cerca los tres renglones tachados'), '');
+
   // ── 8. EL CLASIFICADOR RESUELVE AL NPC CORRECTO, NO AL PRIMER NOMBRE QUE APARECE ─
   //
   // Bug real, reportado jugando: «Le pregunto a Delfina qué le pasa a

@@ -808,6 +808,29 @@ sesión larga y comparable a la que reportó el problema: Permeabilidad
 pasó de 96 a 42, Estabilidad se mantuvo en 100, y «Me duermo con el
 almagre en la mano» quedó disponible.
 
+**Sexta ronda: la misma regla, olvidada una segunda vez, en la puerta de
+la segunda noche.** Pregunta directa, jugando: «¿acceder al segundo sueño
+es sí o sí pasando la tirada de Historia? debería haber otra forma». Tenía
+razón — `fechar-tachadura` dejaba la pista que abre `noche-dos` («once
+años después») únicamente en la rama de éxito, exactamente el mismo bug
+que ya se había corregido para Primeros Auxilios y la primera noche, pero
+sin aplicar el mismo criterio acá.
+
+Mismo arreglo: la pista que destraba la puerta pasó a ser INCONDICIONAL
+—lo que se ve a simple vista, sin fechar tinta ni letra, alcanza para
+seguir—, y el fechado exacto (los once años, la letra de 1889) sigue
+siendo success-only, la parte que de verdad premia acertar. La acción
+sigue ofreciéndose después de fallar, así que insistir sigue teniendo
+sentido para quien quiera la versión completa.
+
+De paso, otro bug encontrado por la propia batería de pruebas: la
+intención de la acción nueva de la segunda noche empezaba con «Agarro»,
+que el clasificador lee como el verbo `tomar` —agarrar un objeto—, y
+`prueba-tiradas.ts` tiene una regla de todo el proyecto, no sólo de esta
+aventura: agarrar algo nunca puede pedir un dado, porque levantar un papel
+del escritorio no es lo que puede fallar; leerlo sí. Reescrita a «Leo la
+hoja que no está cosida», que clasifica como `leer` y no rompe la regla.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

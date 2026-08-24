@@ -317,7 +317,7 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
         'Ponés la hoja contra la ventana. Las tachaduras no son iguales entre sí, y eso ya es una información antes de mirar ninguna.',
         tirada?.exito
           ? 'La de 1852 se tachó de inmediato: misma tinta, mismo día, misma mano. Alguien se equivocó al anotar y lo corrigió antes de que se secara.'
-          : 'Tres renglones tachados con tinta parecida y reescritos con el otro apellido. Los años que declaran son 1852, 1878 y 1904, y no hay mucho más que sacarle a una tachadura.',
+          : 'Tres renglones tachados con tinta parecida y reescritos con el otro apellido. Los años que declaran son 1852, 1878 y 1904, y no hay mucho más que sacarle a una tachadura mirándola así, a simple vista.',
         tirada?.exito
           ? 'La de 1904 se tachó después, con tinta de otro frasco, pero con la misma letra que escribió los renglones de esa década: alguien enmendó su propia anotación semanas o meses más tarde, sin apuro, como quien corrige un asiento.'
           : '',
@@ -325,11 +325,22 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           ? 'La de 1878 no se parece a ninguna de las dos. La tinta es más negra y más nueva que todo lo que la rodea: se tachó años después, no meses. Y la mano que la tachó no es la mano que llevaba el libro en 1878. Es la segunda letra, la que arranca en 1889. Alguien esperó once años y recién entonces volvió a esa página a cambiar el apellido de un renglón que ya estaba escrito.'
           : '',
       ].filter(Boolean),
-      ...(tirada?.exito ? {
-        pistas: [{
+      // Misma regla que Primeros Auxilios: la pista que abre la puerta de la
+      // segunda noche no puede depender de acertar Historia. La primera es
+      // INCONDICIONAL —lo que se ve a simple vista, sin instrumental— y
+      // alcanza para seguir. La segunda, con el fechado exacto de la tinta,
+      // sólo llega acertando, y es la que de verdad premia la tirada.
+      pistas: [
+        {
+          description: 'Vio de cerca los tres renglones tachados del libro —1852, 1878 y 1904— reescritos con el otro apellido.',
+          kind: 'physical' as const, source: 'el libro de turnos', reliability: 'reliable' as const,
+        },
+        ...(tirada?.exito ? [{
           description: 'La tachadura de 1878 se hizo once años después, con otra tinta y con la mano que empezó a llevar el libro en 1889. Las de 1852 y 1904 son correcciones normales, hechas en el momento o poco después. La de 1878 es alguien volviendo a esa página a propósito.',
           kind: 'documentary' as const, source: 'el libro de turnos', reliability: 'reliable' as const,
-        }],
+        }] : []),
+      ],
+      ...(tirada?.exito ? {
         contradiccion: {
           description: 'Un renglón de 1878 que estaba bien escrito se corrigió recién en 1889, cuando ya nadie podía discutir quién había ido esa noche.',
           between: 'la fecha del renglón / la fecha de la tinta',

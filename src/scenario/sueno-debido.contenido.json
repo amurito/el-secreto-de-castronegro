@@ -1565,7 +1565,7 @@
           },
           {
             "op": "pista",
-            "contiene": "once años después"
+            "contiene": "Vio de cerca los tres renglones tachados"
           }
         ]
       },
@@ -1579,7 +1579,7 @@
       "grupo": "usar",
       "lugar": "escribania",
       "orden": 31.1,
-      "intencion": "Agarro la hoja y la leo",
+      "intencion": "Leo la hoja que no está cosida",
       "etiqueta": "Estirar la mano y leer la hoja",
       "visible": {
         "op": "pista",
