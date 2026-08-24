@@ -72,6 +72,34 @@ const desenlacePrevio = (s: GameState): DesenlacePrevio => {
 /** Si el año pasado le fue encima a Cirilo. Cierra puertas y abre otras. */
 const peleoConCirilo = (s: GameState) => consecuencia(s, 'le fue encima a Cirilo Sosa');
 
+/**
+ * Los cierres compartidos de cada noche.
+ *
+ * Las dos escenas de acercamiento de una misma noche difieren en ángulo y en
+ * tirada, pero terminan en el MISMO lugar —ver a Aurelio en la fila, la
+ * pregunta del joven, la decisión al pie del brocal—, porque de ahí sale la
+ * pista de cierre que destraba la noche siguiente y no puede depender de cuál
+ * de las dos ramas se jugó. Vivir esto en una sola constante evita que las
+ * dos ramas se desincronicen con el tiempo.
+ */
+const cierreNocheUno: string[] = [
+  'En algún momento uno de los que se agachan tiene la altura y la manera de agacharse de Aurelio Requena. Le hablás. No levanta la cabeza. Del otro lado de la fila hay alguien parado que no camina y que no se agacha, y ése sí está de frente, y ése sí te está mirando a vos, y es lo último que ves.',
+];
+
+const cierreNocheDos: string[] = [
+  'El joven del escritorio termina el renglón, apoya la pluma y por primera vez levanta la cabeza. Tiene la cara de la punta izquierda de la fila de atrás.\n\n—Usted es del año que viene —dice, sin sorpresa—. ¿Ya está anotado?',
+];
+
+const cierreNocheTres = (estado: GameState): string[] => {
+  const leyoLista = pista(estado, 'una lista de nombres con una marca al lado');
+  return [
+    leyoLista
+      ? 'Y ahí ves lo que tiene en las manos: la quinta hoja. La de la lista. La está sosteniendo abierta como se sostiene un libro de misa, y hay un renglón nuevo abajo de todo, todavía fresco, y el trazo del costado es un círculo.'
+      : 'Y tiene algo en las manos que no llegás a ver bien, y por el modo en que lo sostiene —abierto, con las dos manos, como un libro de misa— sabés que lo está leyendo y no que lo está usando.',
+    'Se puede bajar. Eso es lo peor de todo: se ve claramente que se puede bajar, que el agua da a un palmo y que hay dónde apoyar el pie, y que subir es otro asunto.',
+  ];
+};
+
 export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
   // ══ LA CARTA ════════════════════════════════════════════════════════════════
   //
@@ -405,22 +433,47 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
   //
   // Tres escenas, no tres localizaciones. Ver la cabecera del archivo: un sueño
   // no se recorre con botones de «ir a», y hacerlo así habría pedido cambios de
-  // motor para conseguir algo peor. Cada visita ramifica por GRADO —no sólo por
-  // éxito— porque el margen con que entrás importa más que si entrás.
+  // motor para conseguir algo peor.
+  //
+  // Cada noche se parte en DOS pasos, no uno —dormir ya no es «un click, un
+  // párrafo, un dado»—: primero una escena de entrada, sin tirada, que planta
+  // al jugador en el sueño y ofrece dos ángulos distintos; después una de dos
+  // escenas de acercamiento, cada una con su propia tirada y su propia
+  // habilidad, que convergen en la MISMA pista de cierre. Reportado jugando:
+  // la versión de un solo botón por noche era, literalmente, tres clicks
+  // seguidos con una tirada automática de por medio —no había nada que
+  // decidir, sólo mirar el resultado—. Elegir el ángulo no cambia si se
+  // avanza (ninguna de las dos opciones bloquea a la otra), cambia CÓMO se
+  // avanza y qué habilidad del investigador entra en juego.
 
   {
     id: 'dormir-uno',
+    resolver: () => ({
+      texto: [
+        'Apoyás la mano en el tarro abierto —no hace falta más que eso, y no sabés cómo lo sabés— y te sentás en el piso, contra la pared del archivo, al lado del catre. El brasero se apaga en algún momento y no lo ves apagarse.',
+        'La plaza está ahí. Es la plaza: las dos tipas, el almacén, la escribanía en la esquina. Lo que no está es la hora. No es de noche ni de día; es la luz que hay cuando todavía no se decidió.',
+        'Alrededor del brocal hay gente dando la vuelta caminando, uno atrás del otro, en fila, sin apuro. Son muchos más de los que entran en este pueblo. Cada uno se agacha, hace algo en el ladrillo, y sigue caminando para que se agache el que viene atrás.',
+        'Ninguno tiene cara. No es que estén borrosos: es que no los estás mirando de frente ni una sola vez, por más que gires la cabeza.',
+        'Podés acercarte a mirarlos de cerca, o quedarte donde estás y buscar tu propio lugar en la fila.',
+      ],
+      pistas: [{
+        description: 'Entró al sueño y ve la fila dar la vuelta, sin haberse acercado todavía.',
+        kind: 'experiential' as const, source: 'la primera noche', reliability: 'unknown' as const,
+      }],
+    }),
+  },
+
+  {
+    id: 'ronda-mirar',
     // ANTROPOLOGÍA. Lo que hay que leer no es un objeto ni una persona: es una
     // costumbre en acto. Interpretar tabúes y marcadores de un grupo es la
     // definición de la habilidad, y acá el grupo lleva ochenta y seis años
     // haciendo lo mismo sin explicárselo a nadie.
     // ANTROPOLOGÍA es cara —ninguna ficha pregenerada la trae, así que sale
-    // en base 1— y por eso NO GATEA NADA: la pista que destraba la segunda
-    // noche se entrega igual, falle o acierte. Lo que cambia con el éxito es
-    // qué se entendió, no si se puede seguir. Ésa es la regla de esta
-    // aventura para las cuatro habilidades raras que estrena: enriquecen,
-    // nunca bloquean. Haber leído el libro antes da un dado, porque saber que
-    // hay ochenta y seis renglones cambia lo que significa una fila.
+    // en base 1— y por eso NO GATEA NADA: la pista de cierre se entrega
+    // igual, falle o acierte. Lo que cambia con el éxito es qué se entendió,
+    // no si se puede seguir. Haber leído el libro antes da un dado, porque
+    // saber que hay ochenta y seis renglones cambia lo que significa una fila.
     prueba: (s) => ({
       skill: 'antropologia', difficulty: 'regular',
       reason: 'leer una costumbre mientras se está haciendo, sin nadie a quien preguntarle',
@@ -432,17 +485,14 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     }),
     resolver: ({ tirada, estado }) => ({
       texto: [
-        'Apoyás la mano en el tarro abierto —no hace falta más que eso, y no sabés cómo lo sabés— y te sentás en el piso, contra la pared del archivo, al lado del catre. El brasero se apaga en algún momento y no lo ves apagarse.',
-        'La plaza está ahí. Es la plaza: las dos tipas, el almacén, la escribanía en la esquina. Lo que no está es la hora. No es de noche ni de día; es la luz que hay cuando todavía no se decidió.',
-        'Alrededor del brocal hay gente dando la vuelta caminando, uno atrás del otro, en fila, sin apuro. Son muchos más de los que entran en este pueblo. Cada uno se agacha, hace algo en el ladrillo, y sigue caminando para que se agache el que viene atrás.',
-        'Ninguno tiene cara. No es que estén borrosos: es que no los estás mirando de frente ni una sola vez, por más que gires la cabeza.',
+        'Te acercás a la fila.',
         tirada?.exito
           ? 'Y ahí lo entendés, porque lo tenés delante: esto no es un rito. No hay canto, no hay orden de precedencia, nadie mira a nadie, nadie corrige a nadie. Es una GUARDIA. Es gente haciendo un turno, uno atrás del otro, y la fila no avanza hacia ningún lado: da la vuelta y vuelve a empezar, y el que terminó se vuelve a poner al final.'
           : 'Mirás la fila un rato largo tratando de encontrarle el orden. No se lo encontrás. Van, se agachan, siguen, vuelven a pasar. Podría ser una procesión, podría ser una cola de gente esperando algo.',
         tirada?.grado === 'extreme' || tirada?.grado === 'critical'
           ? 'Y hay una cosa más, que en la fila se ve y despierto no se vería nunca: no todos van hacia el mismo lado. Una parte de la fila viene de atrás y otra parte viene de adelante, y en el punto donde se cruzan nadie se choca porque no están del todo en el mismo lugar. Los que vienen de adelante todavía no nacieron.'
           : '',
-        'En algún momento uno de los que se agachan tiene la altura y la manera de agacharse de Aurelio Requena. Le hablás. No levanta la cabeza. Del otro lado de la fila hay alguien parado que no camina y que no se agacha, y ése sí está de frente, y ése sí te está mirando a vos, y es lo último que ves.',
+        ...cierreNocheUno,
       ].filter(Boolean),
       exposicion: { amount: 7, source: 'sueno:ronda', cause: 'la ronda del brocal, del lado de adentro' },
       estabilidad: { amount: -4, cause: 'una fila que no avanza hacia ningún lado' },
@@ -465,17 +515,76 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    id: 'ronda-buscar',
+    // El ángulo alternativo: en vez de leer la costumbre desde afuera
+    // (Antropología), la pregunta se vuelve personal. VOLUNTAD/POD, no una
+    // habilidad —el investigador ya está anotado en un libro real, y buscarse
+    // en éste es la primera vez que el sueño le pregunta algo A ÉL, no sobre
+    // el pueblo—.
+    prueba: () => ({
+      skill: 'POW', difficulty: 'regular',
+      reason: 'sostener la pregunta de si hay un lugar ahí que sea el tuyo',
+      stakes_success: 'encontrar un hueco que te queda',
+      stakes_failure: 'no encontrar nada, y no saber qué significa eso',
+    }),
+    resolver: ({ tirada, estado }) => ({
+      texto: [
+        'Te quedás donde estás y mirás la fila buscando un hueco que te quede. No tiene ningún sentido —es gente dando vueltas, no hay lugares fijos en una fila que gira— y buscás igual.',
+        tirada?.exito
+          ? 'Y lo encontrás. Entre el séptimo y el octavo de la fila hay un hueco del ancho exacto de tus hombros, y nadie lo ocupa, como si estuviera guardado. No sabés desde cuándo. No sabés si desde antes de que llegaras al pueblo la primera vez, o desde esta tarde.'
+          : 'No encontrás nada. Ningún hueco, ningún lugar que sea el tuyo. Debería tranquilizarte y no te tranquiliza: no saber si estás afuera de esto, o si todavía no te tocó.',
+        ...cierreNocheUno,
+      ].filter(Boolean),
+      exposicion: { amount: 7, source: 'sueno:ronda', cause: 'la ronda del brocal, buscando su propio lugar' },
+      estabilidad: { amount: -5, cause: 'preguntarse si hay un lugar ahí que sea suyo' },
+      pistas: [
+        {
+          description: 'En la ronda del brocal hay una fila de gente dando la vuelta al aljibe, agachándose de a uno. Son muchos más de los que caben en el pueblo, y ninguno se deja ver la cara.',
+          kind: 'experiential' as const, source: 'la primera noche', reliability: 'unknown' as const,
+        },
+        ...(tirada?.exito ? [{
+          description: 'Buscó su propio lugar en la fila del sueño y lo encontró: un hueco del ancho de sus hombros, que nadie ocupa, guardado.',
+          kind: 'experiential' as const, source: 'la primera noche', reliability: 'unknown' as const,
+        }] : []),
+      ],
+      ...(pista(estado, 'repite una secuencia') ? {
+        jugadorNota: {
+          statement: 'La fila da la vuelta y el que terminó se pone al final. Un turno que vuelve a empezar es exactamente lo que registra el libro de la escribanía, renglón por renglón, desde 1841. Su investigador todavía no dijo eso en voz alta.',
+          source: 'la primera noche',
+          reliability: 'unknown' as const,
+        },
+      } : {}),
+    }),
+  },
+
+  {
     id: 'dormir-dos',
+    resolver: () => ({
+      texto: [
+        'La segunda vez es más rápido. Apoyás la mano y ya está: no hay plaza, hay escribanía.',
+        'Es ésta y no es ésta. El mostrador está, el roble está, el brasero está encendido con un fuego que no calienta. Los legajos de las paredes son los mismos legajos y las cintas son de colores que no existen todavía.',
+        'Detrás del escritorio hay un hombre joven escribiendo en el libro. Veintiún años, la ropa de otro siglo, y el pulso perfecto de alguien descansado. No levanta la vista cuando entrás, pero corre la silla medio paso, que en esta familia es una invitación.',
+        'El cajón del medio está abierto y adentro están las cuatro hojas cosidas con hilo de bramante. Y hay una quinta, suelta, que no está cosida a las otras y que nunca estuvo en ningún cajón del mundo despierto.',
+        'Podés estirar la mano y agarrar la hoja para leerla, o preguntarle quién es antes de tocar nada.',
+      ],
+      pistas: [{
+        description: 'Entró a la escribanía del sueño y ve al joven escribiendo, sin haber tocado la hoja todavía.',
+        kind: 'experiential' as const, source: 'la segunda noche', reliability: 'unknown' as const,
+      }],
+    }),
+  },
+
+  {
+    id: 'hoja-agarrar',
     // OCULTISMO otra vez, y a propósito: es la segunda vez que se le pide, y
     // la primera fue el tarro. Quien invirtió en esta habilidad la ve rendir
     // dos veces en la misma historia; quien no, pierde las dos y llega igual
     // al final, con menos en la mano.
-    // Mismo criterio que la primera noche: OCULTISMO tampoco gatea. Acertar
-    // acá no abre el desenlace de cambiarse por él —eso lo abre saber lo de
-    // Benicio, que se consigue con Persuasión, Intimidar o Uso de
-    // Bibliotecas, que sí están en las fichas—; lo que abre es SABER QUÉ
-    // ESTÁS FIRMANDO cuando llegue el momento, que es otra cosa y se nota en
-    // el texto del final.
+    // Acertar acá no abre el desenlace de cambiarse por él —eso lo abre saber
+    // lo de Benicio, que se consigue con Persuasión, Intimidar o Uso de
+    // Bibliotecas, que sí están en las fichas—; lo que abre es SABER QUÉ ESTÁS
+    // FIRMANDO cuando llegue el momento, que es otra cosa y se nota en el
+    // texto del final.
     //
     // Los dos dados de bonificación son el pago del trabajo de vigilia: haber
     // mirado el polvo del tarro contra la luz, y haber visto qué clase de
@@ -495,20 +604,17 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     },
     resolver: ({ tirada, estado }) => ({
       texto: [
-        'La segunda vez es más rápido. Apoyás la mano y ya está: no hay plaza, hay escribanía.',
-        'Es ésta y no es ésta. El mostrador está, el roble está, el brasero está encendido con un fuego que no calienta. Los legajos de las paredes son los mismos legajos y las cintas son de colores que no existen todavía.',
-        'Detrás del escritorio hay un hombre joven escribiendo en el libro. Veintiún años, la ropa de otro siglo, y el pulso perfecto de alguien descansado. No levanta la vista cuando entrás, pero corre la silla medio paso, que en esta familia es una invitación.',
-        'El cajón del medio está abierto y adentro están las cuatro hojas cosidas con hilo de bramante. Y hay una quinta, suelta, que no está cosida a las otras y que nunca estuvo en ningún cajón del mundo despierto.',
+        'La levantás.',
         tirada?.exito
-          ? 'La levantás. No es una explicación ni una instrucción: es una LISTA. Nombres, en columnas, con una marca al lado de cada uno, en la misma letra que escribió los nueve apellidos de la primera página del libro. Es larguísima. Sigue en el reverso y sigue después del reverso, de una manera que una hoja no puede seguir.'
-          : 'La levantás. Está escrita de arriba abajo y no podés decir qué es. Las letras son letras. Las palabras podrían ser palabras. Lo mirás el tiempo suficiente como para saber que mirarlo más no va a servir de nada.',
+          ? 'No es una explicación ni una instrucción: es una LISTA. Nombres, en columnas, con una marca al lado de cada uno, en la misma letra que escribió los nueve apellidos de la primera página del libro. Es larguísima. Sigue en el reverso y sigue después del reverso, de una manera que una hoja no puede seguir.'
+          : 'Está escrita de arriba abajo y no podés decir qué es. Las letras son letras. Las palabras podrían ser palabras. Lo mirás el tiempo suficiente como para saber que mirarlo más no va a servir de nada.',
         tirada?.exito
           ? 'Y las marcas del costado no son todas iguales. La mayoría es un trazo simple. Unas pocas son un trazo cerrado sobre sí mismo, un círculo, y ésas están agrupadas: no salteadas, agrupadas, como si en ciertos años hubiera pasado algo distinto varias veces seguidas.'
           : '',
         tirada?.grado === 'extreme' || tirada?.grado === 'critical'
           ? 'Y muy abajo, tan abajo que llegar ahí te lleva un tiempo que no tenés, hay tres renglones seguidos con el círculo al lado, y uno de los tres es un apellido que conocés. Los otros dos no. Todavía no.'
           : '',
-        'El joven del escritorio termina el renglón, apoya la pluma y por primera vez levanta la cabeza. Tiene la cara de la punta izquierda de la fila de atrás.\n\n—Usted es del año que viene —dice, sin sorpresa—. ¿Ya está anotado?',
+        ...cierreNocheDos,
       ].filter(Boolean),
       exposicion: { amount: 8, source: 'sueno:quinta-hoja', cause: 'una hoja que no está cosida a las otras' },
       estabilidad: { amount: -5, cause: 'que alguien de 1878 pregunte si uno ya está anotado' },
@@ -537,12 +643,83 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    id: 'hoja-preguntar',
+    // El ángulo alternativo: en vez de leer el papel (Ocultismo), leer a la
+    // PERSONA. Psicología —leer intención y sinceridad— nunca se había usado
+    // en esta aventura todavía y encaja mejor acá que en cualquier otro lado:
+    // lo que hay que juzgar no es si miente, es qué clase de cosa quedó de
+    // alguien que dejó de tener adónde ir.
+    prueba: () => ({
+      skill: 'psicologia', difficulty: 'regular',
+      reason: 'leer qué clase de respuesta es un silencio, o una frase sin rencor',
+      stakes_success: 'entender qué quedó de él, más allá de lo que dice',
+      stakes_failure: 'un silencio que dura demasiado, y nada más',
+    }),
+    resolver: ({ tirada, estado }) => ({
+      texto: [
+        'Le preguntás quién es, antes de tocar nada. La pluma no se detiene.',
+        tirada?.exito
+          ? 'Pero contesta, sin levantar la vista.\n\n—Eso ya lo sabe usted, si llegó hasta acá —dice—. Lo raro no es quién soy yo. Lo raro es que a usted todavía le importe.\n\nY algo en cómo lo dice —sin rencor, sin tristeza, sin nada que se le parezca— te dice más de lo que dice: no es que esté enojado ni resignado. Es, simplemente, lo que quedó de alguien que dejó de tener adónde ir.'
+          : 'No contesta nada. Sigue escribiendo, y el silencio dura tanto que empezás a preguntarte si dijiste algo en voz alta.',
+        ...cierreNocheDos,
+      ].filter(Boolean),
+      exposicion: { amount: 8, source: 'sueno:quinta-hoja', cause: 'una hoja que no está cosida a las otras' },
+      estabilidad: { amount: -5, cause: 'que alguien de 1878 pregunte si uno ya está anotado' },
+      cordura: {
+        amount: 3,
+        cause: 'la quinta hoja, y la pregunta del que la estaba escribiendo',
+      },
+      pistas: [
+        {
+          description: 'En el sueño de la escribanía hay una quinta hoja, la que no está cosida a las otras cuatro. Está escrita entera y no hay manera de decir qué es lo que dice.',
+          kind: 'experiential' as const, source: 'la segunda noche', reliability: 'unknown' as const,
+        },
+        {
+          description: 'El que escribe el libro en el sueño es un hombre de veintiún años con ropa de otro siglo, y tiene la cara del hombre movido de la foto de 1880. Pregunta si uno ya está anotado.',
+          kind: 'experiential' as const, source: 'la segunda noche', reliability: 'unknown' as const,
+        },
+        ...(tirada?.exito ? [{
+          description: 'El joven de la escribanía del sueño no contesta con rencor ni con tristeza: contesta como quien dejó de tener adónde ir. No parece sufrir estar ahí, y eso es peor que si sufriera.',
+          kind: 'experiential' as const, source: 'la segunda noche', reliability: 'unknown' as const,
+        }] : []),
+      ],
+      ...(documento(estado, 'doc-parroquial') || pista(estado, 'Benicio Requena')
+        ? {
+          contradiccion: {
+            description: 'Benicio Requena está en un asiento de 1856 como bautizado, en una nota de 1881 como ausente sin defunción, en una foto de 1880 movido de una manera que no hace un cuerpo, y en la escribanía del sueño escribiendo con pulso de descansado.',
+            between: 'lo que dice el curato / lo que hay en la segunda noche',
+          },
+        }
+        : {}),
+    }),
+  },
+
+  {
     id: 'dormir-tres',
+    resolver: () => ({
+      texto: [
+        'La tercera vez no te dormís: te acostás al lado del catre con la mano en el tarro y esperás, y en algún momento la espera es otra cosa sin que haya habido un límite.',
+        'La plaza otra vez, y la fila otra vez, pero esta vez la fila se abre. No para dejarte pasar: se abre porque vos vas hacia el brocal y ellos no.',
+        'La chapa no está. El brocal está destapado y el agua está arriba, a un palmo del borde, perfectamente quieta. En un aljibe que no se usa desde 1919 y que tiene el fondo seco.',
+        'Te asomás. El reflejo tarda. Es una fracción de segundo, la que hay entre que movés la cabeza y que la cabeza del agua se mueve, y en esa fracción tu reflejo se queda mirando el lugar donde estabas y después te alcanza.',
+        'Y abajo, del otro lado del agua, sentado en el borde interno del brocal como quien se sienta en el cordón de una vereda, está Aurelio Requena. Vestido. Con los zapatos puestos. Con las manos ocupadas.',
+        'Podés hablarle, aunque no sepas si te escucha, o bajar en silencio, sin llamarlo.',
+      ],
+      exposicion: { amount: 5, source: 'sueno:fondo', cause: 'el fondo del brocal, visto desde arriba' },
+      pistas: [{
+        description: 'Bajó al brocal del sueño y ve a Aurelio del otro lado del agua, sin haber llegado hasta él todavía.',
+        kind: 'experiential' as const, source: 'la tercera noche', reliability: 'unknown' as const,
+      }],
+    }),
+  },
+
+  {
+    id: 'fondo-hablar',
     // PODER. No una habilidad: la característica. Lo que se pone en juego acá
     // no es saber ni notar ni convencer —eso ya se jugó en las dos noches
     // anteriores y en toda la vigilia— sino aguantar parado sabiendo lo que
     // ya sabés. Es la única tirada de la aventura que no se puede preparar
-    // invirtiendo puntos en la ficha.
+    // invirtiendo puntos en la ficha, en cualquiera de sus dos ángulos.
     prueba: () => ({
       skill: 'POW', difficulty: 'regular',
       reason: 'bajar sabiendo lo que sabés, y volver a subir',
@@ -550,25 +727,65 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_failure: 'llegar igual, y pagarlo',
     }),
     resolver: ({ tirada, estado }) => {
-      const leyoLista = pista(estado, 'una lista de nombres con una marca al lado');
       const duro = !tirada?.exito;
       return {
         texto: [
-          'La tercera vez no te dormís: te acostás al lado del catre con la mano en el tarro y esperás, y en algún momento la espera es otra cosa sin que haya habido un límite.',
-          'La plaza otra vez, y la fila otra vez, pero esta vez la fila se abre. No para dejarte pasar: se abre porque vos vas hacia el brocal y ellos no.',
-          'La chapa no está. El brocal está destapado y el agua está arriba, a un palmo del borde, perfectamente quieta. En un aljibe que no se usa desde 1919 y que tiene el fondo seco.',
-          'Te asomás. El reflejo tarda. Es una fracción de segundo, la que hay entre que movés la cabeza y que la cabeza del agua se mueve, y en esa fracción tu reflejo se queda mirando el lugar donde estabas y después te alcanza.',
-          'Y abajo, del otro lado del agua, sentado en el borde interno del brocal como quien se sienta en el cordón de una vereda, está Aurelio Requena. Vestido. Con los zapatos puestos. Con las manos ocupadas.',
           tirada?.exito
             ? 'Le hablás y esta vez sí levanta la cabeza. Tarda en enfocarte y cuando te enfoca hace un gesto raro, de vergüenza, como alguien a quien encuentran haciendo algo doméstico.\n\n—Ah —dice—. Vino. Le agradezco. —Y enseguida—: No baje.'
             : 'Le hablás y no levanta la cabeza, y el que la levanta es tu propio reflejo, que estaba mirando para otro lado y ahora te está mirando a vos con un interés que no le pusiste. Se te va el aire de una manera que no tiene que ver con el aire.',
           tirada?.exito
             ? '—Yo estoy bien acá. Está el turno hecho y no hay que discutir con nadie. Cincuenta y cuatro años preguntándome si servía, y acá abajo no hay que preguntarse nada, hay que hacerlo nomás.'
             : 'Aurelio dice algo sin levantar la cabeza. Le llegás a entender dos palabras de cada cinco y una de las dos es «anotado».',
-          leyoLista
-            ? 'Y ahí ves lo que tiene en las manos: la quinta hoja. La de la lista. La está sosteniendo abierta como se sostiene un libro de misa, y hay un renglón nuevo abajo de todo, todavía fresco, y el trazo del costado es un círculo.'
-            : 'Y tiene algo en las manos que no llegás a ver bien, y por el modo en que lo sostiene —abierto, con las dos manos, como un libro de misa— sabés que lo está leyendo y no que lo está usando.',
-          'Se puede bajar. Eso es lo peor de todo: se ve claramente que se puede bajar, que el agua da a un palmo y que hay dónde apoyar el pie, y que subir es otro asunto.',
+          ...cierreNocheTres(estado),
+        ].filter(Boolean),
+        exposicion: { amount: duro ? 12 : 9, source: 'sueno:fondo', cause: 'el fondo del brocal, y lo que hay sentado ahí' },
+        estabilidad: { amount: duro ? -9 : -6, cause: 'que se pueda bajar' },
+        cordura: {
+          amount: duro ? 6 : 4,
+          cause: 'el reflejo que te alcanza tarde, y Aurelio sentado del otro lado',
+          crisis: {
+            nombre: 'El retardo del reflejo',
+            descripcion: 'Desde entonces, cualquier superficie que refleje te obliga a comprobar. No es que creas que va a pasar: es que ya no podés pasar al lado de un vidrio sin darle a tu propia imagen el tiempo de llegar.',
+            tipo: 'phobia' as const,
+            afecta: [{ skill: 'descubrir', dados: 1 }],
+          },
+        },
+        pistas: [{
+          description: 'Lo encontró en el fondo del brocal, del otro lado del agua, sentado en el borde interno con el turno hecho y algo abierto entre las manos. Dice que está bien ahí. Se puede bajar; subir es otro asunto.',
+          kind: 'experiential' as const, source: 'la tercera noche', reliability: 'unknown' as const,
+        }],
+        consecuencia: {
+          description: 'El investigador bajó tres veces al sueño de Villa Requena usando el almagre, y la tercera vez llegó hasta el fondo del brocal.',
+          scope: 'world' as const,
+          permanent: true,
+          worldReminder: 'Sabe cómo se entra. Eso no se olvida y no hace falta el tarro dos veces.',
+        },
+      };
+    },
+  },
+
+  {
+    id: 'fondo-bajar',
+    // El ángulo alternativo: no hablarle, bajar. SIGILO —nunca usado antes en
+    // esta aventura— en vez de POD: la apuesta no es sostener la mirada, es
+    // no perturbar nada mientras te acercás. El riesgo cambia de forma, no de
+    // tamaño: fallar acá no es que te vea de lejos, es que note que llegaste
+    // sin haber dicho nada, que es peor.
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'bajar sin que la fila de arriba reaccione y sin que él se sobresalte',
+      stakes_success: 'llegar cerca sin que nada cambie todavía',
+      stakes_failure: 'que note que llegaste sin haber dicho nada',
+    }),
+    resolver: ({ tirada, estado }) => {
+      const duro = !tirada?.exito;
+      return {
+        texto: [
+          'No le decís nada. Bajás despacio, probando el pie antes de apoyarlo, como quien no quiere despertar a alguien que de todos modos no está durmiendo del todo.',
+          tirada?.exito
+            ? 'Y funciona, en el sentido en que cualquier cosa funciona acá: llegás hasta él sin que se sobresalte, sin que la fila de arriba reaccione, y desde cerca ves algo que de lejos no se veía. Tiene los ojos abiertos. Siempre los tuvo abiertos. Lo que faltaba no era que durmiera: era que alguien bajara a verlo con los ojos abiertos y no le tuviera miedo.'
+            : 'El agua se mueve antes de que llegues, un círculo que no hiciste vos, y cuando volvés a mirar Aurelio ya te está mirando a vos. No hizo ruido. Vos tampoco. Y aun así los dos saben que ya no es un secreto que estás ahí.',
+          ...cierreNocheTres(estado),
         ].filter(Boolean),
         exposicion: { amount: duro ? 12 : 9, source: 'sueno:fondo', cause: 'el fondo del brocal, y lo que hay sentado ahí' },
         estabilidad: { amount: duro ? -9 : -6, cause: 'que se pueda bajar' },

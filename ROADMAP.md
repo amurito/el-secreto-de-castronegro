@@ -683,6 +683,68 @@ aventuras. Verificado además en el navegador real.
   scroll interno) y un piso explícito en `.tab-body` (40%), para que ninguna
   de las dos se lleve puesto a la otra.
 
+**Tercera ronda: llegar al fondo te obliga a decidir, y las tres noches
+dejan de ser tres clicks con un dado detrás.**
+
+Dos pedidos tuyos, jugando la aventura después de publicada:
+
+1. La tercera noche narraba «estás en el fondo del brocal, con Aurelio
+   enfrente» y en el mismo turno seguía ofreciendo mirar el catre o irse a
+   la escuela, como si soñar no cambiara nada de lo que se puede hacer.
+2. Cada noche era un solo botón con una tirada automática detrás —«literal
+   hacer 3 clicks seguidos con tiradas automáticas muy difíciles»—, sin
+   nada que decidir salvo mirar el resultado.
+
+**El bloqueo de decisión, nuevo en el motor.** `Scenario.bloqueoDecision`
+(opcional, `contenido.schema.ts` → `cargarAventura.ts` → `acciones.ts`): con
+la condición cierta, `accionesDisponibles()` deja de ofrecer mirar, hablar,
+hacer e ir, y sólo quedan los desenlaces. Genérico, no atado a esta
+aventura —cualquier clímax futuro con el mismo problema lo declara sin
+tocar el motor—. El auditor de alcanzabilidad necesitó el mismo ajuste que
+ya tenía para la muerte en combate de El Invierno Debido: el andador
+determinista nunca elige un desenlace (eso lo audita por otro lado), así
+que el bloqueo lo deja sin nada que hacer y corta el recorrido antes de
+agotar el mapa —no es un defecto de cobertura, es la aventura negándose a
+dejar seguir explorando desde ahí, a propósito—.
+
+**Las tres noches, partidas en dos pasos cada una.** Antes: un botón, una
+tirada, un párrafo. Ahora: una escena de ENTRADA sin tirada que planta al
+jugador en el sueño y ofrece dos ángulos, y dos escenas de ACERCAMIENTO —
+cada una con su propia habilidad— que convergen en la misma pista de
+cierre. Ninguna de las dos bloquea a la otra ni cambia si se avanza: cambia
+CÓMO se avanza y qué parte de la ficha entra en juego.
+
+- **Primera noche.** Acercarse a mirar la fila (Antropología, la de
+  siempre) o quedarse quieto y buscar el propio lugar en ella (Poder,
+  nueva: ¿hay un hueco ahí que sea tuyo?).
+- **Segunda noche.** Agarrar la quinta hoja y leerla (Ocultismo, la de
+  siempre) o preguntarle quién es al que escribe antes de tocar nada
+  (Psicología, nueva: no juzga si miente, juzga qué quedó de alguien que
+  dejó de tener adónde ir).
+- **Tercera noche.** Hablarle a Aurelio aunque no se sepa si escucha (Poder,
+  la de siempre) o bajar en silencio, sin llamarlo (Sigilo, nueva —y la
+  primera vez que esta habilidad se usa en la aventura—).
+
+Sigilo, Poder-como-característica y Psicología se suman así al reparto de
+la quinta aventura sin restarle nada a las cuatro habilidades raras que ya
+tenía: los ángulos nuevos tampoco gatean nada, fallan y la noche cierra
+igual.
+
+**Un bug encontrado escribiendo esto, no jugando: comas dentro del
+patrón.** El motor normaliza minúsculas y acentos pero NO saca comas
+(`keeper/intent.ts`, `norm()`), y el patrón de «Le hablo, aunque no sé si
+me escucha» estaba escrito sin la coma que la intención sí tenía —
+`new RegExp(patron).test(i.norm)` nunca cruza esa coma—. La tercera noche
+caía en el genérico de acción ambiental («El campo. Viento en los
+álamos…») en vez de resolver la escena. Ninguna otra intención nueva tenía
+el problema porque, por casualidad, sus comas quedaban después del
+fragmento que hacía falta matchear, no en el medio.
+
+26 suites en verde, con dos secciones nuevas dentro de
+`prueba-sueno-debido.ts`: que el bloqueo apague todo menos los desenlaces,
+y que la rama alternativa de cada noche encadene exactamente igual que la
+principal. Verificado además jugando las dos ramas en el navegador real.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

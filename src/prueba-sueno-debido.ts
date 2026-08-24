@@ -92,8 +92,11 @@ const HASTA_EL_FONDO = [
   'Vuelvo a la plaza',
   'Voy a la escribanía',
   'Me duermo con el almagre en la mano',
+  'Me acerco a la fila y miro de cerca',
   'Vuelvo a dormirme con el almagre',
+  'Agarro la hoja y la leo',
   'Me duermo por última vez',
+  'Le hablo, aunque no sé si me escucha',
 ];
 
 async function main() {
@@ -136,6 +139,7 @@ async function main() {
     'Voy a la escribanía',
     ...insistir('Reviso a Aurelio', 6),
     'Me duermo con el almagre en la mano',
+    'Me acerco a la fila y miro de cerca',
     'Vuelvo a dormirme con el almagre',
   ]);
   check('sin fechar la tachadura, la segunda noche NO se ofrece',
@@ -270,6 +274,40 @@ async function main() {
     enEscuela.narrado.slice(-200));
   check('y no aparece el texto de paciencia agotada mal atribuido',
     !enEscuela.narrado.includes('contesta lo justo'), enEscuela.narrado.slice(-200));
+
+  // ── 9. LOS DOS ÁNGULOS DE CADA NOCHE LLEGAN AL MISMO LUGAR ───────────────
+  //
+  // Ninguna de las dos ramas de una noche puede ser la única «de verdad»: si
+  // lo fuera, la elección sería falsa. Se juega la rama ALTERNATIVA de las
+  // tres noches —buscar el propio lugar en la fila (POD), preguntarle quién
+  // es al joven (Psicología) y bajar en silencio (Sigilo, nunca usada antes
+  // en esta aventura)— y tiene que encadenar y llegar a un desenlace igual
+  // que la rama principal.
+  console.log('\n9. LA RAMA ALTERNATIVA DE CADA NOCHE ENCADENA IGUAL QUE LA PRINCIPAL');
+
+  const otroAngulo = await jugar('OTRO-ANGULO', 'h', [
+    ...HASTA_EL_FONDO.slice(0, -6), // hasta justo antes de la primera noche
+    'Me duermo con el almagre en la mano',
+    'Busco mi propio lugar en la fila',
+    'Vuelvo a dormirme con el almagre',
+    'Le pregunto quién es, antes de tocar nada',
+    'Me duermo por última vez',
+    'Bajo sin decir nada',
+  ]);
+  const pedidasAlt = new Set(otroAngulo.estado.rolls.map((r) => r.commitment.skill));
+  check('la primera noche, por este ángulo, tira POD y no Antropología',
+    pedidasAlt.has('POW'), [...pedidasAlt].join(', '));
+  check('la segunda noche, por este ángulo, tira Psicología y no Ocultismo',
+    pedidasAlt.has('psicologia'), [...pedidasAlt].join(', '));
+  check('la tercera noche, por este ángulo, tira Sigilo y no POD para bajar',
+    pedidasAlt.has('sigilo'), [...pedidasAlt].join(', '));
+  check('igual llega a la ronda del brocal', pista(otroAngulo.estado, 'la ronda del brocal'));
+  check('igual llega a la quinta hoja', pista(otroAngulo.estado, 'una quinta hoja'));
+  check('igual llega al fondo', pista(otroAngulo.estado, 'encontró en el fondo'));
+  const bAlt = botones(otroAngulo.estado);
+  check('y el bloqueo de decisión se activa igual, por cualquiera de las dos ramas',
+    bAlt.every((id) => ['fin-sacarlo', 'fin-ofrecer', 'fin-tren'].includes(id)) && bAlt.length > 0,
+    bAlt.join(', '));
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

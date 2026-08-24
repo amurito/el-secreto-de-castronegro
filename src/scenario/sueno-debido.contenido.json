@@ -1306,6 +1306,22 @@
       }
     },
     {
+      "id": "ronda-mirar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "me acerco a la fila|miro de cerca la fila|miro la fila"
+      }
+    },
+    {
+      "id": "ronda-buscar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "busco mi propio lugar en la fila|mi lugar en la fila"
+      }
+    },
+    {
       "id": "dormir-dos",
       "prioridad": 70,
       "cuando": {
@@ -1314,11 +1330,43 @@
       }
     },
     {
+      "id": "hoja-agarrar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "agarro la hoja|leo la hoja|estiro la mano y leo"
+      }
+    },
+    {
+      "id": "hoja-preguntar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "le pregunto quien es|quien es el que escribe"
+      }
+    },
+    {
       "id": "dormir-tres",
       "prioridad": 70,
       "cuando": {
         "op": "texto",
         "patron": "me duermo por ultima vez|paso la tercera noche"
+      }
+    },
+    {
+      "id": "fondo-hablar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "aunque no se si me escucha|hablarle aunque no"
+      }
+    },
+    {
+      "id": "fondo-bajar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "bajo sin decir nada|bajar en silencio"
       }
     },
     {
@@ -1464,6 +1512,38 @@
       },
       "hecha": {
         "op": "pista",
+        "contiene": "sin haberse acercado todavía"
+      }
+    },
+    {
+      "id": "ronda-mirar",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 30.1,
+      "intencion": "Me acerco a la fila y miro de cerca",
+      "etiqueta": "Acercarte a la fila y mirar de cerca",
+      "visible": {
+        "op": "pista",
+        "contiene": "sin haberse acercado todavía"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "la ronda del brocal"
+      }
+    },
+    {
+      "id": "ronda-buscar",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 30.2,
+      "intencion": "Busco mi propio lugar en la fila",
+      "etiqueta": "Quedarte quieto y buscar tu propio lugar en la fila",
+      "visible": {
+        "op": "pista",
+        "contiene": "sin haberse acercado todavía"
+      },
+      "hecha": {
+        "op": "pista",
         "contiene": "la ronda del brocal"
       }
     },
@@ -1489,6 +1569,38 @@
       },
       "hecha": {
         "op": "pista",
+        "contiene": "sin haber tocado la hoja todavía"
+      }
+    },
+    {
+      "id": "hoja-agarrar",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 31.1,
+      "intencion": "Agarro la hoja y la leo",
+      "etiqueta": "Estirar la mano y leer la hoja",
+      "visible": {
+        "op": "pista",
+        "contiene": "sin haber tocado la hoja todavía"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "una quinta hoja"
+      }
+    },
+    {
+      "id": "hoja-preguntar",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 31.2,
+      "intencion": "Le pregunto quién es, antes de tocar nada",
+      "etiqueta": "Preguntarle quién es, antes de tocar nada",
+      "visible": {
+        "op": "pista",
+        "contiene": "sin haber tocado la hoja todavía"
+      },
+      "hecha": {
+        "op": "pista",
         "contiene": "una quinta hoja"
       }
     },
@@ -1502,6 +1614,38 @@
       "visible": {
         "op": "pista",
         "contiene": "una quinta hoja"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "sin haber llegado hasta él"
+      }
+    },
+    {
+      "id": "fondo-hablar",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 32.1,
+      "intencion": "Le hablo, aunque no sé si me escucha",
+      "etiqueta": "Hablarle, aunque no sepas si te escucha",
+      "visible": {
+        "op": "pista",
+        "contiene": "sin haber llegado hasta él"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "encontró en el fondo"
+      }
+    },
+    {
+      "id": "fondo-bajar",
+      "grupo": "usar",
+      "lugar": "escribania",
+      "orden": 32.2,
+      "intencion": "Bajo sin decir nada",
+      "etiqueta": "Bajar en silencio, sin llamarlo",
+      "visible": {
+        "op": "pista",
+        "contiene": "sin haber llegado hasta él"
       },
       "hecha": {
         "op": "pista",
