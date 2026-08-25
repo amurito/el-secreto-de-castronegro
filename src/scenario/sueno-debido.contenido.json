@@ -1449,7 +1449,7 @@
       "etiqueta": "Revisarlo como se revisa a un enfermo",
       "hecha": {
         "op": "pista",
-        "contiene": "no está enfermo de nada que se pueda diagnosticar"
+        "contiene": "Revisó a Aurelio de cerca"
       }
     },
     {
@@ -1556,8 +1556,17 @@
       "intencion": "Me duermo con el almagre en la mano",
       "etiqueta": "Quedarse a dormir ahí, con la mano en el almagre",
       "visible": {
-        "op": "pista",
-        "contiene": "Revisó a Aurelio de cerca"
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "Revisó a Aurelio de cerca"
+          },
+          {
+            "op": "pista",
+            "contiene": "no está enfermo de nada que se pueda diagnosticar"
+          }
+        ]
       },
       "hecha": {
         "op": "pista",

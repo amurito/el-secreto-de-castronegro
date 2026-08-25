@@ -285,6 +285,26 @@ async function main() {
   check('y aun así deja la pista que hace falta para seguir investigando',
     pista(fallaTachadura.estado, 'Vio de cerca los tres renglones tachados'), '');
 
+  // Y el camino del jugador que mira el DETALLE del catre en vez de usar la
+  // acción: mirar «el catre de cerca» deja una pista con casi el mismo texto
+  // que la de la acción, y durante tres reportes seguidos eso marcó
+  // «Revisarlo como se revisa a un enfermo» como ya hecha sin haberla
+  // ejecutado nunca —el botón desaparecía— y sin dejar el marcador que abre
+  // la primera noche. Callejón sin salida. Ahora cualquiera de los dos
+  // caminos abre la noche.
+  const porElDetalle = await jugar('POR-EL-DETALLE', 'a', [
+    'Voy a la escribanía',
+    // Se insiste porque el detalle también pide Primeros Auxilios y con esta
+    // semilla falla la primera vez: lo que se prueba acá no es la tirada, es
+    // que llegar por el detalle no cierre la puerta de la noche.
+    ...insistir('Examino catre de cerca', 6),
+  ]);
+  const bDetalle = botones(porElDetalle.estado);
+  check('mirar el catre de cerca no hace desaparecer «Revisarlo»',
+    bDetalle.includes('revisar-aurelio'), bDetalle.join(', '));
+  check('y llegando por ese camino la primera noche igual se ofrece',
+    bDetalle.includes('noche-uno'), bDetalle.join(', '));
+
   // ── 8. EL CLASIFICADOR RESUELVE AL NPC CORRECTO, NO AL PRIMER NOMBRE QUE APARECE ─
   //
   // Bug real, reportado jugando: «Le pregunto a Delfina qué le pasa a

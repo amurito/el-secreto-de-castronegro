@@ -235,6 +235,40 @@ async function auditar(esc: Scenario) {
   check('todas las pistas declaradas las entrega alguien', pistasHuerfanas.length === 0,
     `${declarado.pistas.length} pistas`);
 
+  // Mirar un DETALLE del lugar no puede dar por hecha una ACCIÓN.
+  //
+  // Bug real, reportado jugando tres veces seguidas antes de encontrarlo: el
+  // detalle `f-catre` de El Sueño Debido dejaba una pista cuyo texto contenía
+  // el fragmento que la acción «Revisarlo como se revisa a un enfermo» usaba
+  // como `hecha`. Mirar el catre marcaba la acción como ya hecha —el botón
+  // desaparecía— sin ejecutar nunca su escena, y por lo tanto sin dejar el
+  // marcador que destrababa la primera noche. Callejón sin salida, invisible
+  // desde el contenido: las dos piezas son correctas por separado.
+  //
+  // Un gate `visible` satisfecho por un detalle está BIEN —es un desbloqueo,
+  // y La Legua lo usa a propósito—. El que no puede pasar es `hecha`.
+  const pistasDeDetalle = Object.values(esc.locations).flatMap((l) =>
+    (l.features ?? []).filter((f) => f.clue).map((f) => ({
+      donde: `${l.id}/${f.id}`, texto: f.clue!.description,
+    })));
+  const soloDetalles: GameState = {
+    ...base,
+    board: {
+      ...base.board,
+      clues: pistasDeDetalle.map((p, n) => ({
+        id: `detalle-${n}`, description: p.texto, kind: 'physical' as const,
+        discoveredBy: base.activeInvestigator, discoveredAt: 'auditoría', source: 'auditoría',
+        reliability: 'reliable' as const, reliabilityKnown: false, disclosure: 'PUBLIC' as const,
+      })),
+    },
+  };
+  const hechasPorDetalle = esc.actions.filter((a) => a.hecha?.(soloDetalles));
+  for (const a of hechasPorDetalle) {
+    console.log(`   ✗ «${a.id}»: mirar un detalle del lugar la da por hecha sin haberla ejecutado`);
+  }
+  check('ningún detalle del lugar da por hecha una acción que nunca corrió',
+    hechasPorDetalle.length === 0, `${esc.actions.length} acciones`);
+
   // ── 3. Recorrido real ────────────────────────────────────────────────────
   console.log('\nEL RECORRIDO REAL');
   const { state: final, murio, atrapado } = await recorrerAFondo(esc, 'j');

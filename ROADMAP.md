@@ -860,6 +860,37 @@ TODO antes de dormir —Delfina, Ramona, el libro, las tachaduras— y
 verifica que aun así la tercera noche no se ofrece, y que sí sabe lo de
 Benicio (o sea: no le falta información, le falta la vigilia).
 
+**Octava ronda: mirar un detalle daba por hecha una acción que nunca corrió.**
+Éste es el que costó tres reportes seguidos encontrar, y la razón por la que
+costó tanto es que las dos piezas eran correctas por separado.
+
+En la escribanía hay un detalle, `f-catre`, que se mira con Primeros
+Auxilios y deja una pista: «Aurelio no está enfermo de nada que se pueda
+diagnosticar…». Y hay una acción, «Revisarlo como se revisa a un enfermo»,
+que usaba ese mismo fragmento como su condición `hecha`. Mirar el catre
+—cosa que hace cualquiera, es el primer botón de la lista— marcaba la
+acción como ya realizada, el botón desaparecía, y la escena nunca se
+ejecutaba. Y como el marcador que abre la primera noche («Revisó a Aurelio
+de cerca») sólo lo deja esa escena, la aventura quedaba trabada ahí, sin
+ningún síntoma visible: ni error, ni botón roto, sólo una opción que no
+aparecía nunca. Reportado tres veces —incluso después de borrar todo,
+Ctrl+F5 y empezar de cero, que es exactamente lo que hacía falta para
+descartar caché y partidas viejas.
+
+Arreglado por los dos lados: `revisar-aurelio.hecha` ahora busca su propio
+marcador (que sólo produce su escena), y `noche-uno.visible` acepta
+CUALQUIERA de los dos caminos —la acción o el detalle—, porque quien miró
+el catre de cerca averiguó lo mismo y no tiene por qué quedar afuera.
+
+**Y una prueba nueva en la auditoría, porque esto es una familia, no un
+caso.** Para cada aventura se arma un estado con SÓLO las pistas de los
+detalles del lugar y se comprueba que ninguna acción se dé por `hecha` con
+eso. Un gate `visible` satisfecho por un detalle está bien —es un
+desbloqueo legítimo, y La Legua lo usa a propósito en dos lugares—; el que
+no puede pasar es `hecha`, porque marca como hecho algo que no ocurrió.
+Verificada revirtiendo el arreglo a mano: la prueba lo detecta. Las cinco
+aventuras pasan.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
