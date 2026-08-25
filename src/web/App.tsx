@@ -39,6 +39,30 @@ async function elegirApi(): Promise<GameApi> {
   return createLocalApi();
 }
 
+/**
+ * Alto de «el mundo recuerda» + «usted lo nota» en el panel derecho, como %
+ * del alto disponible. Reportado jugando: con muchas pistas acumuladas, el
+ * tope fijo (antes 38%) dejaba a veces esas dos secciones apretadas o al
+ * tablero de pistas apretado; se vuelve arrastrable para que cada jugador lo
+ * deje donde le sirve, y la elección se recuerda entre partidas.
+ */
+const CLAVE_ALTO_PIE = 'castronegro:alto-pie';
+const ALTO_PIE_MIN = 10;
+const ALTO_PIE_MAX = 70;
+const ALTO_PIE_DEFECTO = 38;
+
+function leerPreferenciaAltoPie(): number {
+  try {
+    const v = Number(localStorage.getItem(CLAVE_ALTO_PIE));
+    if (Number.isFinite(v) && v >= ALTO_PIE_MIN && v <= ALTO_PIE_MAX) return v;
+  } catch { /* sin storage, se usa el valor por defecto */ }
+  return ALTO_PIE_DEFECTO;
+}
+
+function guardarPreferenciaAltoPie(pct: number): void {
+  try { localStorage.setItem(CLAVE_ALTO_PIE, String(Math.round(pct))); } catch { /* sin storage, se juega igual */ }
+}
+
 /** Qué opciones vio el jugador y cuáles todavía no tocó. Ver `aplicarOpciones`. */
 interface Marcas { vistas: Set<string>; pendientes: Set<string> }
 
@@ -118,6 +142,10 @@ export function App() {
   const [panel, setPanel] = useState<'historia' | 'ficha' | 'tablero'>('historia');
   /** Animar los dados al tirar. Preferencia del jugador, no de la partida. */
   const [animarDados, setAnimarDados] = useState(leerPreferenciaDados);
+  /** Alto de «el mundo recuerda» + «usted lo nota», en % del panel derecho. Arrastrable. */
+  const [altoPie, setAltoPie] = useState(leerPreferenciaAltoPie);
+  const colRightRef = useRef<HTMLDivElement>(null);
+  const arrastrandoPie = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -263,6 +291,28 @@ export function App() {
     } finally {
       setBusy(false);
     }
+  }
+
+  /** Arrastre del divisor entre el tablero y «el mundo recuerda» / «usted lo nota». */
+  function empezarArrastrePie(e: React.MouseEvent) {
+    e.preventDefault();
+    arrastrandoPie.current = true;
+    const contenedor = colRightRef.current;
+    function mover(ev: MouseEvent) {
+      if (!arrastrandoPie.current || !contenedor) return;
+      const rect = contenedor.getBoundingClientRect();
+      const desdeAbajo = rect.bottom - ev.clientY;
+      const pct = (desdeAbajo / rect.height) * 100;
+      setAltoPie(Math.min(ALTO_PIE_MAX, Math.max(ALTO_PIE_MIN, pct)));
+    }
+    function soltar() {
+      arrastrandoPie.current = false;
+      window.removeEventListener('mousemove', mover);
+      window.removeEventListener('mouseup', soltar);
+      setAltoPie((actual) => { guardarPreferenciaAltoPie(actual); return actual; });
+    }
+    window.addEventListener('mousemove', mover);
+    window.addEventListener('mouseup', soltar);
   }
 
   async function send(text: string, idOpcion?: string) {
@@ -584,7 +634,7 @@ export function App() {
         )}
       </main>
 
-      <aside className="col col-right">
+      <aside className="col col-right" ref={colRightRef}>
         <div className="tabs">
           {(['tablero', 'inventario', 'documentos', 'tiradas'] as Tab[]).map((t) => (
             <button key={t} className={`tab ${tab === t ? 'tab-on' : ''}`} onClick={() => setTab(t)}>{t}</button>
@@ -627,7 +677,13 @@ export function App() {
             Reportado jugando: con cinco consecuencias y un párrafo de nota,
             el tablero quedaba más chico que las dos secciones fijas juntas. */}
         {((state?.consequences?.length ?? 0) > 0 || (inv?.playerKnowledge?.length ?? 0) > 0) && (
-          <div className="col-right-pie">
+          <>
+            <div
+              className="resizer-pie"
+              onMouseDown={empezarArrastrePie}
+              title="Arrastrar para cambiar el alto de esta sección"
+            />
+            <div className="col-right-pie" style={{ height: `${altoPie}%` }}>
             {state?.consequences?.length > 0 && (
               <div className="consequences">
                 <div className="cons-title">El mundo recuerda</div>
@@ -647,7 +703,8 @@ export function App() {
                 ))}
               </div>
             )}
-          </div>
+            </div>
+          </>
         )}
       </aside>
 

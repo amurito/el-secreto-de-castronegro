@@ -1668,7 +1668,7 @@
       "lugar": "escribania",
       "orden": 32,
       "intencion": "Me duermo por última vez",
-      "etiqueta": "Bajar a buscarlo",
+      "etiqueta": "Dormirse otra vez, esta vez a bajar a buscarlo",
       "visible": {
         "op": "pista",
         "contiene": "es la misma cara"

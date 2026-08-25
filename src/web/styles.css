@@ -680,14 +680,24 @@ button { font-family: inherit; cursor: pointer; }
    consecuencias. */
 .tab-body { flex: 1 1 auto; min-height: 40%; overflow-y: auto; padding: 1rem; }
 
-/* Envoltura de «el mundo recuerda» + «usted lo nota»: altura tope y scroll
-   propio, para que no le saquen espacio al tablero de arriba sin límite. */
+/* Envoltura de «el mundo recuerda» + «usted lo nota»: alto arrastrable (ver
+   `altoPie` en App.tsx) con scroll propio, para que no le saquen espacio al
+   tablero de arriba sin límite. El alto real lo fija el `style` inline; acá
+   sólo el mínimo, para que no desaparezca del todo si lo arrastran a cero. */
 .col-right-pie {
-  flex: 0 1 auto; max-height: 38%; overflow-y: auto;
+  flex: 0 0 auto; min-height: 1.8rem; overflow-y: auto;
   border-top: 1px solid var(--line);
 }
 .col-right-pie .consequences, .col-right-pie .aparte { border-top: none; }
 .col-right-pie .aparte { border-top: 1px dashed var(--exposure); }
+
+/* Divisor arrastrable entre el tablero y el pie. Barra angosta, se agranda
+   al pasar el mouse para que sea fácil de agarrar sin ocupar espacio fijo. */
+.resizer-pie {
+  flex: 0 0 auto; height: 5px; margin: -2px 0; cursor: row-resize;
+  background: transparent; position: relative; z-index: 1;
+}
+.resizer-pie:hover, .resizer-pie:active { background: var(--accent-dim); }
 .empty { color: var(--text-faint); font-size: 0.85rem; font-style: italic; padding: 1rem 0; }
 
 .group { margin-bottom: 1.4rem; }

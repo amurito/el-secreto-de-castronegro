@@ -891,6 +891,42 @@ no puede pasar es `hecha`, porque marca como hecho algo que no ocurrió.
 Verificada revirtiendo el arreglo a mano: la prueba lo detecta. Las cinco
 aventuras pasan.
 
+**Novena ronda: terminada la aventura, dos pulidos de después de jugarla
+entera.** Con las ocho rondas anteriores resueltas, la campaña se completó
+de punta a punta —28 pistas, desenlace «Lo que se despierta»— y lo que
+quedó fue pulido de UX, no bugs de progreso.
+
+Primero, la etiqueta de la tercera noche. Las otras dos entradas al sueño
+dicen «Quedarse a dormir…» y «Volver a pasar la noche ahí»: ambas nombran
+el dormir. La tercera decía sólo «Bajar a buscarlo», que describe lo que
+pasa DENTRO del sueño pero no avisa que hay que dormirse para llegar ahí.
+Renombrada a «Dormirse otra vez, esta vez a bajar a buscarlo», consistente
+con las otras dos.
+
+De paso, qué cambia acertar las tiradas dentro de las tres noches: en las
+dos primeras, nada que bloquee —la pista de cierre sale falle o acierte
+(ver Sexta ronda)— y lo que cambia es CUÁNTO se entiende: en la primera,
+si la ronda del brocal se lee como una guardia con turnos o queda como una
+fila sin sentido; en la segunda, si la quinta hoja se lee como una lista de
+nombres con marcas agrupadas o se queda en «no hay manera de decir qué es»
+(y eso además cambia el texto del desenlace). En la tercera sí hay una
+diferencia real, no sólo de texto: fallar la tirada de POD o Sigilo frente
+a Aurelio duplica el costo —Exposición, Estabilidad y Cordura— aunque el
+jugador baja igual y llega igual al desenlace. Es la única tirada de la
+aventura que castiga la falla en fichas, no en prosa, y a propósito: es la
+única que no se puede preparar invirtiendo puntos en la ficha de antemano.
+
+Segundo, el panel derecho. Con veintiséis pistas o más, el reparto fijo
+entre el tablero y «el mundo recuerda»/«usted lo nota» (38% de tope,
+puesto en la Séptima ronda del sistema) dejaba a veces esa sección
+invisible igual, sólo que ahora por el motivo contrario: apretada contra
+el mínimo en vez de comerse todo. Un porcentaje fijo no le sirve a todas
+las partidas por igual. Se cambió por un divisor arrastrable
+(`.resizer-pie` en `App.tsx`): el jugador elige el alto con el mouse entre
+un 10% y un 70% del panel, y la elección se guarda en `localStorage`
+(`castronegro:alto-pie`) igual que la preferencia de animar los dados, así
+que no hay que volver a ajustarlo en cada partida.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
