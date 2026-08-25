@@ -73,6 +73,31 @@ const desenlacePrevio = (s: GameState): DesenlacePrevio => {
 const peleoConCirilo = (s: GameState) => consecuencia(s, 'le fue encima a Cirilo Sosa');
 
 /**
+ * ECOS DE OTRAS AVENTURAS DE LA CAMPAÑA.
+ *
+ * `sembrarHerencia` (engine.ts) reenvía, de una aventura a la siguiente,
+ * toda consecuencia permanente de alcance campaña o mundo — y como cada
+ * aventura vuelve a reenviar lo que heredó, una consecuencia de la PRIMERA
+ * aventura de la campaña puede seguir viva acá, cuatro aventuras después,
+ * sin que nadie tenga que copiarla a mano en cada paso. Estos son ecos
+ * concretos de eso: no hacen falta para entender la aventura ni para
+ * terminarla, son reconocimiento.
+ */
+
+/** Agua Quieta: sostuvo la mirada al aljibe de Los Álamos hasta que respondió, o bajó dentro de él. */
+const enfrentoElAljibeAntes = (s: GameState) =>
+  consecuencia(s, 'sostuvo la mirada hasta que el fenómeno del aljibe respondió')
+  || consecuencia(s, 'bajó al aljibe de Los Álamos');
+
+/** Agua Quieta: lo tapó en vez de volver a mirarlo. */
+const selloElAljibeAntes = (s: GameState) => consecuencia(s, 'aljibe de Los Álamos quedó sellado');
+
+/** La Firma Ajena: tuvo que decidir, con lo que tenía, si un papel decía la verdad sobre quién era alguien. */
+const juzgoUnaIdentidadAntes = (s: GameState) =>
+  consecuencia(s, 'avaló la identidad de Alejo Ferreyra')
+  || consecuencia(s, 'desmintió la identidad del hombre que dice ser Alejo Ferreyra');
+
+/**
  * Los cierres compartidos de cada noche.
  *
  * Las dos escenas de acercamiento de una misma noche difieren en ángulo y en
@@ -656,16 +681,32 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     // Los dos dados de bonificación son el pago del trabajo de vigilia: haber
     // mirado el polvo del tarro contra la luz, y haber visto qué clase de
     // borroso hay en la foto de 1880. El motor los capea en dos (CoC 7e).
+    //
+    // Un tercer origen posible, de otra aventura: en La Firma Ajena hubo que
+    // decidir si un papel decía la verdad sobre quién era alguien. Es la
+    // misma pregunta que hace la quinta hoja, y ese ojo no se desentrena
+    // entre aventuras. Con los dos de vigilia ya puestos, este tercero no
+    // suma nada mecánico —el tope sigue en dos— pero le da a alguien que no
+    // hizo el trabajo de vigilia una razón distinta para llegar igual.
     prueba: (s) => {
-      const bonus = ((s.items['it-almagre']?.discoveredProperties.length ?? 0) > 0 ? 1 : 0)
-        + ((s.items['it-foto']?.discoveredProperties.length ?? 0) > 0 ? 1 : 0);
+      const razones: string[] = [];
+      let bonus = 0;
+      if ((s.items['it-almagre']?.discoveredProperties.length ?? 0) > 0) {
+        bonus += 1; razones.push('venís de mirar de cerca lo que nadie mira de cerca');
+      }
+      if ((s.items['it-foto']?.discoveredProperties.length ?? 0) > 0) {
+        bonus += 1; razones.push('ya viste qué clase de borroso hay en la foto');
+      }
+      if (juzgoUnaIdentidadAntes(s)) {
+        bonus += 1; razones.push('ya tuviste que decidir, una vez, si un papel decía la verdad sobre quién era alguien');
+      }
       return {
         skill: 'ocultismo', difficulty: 'regular',
         reason: 'reconocer si lo que hay escrito en la quinta hoja es una lista, una fórmula o un dibujo',
         stakes_success: 'saber qué clase de cosa estás leyendo',
         stakes_failure: 'una hoja más, y no poder decir de qué',
         ...(bonus > 0
-          ? { bonus_dice: bonus, modifier_reason: 'venís de mirar de cerca lo que nadie mira de cerca' }
+          ? { bonus_dice: bonus, modifier_reason: razones.join('; ') }
           : {}),
       };
     },
@@ -677,6 +718,9 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           : 'Está escrita de arriba abajo y no podés decir qué es. Las letras son letras. Las palabras podrían ser palabras. Lo mirás el tiempo suficiente como para saber que mirarlo más no va a servir de nada.',
         tirada?.exito
           ? 'Y las marcas del costado no son todas iguales. La mayoría es un trazo simple. Unas pocas son un trazo cerrado sobre sí mismo, un círculo, y ésas están agrupadas: no salteadas, agrupadas, como si en ciertos años hubiera pasado algo distinto varias veces seguidas.'
+          : '',
+        tirada?.exito && juzgoUnaIdentidadAntes(estado)
+          ? 'Y algo en el modo en que se agrupan esas marcas te resulta conocido de una manera que no tiene nada que ver con el sueño: ya tuviste que mirar así de cerca un papel, una vez, para decidir si decía la verdad sobre quién era alguien.'
           : '',
         tirada?.grado === 'extreme' || tirada?.grado === 'critical'
           ? 'Y muy abajo, tan abajo que llegar ahí te lleva un tiempo que no tenés, hay tres renglones seguidos con el círculo al lado, y uno de los tres es un apellido que conocés. Los otros dos no. Todavía no.'
@@ -763,12 +807,17 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'dormir-tres',
-    resolver: () => ({
+    resolver: ({ estado }) => ({
       texto: [
         'La tercera vez no te dormís: te acostás al lado del catre con la mano en el tarro y esperás, y en algún momento la espera es otra cosa sin que haya habido un límite.',
         'La plaza otra vez, y la fila otra vez, pero esta vez la fila se abre. No para dejarte pasar: se abre porque vos vas hacia el brocal y ellos no.',
         'La chapa no está. El brocal está destapado y el agua está arriba, a un palmo del borde, perfectamente quieta. En un aljibe que no se usa desde 1919 y que tiene el fondo seco.',
-        'Te asomás. El reflejo tarda. Es una fracción de segundo, la que hay entre que movés la cabeza y que la cabeza del agua se mueve, y en esa fracción tu reflejo se queda mirando el lugar donde estabas y después te alcanza.',
+        'Te asomás. El reflejo tarda. Es una fracción de segundo, la que hay entre que movés la cabeza y que la cabeza del agua se mueve, y en esa fracción tu reflejo se queda mirando el lugar donde estabas y después te alcanza.'
+          + (enfrentoElAljibeAntes(estado)
+            ? ' No es la primera vez que le conocés esa fracción a un agua quieta: la de Los Álamos tardaba lo mismo en devolverte el gesto. Esta vez, al menos, sabés qué es lo que tarda.'
+            : selloElAljibeAntes(estado)
+              ? ' Tapaste un aljibe una vez para no tener que volver a mirar esa agua. Este no tiene tapa que le puedas poner.'
+              : ''),
         'Y abajo, del otro lado del agua, sentado en el borde interno del brocal como quien se sienta en el cordón de una vereda, está Aurelio Requena. Vestido. Con los zapatos puestos. Con las manos ocupadas.',
         'Podés hablarle, aunque no sepas si te escucha, o bajar en silencio, sin llamarlo.',
       ],

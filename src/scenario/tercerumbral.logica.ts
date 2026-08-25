@@ -17,6 +17,18 @@ const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.descri
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
+const consecuencia = (s: GameState, frag: string) => s.consequences.some((c) => c.description.includes(frag));
+
+/**
+ * La Legua Perdida: una vez, con el papel en la mano, eligió que un problema
+ * de registro dejara de existir en vez de resolverlo — firmando un lugar que
+ * sabía falso, o quemando la mensura que no cerraba la cuenta. Distinta
+ * aventura, mismo instinto: sabe cómo se ve, desde adentro, un papel que
+ * dice lo que hace falta que diga en vez de lo que pasó.
+ */
+const dobloUnPapelAntes = (s: GameState) =>
+  consecuencia(s, 'certificado de defunción de Fermín Arce con causa')
+  || consecuencia(s, 'mensura de 1903 de La Perseverancia dejó de existir');
 
 export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
   // ══ INVESTIGACIÓN ═══════════════════════════════════════════════════════════
@@ -109,6 +121,9 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
       reason: 'seguir el orden del registro parroquial hasta 1895',
       stakes_success: 'encontrás la partida de Alejo',
       stakes_failure: 'bautismos y defunciones de otras familias',
+      ...(dobloUnPapelAntes(s)
+        ? { bonus_dice: 1, modifier_reason: 'ya sabe cómo se ve, desde adentro, un registro al que le falta o le sobra algo' }
+        : {}),
     }),
     resolver: ({ estado, tirada, variante }) => {
       if (estado.documents['doc-partida']?.obtainedAt) {
@@ -140,6 +155,13 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
           exposicion: { amount: 3, source: 'partida:margen', cause: 'una nota al margen que confirma un detalle nadie fue a buscar' },
           // Tercera y última de las marcas sembradas, y la única donde el
           // nombre aparece completo. Ver la nota en `aguaquieta.logica.ts`.
+          ...(dobloUnPapelAntes(estado) ? {
+            jugadorNota: {
+              statement: 'Una nota al margen, sin fecha, escrita por otra mano: exactamente la clase de corrección discreta que su investigador ya hizo una vez, en otro registro, por otro motivo. Su investigador no parece notar el parecido.',
+              source: 'la partida de Alejo, folio de marzo de 1895',
+              reliability: 'unknown' as const,
+            },
+          } : {}),
           consecuencia: {
             description: 'Encontró la hoja del Círculo Rojo suelta en el registro parroquial de Los Cardales.',
             scope: 'world',

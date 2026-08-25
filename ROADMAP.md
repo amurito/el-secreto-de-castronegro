@@ -927,6 +927,69 @@ un 10% y un 70% del panel, y la elección se guarda en `localStorage`
 (`castronegro:alto-pie`) igual que la preferencia de animar los dados, así
 que no hay que volver a ajustarlo en cada partida.
 
+### 3.2-septies Ecos entre aventuras — EN CURSO (primeros tres)
+
+La idea, tal como la trajo el jugador: que un final de una aventura deje
+algo reconocible en otra que no es necesariamente la siguiente —al estilo
+de la transición de estadio en *Spore*, donde lo que hiciste en una etapa
+vuelve como algo concreto en la próxima—, para que cada partida de la
+campaña se sienta distinta según lo que pasó antes, no sólo en la aventura
+inmediatamente anterior.
+
+**El motor ya tenía casi toda la pieza construida.** `sembrarHerencia`
+(`engine.ts`) reenvía a la aventura siguiente toda consecuencia permanente
+de alcance `campaign` o `world` de la aventura anterior, y como cada
+aventura vuelve a reenviar lo que heredó, una consecuencia de la PRIMERA
+aventura de la campaña sigue viva cuatro aventuras después sin que nadie
+la copie a mano en cada paso — encadena sola, no hace falta un registro
+nuevo. Y ya existía el operador `{op:'consecuencia', contiene:'...'}` para
+que cualquier escena pregunte «¿pasó tal cosa antes?». Lo que faltaba no
+era sistema: era contenido, escrito con esa pregunta en la cabeza.
+
+**Regla de diseño para cada gancho:** narrativo primero, mecánico chico
+después —nunca un stat permanente que reescriba el balance ya calibrado de
+la aventura destino—, y sólo donde el roce temático es real, no en todos
+los pares posibles. Y una regla que casi se pisa: `fondo-hablar`/
+`fondo-bajar`, en El Sueño Debido, están comentadas a propósito como «la
+única tirada que no se puede preparar invirtiendo puntos en la ficha, en
+cualquiera de sus dos ángulos» — ahí el gancho de *Agua Quieta* se quedó
+en narrativo puro, sin `bonus_dice`, precisamente para no romper esa
+invariante.
+
+- **Agua Quieta → El Sueño Debido** (`suenodebido.logica.ts`,
+  `dormir-tres`). El brocal de Los Álamos y el brocal del sueño en Villa
+  Requena son la misma clase de imagen —agua quieta, un reflejo que tarda—,
+  así que si el investigador sostuvo la mirada o bajó al aljibe en *Agua
+  Quieta*, la primera vez que el reflejo tarda en el sueño lo reconoce.
+  Si en cambio lo selló, la línea es irónica en vez de tranquilizadora.
+  Puramente narrativo, sin mecánica.
+
+- **La Legua Perdida → La Firma Ajena** (`tercerumbral.logica.ts`,
+  `buscar-partida`). Firmar un certificado con un lugar que se sabe falso,
+  o quemar una mensura para que un problema deje de existir en el papel,
+  deja el mismo instinto: saber cómo se ve, desde adentro, un registro al
+  que le falta o le sobra algo. Un dado de bonificación en Uso de
+  Bibliotecas al buscar la partida de Alejo, y una nota de jugador —sólo
+  para quien lee, el investigador no nota el parecido— cuando aparece la
+  corrección al margen.
+
+- **La Firma Ajena → El Sueño Debido** (`suenodebido.logica.ts`,
+  `hoja-agarrar`). Avalar o desmentir la identidad de Alejo Ferreyra es la
+  misma pregunta que hace la quinta hoja del sueño: ¿este papel dice la
+  verdad sobre quién es esta persona? Un dado de bonificación en Ocultismo
+  —sumado a los dos que ya daba el trabajo de vigilia, aunque el tope del
+  motor sigue en dos— y una línea de reconocimiento en el texto de éxito.
+
+Verificado llamando `prueba`/`resolver` de las tres escenas directamente
+con un `GameState` mínimo que sólo trae la consecuencia en cuestión —sin
+jugar las cinco aventuras enteras para probar tres condicionales—, y
+confirmando además que CADA gancho apaga cuando la consecuencia no está.
+
+**Quedan pendientes** los otros gancho que se sugirieron y no se
+descartaron: el rumor de fondo de *Agua Quieta* (fin-quedarse) en
+cualquier aventura posterior, y cualquier otro que surja jugando. La lista
+crece con la campaña, no de una sentada.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
