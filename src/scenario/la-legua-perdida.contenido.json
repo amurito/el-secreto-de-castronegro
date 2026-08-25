@@ -1326,6 +1326,47 @@
       }
     },
     {
+      "id": "c-otro-lado",
+      "npc": "npc-casimiro",
+      "orden": 29,
+      "etiqueta": "Preguntarle si conoce otro campo con lo mismo",
+      "intencion": "Le pregunto a Casimiro si conoce otro campo con algo parecido",
+      "claves": [
+        "otro campo",
+        "en otro lado",
+        "le paso a alguien mas",
+        "conoce otro caso"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Pregúntele a cualquiera que haya trabajado en más de un campo, {trato}, y le va a decir lo mismo que yo. —Se pone el sombrero, se lo vuelve a sacar—. Esto no es la única parte donde pasa.\n\n—Un capataz que conocí, allá por Los Álamos, cerca de Castronegro, me contó una vez de una mujer que se perdió de noche sin dejar nada. Ni grito, ni huella, ni nota. Y el patio donde pasó tenía un aljibe, como acá tiene el tanque.\n\n—No le digo que sea lo mismo. Le digo que el campo se guarda cosas parecidas en más de un lugar, y que a nadie de afuera le importa hasta que le toca cerca."
+        ],
+        "pista": {
+          "description": "Casimiro conoció a un capataz de un campo cerca de Los Álamos, partido de Castronegro, que le contó de una mujer desaparecida de noche sin rastro, en un patio con aljibe.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        }
+      },
+      "disponible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "Rosa Quintana no estaba a la mañana"
+          },
+          {
+            "op": "narrado",
+            "contiene": "de vuelta se hace más largo"
+          }
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "cosas parecidas en más de un lugar"
+      }
+    },
+    {
       "id": "e-porque",
       "npc": "npc-eusebio",
       "orden": 30,

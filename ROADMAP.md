@@ -980,15 +980,35 @@ invariante.
   —sumado a los dos que ya daba el trabajo de vigilia, aunque el tope del
   motor sigue en dos— y una línea de reconocimiento en el texto de éxito.
 
-Verificado llamando `prueba`/`resolver` de las tres escenas directamente
-con un `GameState` mínimo que sólo trae la consecuencia en cuestión —sin
-jugar las cinco aventuras enteras para probar tres condicionales—, y
-confirmando además que CADA gancho apaga cuando la consecuencia no está.
+- **Agua Quieta → La Legua Perdida** (`la-legua-perdida.contenido.json`,
+  tema `c-otro-lado` de Casimiro). El rumor de fondo: si Rosa Quintana
+  desapareció (fin-quedarse), Casimiro —que ya tiene establecido que «el
+  campo se acostumbra a cosas raras»— cuenta que un capataz de un campo
+  cerca de Los Álamos le habló una vez de una mujer perdida de noche sin
+  rastro, en un patio con aljibe, como acá hay un tanque. Encadenado
+  además a que el jugador ya haya destrabado el miedo de Casimiro al
+  oeste (`c-miedo`), para que no aparezca de la nada. Puramente
+  ambiental: no pistas nuevas de peso, ni mecánica.
 
-**Quedan pendientes** los otros gancho que se sugirieron y no se
-descartaron: el rumor de fondo de *Agua Quieta* (fin-quedarse) en
-cualquier aventura posterior, y cualquier otro que surja jugando. La lista
-crece con la campaña, no de una sentada.
+**Un bug real, encontrado haciendo este último.** Al armar el gancho lo
+enganché primero a Eusebio Roldán (el agrimensor jubilado de *La Legua
+Perdida*, que ya tiene seis temas de conversación escritos) porque
+encajaba mejor —es quien lee el diario del pueblo—. Al verificarlo con
+una campaña real, ninguno de sus temas aparecía nunca, ni siquiera los
+que ya existían. Roldán no figura en el `npcsPresent` de NINGUNA
+localización del escenario, y el motor no tiene ningún mecanismo para que
+un NPC «llegue» a un lugar a mitad de partida —`npcsPresent` es estático,
+fijado en el JSON, y nada lo muta en todo el motor—. Sus seis temas
+—incluido el que revela el caso de 1911 de Zabaleta, no menor— son hoy
+inalcanzables en juego real. No es este gancho el que lo rompió: ya
+estaba roto. Reubicado el gancho en Casimiro, que sí está presente desde
+el arranque. **Pendiente arreglar aparte**: o Roldán necesita una entrada
+real —un efecto que lo agregue a `casco` o `molino` cuando corresponda—,
+o esos seis temas se reescriben para otro NPC que sí esté en el mapa.
+
+**Quedan pendientes** los otros ganchos que se sugirieron y no se
+descartaron, y cualquier otro que surja jugando. La lista crece con la
+campaña, no de una sentada.
 
 ### 3.3 La aventura original publicada
 
