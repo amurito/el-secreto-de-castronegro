@@ -1234,6 +1234,37 @@
       }
     },
     {
+      "id": "foto-otra-vez",
+      "prioridad": 64,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "una quinta hoja"
+          },
+          {
+            "op": "texto",
+            "patron": "sabiendo a quien buscar|vuelvo a mirar la foto|la foto otra vez"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "verbo",
+              "es": [
+                "preguntar",
+                "hablar",
+                "mostrar",
+                "mentir",
+                "ir",
+                "irse"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
       "id": "mirar-foto",
       "prioridad": 60,
       "cuando": {
@@ -1490,6 +1521,22 @@
       }
     },
     {
+      "id": "foto-otra-vez",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 9,
+      "intencion": "Vuelvo a mirar la foto sabiendo a quién buscar",
+      "etiqueta": "Volver a mirar la foto, sabiendo a quién buscar",
+      "visible": {
+        "op": "pista",
+        "contiene": "una quinta hoja"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "es la misma cara"
+      }
+    },
+    {
       "id": "foto",
       "grupo": "observar",
       "lugar": "escuela",
@@ -1614,26 +1661,8 @@
       "intencion": "Me duermo por última vez",
       "etiqueta": "Bajar a buscarlo",
       "visible": {
-        "op": "y",
-        "de": [
-          {
-            "op": "pista",
-            "contiene": "una quinta hoja"
-          },
-          {
-            "op": "o",
-            "de": [
-              {
-                "op": "pista",
-                "contiene": "Benicio Requena"
-              },
-              {
-                "op": "pista",
-                "contiene": "volvió a despertarse bien"
-              }
-            ]
-          }
-        ]
+        "op": "pista",
+        "contiene": "es la misma cara"
       },
       "hecha": {
         "op": "pista",

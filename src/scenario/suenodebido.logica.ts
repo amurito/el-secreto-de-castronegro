@@ -380,6 +380,51 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    // LA VIGILIA QUE SÓLO EXISTE DESPUÉS DE LA SEGUNDA NOCHE.
+    //
+    // Es el eslabón que faltaba: entre el sueño 2 y el sueño 3 no había NADA
+    // obligatorio del mundo despierto, así que quien había investigado todo
+    // antes de dormir encadenaba 2 → 3 → desenlace de tres clicks seguidos.
+    // Reportado jugando, dos veces.
+    //
+    // No se puede hacer antes: hay que haberle visto la cara al que escribe
+    // en la escribanía del sueño para poder buscarla en una foto de 1880. Y
+    // obliga a un viaje real —la foto está en la escuela, el sueño pasa en la
+    // escribanía—, que es exactamente la ida y vuelta que se pidió.
+    //
+    // Sin tirada, a propósito: reconocer una cara que se acaba de ver no es
+    // una habilidad, es memoria. Lo que cambia con lo que ya se sabe no es si
+    // se reconoce, sino qué significa haberlo reconocido.
+    id: 'foto-otra-vez',
+    resolver: ({ estado }) => {
+      const sabeDeBenicio = pista(estado, 'Benicio Requena') || pista(estado, 'volvió a despertarse bien');
+      return {
+        texto: [
+          'Volvés a la escuela con una sola cosa en la cabeza, y Delfina te deja la pared para vos sin preguntar nada.',
+          'La foto de la comisión del centenario, catorce hombres formados en dos filas delante de una escuela recién levantada. La punta izquierda de la fila de atrás. El movido.',
+          'Es la misma cara. No parecida: la misma. La del hombre de veintiún años que corrió la silla medio paso y te preguntó si ya estabas anotado, hace unas horas, en una escribanía que tenía cintas de colores que todavía no existen.',
+          sabeDeBenicio
+            ? 'Y ahora el nombre también entra donde va. Benicio Requena, veintiuno en 1878, dos años y medio levantándose de noche, y después una familia que dijo que se había ido a Bahía. La foto es de 1880: la sacaron cuando él ya llevaba dos años sin despertarse bien, y lo pusieron en la fila igual, con los otros trece, y salió movido de la única manera en que puede salir movido alguien que está y no está.'
+            : 'De quién es la cara, no sabés. Sabés que es de 1880, que estaba en esa fila, y que anoche te habló. Falta el nombre, y el nombre no está en la foto: al pie sólo dice «Comisión pro-templo y escuela, Villa Requena, 1880».',
+          'Delfina te mira la cara y no pregunta. Te dice, nada más: —Vuelva a la noche, entonces.',
+        ],
+        exposicion: { amount: 4, source: 'foto:reconocimiento', cause: 'reconocer en 1880 una cara vista anoche' },
+        estabilidad: { amount: -3, cause: 'que la cara de un sueño esté en una fotografía de hace cuarenta y siete años' },
+        pistas: [{
+          description: sabeDeBenicio
+            ? 'El de la punta izquierda de la foto de 1880 es la misma cara del que escribe en la escribanía del sueño: Benicio Requena, que en 1880 ya llevaba dos años sin despertarse bien y salió movido igual.'
+            : 'El de la punta izquierda de la foto de 1880 es la misma cara del que escribe en la escribanía del sueño. Falta ponerle nombre.',
+          kind: 'physical' as const, source: 'la foto de la comisión, mirada de nuevo', reliability: 'reliable' as const,
+        }],
+        contradiccion: {
+          description: 'Un hombre fotografiado en 1880 en Villa Requena tiene la misma cara, y la misma edad, que el que escribe el libro en el sueño de 1927.',
+          between: 'la foto de 1880 / la segunda noche',
+        },
+      };
+    },
+  },
+
+  {
     id: 'mirar-foto',
     // FOTOGRAFÍA. Leer, fechar o interpretar una imagen. Sin la habilidad se
     // ve un borroso; con ella se ve QUÉ CLASE de borroso, que es otra cosa.

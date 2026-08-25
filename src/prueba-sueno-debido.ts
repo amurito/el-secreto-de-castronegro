@@ -98,7 +98,16 @@ const HASTA_EL_FONDO = [
   'Me duermo con el almagre en la mano',
   'Me acerco a la fila y miro de cerca',
   'Vuelvo a dormirme con el almagre',
-  'Agarro la hoja y la leo',
+  'Leo la hoja que no está cosida',
+  // Y ACÁ VA LA VIGILIA OBLIGATORIA ENTRE EL SUEÑO 2 Y EL 3: hay que salir de
+  // la escribanía, volver a la escuela, y reconocer en la foto de 1880 la
+  // cara que se acaba de ver escribiendo en el sueño. No se puede hacer
+  // antes —hace falta haberle visto la cara— y obliga a un viaje real.
+  'Vuelvo a la plaza',
+  'Voy a la escuela',
+  'Vuelvo a mirar la foto sabiendo a quién buscar',
+  'Vuelvo a la plaza',
+  'Voy a la escribanía',
   'Me duermo por última vez',
   'Le hablo, aunque no sé si me escucha',
 ];
@@ -307,11 +316,16 @@ async function main() {
   console.log('\n9. LA RAMA ALTERNATIVA DE CADA NOCHE ENCADENA IGUAL QUE LA PRINCIPAL');
 
   const otroAngulo = await jugar('OTRO-ANGULO', 'h', [
-    ...HASTA_EL_FONDO.slice(0, -6), // hasta justo antes de la primera noche
+    ...HASTA_EL_FONDO.slice(0, -12), // hasta justo antes de la primera noche
     'Me duermo con el almagre en la mano',
     'Busco mi propio lugar en la fila',
     'Vuelvo a dormirme con el almagre',
     'Le pregunto quién es, antes de tocar nada',
+    'Vuelvo a la plaza',
+    'Voy a la escuela',
+    'Vuelvo a mirar la foto sabiendo a quién buscar',
+    'Vuelvo a la plaza',
+    'Voy a la escribanía',
     'Me duermo por última vez',
     'Bajo sin decir nada',
   ]);
@@ -353,7 +367,13 @@ async function main() {
   check('pero sí hace pasar el reloj del mundo de verdad',
     preguntaSola.estado.world.time.iso > '1927-07-11T20:00:00', preguntaSola.estado.world.time.display);
 
-  const sinVolver = await jugar('SIN-VOLVER', 'i', [
+  // Y ACÁ LA PARTE QUE COSTÓ DOS INTENTOS: el gate anterior pedía saber lo de
+  // Benicio, pero eso se puede averiguar ANTES de dormir, así que quien
+  // investigaba todo primero encadenaba igual 2 → 3 → desenlace de tres
+  // clicks. La vigilia obligatoria tiene que ser algo que NO SE PUEDA HACER
+  // antes del sueño 2: reconocer en la foto de 1880 la cara que se acaba de
+  // ver escribiendo. Este guion investiga TODO antes de dormir, a propósito.
+  const todoAntes = [
     'Voy a la escribanía',
     ...insistir('Reviso a Aurelio', 6),
     ...insistir('Escucho lo que dice dormido', 4),
@@ -361,40 +381,40 @@ async function main() {
     ...insistir('Miro de cerca los renglones tachados', 8),
     'Vuelvo a la plaza',
     'Voy a la escuela',
-    ...insistir('Le pregunto a Delfina si puede averiguar lo del setenta y ocho', 4),
-    // Nunca vuelve a preguntarle si ya volvió del curato, y nunca habla con
-    // Ramona: se salta la vigilia entre el sueño 2 y el sueño 3 a propósito.
-    'Vuelvo a la plaza',
-    'Voy a la escribanía',
-    'Me duermo con el almagre en la mano',
-    'Me acerco a la fila y miro de cerca',
-    'Vuelvo a dormirme con el almagre',
-    'Agarro la hoja y la leo',
-  ]);
-  const bSinVolver = botones(sinVolver.estado);
-  check('sin la vigilia intermedia, la tercera noche NO se ofrece',
-    !bSinVolver.includes('noche-tres'), bSinVolver.join(', '));
-
-  const conBridge = await jugar('CON-BRIDGE', 'i', [
-    'Voy a la escribanía',
-    ...insistir('Reviso a Aurelio', 6),
-    ...insistir('Escucho lo que dice dormido', 4),
-    'Leo el libro de turnos renglón por renglón',
-    ...insistir('Miro de cerca los renglones tachados', 8),
-    'Vuelvo a la plaza',
-    'Voy a la escuela',
+    'Miro la foto de la comisión del centenario',
     ...insistir('Le pregunto a Delfina si puede averiguar lo del setenta y ocho', 4),
     'Le pregunto a Delfina si ya volvió del curato',
     'Vuelvo a la plaza',
+    'Voy a la casa de los Sosa',
+    ...insistir('Le pregunto a Ramona por qué tiene las manos limpias', 3),
+    ...insistir('Le pregunto a Ramona qué pasó el año setenta y ocho', 4),
+    'Vuelvo a la plaza',
     'Voy a la escribanía',
     'Me duermo con el almagre en la mano',
     'Me acerco a la fila y miro de cerca',
     'Vuelvo a dormirme con el almagre',
-    'Agarro la hoja y la leo',
+    'Leo la hoja que no está cosida',
+  ];
+
+  const sinVolver = await jugar('SIN-VOLVER', 'i', todoAntes);
+  check('aun habiendo investigado TODO antes de dormir, sin volver a la foto la tercera noche NO se ofrece',
+    !botones(sinVolver.estado).includes('noche-tres'), botones(sinVolver.estado).join(', '));
+  check('y sí sabe lo de Benicio —o sea, no es que le falte información, le falta la vigilia—',
+    pista(sinVolver.estado, 'Benicio Requena'), '');
+
+  const conBridge = await jugar('CON-BRIDGE', 'i', [
+    ...todoAntes,
+    'Vuelvo a la plaza',
+    'Voy a la escuela',
+    'Vuelvo a mirar la foto sabiendo a quién buscar',
+    'Vuelvo a la plaza',
+    'Voy a la escribanía',
   ]);
   const bConBridge = botones(conBridge.estado);
-  check('con la vigilia intermedia hecha, la tercera noche SÍ se ofrece',
+  check('con el viaje de vuelta a la foto hecho, la tercera noche SÍ se ofrece',
     bConBridge.includes('noche-tres'), bConBridge.join(', '));
+  check('y ese viaje deja una pista nueva que antes no existía',
+    pista(conBridge.estado, 'es la misma cara'), '');
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

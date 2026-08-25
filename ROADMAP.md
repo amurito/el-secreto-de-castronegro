@@ -831,6 +831,35 @@ aventura: agarrar algo nunca puede pedir un dado, porque levantar un papel
 del escritorio no es lo que puede fallar; leerlo sí. Reescrita a «Leo la
 hoja que no está cosida», que clasifica como `leer` y no rompe la regla.
 
+**Séptima ronda: la vigilia entre el sueño 2 y el 3, esta vez de verdad.**
+El arreglo de la cuarta ronda no alcanzaba, y el motivo es instructivo: el
+gate de la tercera noche exigía saber quién era Benicio Requena, pero eso
+se puede averiguar ANTES de dormir. Un jugador que investigara todo
+primero —que es lo que hace cualquiera— llegaba al sueño 2 con el
+requisito ya cumplido y encadenaba igual 2 → 3 → desenlace de tres clicks.
+El gate era real; lo que no era real era el ORDEN.
+
+La lección: para forzar vigilia entre dos sueños no alcanza con pedir algo
+del mundo despierto. Hay que pedir algo que **no se pueda hacer antes**.
+
+`foto-otra-vez`, nueva: volver a la escuela a mirar la foto de la comisión
+de 1880 sabiendo, ahora sí, a quién buscar — porque recién en el sueño 2
+se le ve la cara al que escribe el libro. Es la misma cara que la del
+hombre movido de la fila de atrás. No se puede hacer antes (hace falta
+haber estado en el sueño 2), obliga a un viaje real de ida y vuelta (la
+foto está en la escuela, los sueños pasan en la escribanía), y deja una
+pista y una contradicción nuevas. Sin tirada, a propósito: reconocer una
+cara que se acaba de ver es memoria, no habilidad. Lo que cambia según lo
+que ya se sabe no es si se reconoce, sino qué significa: quien averiguó lo
+de Benicio le pone nombre y fecha —1880, dos años después de su turno,
+puesto en la fila igual, saliendo movido—; quien no, se queda con la cara
+y sin el nombre.
+
+La prueba nueva es la que cierra el asunto: juega un guion que investiga
+TODO antes de dormir —Delfina, Ramona, el libro, las tachaduras— y
+verifica que aun así la tercera noche no se ofrece, y que sí sabe lo de
+Benicio (o sea: no le falta información, le falta la vigilia).
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
