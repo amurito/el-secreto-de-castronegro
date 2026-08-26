@@ -992,19 +992,16 @@ invariante.
 
 **Un bug real, encontrado haciendo este último.** Al armar el gancho lo
 enganché primero a Eusebio Roldán (el agrimensor jubilado de *La Legua
-Perdida*, que ya tiene seis temas de conversación escritos) porque
+Perdida*, que ya tiene cinco temas de conversación escritos) porque
 encajaba mejor —es quien lee el diario del pueblo—. Al verificarlo con
 una campaña real, ninguno de sus temas aparecía nunca, ni siquiera los
 que ya existían. Roldán no figura en el `npcsPresent` de NINGUNA
 localización del escenario, y el motor no tiene ningún mecanismo para que
 un NPC «llegue» a un lugar a mitad de partida —`npcsPresent` es estático,
-fijado en el JSON, y nada lo muta en todo el motor—. Sus seis temas
-—incluido el que revela el caso de 1911 de Zabaleta, no menor— son hoy
+fijado en el JSON, y nada lo muta en todo el motor—. Sus cinco temas son
 inalcanzables en juego real. No es este gancho el que lo rompió: ya
 estaba roto. Reubicado el gancho en Casimiro, que sí está presente desde
-el arranque. **Pendiente arreglar aparte**: o Roldán necesita una entrada
-real —un efecto que lo agregue a `casco` o `molino` cuando corresponda—,
-o esos seis temas se reescriben para otro NPC que sí esté en el mapa.
+el arranque. **Arreglado aparte en 3.2-octies**, más abajo.
 
 **Segunda tanda de ganchos.** Cuatro más, con el mismo criterio: el roce
 temático tiene que ser real, no basta con que dos aventuras compartan
@@ -1060,6 +1057,60 @@ cuando el antecedente falta, que es el modo en que este patrón
 
 **Quedan pendientes** cualquier otro que surja jugando. La lista crece con
 la campaña, no de una sentada.
+
+### 3.2-octies Eusebio Roldán no estaba en ninguna parte ✔ ARREGLADO
+
+Encontrado de rebote, armando el gancho del rumor: el tema nuevo que le
+había colgado a Eusebio Roldán no aparecía nunca, y al mirar por qué
+resultó que **ninguno** de sus temas aparecía nunca, en ninguna
+localización, desde que la aventura existe.
+
+**El bug era doble, y las dos mitades se tapaban entre sí.** `npc-eusebio`
+no figuraba en el `npcsPresent` de ninguna localización de *La Legua
+Perdida*. Eso, por un lado, hacía que `acciones.ts` —que exige
+`npcsPresent.includes(npc.id)` para ofrecer un tema— no ofreciera ninguno
+de sus cinco, en ningún lado. Y por el otro, `narrator.ts` tiene una
+excepción deliberada para los NPC creados en partida con `create_npc`, que
+no figuran en ningún lugar porque aparecen donde está el investigador: un
+NPC «sin lugar propio» se cuenta como presente EN TODAS. Eusebio caía en
+esa excepción sin ser uno de ésos.
+
+Resultado en la partida publicada: el juego decía «Eusebio Roldán está
+acá» en las seis localizaciones —el alambrado del oeste y el pastizal
+donde apareció Fermín incluidos— y no había manera de hablarle en ninguna.
+Cinco temas escritos e inalcanzables, entre ellos `e-tercera` —el de la
+tercera medición hecha de noche, con su rama crítica que revela una cuarta
+al amanecer que Roldán no le contó nunca a nadie— y `e-mojon`, el único
+que dice desde cuándo está grabado el círculo. Nada fallaba, nada aparecía
+en rojo: simplemente no había botón.
+
+**El arreglo es de una línea, y el `opening` ya decía cuál.** El texto de
+apertura pone explícitamente TRES personas en la galería del casco: «una
+mujer de vestido oscuro, un hombre de alpargatas parado en el escalón más
+bajo, y un viejo de traje que llegó por su cuenta y que nadie llamó». Ese
+tercero es Roldán, y el casco ya listaba sólo a Herminia. Agregado
+`npc-eusebio` a `casco.npcsPresent`. Eso arregla las dos mitades de una
+vez: al tener lugar propio deja de contar como omnipresente para el
+narrador, y pasa a tener sus temas ofrecidos donde corresponde.
+
+**Y una validación nueva, porque esto no se puede arreglar solo.** Nada
+del motor muta `npcsPresent` en ningún momento —no existe ningún efecto ni
+herramienta que meta a un NPC declarado en una localización a mitad de
+partida—, así que un NPC sin lugar no es contenido dormido que despierte
+más tarde: es contenido muerto para siempre. `validarContenido.ts` ahora
+lo rechaza al cargar, nombrando el NPC y cuántos temas quedan
+inalcanzables, igual que el resto de las referencias rotas. Verificada
+revirtiendo el arreglo a mano: el juego se niega a cargar con el mensaje
+exacto. Auditadas las cinco aventuras: Eusebio era el único caso.
+
+Comprobado además, con campañas reales, que los cinco temas son
+alcanzables cumpliendo cada uno su condición, y que la matemática social
+cierra: arranca en actitud 15, `e-tercera` pide un piso de 25, y los otros
+temas suman +12 entre todos.
+
+**Nota sobre `create_npc`:** la excepción del narrador queda como está y
+ahora es correcta por construcción — con la validación puesta, el único
+caso que puede caer ahí es el que la excepción documenta.
 
 ### 3.3 La aventura original publicada
 

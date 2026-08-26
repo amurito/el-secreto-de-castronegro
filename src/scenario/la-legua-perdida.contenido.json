@@ -459,7 +459,8 @@
         "it-rueda"
       ],
       "npcsPresent": [
-        "npc-herminia"
+        "npc-herminia",
+        "npc-eusebio"
       ],
       "visited": false,
       "umbralIntensity": 2,

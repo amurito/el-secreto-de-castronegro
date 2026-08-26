@@ -142,6 +142,39 @@ export function validarContenido(
     for (const np of loc.npcsPresent ?? []) existe('npc', np, `locations.${id}.npcsPresent`);
   }
 
+  // ── Todo NPC del escenario vive en algún lado ───────────────────────────
+  // Un NPC declarado y ausente de todos los `npcsPresent` no es sólo
+  // contenido dormido: es contenido ROTO POR PARTIDA DOBLE. `acciones.ts`
+  // exige `npcsPresent.includes(npc.id)` para ofrecer un tema, así que no se
+  // le puede hablar en ninguna parte; y `narrator.ts` trata al NPC sin lugar
+  // propio como presente EN TODAS —esa excepción existe para los NPC creados
+  // en partida con `create_npc`, que no figuran en ningún lugar porque
+  // aparecen donde está el investigador—. Resultado: el narrador lo anuncia
+  // en cada localización y ningún botón deja hablarle.
+  //
+  // Encontrado jugando, en La Legua Perdida: Eusebio Roldán, que el `opening`
+  // pone explícitamente en la galería del casco, no estaba en el
+  // `npcsPresent` de ninguna localización. Sus cinco temas —incluido el que
+  // revela el muerto de 1911— eran inalcanzables, y a la vez el juego decía
+  // «Eusebio Roldán está acá» en las seis localizaciones, el alambrado del
+  // oeste incluido. Nada fallaba: simplemente no había cómo hablarle.
+  //
+  // Nada del motor muta `npcsPresent` en ningún momento, así que esto no se
+  // puede arreglar solo más tarde: si no está declarado, no pasa nunca.
+  const conLugarPropio = new Set(
+    Object.values(contenido.locations).flatMap((l) => l.npcsPresent ?? []),
+  );
+  for (const npc of contenido.npcs) {
+    if (conLugarPropio.has(npc.id)) continue;
+    const temas = contenido.conversations.filter((t) => t.npc === npc.id).length;
+    problemas.push(
+      `npcs.${npc.id}: no figura en el \`npcsPresent\` de ninguna localización, ` +
+      `así que no se le puede hablar en ninguna parte` +
+      (temas > 0 ? ` y sus ${temas} temas de conversación son inalcanzables` : '') +
+      `. Agregalo al lugar donde esté.`,
+    );
+  }
+
   // ── Objetos: su dueño es un lugar o un NPC ──────────────────────────────
   for (const item of contenido.items) {
     if (item.owner && !lugares.has(item.owner) && !npcs.has(item.owner)) {
