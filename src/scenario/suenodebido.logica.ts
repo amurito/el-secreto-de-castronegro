@@ -98,6 +98,51 @@ const juzgoUnaIdentidadAntes = (s: GameState) =>
   || consecuencia(s, 'desmintió la identidad del hombre que dice ser Alejo Ferreyra');
 
 /**
+ * La Legua Perdida: caminó la línea del oeste de punta a punta y volvió
+ * contando postes. Ese final deja una manía mecánica —«Compulsión de
+ * contar»— que ya cruza sola por ser cicatriz mental del investigador, así
+ * que acá no hace falta agregar mecánica: hace falta que la primera noche
+ * la NOMBRE, porque la ronda del brocal es literalmente una fila de gente
+ * en la que alguien así no podría no ponerse a contar.
+ */
+const caminoLaLineaAntes = (s: GameState) =>
+  consecuencia(s, 'caminó el alambrado del oeste de punta a punta');
+
+/**
+ * Cuántas veces, en aventuras anteriores de esta campaña, eligió irse sin
+ * contestar nada. Las tres que registran esa decisión la escriben igual
+ * —«El investigador se fue de X sin…»—, así que se cuentan por el prefijo
+ * común. El final de irse de El Invierno Debido no deja consecuencia a
+ * propósito (ver `desenlacePrevio`) y por eso no entra en la cuenta.
+ */
+const vecesQueSeFue = (s: GameState) =>
+  s.consequences.filter((c) => c.description.includes('El investigador se fue de')).length;
+
+/**
+ * Lo que ve QUIEN JUEGA al pie del brocal, si ya eligió irse antes.
+ *
+ * Va como `jugadorNota` y no como pista a propósito: el investigador no
+ * lleva esta cuenta, y no debería. Es un patrón que sólo existe desde
+ * afuera, mirando la campaña entera, y nombrarlo justo acá —cuando todavía
+ * se puede elegir otra cosa— es el único momento en que sirve de algo.
+ */
+const notaDeLasVecesQueSeFue = (s: GameState) => {
+  const veces = vecesQueSeFue(s);
+  if (veces === 0) return {};
+  return {
+    jugadorNota: {
+      statement: veces >= 3
+        ? 'Es la cuarta vez que su investigador llega hasta acá y puede subir sin haber hecho nada. Las tres anteriores eligió eso: Los Álamos, La Perseverancia, Los Cardales. Nadie se lo reprochó ninguna de las tres veces, y ése es exactamente el problema. Usted está llevando la cuenta; él no.'
+        : veces === 2
+          ? 'Su investigador ya eligió dos veces irse sin contestar, en dos lugares distintos, por dos razones que en el momento parecieron buenas. Ésta sería la tercera. Él no está llevando esa cuenta.'
+          : 'Su investigador ya eligió una vez irse sin contestar nada, y le funcionó: no pasó nada malo, o no pasó nada que se le pudiera atribuir. Es exactamente la clase de precedente que hace más fácil la segunda vez.',
+      source: 'el pie del brocal, la tercera noche',
+      reliability: 'unknown' as const,
+    },
+  };
+};
+
+/**
  * Los cierres compartidos de cada noche.
  *
  * Las dos escenas de acercamiento de una misma noche difieren en ángulo y en
@@ -578,6 +623,9 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     resolver: ({ tirada, estado }) => ({
       texto: [
         'Te acercás a la fila.',
+        caminoLaLineaAntes(estado)
+          ? 'Y antes de decidir nada ya los estás contando, porque desde el alambrado del oeste no podés tener una fila delante y no contarla. Llegás a ciento y pico y perdés la cuenta, y esta vez no es por distracción: es que los que ya pasaron vuelven a pasar, y no hay manera de decidir si el que viene es uno nuevo o el mismo otra vez.'
+          : '',
         tirada?.exito
           ? 'Y ahí lo entendés, porque lo tenés delante: esto no es un rito. No hay canto, no hay orden de precedencia, nadie mira a nadie, nadie corrige a nadie. Es una GUARDIA. Es gente haciendo un turno, uno atrás del otro, y la fila no avanza hacia ningún lado: da la vuelta y vuelve a empezar, y el que terminó se vuelve a poner al final.'
           : 'Mirás la fila un rato largo tratando de encontrarle el orden. No se lo encontrás. Van, se agachan, siguen, vuelven a pasar. Podría ser una procesión, podría ser una cola de gente esperando algo.',
@@ -622,6 +670,9 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     resolver: ({ tirada, estado }) => ({
       texto: [
         'Te quedás donde estás y mirás la fila buscando un hueco que te quede. No tiene ningún sentido —es gente dando vueltas, no hay lugares fijos en una fila que gira— y buscás igual.',
+        caminoLaLineaAntes(estado)
+          ? 'Y contás mientras buscás, porque desde el alambrado del oeste contás siempre. Acá la cuenta falla de una manera nueva: la fila da la vuelta, así que no hay un primero ni hay un último, y una cuenta sin primero no se puede ni empezar. Es la primera vez desde La Perseverancia que no podés contar algo, y por un segundo eso te alivia.'
+          : '',
         tirada?.exito
           ? 'Y lo encontrás. Entre el séptimo y el octavo de la fila hay un hueco del ancho exacto de tus hombros, y nadie lo ocupa, como si estuviera guardado. No sabés desde cuándo. No sabés si desde antes de que llegaras al pueblo la primera vez, o desde esta tarde.'
           : 'No encontrás nada. Ningún hueco, ningún lugar que sea el tuyo. Debería tranquilizarte y no te tranquiliza: no saber si estás afuera de esto, o si todavía no te tocó.',
@@ -870,6 +921,7 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           description: 'Lo encontró en el fondo del brocal, del otro lado del agua, sentado en el borde interno con el turno hecho y algo abierto entre las manos. Dice que está bien ahí. Se puede bajar; subir es otro asunto.',
           kind: 'experiential' as const, source: 'la tercera noche', reliability: 'unknown' as const,
         }],
+        ...notaDeLasVecesQueSeFue(estado),
         consecuencia: {
           description: 'El investigador bajó tres veces al sueño de Villa Requena usando el almagre, y la tercera vez llegó hasta el fondo del brocal.',
           scope: 'world' as const,
@@ -919,6 +971,7 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           description: 'Lo encontró en el fondo del brocal, del otro lado del agua, sentado en el borde interno con el turno hecho y algo abierto entre las manos. Dice que está bien ahí. Se puede bajar; subir es otro asunto.',
           kind: 'experiential' as const, source: 'la tercera noche', reliability: 'unknown' as const,
         }],
+        ...notaDeLasVecesQueSeFue(estado),
         consecuencia: {
           description: 'El investigador bajó tres veces al sueño de Villa Requena usando el almagre, y la tercera vez llegó hasta el fondo del brocal.',
           scope: 'world' as const,

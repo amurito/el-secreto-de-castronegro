@@ -30,6 +30,19 @@ const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtaine
 const marcasPrevias = (s: GameState) =>
   s.consequences.filter((c) => c.description.includes('del Círculo Rojo')).length;
 
+/**
+ * La Firma Ajena: quemó la carta de 1917 y la fotografía, o sea eligió, con
+ * sus propias manos, que una pregunta se quedara para siempre sin con qué
+ * contestarse.
+ *
+ * Las dos salidas de esta aventura que no resuelven nada —soltar la
+ * obligación, o postergarla un año— son la misma decisión con otro nombre, y
+ * quien ya la tomó una vez merece que el texto lo diga. Narrativo y nada más:
+ * no cambia qué desenlaces están disponibles ni cómo salen las tiradas.
+ */
+const quemoLaPruebaAntes = (s: GameState) =>
+  s.consequences.some((c) => c.description.includes('La carta de 1917 y la fotografía'));
+
 export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
   // ══ LA CARTA ════════════════════════════════════════════════════════════════
 
@@ -536,9 +549,12 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
         'Aurelio se queda quieto tanto tiempo que llegás a pensar que no te escuchó.\n\n—¿Usted se da cuenta de que se lo estoy haciendo decir a usted porque yo no me animo? —dice—. Se da cuenta, ¿no? No es una pregunta con trampa. Necesito saber si se da cuenta.',
         'Le decís que sí.\n\n—Bueno. Entonces está bien.',
         'Cierra el cajón con llave y —esto es lo raro— deja la llave sobre el escritorio en vez de guardarla en el bolsillo del chaleco. La mira un segundo, ahí, suelta sobre el roble, como si fuera un objeto que nunca hubiera visto.',
+        quemoLaPruebaAntes(estado)
+          ? 'Y hay una parte de esto que reconocés de otro lado, aunque tardes en admitir de cuál: la sensación exacta de decidir que una pregunta deje de tener con qué contestarse. Aquella vez fue una carta y una fotografía en un brasero de cocina. Ésta es un tarro que nadie va a volver a abrir. Se parecen bastante más de lo que te gustaría.'
+          : '',
         '—Cincuenta y cuatro años —dice—. Le agradezco. De verdad le agradezco.',
         'Y entonces mira por la ventana hacia la última cuadra, donde el pueblo se termina, donde hay una mujer de setenta y uno sentada bajo un alero.\n\n—Habría que avisarle a Ramona —dice—. ¿Le aviso yo, o le avisa usted?',
-      ],
+      ].filter(Boolean),
       estabilidad: { amount: -3, cause: 'haber decidido por otro lo que otro no podía decidir' },
       consecuencia: {
         description: 'El investigador convenció a Aurelio Requena de abandonar la obligación del Círculo Rojo.',
@@ -565,15 +581,18 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'convencer-un-ano',
-    resolver: () => ({
+    resolver: ({ estado }) => ({
       texto: [
         'Le decís que lo pinte. Este año. Uno más.',
         'Aurelio asiente antes de que termines la frase, y ahí te das cuenta de que era lo que estaba esperando: no una razón, un permiso.\n\n—Sí —dice—. Sí, tiene razón. Un año más no es nada.',
         'Se levanta con una energía que no le viste en todo el día, va hasta el estante, baja el tarro y lo apoya sobre el escritorio. Le sacude el polvo con la manga.',
         '—Un año más y después vemos. Total, el año que viene lo hablamos con más tiempo. Usted podría volver.',
         'Y en cómo lo dice —«usted podría volver»— está toda la aventura: no resolviste nada, le pusiste fecha.',
+        quemoLaPruebaAntes(estado)
+          ? 'Ya hiciste esto antes, con otro papel y otro brasero: elegir que la cosa se quede sin resolver, y ponerle un nombre que suene a decisión tomada. Aquella vez lo llamaste cerrar el asunto. Ésta lo llamás un año más.'
+          : '',
         'Afuera empieza a bajar el sol de las seis y cuarto.',
-      ],
+      ].filter(Boolean),
       estabilidad: { amount: -2, cause: 'haber elegido no decidir y llamarlo decisión' },
       consecuencia: {
         description: 'El investigador convenció a Aurelio Requena de cumplir un año más la obligación del Círculo Rojo.',

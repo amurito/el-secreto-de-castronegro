@@ -1006,9 +1006,60 @@ el arranque. **Pendiente arreglar aparte**: o Roldán necesita una entrada
 real —un efecto que lo agregue a `casco` o `molino` cuando corresponda—,
 o esos seis temas se reescriben para otro NPC que sí esté en el mapa.
 
-**Quedan pendientes** los otros ganchos que se sugirieron y no se
-descartaron, y cualquier otro que surja jugando. La lista crece con la
-campaña, no de una sentada.
+**Segunda tanda de ganchos.** Cuatro más, con el mismo criterio: el roce
+temático tiene que ser real, no basta con que dos aventuras compartan
+campaña.
+
+- **La Legua Perdida → El Sueño Debido** (`suenodebido.logica.ts`,
+  `ronda-mirar` y `ronda-buscar`). El final de caminar la línea del oeste
+  (`fin-caminar`) deja una manía mecánica de verdad —«Compulsión de
+  contar», +1 dado en Persuasión, −1 en Descubrir— que ya cruza sola por
+  ser cicatriz mental. Así que acá NO se agrega mecánica: se agrega que la
+  primera noche la nombre, porque la ronda del brocal es literalmente una
+  fila de gente dando la vuelta, y alguien con esa manía no podría no
+  ponerse a contarla. Lo que descubre contando es la parte que importa: en
+  una fila que gira no hay un primero, y una cuenta sin primero no se
+  puede ni empezar. Aparece falle o acierte la tirada: no gatea nada.
+
+- **Irse antes → El Sueño Debido** (`suenodebido.logica.ts`,
+  `fondo-hablar` y `fondo-bajar`). El primer gancho que no mira UN final
+  sino un patrón: cuenta cuántas veces el investigador eligió irse sin
+  contestar —Agua Quieta, La Legua, La Firma Ajena escriben esa decisión
+  igual, «El investigador se fue de X sin…», así que se cuentan por el
+  prefijo común— y al pie del brocal, cuando todavía se puede elegir otra
+  cosa, lo dice. Va como `jugadorNota` y no como pista a propósito: el
+  investigador no lleva esa cuenta y no debería. El texto escala con el
+  número, y con tres nombra los tres lugares. El final de irse de El
+  Invierno Debido no registra consecuencia —a propósito, ver
+  `desenlacePrevio`— así que no entra en la cuenta y el tope real es tres.
+
+- **La Firma Ajena → El Invierno Debido** (`inviernodebido.logica.ts`,
+  `ayudar-a-irse` y `convencer-un-ano`). Quemar la carta y la fotografía
+  (`fin-quemar`) es elegir, con las propias manos, que una pregunta se
+  quede sin con qué contestarse. Las dos salidas de El Invierno Debido que
+  no resuelven nada son la misma decisión con otro nombre, y el texto lo
+  dice: «aquella vez lo llamaste cerrar el asunto; ésta lo llamás un año
+  más». Narrativo y nada más.
+
+- **La Legua Perdida → La Firma Ajena** (`tercerumbral.logica.ts`,
+  `cotejar-testimonios`). El contrapunto exacto del gancho de la ronda
+  anterior: aquél premiaba haber torcido un papel, éste mira al que hizo
+  el trabajo honesto. Levantar el acta del lado oeste (`fin-medir`) fue
+  medir tres veces, con testigos y firma, demostrar que el campo no cierra
+  — y que la demostración no le sirviera a nadie. Poner los tres
+  testimonios de Los Cardales en columnas es repetir ese gesto. Nota de
+  jugador, no pista: el investigador no está en condiciones de sacar esa
+  conclusión sobre sí mismo mientras la está repitiendo.
+
+Verificados igual que los cuatro anteriores —`resolver` llamado directo
+con un `GameState` mínimo— y comprobando en cada uno las dos direcciones:
+que el eco aparece con el antecedente y que NO aparece sin él. En los dos
+de El Invierno Debido se comprueba además que no queda un párrafo vacío
+cuando el antecedente falta, que es el modo en que este patrón
+(`cond ? texto : ''`) se rompe si alguien olvida el `.filter(Boolean)`.
+
+**Quedan pendientes** cualquier otro que surja jugando. La lista crece con
+la campaña, no de una sentada.
 
 ### 3.3 La aventura original publicada
 

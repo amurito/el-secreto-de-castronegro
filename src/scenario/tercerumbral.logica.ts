@@ -30,6 +30,20 @@ const dobloUnPapelAntes = (s: GameState) =>
   consecuencia(s, 'certificado de defunción de Fermín Arce con causa')
   || consecuencia(s, 'mensura de 1903 de La Perseverancia dejó de existir');
 
+/**
+ * La Legua Perdida, por el camino contrario al de arriba: midió el campo con
+ * rueda, testigos y firma, demostró que no cerraba, y la demostración —
+ * impecable— no le sirvió a nadie para nada.
+ *
+ * Es el precedente exacto de lo que pasa acá al cotejar los tres testimonios:
+ * el trabajo prolijo, hecho bien, que produce una contradicción sólida y
+ * ninguna respuesta. Va como nota de jugador y no como pista porque el
+ * investigador no está en condiciones de sacar esa conclusión sobre sí mismo
+ * mientras la está repitiendo.
+ */
+const demostroYNoSirvioAntes = (s: GameState) =>
+  consecuencia(s, 'Se levantó un acta con la medición del lado oeste');
+
 export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
   // ══ INVESTIGACIÓN ═══════════════════════════════════════════════════════════
 
@@ -213,6 +227,13 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
           description: 'Imposible que los tres cuenten lo mismo: la noche en que Alejo volvió tiene tres versiones completas, distintas, y ninguna suena a mentira.',
           kind: 'experiential', source: 'cotejo de los tres testimonios', reliability: 'reliable',
         }],
+        ...(demostroYNoSirvioAntes(estado) ? {
+          jugadorNota: {
+            statement: 'Su investigador acaba de hacer, otra vez, el trabajo prolijo: poner todo en columnas, con la letra de quien anota para no olvidar. La vez anterior —el acta del lado oeste de La Perseverancia, medida tres veces y firmada por dos testigos— el resultado fue impecable y no le sirvió a nadie para nada. Nada indica todavía que estas tres columnas vayan a terminar distinto.',
+            source: 'el cotejo de los tres testimonios',
+            reliability: 'unknown' as const,
+          },
+        } : {}),
       }];
       return efectos;
     },
