@@ -1112,6 +1112,52 @@ temas suman +12 entre todos.
 ahora es correcta por construcción — con la validación puesta, el único
 caso que puede caer ahí es el que la excepción documenta.
 
+**El barrido de las cinco, y lo que salió al ampliar la red.** Pedido
+explícito después del arreglo: ¿hay otro Eusebio escondido en alguna de
+las otras cuatro? Auditadas las cinco con la validación nueva: no lo hay.
+Eusebio era el único NPC de todo el catálogo sin lugar propio.
+
+Para ir más allá de eso —no sólo «¿tiene lugar el NPC?» sino «¿el
+recorrido real llega a cada tema?»— se sumó un chequeo a
+`prueba-auditoria.ts` que compara la pista que cada tema cede contra lo
+que el recorrido de verdad consigue, el mismo control que ya existía para
+los detalles del mapa pero que nunca se había aplicado a los temas de
+conversación. Es, con precisión, el chequeo que habría encontrado a
+Eusebio sin que hiciera falta tropezar con él por accidente.
+
+Con esa red más fina salió algo distinto, no otro Eusebio: en **La Firma
+Ajena**, `a-quien` —la PRIMERA de sólo tres preguntas que admite
+Alejo— pide Psicología con dificultad *hard*. Insistir después de fallar
+cuesta 2 de paciencia sobre un total de 6 (`social.config.ts`); fallar esa
+tirada varias veces seguidas —nada raro con una dificultad dura— puede
+agotarle la paciencia a Alejo antes de llegar a `a-anos`, y hasta bloquea
+`a-cuchillo`, que no pide tirada y por sí solo siempre cedería. Un patrón
+parecido, más leve, en `n-duda` con Nación. Comprobado con diez semillas y
+tres estrategias de recorrido distintas: ninguna garantiza las tres.
+
+**Se revisaron las tres y se las deja así, a propósito.** Ninguna de las
+tres pistas —la calma de Alejo al contestar, los ocho años que dice haber
+andado, quién grabó la M del cuchillo— la usa después ninguna otra escena
+como condición: son testimonio, no llave. Perderlas por mala suerte
+empobrece una conversación, no traba la aventura. Y el costo de insistir
+(2, contra 1 de preguntar por primera vez) está puesto a propósito para
+desalentar exactamente la conducta que dispara esto —`social.config.ts`
+lo dice en su propio comentario—, así que suavizarlo ahora sería
+resolverle el riesgo justo a quien el diseño quiere que lo sienta. Bajar
+`a-quien`/`n-duda` de *hard* a *regular* seguiría siendo la opción más
+chica si algún día se decide tocarlo; no se tocó.
+
+**Por eso el chequeo nuevo NO hace fallar la prueba.** Un recorrido de 260
+turnos con semilla fija puede no cerrar un tema por motivos que no son
+bugs —una tirada dura, una paciencia agotada, una cadena de requisitos que
+el andador no encadena a tiempo, con una estrategia fija que no es cómo
+jugaría una persona—. Convertir eso en luz roja habría dejado la batería
+en rojo por una decisión de diseño ya tomada, y entrenaría a ignorar la
+prueba la próxima vez que sí importe. Queda como lista para mirar: imprime
+qué tema no cedió en cada aventura, y si algo aparece ahí siempre —como
+apareció Eusebio, antes de tener nombre—, es la señal de que vale la pena
+investigarlo a mano.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

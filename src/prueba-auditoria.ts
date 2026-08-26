@@ -301,6 +301,26 @@ async function auditar(esc: Scenario) {
   for (const p of faltantes) console.log(`   ⚠ no salió: «${p.slice(0, 70)}…»`);
   check('el recorrido consigue las pistas de los detalles del mapa',
     cortado || faltantes.length === 0, `${pistasDeFeature.length - faltantes.length}/${pistasDeFeature.length}`);
+
+  // Las pistas de TEMAS son el punto ciego que dejó pasar a Eusebio Roldán:
+  // `loQuePuedeEntregar` (capa 2, arriba) marca `tema.cede.pista` como
+  // entregable con sólo leer el dato, sin comprobar que el tema se pueda
+  // ofrecer nunca —ni el `disponible`, ni sobre todo que el NPC dueño esté
+  // en el `npcsPresent` de algún lugar—. `validarContenido` ahora exige lo
+  // segundo al cargar —ESE es el chequeo duro, la garantía real—. Esto de
+  // acá es más débil a propósito y NO hace fallar la prueba: un tema puede
+  // no salir en un recorrido de 260 turnos con semilla fija por motivos que
+  // no son bugs —una tirada dura, una paciencia que se agota, una cadena de
+  // requisitos que el andador (que explora con una estrategia fija, no como
+  // jugaría una persona) no alcanza a encadenar—. Es una lista para mirar,
+  // no una luz roja: si algo aparece acá siempre, vale la pena investigarlo
+  // a mano, como se investigó Eusebio.
+  const pistasDeTema = esc.conversations
+    .filter((t) => t.cede.pista)
+    .map((t) => ({ tema: t.id, texto: t.cede.pista!.description }));
+  const temasFaltantes = pistasDeTema.filter((p) => !conseguidas.has(p.texto));
+  for (const p of temasFaltantes) console.log(`   ⚠ tema «${p.tema}» no cedió en este recorrido: «${p.texto.slice(0, 55)}…»`);
+  console.log(`  temas que cedieron: ${pistasDeTema.length - temasFaltantes.length}/${pistasDeTema.length}`);
 }
 
 /**
