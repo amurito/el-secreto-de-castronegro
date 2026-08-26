@@ -1286,6 +1286,23 @@ De ésas, las que esta aventura puede estrenar sin forzar nada:
 Las otras seis son de combate o de Mitos y no son asunto de esta aventura.
 `mitos` no se tira nunca por decisión de diseño.
 
+**Pendiente: tres habilidades que el sistema no tiene y van a hacer falta.**
+Al buscarlas para esta aventura resultó que no existen en `rules/skills.ts`
+(son 27 y ninguna de éstas está). No se agregan ahora —agregar una habilidad
+toca las fichas pregeneradas, las ocupaciones y el reparto de puntos de la
+creación, y no hay que hacerlo en medio de escribir contenido— pero quedan
+anotadas con su caso de uso ya identificado:
+
+| Habilidad | Base sugerida | Para qué, concretamente |
+|---|---|---|
+| `arqueologia` | 1 | Fechar una piedra trabajada y decir quién la trabajó. El obelisco es una estructura anterior a Bernardo (v0.7 §8) y hoy no hay con qué leerlo |
+| `geologia` | 1 | De dónde salió esa piedra. En una llanura sin canteras la pregunta «esto no es de acá» es media aventura |
+| `navegacion` | 10 | Ubicarse a campo abierto sin caminos ni mojones. Hoy lo cubre `orientarse`, que es más «reconstruir un recorrido» que «cruzar sin referencias» |
+
+Las tres son de CoC 7e, así que no inventan nada. La sexta se escribe con lo
+que hay —`orientarse` cubre lo esencial— y cuando se agreguen se revisa si
+alguna escena de acá conviene repartirla mejor.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

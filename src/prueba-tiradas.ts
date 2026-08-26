@@ -122,15 +122,33 @@ async function main() {
     indebidas.length ? `${indebidas.length} casos` : `${NUNCA_TIRAN.length} verbos limpios`);
 
   // Y la otra mitad: lo que sí es incierto, tira.
+  //
+  // Las excepciones son todas de la MISMA familia y conviene decirlo en voz
+  // alta, porque si no cada una parece un permiso suelto: son procedimientos
+  // de resultado determinado. No se resuelven percibiendo mejor —que es lo
+  // que un dado modela— sino ejecutando un procedimiento que da lo que da.
+  // Pedirles tirada sería decir que a veces dos fotos no se parecen si el
+  // investigador tuvo mala suerte.
   const examinarSinDado = filas.filter(
     (f) => ['examinar', 'mirar', 'buscar'].includes(f.verbo) && !f.skill
       // Comparar dos fotos no se resuelve mirando más: se resuelve comparando.
       && !/compar/i.test(f.etiqueta)
       // Mirar una fotografía cuyo secreto sale de la comparación tampoco.
-      && !/fotograf/i.test(f.etiqueta),
+      && !/fotograf/i.test(f.etiqueta)
+      // Medir con una regla: la distancia entre dos puntos es la que es.
+      // En El Orden Debido hay además una segunda razón, que es la regla de
+      // diseño que este proyecto ya arregló dos veces por bug reportado
+      // jugando: Delfina YA dijo en voz alta que los puntos avanzan al
+      // oeste, así que una tirada acá podría ocultarle al jugador lo que un
+      // NPC acaba de anunciarle. Lo que la escena agrega —el arco, y el
+      // vacío en el centro— es el resultado de medir, no de mirar mejor.
+      // OJO: esto no exime a nada que YA tire. «Medir la separación de los
+      // pernos» pide Mecánica y la sigue pidiendo: ahí lo incierto no es la
+      // medida, es saber qué torre la usa.
+      && !/\bregla\b/i.test(f.etiqueta),
   );
   for (const f of examinarSinDado) console.log(`   ⚠ ${f.aventura}: «${f.etiqueta}» sin tirada`);
-  check('examinar algo siempre pide un dado, salvo lo que se resuelve comparando',
+  check('examinar algo siempre pide un dado, salvo procedimientos de resultado determinado',
     examinarSinDado.length === 0, `${examinarSinDado.length}`);
 
   // ── 4. Qué dado de decenas queda en pie ──────────────────────────────────

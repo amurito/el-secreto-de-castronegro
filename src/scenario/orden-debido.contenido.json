@@ -1,0 +1,1861 @@
+{
+  "id": "orden-debido",
+  "title": "El Orden Debido",
+  "surfacePremise": "Delfina Arce terminó de ubicar los puntos de su mapa y los cinco quedaron en línea. Escribe pidiendo que alguien más los vea, porque no quiere ser la única que sabe.",
+  "startLocation": "escuela",
+  "startTime": {
+    "iso": "1928-03-12T09:00:00",
+    "precision": "minute",
+    "display": "las nueve de la mañana"
+  },
+  "startUmbralPermeability": 12,
+  "items": [
+    {
+      "id": "it-mapa",
+      "name": "El mapa de Delfina",
+      "aliases": [
+        "mapa",
+        "el mapa",
+        "mapa de la escuela",
+        "los puntos"
+      ],
+      "shortDescription": "Un mapa escolar del partido, de los que manda el Consejo, clavado con cuatro chinches y con puntos a lápiz que no venían impresos.",
+      "owner": "escuela",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-mapa-puntos",
+          "description": "Siete puntos a lápiz, sin nombre. Cinco viejos, hechos con lápiz duro y repasados varias veces. Dos nuevos, de trazo fresco.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-mapa-linea",
+          "description": "Los puntos no están desparramados: puestos en el orden en que Delfina los anotó, cada uno cae más cerca del oeste que el anterior. No es una línea recta —es un arco, abierto, que se cierra despacio— y el centro del arco no tiene punto marcado. Ahí no hay nada anotado porque nadie le contó nunca nada de ahí.",
+          "disclosure": "DISCOVERABLE",
+          "howDiscovered": "Midiendo las distancias en vez de mirar el dibujo."
+        }
+      ],
+      "conditionalProperties": [],
+      "discoveredProperties": [],
+      "temporalProperties": [],
+      "usageCount": 0,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "it-tarro",
+      "name": "El tarro de Ubaldo",
+      "aliases": [
+        "tarro",
+        "almagre",
+        "pintura",
+        "tarro de pintura",
+        "la lata"
+      ],
+      "shortDescription": "Una lata de aceite reusada, con almagre hasta la mitad y una brocha de cerda dura parada adentro. Está en el rancho de Ubaldo, sobre el fogón.",
+      "owner": "puerta",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-tarro-basico",
+          "description": "Tierra roja molida, sin aceite: se prepara con agua y se seca duro. La brocha tiene la cerda gastada de un solo lado.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-tarro-igual",
+          "description": "Es la misma mezcla del tarro de la escribanía de Villa Requena: tierra colorada con una fracción más clara y más fina, molida aparte y agregada después. Ubaldo no la prepara —dice que la compra hecha— y no sabe decir a quién.",
+          "disclosure": "DISCOVERABLE",
+          "howDiscovered": "Mirando el polvo contra la luz, como se miró el otro."
+        }
+      ],
+      "conditionalProperties": [],
+      "discoveredProperties": [],
+      "temporalProperties": [],
+      "usageCount": 0,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "it-libreta",
+      "name": "La libreta de Adelmo",
+      "aliases": [
+        "libreta",
+        "libreta de adelmo",
+        "cuaderno",
+        "los apuntes"
+      ],
+      "shortDescription": "Una libreta de tapa de hule, gorda de tanto doblarse, donde Adelmo anota cada molino que levanta o arregla: campo, dueño, marca, fecha y qué le hizo.",
+      "owner": "npc-adelmo",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-libreta-basico",
+          "description": "Veintidós años de trabajos, en orden, con la letra grande de alguien que escribe apoyado en la rodilla.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-libreta-modelos",
+          "description": "Adelmo anota siempre la marca y el modelo. Los molinos que levantó cerca de los puntos del mapa son todos del mismo modelo, y ese modelo se empezó a fabricar en 1911. Las bases sobre las que los montó, en cambio, él no las hizo: ya estaban.",
+          "disclosure": "DISCOVERABLE",
+          "howDiscovered": "Leyendo las columnas de marca y modelo en vez de las de fecha."
+        }
+      ],
+      "conditionalProperties": [],
+      "discoveredProperties": [],
+      "temporalProperties": [],
+      "usageCount": 0,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-delfina",
+      "name": "Delfina Arce",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Veintiocho años, maestra, cuatro años en Villa Requena. La misma que despachó la carta de Aurelio el año pasado. Está más flaca y habla más rápido, y tiene el mapa clavado donde antes estaba el mapa de la provincia.",
+      "motivation": "Que alguien más lo vea. No busca que se lo expliquen: busca no ser la única persona del partido que sabe que los puntos hacen una línea.",
+      "fears": [
+        "Haber sido ella la que puso el punto de Villa Requena. Antes de eso el arco no cerraba.",
+        "Pedir el traslado y llevárselo puesto."
+      ],
+      "refusals": [
+        "No va a decir que es casualidad. Ya lo midió tres veces.",
+        "No entrega el mapa sin que alguien se comprometa a ir a mirar."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 20,
+        "inv-tomas": 20
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-ubaldo",
+      "name": "Ubaldo Leiva",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Sesenta y ocho años, puestero. Vive solo a doscientos metros del marco, en un rancho de una pieza. Pinta la puerta todos los años en septiembre porque lo hacía su padre, y no sabe por qué su padre lo hacía.",
+      "motivation": "Que no le cambien la rutina. Pinta, cobra, y la parte de no preguntar viene incluida en el trabajo desde que él era chico.",
+      "fears": [
+        "Que se muera y no quede quien pinte.",
+        "Que alguien pase por abajo del marco delante de él."
+      ],
+      "refusals": [
+        "No pasa por abajo del marco. Da la vuelta, siempre, aunque sean quince metros más.",
+        "No dice quién le paga. Dice «me pagan» y sigue."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-ubaldo-plata",
+          "content": "La plata le llega por giro postal desde la cabecera, dos veces al año, sin remitente. Empezó a llegarle a él cuando murió su padre, sin que nadie se lo avisara ni le preguntara si aceptaba.",
+          "disclosure": "KEEPER_SECRET",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 0,
+        "inv-tomas": 0
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-adelmo",
+      "name": "Adelmo Pais",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cuarenta y cinco años, molinero ambulante. Levanta y arregla molinos de viento en todo el partido y en tres partidos más, con un sulky cargado de fierros. Es el único hombre que estuvo parado en más de uno de los puntos del mapa sin saber que eran puntos de un mapa.",
+      "motivation": "Terminar el trabajo y seguir viaje. Le gusta que le pregunten de su oficio, que es distinto de que le pregunten de otra cosa.",
+      "fears": [
+        "Que le digan que su trabajo tiene algo que ver con esto.",
+        "La base sobre la que está trabajando ahora, aunque todavía no lo diga."
+      ],
+      "refusals": [
+        "No trabaja de noche. En ningún campo, por ninguna plata.",
+        "No presta la libreta: la lee él en voz alta si hace falta."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-adelmo-bases",
+          "content": "Hay bases en el partido que no encajan con ningún molino que él haya visto, y que sin embargo tienen la huella del perno gastada como si hubieran sostenido uno durante décadas. Cuando le toca una de ésas, la rellena y monta encima sin decir nada.",
+          "disclosure": "KEEPER_SECRET",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 5,
+        "inv-tomas": 5
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-remigia",
+      "name": "Remigia Ithurbide",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Setenta y cuatro años. Su familia tiene el campo desde 1868, y es la última que queda. Es la persona más cercana al pueblo grande que va a hablar con {el}, y la única que no lo nombra: dice «allá» y mueve la cabeza para el oeste.",
+      "motivation": "Que la dejen morirse en su campo. Contesta porque a esta altura le da lo mismo, no por confianza.",
+      "fears": [
+        "El oeste después de la siesta.",
+        "Que alguien de afuera vaya para allá desde su tranquera, porque después vuelven a preguntarle a ella."
+      ],
+      "refusals": [
+        "No nombra el pueblo. Ni una vez, ni preguntándoselo de frente.",
+        "No pisa la vuelta pelada, ni para cruzarla."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-remigia-abuelo",
+          "content": "Su abuelo compró el campo barato en 1868 y en el papel de compra hay una cláusula que ella nunca entendió: el comprador se obliga a mantener despejada una fracción circular del lote y a no edificar sobre ella. La cláusula no dice quién la exige.",
+          "disclosure": "KEEPER_SECRET",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": -5,
+        "inv-tomas": -5
+      },
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-carta",
+      "title": "La carta de Delfina Arce",
+      "kind": "letter",
+      "content": "Villa Requena, 2 de marzo de 1928.\n\nNo le escribo por Aurelio. De él le cuento cuando venga.\n\nFui a Del Valle en noviembre, como le dije que iba a ir, y encontré el renglón del setenta y ocho. Le tengo la copia acá y no se la mando por carta.\n\nLe escribo por otra cosa. Volviendo, desde la ventanilla, vi uno de los lugares que yo tenía anotado sin saber dónde quedaba. Lo reconocí por cómo me lo habían contado, que es una manera ridícula de reconocer un lugar, y aun así no me equivoqué. Cuando llegué lo puse en el mapa.\n\nY con ése los puntos quedaron en línea.\n\nNo le voy a explicar por carta lo que quiero decir con en línea, porque escrito suena a que me volví loca y medido no. Lo medí tres veces con la regla del pizarrón.\n\nVenga a verlo. No le pido que me lo explique. Le pido que lo mire, para que no sea yo sola la que lo sabe.\n\nD. Arce\n\nP.D.: el punto que faltaba para que cerrara lo puse yo, el año pasado, después de que usted preguntó por el brocal. Eso es lo que no me deja dormir.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-curato",
+      "title": "La copia del curato de Del Valle",
+      "kind": "transcript",
+      "content": "Copia a mano, con la letra de Delfina, de tres asientos del libro parroquial de Del Valle.\n\n1) Junio de 1878. Bautismo de urgencia administrado en el campo de los Requena, sin nombre del bautizado, «por hallarse el sujeto impedido de declararlo». Firma el cura. Al margen, con otra tinta: «no consta defunción».\n\n2) Febrero de 1881. A pedido de Evaristo Requena se deja constancia de que su hermano Benicio no ha fallecido y de que la familia lo da por ausente desde junio de 1878.\n\n3) Sin fecha, entre los folios de 1878 y 1879, media hoja suelta que no es del libro. Está escrita con la misma letra de las notas al margen y dice, entero:\n\n«Queda anotado el que fue en lugar de otro. La cuenta no se altera: se corre. Lo que se debía en el setenta y ocho se debe igual, y se debe en otra parte.»\n\nDebajo, una circunferencia atravesada por una línea vertical.",
+      "authenticity": "authentic",
+      "accuracy": "partially_accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-escritura",
+      "title": "La escritura del campo de los Ithurbide",
+      "kind": "file",
+      "content": "Escritura de compraventa, 1868. Papel sellado de la provincia, con la letra apretada de un escribano de la cabecera.\n\nLo normal ocupa dos carillas: linderos, precio, plazos.\n\nEn la tercera, entre las cláusulas de estilo, hay una que no es de estilo:\n\n«El comprador se obliga, por sí y por sus sucesores a perpetuidad, a mantener despejada de siembra, arboleda y edificación la fracción circular señalada en el croquis, y a no impedir el paso por ella. Esta obligación se transmite con el dominio y no admite dispensa.»\n\nEl croquis está al pie: un círculo, sin medidas, sin coordenadas y sin nombre.\n\nNo dice quién exige la obligación. No hay contraparte. La cláusula no tiene a quién reclamarle nada, y sin embargo se cumple desde hace sesenta años.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "escuela": {
+      "id": "escuela",
+      "name": "La escuela de Villa Requena",
+      "aliases": [
+        "escuela",
+        "aula",
+        "la escuela"
+      ],
+      "description": "Un aula de doce bancos con el techo de chapa y una estufa apagada, en marzo. Donde estaba el mapa de la provincia ahora hay un mapa del partido, más grande, clavado con cuatro chinches. Delfina Arce corrige cuadernos en el escritorio y no {lo} hace esperar.",
+      "atmosphere": [
+        "Los chicos están de vacaciones hasta la semana que viene. El aula suena distinto vacía.",
+        "Sobre el escritorio hay una regla de madera larga, de las de pizarrón, apoyada al lado de los cuadernos y no en su gancho.",
+        "Delfina mira el mapa cada tanto mientras habla, como quien controla que siga estando."
+      ],
+      "connections": [
+        "almacen"
+      ],
+      "itemsPresent": [
+        "it-mapa"
+      ],
+      "npcsPresent": [
+        "npc-delfina"
+      ],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": {
+        "sight": "Un aula limpia y un mapa que no es el que manda el Consejo.",
+        "sound": "Chapa caliente. Una mosca.",
+        "smell": "Tiza y kerosén."
+      },
+      "features": [
+        {
+          "id": "f-mapa-pared",
+          "names": [
+            "mapa",
+            "el mapa",
+            "mapa del partido",
+            "los puntos",
+            "pared"
+          ],
+          "description": "El mapa del partido, con siete puntos a lápiz que no venían impresos. Ninguno tiene nombre escrito al lado.",
+          "closerLook": "Cinco puntos están repasados muchas veces, hasta abrir el papel. Dos son de trazo fresco. Y hay una zona del oeste, grande, donde el mapa impreso tiene el nombre de un pueblo y Delfina no marcó nada: ni un punto, ni una raya, ni una nota. Es el único vacío del mapa, y está justo en el medio de la vuelta que hacen los siete.",
+          "examineSkill": "descubrir",
+          "exposure": 3,
+          "clue": {
+            "description": "Los siete puntos del mapa de Delfina rodean, sin tocarla, una zona del oeste que ella nunca marcó porque nadie le contó nunca nada de ahí.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-regla",
+          "names": [
+            "regla",
+            "regla de pizarrón",
+            "regla de madera"
+          ],
+          "description": "La regla larga del pizarrón, apoyada sobre el escritorio en vez de colgada.",
+          "closerLook": "Tiene marcas de lápiz en el canto, cortitas, hechas y borradas y hechas de nuevo. Alguien midió lo mismo muchas veces buscando equivocarse.",
+          "examineSkill": "descubrir",
+          "exposure": 1,
+          "clue": {
+            "description": "Delfina midió las distancias entre los puntos una y otra vez, buscando el error. Las marcas del canto de la regla son de las mediciones repetidas.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "almacen": {
+      "id": "almacen",
+      "name": "El almacén de ramos generales",
+      "aliases": [
+        "almacen",
+        "almacén",
+        "boliche",
+        "ramos generales"
+      ],
+      "description": "Mostrador de estaño, estantes hasta el techo y el olor de siempre. Es donde paran los que van de paso, y es de donde salieron los cinco rumores que Delfina anotó en tres años. Hay un sulky cargado de fierros atado en el palenque.",
+      "atmosphere": [
+        "Dos hombres toman en la punta del mostrador y bajan la voz cuando {lo} ven, y la vuelven a subir enseguida, que es peor.",
+        "El sulky de afuera tiene aspas de molino atadas con alambre y una caja de herramientas del tamaño de un cajón de manzanas.",
+        "El almacenero atiende sin preguntar nada, que en este pueblo es una manera de ser amable."
+      ],
+      "connections": [
+        "escuela",
+        "puerta"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-adelmo"
+      ],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sight": "Estantes hasta el techo y un sulky cargado de fierros en la puerta.",
+        "sound": "Vasos. Moscas. Un fierro que se acomoda solo en el sulky.",
+        "smell": "Yerba, kerosén, grasa de eje."
+      },
+      "features": [
+        {
+          "id": "f-libro-fiado",
+          "names": [
+            "libro",
+            "libro de fiado",
+            "cuaderno del almacen",
+            "las cuentas"
+          ],
+          "description": "El cuaderno del fiado, abierto sobre el mostrador, con las cuentas de los campos de alrededor.",
+          "closerLook": "Entre las cuentas de bolsas y kerosén hay un renglón que se repite dos veces por año, siempre en marzo y en septiembre, siempre por la misma cantidad, y siempre a nombre de Ubaldo Leiva: «almagre, preparado, 1 lata». No dice quién lo trae. El almacenero tampoco: dice que ya viene con el pedido.",
+          "examineSkill": "descubrir",
+          "exposure": 2,
+          "clue": {
+            "description": "Al almacén llega, dos veces al año, una lata de almagre ya preparado a nombre de Ubaldo Leiva. Nadie sabe decir quién la manda: viene con el pedido general.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "puerta": {
+      "id": "puerta",
+      "name": "El campo del marco",
+      "aliases": [
+        "puerta",
+        "marco",
+        "el marco",
+        "campo del marco",
+        "campo de la puerta"
+      ],
+      "description": "Ocho leguas al oeste. Un potrero grande sin una sola construcción en pie, y en el medio, parado solo, el marco de una puerta de ladrillo asentado sobre su propio umbral de piedra. No hay casa alrededor. No hay escombro. Sólo pasto y el marco, con las jambas pintadas de rojo hasta la altura de un hombre.",
+      "atmosphere": [
+        "El marco proyecta sombra de marco. Es lo único que hay para hacer sombra en media legua.",
+        "Se puede ver el horizonte a través del vano, igual que a los costados. Y sin embargo la vista da ganas de rodearlo.",
+        "El rancho de Ubaldo está a doscientos metros y tiene la puerta orientada para el otro lado."
+      ],
+      "connections": [
+        "almacen",
+        "molino"
+      ],
+      "itemsPresent": [
+        "it-tarro"
+      ],
+      "npcsPresent": [
+        "npc-ubaldo"
+      ],
+      "visited": false,
+      "umbralIntensity": 7,
+      "senses": {
+        "sight": "Un marco de puerta parado solo en un potrero, pintado de rojo hasta la altura de un hombre.",
+        "sound": "Viento, y el viento no silba en el vano como debería.",
+        "smell": "Pasto seco. Tierra colorada cuando se está cerca."
+      },
+      "features": [
+        {
+          "id": "f-marco",
+          "names": [
+            "marco",
+            "puerta",
+            "jambas",
+            "umbral",
+            "el vano"
+          ],
+          "description": "Ladrillo asentado a la cal, con el dintel entero y el umbral de piedra gastado en el medio, hundido por el paso de mucha gente durante mucho tiempo.",
+          "closerLook": "El umbral está gastado del lado de adentro y del lado de afuera por igual, y eso no pasa: una casa se desgasta más de un lado. Y la pintura roja está dada en las dos caras de las dos jambas —la que miraba a la calle y la que miraba al cuarto— con la misma mano y la misma vejez. Alguien pintó las cuatro caras cuando todavía había dos de ellas adentro de una casa.",
+          "examineSkill": "descubrir",
+          "exposure": 6,
+          "clue": {
+            "description": "El marco está pintado en las cuatro caras de las jambas con la misma mano y la misma antigüedad, incluidas las dos que quedaban dentro de la casa. Se pintó para cómo está ahora, cuando todavía no estaba así.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-cimientos",
+          "names": [
+            "cimientos",
+            "casa",
+            "escombro",
+            "restos",
+            "piso"
+          ],
+          "description": "Donde estuvo la casa no hay escombro ni cimiento a la vista. El pasto crece parejo, como si nunca se hubiera construido nada.",
+          "closerLook": "Pateando el pasto aparece el borde de un piso de ladrillo, veinte centímetros abajo, en perfecto estado. La casa no se cayó ni se quemó: se desarmó ladrillo por ladrillo y se llevaron todo, prolijo, sin dejar ni un pedazo. Todo menos el marco.",
+          "examineSkill": "descubrir",
+          "exposure": 4,
+          "clue": {
+            "description": "La casa del campo del marco no se cayó ni se quemó: la desarmaron ladrillo por ladrillo y se llevaron el material, dejando el marco parado a propósito.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "molino": {
+      "id": "molino",
+      "name": "La base sin molino",
+      "aliases": [
+        "molino",
+        "base",
+        "la base",
+        "base del molino",
+        "campo del molino"
+      ],
+      "description": "Cinco leguas más al oeste. Una base de mampostería de dos metros de lado, con los cuatro pernos de anclaje parados y sin nada encima. El molino que iba ahí no está, y el tanque australiano de al lado está lleno hasta el borde. La base tiene una faja de almagre alrededor, a la altura del zócalo.",
+      "atmosphere": [
+        "El tanque está lleno y no hay molino que lo llene. Nadie del campo comenta eso.",
+        "Los cuatro pernos están limpios de óxido en la parte de arriba, como si algo se hubiera apoyado ahí hasta hace poco.",
+        "Adelmo dejó las herramientas a diez metros de la base y trabaja yendo y viniendo, en vez de tenerlas al lado."
+      ],
+      "connections": [
+        "puerta",
+        "pasto"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sight": "Cuatro pernos parados sobre una base, y ningún molino.",
+        "sound": "El agua del tanque, quieta. Chirrido de veleta, y no hay veleta.",
+        "smell": "Agua encerrada y hierro."
+      },
+      "features": [
+        {
+          "id": "f-pernos",
+          "names": [
+            "pernos",
+            "anclaje",
+            "base",
+            "bulones",
+            "tornillos"
+          ],
+          "description": "Cuatro pernos de anclaje de hierro forjado, parados, con la rosca entera y la tuerca al lado de cada uno.",
+          "closerLook": "La huella del asiento está marcada en la mampostería alrededor de cada perno: décadas de una torre apoyada ahí, con el desgaste que deja el balanceo. Pero la separación entre pernos no corresponde a ninguna torre de las que se hacían cuando esta base se levantó. Corresponde a un modelo posterior, y bastante.",
+          "examineSkill": "mecanica",
+          "exposure": 5,
+          "clue": {
+            "description": "La base tiene el desgaste de décadas de molino encima, y la separación de sus pernos corresponde a un modelo de torre que se empezó a fabricar mucho después de que la base se levantara.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-faja",
+          "names": [
+            "faja",
+            "almagre",
+            "pintura",
+            "zocalo",
+            "zócalo"
+          ],
+          "description": "Una faja de almagre da toda la vuelta a la base, a la altura del zócalo, sin cortarse en ningún tramo.",
+          "closerLook": "Está dada por capas, muchas, una encima de la otra, y en el canto donde se descascara se pueden contar. Son bastantes más que los años que Adelmo lleva viniendo a este campo, y bastantes más que los que tiene el tanque.",
+          "examineSkill": "descubrir",
+          "exposure": 4,
+          "clue": {
+            "description": "La faja de almagre de la base tiene decenas de capas superpuestas: se viene pintando cada año desde mucho antes de que hubiera un tanque o un molino en ese campo.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "pasto": {
+      "id": "pasto",
+      "name": "El campo de la vuelta pelada",
+      "aliases": [
+        "pasto",
+        "vuelta",
+        "circulo",
+        "círculo",
+        "vuelta pelada",
+        "campo de remigia"
+      ],
+      "description": "El punto más al oeste de los siete, y el más cercano a lo que Remigia Ithurbide llama «allá». En un potrero por lo demás normal hay una vuelta perfecta de tierra pelada, de unos cuarenta metros, donde no crece nada. Ni pasto, ni cardo, ni yuyo. El borde es limpio como el de un plato.",
+      "atmosphere": [
+        "Desde acá, con el sol bajo, se ve el pueblo del oeste como una línea de arboleda. Remigia no mira para ese lado.",
+        "Adentro de la vuelta no hay hormigueros. Alrededor sí, y llegan hasta el borde exacto y doblan.",
+        "No hay pájaros. Se nota tarde, y cuando se nota ya no se puede dejar de notar."
+      ],
+      "connections": [
+        "molino"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-remigia"
+      ],
+      "visited": false,
+      "umbralIntensity": 9,
+      "senses": {
+        "sight": "Una vuelta de tierra pelada, perfecta, y al oeste una línea de arboleda.",
+        "sound": "Nada. Ésa es la cuestión.",
+        "smell": "Tierra, y ningún olor de campo."
+      },
+      "features": [
+        {
+          "id": "f-vuelta",
+          "names": [
+            "vuelta",
+            "circulo",
+            "círculo",
+            "tierra pelada",
+            "el borde"
+          ],
+          "description": "Cuarenta metros de tierra pelada, con el borde tan limpio que parece cortado.",
+          "closerLook": "La tierra de adentro no está quemada ni salitrosa ni compactada: es la misma tierra de afuera, y en un puñado se ve igual. No hay razón física para que no crezca nada. Y en el centro exacto, medio enterrada, hay una piedra chata que no es de acá: no hay canteras en cien leguas a la redonda.",
+          "examineSkill": "ciencia_naturales",
+          "exposure": 8,
+          "clue": {
+            "description": "La tierra de la vuelta pelada es idéntica a la de afuera y no tiene ninguna razón física para no dar pasto. En el centro hay una piedra chata que no puede haber salido de esta llanura.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-arboleda",
+          "names": [
+            "arboleda",
+            "oeste",
+            "pueblo",
+            "linea de arboles",
+            "horizonte"
+          ],
+          "description": "Al oeste, a unas tres leguas, una línea de arboleda más alta y más oscura que las cortinas de eucaliptos de los campos. Es lo único que interrumpe el horizonte.",
+          "closerLook": "No es una cortina plantada por un estanciero: es demasiado ancha y demasiado desprolija, y en el medio hay algo más alto que los árboles, angosto y derecho, que a esta distancia no se puede decir si es una torre, un campanario o una piedra. Remigia, si {lo} ve mirando para allá, deja de contestar.",
+          "examineSkill": "descubrir",
+          "exposure": 6,
+          "clue": {
+            "description": "A tres leguas al oeste hay una arboleda que no plantó ningún estanciero, y algo angosto y derecho que sobresale por encima de los árboles. Remigia deja de hablar si {lo} ve mirando para ese lado.",
+            "kind": "physical",
+            "reliability": "unknown"
+          }
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "id": "to-1868",
+      "description": "El abuelo de Remigia Ithurbide compra barato el campo del oeste. La escritura incluye una cláusula perpetua: mantener despejada una fracción circular y no impedir el paso por ella. No dice quién la exige.",
+      "when": {
+        "iso": "1868-04-10T00:00:00",
+        "precision": "day",
+        "display": "abril de 1868"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "to-1889",
+      "description": "Se levanta la base de mampostería del campo del molino. No hay registro de qué se montó encima, ni de quién la pagó.",
+      "when": {
+        "iso": "1889-11-01T00:00:00",
+        "precision": "month",
+        "display": "1889"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "to-1902",
+      "description": "Desarman la casa del campo del marco ladrillo por ladrillo y se llevan el material. Dejan el marco de la puerta parado, con las cuatro caras de las jambas ya pintadas desde antes.",
+      "when": {
+        "iso": "1902-09-15T00:00:00",
+        "precision": "month",
+        "display": "septiembre de 1902"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "to-1911",
+      "description": "Empieza a fabricarse el modelo de torre cuya separación de pernos corresponde a la base de 1889.",
+      "when": {
+        "iso": "1911-01-01T00:00:00",
+        "precision": "month",
+        "display": "1911"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "to-1927",
+      "description": "Delfina Arce agrega a su mapa el punto de Villa Requena, después de que alguien de afuera le preguntara por el brocal. Con ése, los siete puntos cierran el arco.",
+      "when": {
+        "iso": "1927-07-15T00:00:00",
+        "precision": "day",
+        "display": "julio de 1927"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "d-mapa-nuevo",
+      "npc": "npc-delfina",
+      "orden": 10,
+      "etiqueta": "Preguntarle qué cambió en el mapa",
+      "intencion": "Le pregunto a Delfina qué cambió en el mapa",
+      "claves": [
+        "que cambio",
+        "el mapa nuevo",
+        "los puntos nuevos",
+        "que hay de nuevo"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Dos cosas. —Se para y va hasta el mapa sin que haya que pedírselo—. Una: ubiqué el de la puerta. Ese lo tenía anotado desde el veinticinco y no sabía dónde quedaba, porque el que me lo contó era un carrero y me lo explicó por horas de viaje, no por leguas.\n\n—Lo vi desde el tren volviendo de Del Valle. Está a ocho leguas de acá, al oeste.",
+          "—Y dos: cuando lo puse, me di cuenta de que si los ordeno por el año en que me los contaron, cada uno cae más al oeste que el anterior. Todos. Sin una excepción.\n\nSe queda con el dedo apoyado en el papel.\n\n—Yo los anoté en el orden en que me los fueron contando viajeros distintos, que no se conocen entre ellos y que no sabían que yo anotaba. No hay manera de que eso salga ordenado."
+        ],
+        "pista": {
+          "description": "Ordenados por el año en que se los contaron, los puntos del mapa de Delfina avanzan cada uno más al oeste que el anterior, sin excepción. Los contaron viajeros distintos que no se conocían.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "avanzan cada uno más al oeste"
+      }
+    },
+    {
+      "id": "d-curato",
+      "npc": "npc-delfina",
+      "orden": 12,
+      "etiqueta": "Pedirle la copia que trajo de Del Valle",
+      "intencion": "Le pregunto a Delfina por la copia que trajo del curato",
+      "claves": [
+        "la copia",
+        "del valle",
+        "el curato",
+        "lo del setenta y ocho",
+        "1878"
+      ],
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—La tengo acá. —Abre el cajón del escritorio y saca tres hojas dobladas—. Tardé dos días. El cura nuevo me dejó mirar porque le dije que era para la escuela, y eso fue mentira, y me confesé de eso y de nada más.",
+          "—Los dos primeros asientos son lo que usted buscaba. El tercero no lo buscaba nadie: es media hoja suelta, metida entre folios, que no es del libro. La copié igual porque tiene el mismo dibujo que usted me hizo el año pasado en el margen del cuaderno."
+        ],
+        "pista": {
+          "description": "Delfina trajo del curato de Del Valle una copia a mano de tres asientos, y el tercero es media hoja suelta que no pertenece al libro parroquial. La tiene en el cajón del escritorio.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "media hoja suelta que no pertenece al libro"
+      }
+    },
+    {
+      "id": "d-quien-cuenta",
+      "npc": "npc-delfina",
+      "orden": 14,
+      "etiqueta": "Preguntarle quién le contó cada punto",
+      "intencion": "Le pregunto a Delfina quién le contó cada punto",
+      "claves": [
+        "quien le conto",
+        "los viajeros",
+        "quienes eran",
+        "de quien lo saco"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que reconstruya de memoria a siete desconocidos de tres años atrás"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Un carrero. Un mercachifle sirio. Un tasador de hacienda. Una mujer que iba a un velorio y perdió el tren. Un peón que venía de una cosecha. —Los cuenta con los dedos—. Y el molinero, que está en el almacén ahora mismo y que me contó dos.",
+          "—Ninguno era de acá. Ninguno volvió. Y ahora que lo digo en voz alta: a ninguno le pregunté yo. Todos me lo contaron solos, después de que yo les preguntara de dónde venían.",
+          "Se queda callada un segundo.\n\n—Yo pregunté de dónde venían. Ellos contestaron qué había de raro. Eso no es lo mismo, y yo lo anoté como si lo fuera."
+        ],
+        "pista": {
+          "description": "A ninguno de los viajeros les preguntó Delfina por rarezas: preguntó de dónde venían, y todos ofrecieron la rareza por su cuenta. El molinero Adelmo Pais le contó dos de los siete puntos.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Uf. Tres años. —Se aprieta los ojos—. Un carrero, seguro. Los otros los tengo mezclados y no le voy a inventar."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "avanzan cada uno más al oeste"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "todos ofrecieron la rareza por su cuenta"
+      }
+    },
+    {
+      "id": "d-vacio",
+      "npc": "npc-delfina",
+      "orden": 16,
+      "etiqueta": "Preguntarle por qué no hay ningún punto en el oeste",
+      "intencion": "Le pregunto a Delfina por qué no marcó nada en el oeste",
+      "claves": [
+        "el vacio",
+        "el oeste",
+        "por que no hay puntos",
+        "el medio del mapa"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "razon": "que diga en voz alta lo que ya pensó y no quiso escribir"
+      },
+      "cede": {
+        "actitud": 5,
+        "texto": [
+          "Tarda. Cuando contesta, contesta mirando el mapa y no a {el}.\n\n—Porque nadie me contó nada de ahí. En tres años, ni una vez. Y por el almacén pasa gente que viene de todos lados.",
+          "—Yo al principio pensé que era porque ahí no pasa nada. Después pensé que era porque de ahí no viene nadie. Y hace unos meses se me ocurrió la tercera, que es la que no me deja dormir.",
+          "—Que de ahí viene gente igual que de todos lados, y que a mí me contaron lo que había de raro alrededor y nadie, nunca, me contó lo que había de raro adentro. Eso no es que no pase nada. Eso es otra cosa."
+        ],
+        "pista": {
+          "description": "En tres años de preguntar en el almacén, nadie le contó nunca a Delfina nada raro del oeste, aunque por ahí pasa gente de todos lados. No es que no pase nada: es que de ahí no se cuenta.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        },
+        "exposicion": 5,
+        "cordura": 1
+      },
+      "esquiva": {
+        "texto": [
+          "—Porque no tengo nada anotado de ahí. —Y cambia de tema con una prolijidad que no le sale natural."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "rodean, sin tocarla, una zona del oeste"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "de ahí no se cuenta"
+      }
+    },
+    {
+      "id": "a-oficio",
+      "npc": "npc-adelmo",
+      "orden": 20,
+      "etiqueta": "Preguntarle por su oficio",
+      "intencion": "Le pregunto a Adelmo por su oficio",
+      "claves": [
+        "su oficio",
+        "molinero",
+        "que hace",
+        "los molinos"
+      ],
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Levanto, arreglo y bajo. —Le gusta que le pregunten, se le nota—. Cuatro partidos. Veintidós años. No hay molino de acá a Del Valle que yo no haya tocado.",
+          "—El trabajo es la base, no el molino. El molino viene en cajones y lo arma un chico con una llave. La base es la que decide si te dura veinte años o si al tercer viento se te acuesta.",
+          "Se limpia las manos en el pantalón.\n\n—Y las bases no las hago yo. Las bases ya están casi siempre. Uno llega y monta encima de lo que hay."
+        ],
+        "pista": {
+          "description": "Adelmo Pais levanta molinos en cuatro partidos desde hace veintidós años, y casi nunca hace las bases: llega y monta encima de bases que ya están.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "monta encima de bases que ya están"
+      }
+    },
+    {
+      "id": "a-dos-puntos",
+      "npc": "npc-adelmo",
+      "orden": 22,
+      "etiqueta": "Preguntarle qué le contó a la maestra",
+      "intencion": "Le pregunto a Adelmo qué le contó a la maestra",
+      "claves": [
+        "la maestra",
+        "que le conto",
+        "delfina",
+        "lo que conto en el almacen"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—¿A la señorita? —Se ríe—. Yo hablo mucho, ¿vio? Le habré contado media vida.",
+          "Piensa un poco.\n\n—Le conté lo de la base grande que no tiene molino, que la tengo que ir a ver justamente ahora. Y le conté lo del marco ese que hay en el campo de Leiva, porque paso por al lado dos veces al año y siempre me da no sé qué.",
+          "—No se lo conté como algo raro, ojo. Se lo conté como se cuenta el camino."
+        ],
+        "pista": {
+          "description": "Adelmo le contó a Delfina dos de los siete puntos —la base sin molino y el marco del campo de Leiva— sin considerarlos raros: los contó como quien describe el camino.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "monta encima de bases que ya están"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "los contó como quien describe el camino"
+      }
+    },
+    {
+      "id": "a-bases-raras",
+      "npc": "npc-adelmo",
+      "orden": 24,
+      "etiqueta": "Preguntarle si alguna base le llamó la atención",
+      "intencion": "Le pregunto a Adelmo si alguna base le llamó la atención",
+      "claves": [
+        "base rara",
+        "alguna base",
+        "algo raro en las bases",
+        "le llamo la atencion"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 15,
+        "razon": "que un hombre diga en voz alta lo que viene tapando con cemento hace años"
+      },
+      "cede": {
+        "actitud": 6,
+        "texto": [
+          "Deja la llave. Es lo primero que hace en toda la conversación que no es seguir trabajando.",
+          "—Hay bases que están gastadas de un molino que no estuvo. —Lo dice rápido, para sacárselo—. Usted mira el asiento del perno y le lee veinte años de balanceo. Y después mira la separación y no le cierra con ningún modelo de esa época. Con ninguno.",
+          "—La primera vez pensé que me equivocaba yo. La cuarta vez ya no.",
+          "—¿Y sabe qué hago? Relleno y monto encima. Porque el hombre me está pagando por un molino, no por una explicación. Y porque una vez montado, anda perfecto. Andan mejor que las que hago yo."
+        ],
+        "pista": {
+          "description": "Adelmo encontró al menos cuatro bases con el desgaste de décadas de un molino que, según la separación de los pernos, no podía existir todavía. Las rellena y monta encima, y andan mejor que las que hace él.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 6,
+        "revelaSecreto": "s-adelmo-bases"
+      },
+      "esquiva": {
+        "texto": [
+          "—Una base es una base. —Y vuelve a la llave, y la conversación se termina sin que él la termine."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "los contó como quien describe el camino"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "cuatro bases con el desgaste de décadas"
+      }
+    },
+    {
+      "id": "u-pintar",
+      "npc": "npc-ubaldo",
+      "orden": 30,
+      "etiqueta": "Preguntarle por qué pinta el marco",
+      "intencion": "Le pregunto a Ubaldo por qué pinta el marco",
+      "claves": [
+        "por que pinta",
+        "el marco",
+        "la pintura",
+        "quien le dijo"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Lo pintaba mi padre. —Está sentado en un cajón y no se levanta—. En septiembre, antes de las lluvias grandes. Cuando él se murió me llegó la plata a mí y seguí pintando.",
+          "—Nadie me dijo nada. Me llegó la plata y yo sabía qué había que hacer porque lo había visto toda la vida.",
+          "Escupe para el costado.\n\n—Cincuenta y un años pintando. Nunca le pregunté a mi padre y ahora no tengo a quién."
+        ],
+        "pista": {
+          "description": "Ubaldo Leiva pinta el marco cada septiembre desde hace cincuenta y un años. Heredó la tarea de su padre sin que nadie se la explicara ni se la pidiera: le empezó a llegar la plata y él ya sabía qué hacer.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "cincuenta y un años"
+      }
+    },
+    {
+      "id": "u-plata",
+      "npc": "npc-ubaldo",
+      "orden": 32,
+      "etiqueta": "Preguntarle quién le paga",
+      "intencion": "Le pregunto a Ubaldo quién le paga",
+      "claves": [
+        "quien le paga",
+        "la plata",
+        "el giro",
+        "de donde sale la plata"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que diga de dónde sale una plata que él prefiere no mirar de cerca"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Giro postal. Dos veces al año, marzo y septiembre. —Se encoge de hombros—. Lo cobro en la cabecera.",
+          "—Sin remitente. El del correo me lo dijo una vez y no me lo volvió a decir, y yo no volví a preguntar.",
+          "—Mire, {trato}: a mí me llega plata por pintar una puerta. Si yo empiezo a averiguar de dónde viene, capaz que deja de llegar. Y yo tengo sesenta y ocho años."
+        ],
+        "pista": {
+          "description": "A Ubaldo le llega la plata por giro postal sin remitente, dos veces al año, desde la cabecera. Nunca preguntó por miedo a que dejara de llegar.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-ubaldo-plata"
+      },
+      "esquiva": {
+        "texto": [
+          "—Me pagan. —Y se queda mirando el fogón hasta que la pregunta se enfría sola."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "cincuenta y un años"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "giro postal sin remitente"
+      }
+    },
+    {
+      "id": "u-pasar",
+      "npc": "npc-ubaldo",
+      "orden": 34,
+      "etiqueta": "Preguntarle por qué no pasa por abajo del marco",
+      "intencion": "Le pregunto a Ubaldo por qué no pasa por abajo del marco",
+      "claves": [
+        "por que no pasa",
+        "da la vuelta",
+        "pasar por abajo",
+        "el vano"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Porque no. —Y por primera vez {lo} mira a los ojos—. Porque es una puerta, {trato}. Uno no cruza una puerta ajena porque sí.",
+          "—Mi padre tampoco pasaba. Y no me lo dijo nunca: yo lo vi dar la vuelta cuando yo tenía seis años y di la vuelta atrás de él, y ya está.",
+          "Se queda un rato.\n\n—Una vez pasó uno. Un domador que paró acá, en el veinte o el veintiuno. Pasó de gracioso, ida y vuelta, riéndose. Después se sentó a tomar mate y estuvo callado como media hora, y después preguntó qué día era. Y cuando le dije, dijo que sí con la cabeza como si le hubieran confirmado algo, y ensilló y se fue sin terminar el mate."
+        ],
+        "pista": {
+          "description": "Ubaldo no cruza el vano y su padre tampoco cruzaba, sin que nadie se lo explicara. Un domador lo cruzó en 1920 o 1921, se quedó media hora callado, preguntó qué día era y se fue sin terminar el mate.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        },
+        "exposicion": 5
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "cincuenta y un años"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "preguntó qué día era"
+      }
+    },
+    {
+      "id": "r-vuelta",
+      "npc": "npc-remigia",
+      "orden": 40,
+      "etiqueta": "Preguntarle por la vuelta pelada",
+      "intencion": "Le pregunto a Remigia por la vuelta pelada",
+      "claves": [
+        "la vuelta",
+        "el circulo",
+        "la tierra pelada",
+        "por que no crece"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Está desde antes que yo. —No mira para el lado de la vuelta mientras habla—. Mi padre nació acá en el setenta y uno y ya estaba.",
+          "—Se probó de todo. Mi abuelo la aró. Mi padre la sembró tres años seguidos con semilla comprada. Yo le tiré una carrada de bosta cuando era joven y tenía fuerza.",
+          "—Nada. Ni un yuyo. Y la tierra es la misma que la de al lado, que da un trigo que da gusto."
+        ],
+        "pista": {
+          "description": "La vuelta pelada está desde antes de 1871. Tres generaciones de Ithurbide intentaron hacerla producir —arada, sembrada, abonada— y nunca creció nada, aunque la tierra es idéntica a la del resto del campo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 4
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "desde antes de 1871"
+      }
+    },
+    {
+      "id": "r-escritura",
+      "npc": "npc-remigia",
+      "orden": 42,
+      "etiqueta": "Pedirle ver la escritura del campo",
+      "intencion": "Le pregunto a Remigia por los papeles del campo",
+      "claves": [
+        "la escritura",
+        "los papeles",
+        "el titulo",
+        "papel de compra"
+      ],
+      "prueba": {
+        "skill": "credito",
+        "difficulty": "regular",
+        "razon": "que una mujer de setenta y cuatro le muestre los papeles del campo a un desconocido"
+      },
+      "cede": {
+        "actitud": 5,
+        "texto": [
+          "—Y bueno. —Se levanta con trabajo—. Total.",
+          "Vuelve con una carpeta atada con cinta de zapato y la deja sobre la mesa sin abrirla.",
+          "—Léala usted. Yo la leí una vez, cuando murió mi padre, y hay una parte que no entendí y no le pregunté a nadie. Me pareció que preguntar era peor."
+        ],
+        "pista": {
+          "description": "Remigia dejó sobre la mesa la carpeta con la escritura del campo y le dijo que la lea él: hay una parte que ella no entendió y nunca preguntó.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Los papeles del campo son los papeles del campo. —Y se queda callada el tiempo justo para que quede claro que no le gustó la manera de pedirlo.",
+          "Después se levanta igual, con trabajo, y vuelve con una carpeta atada con cinta de zapato.",
+          "—Mírelos acá. Yo me quedo. —Se sienta enfrente y no dice una palabra más en todo el rato, y esa parte sí es un castigo."
+        ],
+        "pista": {
+          "description": "Remigia dejó sobre la mesa la carpeta con la escritura del campo, de mala gana y sin moverse de enfrente.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "desde antes de 1871"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "dejó sobre la mesa la carpeta"
+      }
+    },
+    {
+      "id": "r-alla",
+      "npc": "npc-remigia",
+      "orden": 44,
+      "etiqueta": "Preguntarle por el pueblo del oeste",
+      "intencion": "Le pregunto a Remigia por el pueblo del oeste",
+      "claves": [
+        "el pueblo",
+        "el oeste",
+        "alla",
+        "allá",
+        "la arboleda"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 10,
+        "razon": "que hable de un lugar que decidió hace décadas no nombrar"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Allá. —Y no dice más por un rato largo, y el rato largo es la respuesta.",
+          "—Mi madre iba a misa a Del Valle. Treinta leguas de ida. Teniendo iglesia a tres.",
+          "—Yo le pregunté una vez, de chica, por qué íbamos tan lejos. Me dijo: porque allá la iglesia está, pero no es para nosotros. Y no me dijo más y yo no pregunté más, y eso fue en el ochenta y pico.",
+          "Se acomoda en la silla.\n\n—Van a decirle que somos gente de campo y que nos gusta el cuento. Puede ser. Pero fíjese usted, cuando pase por la cabecera, cuánta gente de allá conoce. Yo tengo setenta y cuatro años en este campo y no conocí a ninguno. Y está a tres leguas."
+        ],
+        "pista": {
+          "description": "Remigia nunca conoció en setenta y cuatro años a nadie del pueblo del oeste, que está a tres leguas. Su madre viajaba treinta leguas a misa a Del Valle teniendo iglesia a tres, porque «allá la iglesia está, pero no es para nosotros».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 8,
+        "cordura": 2,
+        "revelaSecreto": "s-remigia-abuelo"
+      },
+      "esquiva": {
+        "texto": [
+          "—De allá no sé nada. —Y es la única cosa que dice en toda la tarde que suena ensayada."
+        ]
+      },
+      "disponible": {
+        "op": "pista",
+        "contiene": "desde antes de 1871"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "no es para nosotros"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "carta",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 1,
+      "intencion": "Releo la carta de Delfina",
+      "etiqueta": "Releer la carta de Delfina",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-carta"
+      }
+    },
+    {
+      "id": "medir-mapa",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 4,
+      "intencion": "Mido las distancias del mapa con la regla",
+      "etiqueta": "Medir el mapa con la regla, como midió ella",
+      "visible": {
+        "op": "pista",
+        "contiene": "avanzan cada uno más al oeste"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-mapa",
+        "prop": "p-mapa-linea"
+      }
+    },
+    {
+      "id": "copiar-mapa",
+      "grupo": "usar",
+      "lugar": "escuela",
+      "orden": 6,
+      "intencion": "Copio el mapa para llevármelo",
+      "etiqueta": "Copiar el mapa para llevárselo",
+      "visible": {
+        "op": "propiedad",
+        "item": "it-mapa",
+        "prop": "p-mapa-linea"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "Copió el mapa a mano"
+      }
+    },
+    {
+      "id": "curato",
+      "grupo": "observar",
+      "lugar": "escuela",
+      "orden": 8,
+      "intencion": "Leo la copia que trajo del curato",
+      "etiqueta": "Leer la copia del curato",
+      "visible": {
+        "op": "pista",
+        "contiene": "media hoja suelta que no pertenece al libro"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-curato"
+      }
+    },
+    {
+      "id": "libro-fiado",
+      "grupo": "observar",
+      "lugar": "almacen",
+      "orden": 10,
+      "intencion": "Miro el libro de fiado del almacén",
+      "etiqueta": "Mirar el libro de fiado",
+      "hecha": {
+        "op": "pista",
+        "contiene": "Revisó el libro de fiado del almacén"
+      }
+    },
+    {
+      "id": "cruzar",
+      "grupo": "usar",
+      "lugar": "puerta",
+      "orden": 20,
+      "intencion": "Cruzo por abajo del marco",
+      "etiqueta": "Cruzar por abajo del marco",
+      "hecha": {
+        "op": "pista",
+        "contiene": "Cruzó el vano del marco"
+      }
+    },
+    {
+      "id": "mano",
+      "grupo": "usar",
+      "lugar": "puerta",
+      "orden": 22,
+      "intencion": "Paso solamente la mano por el vano y la miro",
+      "etiqueta": "Pasar sólo la mano por el vano, y mirarla",
+      "hecha": {
+        "op": "pista",
+        "contiene": "la mano se le adelanta"
+      }
+    },
+    {
+      "id": "tarro-luz",
+      "grupo": "observar",
+      "lugar": "puerta",
+      "orden": 24,
+      "intencion": "Miro el almagre del tarro contra la luz",
+      "etiqueta": "Mirar el almagre contra la luz",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-tarro",
+        "prop": "p-tarro-igual"
+      }
+    },
+    {
+      "id": "pernos-medir",
+      "grupo": "observar",
+      "lugar": "molino",
+      "orden": 30,
+      "intencion": "Mido la separación de los pernos de la base",
+      "etiqueta": "Medir la separación de los pernos",
+      "hecha": {
+        "op": "pista",
+        "contiene": "no podía existir todavía"
+      }
+    },
+    {
+      "id": "libreta-pedir",
+      "grupo": "hablar",
+      "lugar": "molino",
+      "orden": 32,
+      "intencion": "Le pido a Adelmo que lea la libreta",
+      "etiqueta": "Pedirle a Adelmo que lea su libreta",
+      "visible": {
+        "op": "pista",
+        "contiene": "cuatro bases con el desgaste de décadas"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-libreta",
+        "prop": "p-libreta-modelos"
+      }
+    },
+    {
+      "id": "piedra",
+      "grupo": "observar",
+      "lugar": "pasto",
+      "orden": 40,
+      "intencion": "Desentierro la piedra del centro de la vuelta",
+      "etiqueta": "Desenterrar la piedra del centro",
+      "visible": {
+        "op": "pista",
+        "contiene": "una piedra chata que no puede haber salido"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "La piedra del centro está trabajada"
+      }
+    },
+    {
+      "id": "escritura",
+      "grupo": "observar",
+      "lugar": "pasto",
+      "orden": 41,
+      "intencion": "Leo la escritura del campo",
+      "etiqueta": "Leer la escritura del campo",
+      "visible": {
+        "op": "pista",
+        "contiene": "dejó sobre la mesa la carpeta"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-escritura"
+      }
+    },
+    {
+      "id": "mirar-oeste",
+      "grupo": "observar",
+      "lugar": "pasto",
+      "orden": 42,
+      "intencion": "Miro la arboleda del oeste con atención",
+      "etiqueta": "Mirar la arboleda del oeste con atención",
+      "hecha": {
+        "op": "pista",
+        "contiene": "Se quedó mirando la arboleda del oeste"
+      }
+    },
+    {
+      "id": "ordenar",
+      "grupo": "observar",
+      "lugar": "pasto",
+      "orden": 44,
+      "intencion": "Ordeno todo lo que averigüé por fecha",
+      "etiqueta": "Ordenar por fecha todo lo que averiguó",
+      "visible": {
+        "op": "pistas",
+        "minimo": 8
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "El orden no es el que parecía"
+      }
+    },
+    {
+      "id": "fin-seguir",
+      "grupo": "decidir",
+      "lugar": "pasto",
+      "final": true,
+      "orden": 90,
+      "intencion": "Sigo para el oeste",
+      "etiqueta": "Seguir para el oeste, hacia lo que ella no nombra",
+      "visible": {
+        "op": "pista",
+        "contiene": "El orden no es el que parecía"
+      }
+    },
+    {
+      "id": "fin-anotar",
+      "grupo": "decidir",
+      "final": true,
+      "orden": 91,
+      "intencion": "Vuelvo a la escuela con todo y lo dejamos escrito",
+      "etiqueta": "Volver y dejarlo escrito con Delfina",
+      "visible": {
+        "op": "pista",
+        "contiene": "El orden no es el que parecía"
+      }
+    },
+    {
+      "id": "fin-pintar",
+      "grupo": "decidir",
+      "final": true,
+      "orden": 92,
+      "intencion": "Pinto el punto que sigue",
+      "etiqueta": "Pintar el punto que sigue, y entrar en la cuenta",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "El orden no es el que parecía"
+          },
+          {
+            "op": "pista",
+            "contiene": "cincuenta y un años"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-quemar",
+      "grupo": "decidir",
+      "final": true,
+      "orden": 99,
+      "intencion": "Quemo el mapa",
+      "etiqueta": "Quemar la copia del mapa",
+      "visible": {
+        "op": "pista",
+        "contiene": "Copió el mapa a mano"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-carta",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "releo la carta|leo la carta|la carta de delfina"
+          }
+        ]
+      }
+    },
+    {
+      "id": "medir-mapa",
+      "prioridad": 62,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escuela"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "mido las distancias|mido el mapa|con la regla"
+          }
+        ]
+      }
+    },
+    {
+      "id": "copiar-mapa",
+      "prioridad": 61,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escuela"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "copio el mapa|me llevo el mapa|copiar el mapa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "curato",
+      "prioridad": 63,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "escuela"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "leo la copia|leer la copia|los asientos copiados"
+          }
+        ]
+      }
+    },
+    {
+      "id": "libro-fiado",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "almacen"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "libro de fiado|el fiado|las cuentas del almacen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "escritura",
+      "prioridad": 63,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "pasto"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "leo la escritura|leer la escritura|leo los papeles del campo"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cruzar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "puerta"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "cruzo por abajo|paso por abajo|cruzo el marco|atravieso el marco|paso por el vano"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mano",
+      "prioridad": 71,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "puerta"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "paso.{0,20}la mano|meto la mano|solamente la mano"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tarro-luz",
+      "prioridad": 62,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "puerta"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "almagre contra la luz|el tarro contra la luz|miro el almagre"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pernos-medir",
+      "prioridad": 62,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "molino"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "separacion de los pernos|mido los pernos|los pernos"
+          }
+        ]
+      }
+    },
+    {
+      "id": "libreta-pedir",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "molino"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "lea la libreta|leer la libreta|la libreta"
+          }
+        ]
+      }
+    },
+    {
+      "id": "piedra",
+      "prioridad": 64,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "pasto"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "desentierro la piedra|la piedra del centro|desenterrar la piedra"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-oeste",
+      "prioridad": 62,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "pasto"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "la arboleda|miro el oeste|mirar al oeste"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ordenar",
+      "prioridad": 80,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "ordeno.{0,25}por fecha|ordenar por fecha|pongo todo en orden"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-seguir",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lugar",
+            "es": [
+              "pasto"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "sigo para el oeste|voy para alla|voy al pueblo|sigo camino|cruzo la vuelta"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-anotar",
+      "prioridad": 94,
+      "cuando": {
+        "op": "texto",
+        "patron": "vuelvo a la escuela con|le llevo el mapa|completo el mapa|se lo anoto a delfina"
+      }
+    },
+    {
+      "id": "fin-quemar",
+      "prioridad": 94,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "quemar",
+              "romper"
+            ]
+          },
+          {
+            "op": "texto",
+            "patron": "mapa"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-pintar",
+      "prioridad": 93,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "pinto.{0,20}(el|la|un)|pintar el siguiente|sigo pintando"
+          }
+        ]
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "seguir",
+      "title": "Lo que se camina",
+      "condition": "El investigador cruza la vuelta pelada y sigue para el oeste, hacia lo que Remigia no nombra."
+    },
+    {
+      "id": "anotar",
+      "title": "Lo que queda anotado",
+      "condition": "El investigador vuelve, completa el mapa de Delfina y lo deja escrito, con lo que eso significa para quien lo lea después."
+    },
+    {
+      "id": "quemar",
+      "title": "Lo que no se sigue",
+      "condition": "El investigador destruye el mapa para que nadie más camine la línea."
+    },
+    {
+      "id": "pintar",
+      "title": "Lo que se continúa",
+      "condition": "El investigador pinta el punto siguiente, y con eso entra en la cuenta en lugar de mirarla desde afuera."
+    }
+  ],
+  "opening": "El tren de la mañana {lo} deja en Villa Requena el 12 de marzo de 1928, y esta vez nadie {lo} espera en el andén: Delfina Arce le avisó que iba a estar en la escuela hasta el mediodía y que si no llegaba a tiempo, golpeara la ventana.\n\nEl pueblo está igual. La silla de paja ya no está contra el brocal.\n\nEn la escuela hay doce bancos vacíos, una estufa apagada porque es marzo, y donde antes colgaba el mapa de la provincia ahora hay uno del partido, más grande, clavado con cuatro chinches. Tiene siete puntos a lápiz que no venían impresos.\n\nDelfina levanta la vista de los cuadernos.\n\n—Vino —dice, y no es un saludo: es una cosa que anota.",
+  "bloqueoDecision": {
+    "op": "pista",
+    "contiene": "El orden no es el que parecía"
+  }
+}

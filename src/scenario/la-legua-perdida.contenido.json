@@ -1538,11 +1538,12 @@
       "npc": "npc-eusebio",
       "orden": 38,
       "etiqueta": "Pedirle que mida con usted",
-      "intencion": "Le pido a Eusebio que mida conmigo",
+      "intencion": "Le pregunto a Eusebio si me acompaña con la rueda",
       "claves": [
         "que mida conmigo",
         "medir juntos",
-        "que me acompane a medir"
+        "que me acompane a medir",
+        "me acompana con la rueda"
       ],
       "cede": {
         "actitud": 3,

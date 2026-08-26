@@ -21,6 +21,7 @@ import { LA_LEGUA } from './legua.ts';
 import { TERCER_UMBRAL } from './tercerumbral.ts';
 import { INVIERNO_DEBIDO } from './inviernodebido.ts';
 import { SUENO_DEBIDO } from './suenodebido.ts';
+import { ORDEN_DEBIDO } from './ordendebido.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -94,6 +95,20 @@ const ENTRADAS: EntradaCatalogo[] = [
     // lectura opcional sino el punto de partida: vuelve al mismo pueblo, con
     // la misma gente, un año después de lo que el investigador haya decidido.
     requiere: ['invierno-debido'],
+    continuacion: true,
+  },
+  {
+    scenario: ORDEN_DEBIDO,
+    cuando: '1928-03-12',
+    epoca: 'Marzo de 1928 · cruzando el partido',
+    duracion: 'Una hora y media aproximadamente',
+    // La primera que VUELVE en vez de ir, y la que paga cinco hilos que las
+    // dos anteriores dejaron colgando: los puntos del mapa de Delfina Arce.
+    // Se puede jugar suelta —la carta llega igual y Delfina explica el mapa
+    // desde cero— pero es la que más rinde encadenada: es la única aventura
+    // cuyo tema ES la cadena de consecuencias, y los ecos de las cinco
+    // anteriores aparecen en casi todas sus escenas.
+    requiere: ['sueno-debido'],
     continuacion: true,
   },
 ];

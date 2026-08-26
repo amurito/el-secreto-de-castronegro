@@ -995,7 +995,7 @@
       "npc": "npc-ramona",
       "orden": 21,
       "etiqueta": "Insistirle con para qué sirve",
-      "intencion": "Le insisto a Ramona con para qué sirve pintar el círculo",
+      "intencion": "Le pregunto otra vez a Ramona para qué sirve",
       "claves": [
         "para que sirve",
         "usted cree que sirve",
