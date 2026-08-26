@@ -1158,7 +1158,7 @@ qué tema no cedió en cada aventura, y si algo aparece ahí siempre —como
 apareció Eusebio, antes de tener nombre—, es la señal de que vale la pena
 investigarlo a mano.
 
-### 3.2-nonies Sexta aventura — EN DISEÑO · *el viaje de vuelta*
+### 3.2-nonies Sexta aventura ✔ HECHA — *El Orden Debido*, el viaje de vuelta
 
 **Sexto Umbral — causalidad.** El eje lo fija `canon.ts`, no yo. Y por primera
 vez en la campaña la aventura no va hacia afuera: vuelve. Los puntos que hay
@@ -1302,6 +1302,59 @@ anotadas con su caso de uso ya identificado:
 Las tres son de CoC 7e, así que no inventan nada. La sexta se escribe con lo
 que hay —`orientarse` cubre lo esencial— y cuando se agreguen se revisa si
 alguna escena de acá conviene repartirla mejor.
+
+### 3.2-decies "Pedir" no es un verbo del motor ✔ ARREGLADO
+
+Encontrado escribiendo la sexta, y resultó estar agazapado en dos aventuras
+ya publicadas. Un tema de conversación cuya `intencion` dice «Le pido a
+X…» no se puede preguntar nunca, **ni apretando el botón** —el jugador
+hace clic, y el motor contesta «Hacés eso» y describe el lugar, como si
+hubiera escrito una frase sin sentido.
+
+**La causa exacta, en dos archivos.** `intent.ts` recorre una tabla de
+verbos reconocidos —`preguntar` está, con «pregunt», «le consulto»,
+«indago», «interrog»; «pedir» no está en ningún lado de la tabla— y fija
+`verbExplicit = verb !== 'desconocido'` **antes** de asignarle un verbo
+de compromiso a una frase sin verbo reconocido. Con «le pido…», ningún
+verbo matchea, así que `verbExplicit` queda en `false` para siempre,
+aunque dos líneas más abajo el motor le ponga `verb = 'hablar'` porque el
+objetivo es un NPC. Y `offline.ts` tiene una rama —con un comentario que
+básicamente describe este caso al pie de la letra, «el jugador escribió
+un verbo que el motor no tiene, apuntando a algo que sí existe»— que
+desvía toda frase con `verbExplicit: false` hacia la respuesta genérica
+de observar, **antes** de llegar al `if (target.kind === 'npc') return
+talkTo(...)` que resolvería la conversación. La rama existe a propósito,
+para que «el aljibe» sin verbo se mire en vez de ignorarse; el problema
+es que no distingue esa frase de una que sí tenía verbo, sólo uno que no
+está en la tabla.
+
+**Se encontró en tres, no en una.** `e-medir` (La Legua Perdida, «Le pido
+a Eusebio que mida conmigo») y `r-para-que` (El Invierno Debido, «Le
+insisto a Ramona con para qué sirve pintar el círculo» — el verbo
+`insistir` tampoco está en la tabla) estaban rotos desde que se
+escribieron esas aventuras, publicados y sin que nada lo notara. Los tres
+se reescribieron con un verbo de la tabla, conservando alguna `clave` que
+la nueva frase siguiera conteniendo.
+
+**No se arregló el motor.** Cambiar el orden de esas dos líneas en
+`intent.ts`, o hacer que la rama de `offline.ts` chequee `target.kind`
+antes que `verbExplicit`, es la reparación real y de más alcance —
+arreglaría cualquier frase futura con «pedir», «solicitar», «insistir» o
+cualquier otro sinónimo fuera de la tabla, no sólo las tres que se
+encontraron—. No se tocó en esta ronda porque cambia cómo se clasifica
+TODA frase del juego, no sólo la de un tema, y ese es un cambio que pide
+su propia ronda de verificación, no un apurón al final de escribir una
+aventura.
+
+**Lo que sí queda, permanente: una prueba en la auditoría.** Por cada
+tema, en el lugar donde su NPC está, `prueba-auditoria.ts` clasifica la
+`intencion` exacta con el motor real y exige que resuelva `target.kind:
+'npc'` del NPC correcto **y** `verbExplicit: true`. No hace falta jugar
+para encontrarlo —es una propiedad de la frase, no del estado— así que
+corre en la capa estática, instantánea, sobre el catálogo entero. Verificada
+revirtiendo a mano la frase de `d-curato` a su forma rota: la prueba la
+caza con el motivo exacto. Las 86 intenciones de tema de las seis
+aventuras publicadas pasan.
 
 ### 3.3 La aventura original publicada
 

@@ -24,6 +24,7 @@ import { createCampaign, Turn, loadState } from './engine/engine.ts';
 import { CATALOGO } from './scenario/catalogo.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { accionesDisponibles } from './scenario/acciones.ts';
+import { classify } from './keeper/intent.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import {
@@ -195,6 +196,41 @@ async function auditar(esc: Scenario) {
   // ── 2. Banco de escenas ──────────────────────────────────────────────────
   const id = await createCampaign(esc, 'BANCO', 'z'.repeat(64));
   const base = (await loadState(id)).state;
+
+  // Todo tema, escrito con la intención exacta, tiene que llegar a `talkTo`.
+  //
+  // Encontrado jugando la sexta aventura, y ya había dos casos idénticos en
+  // aventuras publicadas (`e-medir` en La Legua Perdida, `r-para-que` en El
+  // Invierno Debido): `intent.ts` fija `verbExplicit = verb !== 'desconocido'`
+  // ANTES de asignarle un verbo de compromiso a una frase sin verbo
+  // reconocido, así que «le pido que…» —"pedir" no está en la tabla de
+  // verbos— queda con `verbExplicit: false` aunque el motor termine
+  // clasificándolo como `hablar`. Y `offline.ts` desvía toda frase con
+  // `verbExplicit: false` y un objetivo resuelto hacia la respuesta genérica
+  // «Hacés eso», ANTES de llegar al chequeo de `target.kind === 'npc'` que
+  // dispara `talkTo`. El tema nunca cede, ni con el botón: la etiqueta ofrece
+  // exactamente la frase rota.
+  //
+  // No hace falta jugar para encontrarlo: es una propiedad de la frase, no
+  // del estado. Se prueba una vez por tema, parado en el lugar donde su NPC
+  // está.
+  console.log('\nLOS TEMAS SE PUEDEN PREGUNTAR');
+  const temasRotos: string[] = [];
+  for (const t of esc.conversations) {
+    const loc = Object.values(esc.locations).find((l) => l.npcsPresent.includes(t.npc));
+    if (!loc) continue; // ya lo caza la validación de carga: NPC sin lugar.
+    const s: GameState = { ...base, world: { ...base.world, currentLocation: loc.id } };
+    const i = classify(s, t.intencion);
+    const idNpc = i.target.kind === 'npc' ? i.target.npc.id : null;
+    if (i.target.kind === 'npc' && idNpc === t.npc && i.verbExplicit) continue;
+    temasRotos.push(
+      `«${t.id}»: «${t.intencion}» clasifica verbo=${i.verb}${i.verbExplicit ? '' : ' (implícito)'}` +
+      `, target=${i.target.kind}${idNpc ? ' ' + idNpc : ''} — nunca llega a hablarle a ${t.npc}`,
+    );
+  }
+  for (const m of temasRotos) console.log(`   ✗ ${m}`);
+  check('la intención de cada tema clasifica como hablarle explícitamente a su NPC',
+    temasRotos.length === 0, `${esc.conversations.length} temas`);
   const declarado = loQueDeclara(esc);
   const entregable = loQuePuedeEntregar(esc, estadosDeBanco(base, esc));
 
