@@ -8,7 +8,7 @@
  * lo que permite publicar el juego como sitio estático sin tocar la interfaz.
  */
 
-import type { ClientState } from '../server/sanitize.ts';
+import type { ClientState } from './sanitize.ts';
 import type { Opcion } from '../scenario/acciones.ts';
 import type { DevelopmentReport } from '../engine/engine.ts';
 import type { Marca } from '../rules/desarrollo.ts';
@@ -21,12 +21,6 @@ export interface DevelopmentOffer {
 }
 
 export interface StatusInfo {
-  /** 'ia' = narra Claude · 'motor' = narra el motor */
-  keeperMode: 'ia' | 'motor';
-  /** Dónde corre el motor. */
-  runtime: 'servidor' | 'navegador';
-  model?: string;
-  effort?: string;
   scenarios: Array<{ id: string; title: string; premise: string }>;
 }
 

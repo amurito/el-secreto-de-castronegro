@@ -1,8 +1,8 @@
 # EL SECRETO DE CASTRONEGRO
 
-Motor narrativo interactivo de investigación y horror cósmico. Un **Keeper artificial**, no una novela con IA.
+Motor narrativo interactivo de investigación y horror cósmico, para *La Llamada de Cthulhu* 7ª edición. **Determinístico: sin IA, sin servidor y sin cuentas.**
 
-Deriva de: Canon **v0.7** · Operativa del Keeper **v0.8** · Motor **v0.9** · Prompt Maestro **v1.0** · Análisis Técnico **v1.1**.
+Deriva de: Canon **v0.7** · Operativa **v0.8** · Motor **v0.9** · Análisis Técnico **v1.1**. El canon de la campaña está en [CANON.md](CANON.md).
 
 ---
 
@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Abrí **http://localhost:5173**. **Es gratis y no necesita clave de API.**
+Abrí **http://localhost:5173**. No hace falta nada más: ni clave, ni cuenta, ni servidor.
 
 ### Publicado
 
@@ -31,25 +31,20 @@ Para probarlo localmente antes de publicar: `npm run preview` → http://localho
 
 > El despliegue no usa GitHub Actions porque el token de `gh` no tiene el permiso `workflow`. El workflow está escrito en `.github/workflows/publicar.yml` por si querés pasarlo a CI: `gh auth refresh -s workflow`, commiteá el archivo, y poné **Settings → Pages → Source: GitHub Actions**.
 
-El juego corre por defecto en **MODO MOTOR**: dados reales, estado real, reglas reales, gates reales, consecuencias reales, guardado real — y el propio motor clasifica la acción libre y compone la narración. No es un modo degradado: es el motor arbitrando solo. Si el juego no funcionara sin la IA, el modelo sería dueño del estado y la arquitectura estaría mal.
+El juego es **determinístico de punta a punta**: dados reales, estado real, reglas reales, gates reales, consecuencias reales, guardado real, y la prosa escrita a mano en el contenido de cada aventura. El motor arbitra y narra solo.
 
-Opcionalmente, para que narre Claude:
-
-```bash
-cp .env.example .env
-# poné tu clave en ANTHROPIC_API_KEY
-```
-
-Con clave cambia **quién escribe las oraciones**, nada más. Dados, gates, estado, guardado y auditoría son idénticos en los dos modos.
+> **Hubo un Keeper que narraba con Claude, y se eliminó** (marzo de 2026). El estado del juego nunca dependió de él —el modelo escribía las oraciones, el motor decidía todo lo demás— así que sacarlo no cambió una sola regla ni un solo desenlace. Lo que se fue con él: el servidor Node, el SDK de Anthropic, la necesidad de una clave, y el cuadro de escritura libre, que sólo aparecía en ese modo. El canon que le servía de contexto se conservó como documento en [CANON.md](CANON.md).
+>
+> Quedan **botones**: el repertorio lo calcula el motor desde el estado, así que nunca ofrece algo que las reglas todavía no permiten.
 
 Comandos:
 
 | | |
 |---|---|
-| `npm run dev` | servidor + interfaz |
+| `npm run dev` | interfaz en modo desarrollo |
 | `npm run build` | sitio estático en `dist/web` |
 | `npm run preview` | sirve el build estático, como quedaría publicado |
-| `npm run prueba` | prueba de humo del motor, sin servidor ni IA |
+| `npm run prueba` | prueba de humo del motor |
 | `npm run prueba:libre` | 40 acciones libres: ninguna sin respuesta, ninguna repetida |
 | `npm run prueba:opciones` | 30 turnos: nada ya hecho se reofrece, hay desbloqueos reales |
 | `npm run desplegar` | prueba, construye, audita y publica |
@@ -90,12 +85,11 @@ src/
   rules/      CoC 7e + Umbral. PURO: sin I/O, sin azar, sin red
   engine/     event log · RNG · cripto · reducers · gates · herramientas
               store.ts (interfaz) + store.node.ts (JSONL) + store.browser.ts (IndexedDB)
-  canon/      v0.7 indexado (truth × disclosure) + invariantes duras
-  scenario/   "Agua Quieta" + investigadores
-              aguaquieta.keeper.ts ← SPOILERS, sólo lo importa el Keeper IA
-  keeper/     intent · narrator · offline (modo motor) · prompt · tool loop · validadores
-  app/        api.ts (interfaz) + api.http.ts (servidor) + api.local.ts (navegador)
-  server/     Fastify + SSE + sanitización
+  scenario/   las seis aventuras + investigadores
+              <aventura>.contenido.json ← lugares, NPC, temas, escenas, desenlaces
+              <aventura>.logica.ts      ← sólo el `resolver` de cada escena
+  keeper/     intent · narrator · offline (el motor que arbitra y narra)
+  app/        api.ts (interfaz) + api.local.ts (navegador) + sanitize.ts
   web/        React
 ```
 
@@ -107,15 +101,15 @@ Tres cambios lo hicieron posible, y ninguno es un parche:
 
 **Almacenamiento intercambiable** (`engine/store.ts`). La interfaz no importa nada de Node ni del navegador; las implementaciones se registran al arrancar. Por eso el bundle del navegador no arrastra `node:fs`. En IndexedDB los eventos se escriben con `add`, no con `put`: **la base de datos misma rechaza sobrescribir un evento pasado**. La invariante "el pasado es de sólo lectura" deja de depender de la disciplina del código.
 
-**Una API, dos implementaciones** (`app/api.ts`). La interfaz reproduce el servidor; `App.tsx` no sabe cuál está usando.
+**Una sola API** (`app/api.ts`). Hubo dos implementaciones —una contra el servidor, otra en la pestaña— y quedó la local cuando se eliminó el servidor.
 
-**Regla de dependencias:** `rules` no importa nada · `engine` importa `rules` · `keeper` importa `engine` · **`engine` nunca importa `keeper`**. Si esa flecha se invierte, el modelo pasó a ser dueño del estado.
+**Regla de dependencias:** `rules` no importa nada · `engine` importa `rules` · `keeper` importa `engine` · **`engine` nunca importa `keeper`**. La flecha se mantiene: quien narra depende del estado, nunca al revés.
 
 ### Los dos ejes de canon
 
 `truth_level` (qué tan verdadero) × `disclosure` (quién puede saberlo). Ejes independientes, porque un hecho puede ser **canon y secreto a la vez** — la existencia del Primer Rostro es exactamente eso.
 
-`SEALED` es la garantía dura: nunca entra al contexto del modelo. Lo que no está en la ventana no puede filtrarse, ni por prompt injection ni por presión del jugador.
+Lo marcado `SEALED` no se escribe en el contenido de ninguna aventura publicada, y `npm run revisar:bundle` lo comprueba antes de publicar. Ver [CANON.md](CANON.md).
 
 ### Las acciones
 
@@ -127,23 +121,23 @@ El juego se juega **eligiendo acciones**, no escribiendo. La lista sale del moto
 
 Tres familias se generan solas desde el estado —detalles sin mirar, objetos que se pueden levantar, salidas—, así que agregar un detalle al escenario alcanza para que aparezca como opción.
 
-Las opciones las calcula el motor **en los dos modos**. El modelo no las inventa: por eso nunca ofrece algo que el estado no permite todavía. La escritura libre sólo aparece con Claude narrando, que es el único modo donde una frase cualquiera se resuelve bien.
+**No hay escritura libre, a propósito.** El repertorio del motor lo define el contenido de cada aventura, así que un cuadro de texto prometería una libertad que no hay. Los botones salen del estado: nunca ofrecen algo que las reglas todavía no permiten.
 
 `npm run prueba:opciones` juega 30 turnos y falla si alguna acción se ofrece con su condición de "hecha" ya cumplida, si no hay desbloqueos, o si la lista deja de cambiar.
 
-### El modo gratuito: cómo narra el motor
+### Cómo narra el motor
 
 Tres piezas en `src/keeper/`:
 
-**`intent.ts`** descompone lo que escribís en verbo + objetivo + matices, y lo clasifica en las cinco categorías de v0.9 §11: trivial, narrativa, con tirada, imposible, **requiere aclaración**. Esa última existe para que una acción no reconocida no sea un error: es el Keeper pidiendo precisión dentro de la ficción.
+**`intent.ts`** descompone la intención de cada botón en verbo + objetivo + matices, contra una tabla de ~31 verbos con sus raíces en español. Es una lista cerrada y a mano: un verbo que no está ahí no se reconoce. `npm run prueba:auditoria` comprueba que las intenciones de todos los temas de conversación de las seis aventuras clasifiquen bien — un bug real, encontrado escribiendo la sexta y presente en dos aventuras ya publicadas.
 
 **`narrator.ts`** compone la prosa desde el estado, no desde cadenas fijas. Nunca repite el mismo párrafo: `pickVariant` lleva cuenta de lo dicho. La hora, la exposición al Umbral y la estabilidad tiñen las descripciones — a exposición alta el mundo empieza a fallar en el texto.
 
-**`offline.ts`** enruta 30 verbos y ejecuta **exactamente las mismas herramientas validadas** que usaría el Keeper IA.
+**`offline.ts`** enruta los verbos y ejecuta las herramientas validadas del motor: las mismas que registran eventos, tiran dados y mueven el estado.
 
-El escenario aporta la superficie: cada localización tiene **detalles examinables** (el brocal, la roldana, la tierra, el sombrero, la ventana, el barro de la orilla) con su propia tirada, su exposición y su pista. Sin eso, "miro la tierra alrededor del aljibe" no tendría dónde agarrarse.
+El escenario aporta la superficie: cada localización tiene **detalles examinables** (el brocal, la roldana, la tierra, el sombrero, la ventana, el barro de la orilla) con su propia tirada, su exposición y su pista. De ahí salen solos los botones de "mirar X de cerca".
 
-`npm run prueba:libre` dispara 40 acciones escritas como las escribiría una persona y falla si alguna queda sin respuesta o si dos respuestas salen idénticas.
+`npm run prueba:libre` dispara 40 acciones escritas como las escribiría una persona y falla si alguna queda sin respuesta o si dos respuestas salen idénticas. Es la red que sostiene el clasificador.
 
 ### RNG verificable
 
@@ -165,7 +159,7 @@ La semilla se revela sólo al final: antes permitiría predecir las tiradas que 
 
 ## Estado
 
-**Funciona:** motor completo · dados D100 con grados, dificultades y dados de bonificación/penalización · las tres variables de cordura · inventario con propiedades ocultas y gates · tablero de investigación · tiempo diegético · muerte permanente con continuidad · consecuencias persistentes · guardado · auditoría del azar · Keeper IA con tool loop y validadores · modo motor.
+**Funciona:** motor completo · dados D100 con grados, dificultades y dados de bonificación/penalización · las tres variables de cordura · inventario con propiedades ocultas y gates · tablero de investigación · tiempo diegético · muerte permanente con continuidad · consecuencias persistentes · guardado · auditoría del azar · seis aventuras encadenadas.
 
 **Falta (post-MVP):** combate completo · bestiario · magia · los Siete Umbrales · multijugador · mapas · imágenes · Nueva Partida+ · generación procedural · creación de investigador.
 
@@ -173,9 +167,9 @@ La semilla se revela sólo al final: antes permitiría predecir las tiradas que 
 
 Si el motor corre en el navegador, **el escenario tiene que estar en el navegador**. Un jugador que abra las herramientas de desarrollo y lea el JavaScript puede spoilearse la aventura. Eso es cierto de cualquier juego offline que existió jamás y no tiene arreglo real: cifrarlo sería teatro, porque la clave también tendría que estar ahí.
 
-Lo que sí se puede hacer, y está hecho: **no enviar lo que no se usa**. El texto que existe sólo para instruir al Keeper IA —la verdad de la aventura, las notas de dirección de cada localización, la lista de lo que está prohibido revelar, la guía con las rutas y los falsos caminos— vive en `scenario/aguaquieta.keeper.ts`, que sólo importa el servidor. En el build estático nadie lo importa y el empaquetador lo descarta entero. `npm run revisar:bundle` lo comprueba, y el workflow de publicación aborta si alguna vez se cuela.
+Lo que sí se puede hacer, y está hecho: **no enviar lo que no se usa**. `npm run revisar:bundle` audita el JavaScript publicado y aborta el despliegue si encuentra la verdad de una aventura, la lista de lo sellado o cualquier otro texto que el jugador no debería poder leer sin jugar.
 
-Resultado: para spoilearte hay que leer JavaScript minificado y reconstruir la solución desde los fragmentos de texto del escenario, no simplemente encontrar un párrafo que la explique. En el modo servidor no existe ni ese riesgo, porque el escenario nunca sale de la máquina.
+Resultado: para spoilearte hay que leer JavaScript minificado y reconstruir la solución desde los fragmentos de texto del escenario, no simplemente encontrar un párrafo que la explique.
 
 **Pendiente de verificación:** las tablas propietarias de CoC 7e (bonificación de daño, Build, umbral exacto de pifia, pérdidas de SAN por criatura, locura temporal e indefinida) están marcadas con `⚠` en el código. Hay que verificarlas contra el manual licenciado antes de darlas por buenas. El código implementa la **mecánica**; ninguna tabla propietaria se transcribe.
 

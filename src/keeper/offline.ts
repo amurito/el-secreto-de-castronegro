@@ -90,7 +90,6 @@ export async function runOfflineTurn(
   return {
     narration,
     options: accionesDisponibles(comoSiYaNarrado, scenario),
-    usedModel: false,
   };
 }
 

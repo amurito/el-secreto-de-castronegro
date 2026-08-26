@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Motor narrativo interactivo — Keeper artificial. Canon v0.7 / Keeper v0.8 / Motor v0.9 / Prompt v1.0",
+  "description": "Motor narrativo interactivo determinístico — La Llamada de Cthulhu 7e. Canon v0.7 / Motor v0.9",
   "scripts": {
-    "dev": "concurrently -n servidor,web -c cyan,magenta \"npm:dev:server\" \"npm:dev:web\"",
-    "dev:server": "tsx watch src/server/index.ts",
-    "dev:web": "vite",
+    "dev": "vite",
     "build": "tsc -p tsconfig.check.json --noEmit && vite build",
     "preview": "vite preview --port 4173",
     "check": "tsc -p tsconfig.check.json --noEmit",
@@ -42,9 +40,6 @@
     "prueba:todo": "npm run prueba:cripto && npm run prueba && npm run prueba:libre && npm run prueba:opciones && npm run prueba:desenlaces && npm run prueba:social && npm run prueba:umbral && npm run prueba:desarrollo && npm run prueba:desacople && npm run prueba:legua && npm run prueba:tercer-umbral && npm run prueba:invierno && npm run prueba:sueno && npm run prueba:campana && npm run prueba:creacion && npm run prueba:tiradas && npm run prueba:auditoria && npm run prueba:tratamiento && npm run prueba:critico && npm run prueba:cordura && npm run prueba:fobias && npm run prueba:permeabilidad && npm run prueba:combate && npm run prueba:mitos && npm run prueba:condiciones && npm run prueba:contenido && npm run build && npm run revisar:bundle"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.70.0",
-    "@fastify/static": "^8.0.0",
-    "fastify": "^5.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.24.1"
@@ -54,7 +49,6 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "concurrently": "^9.1.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite": "^6.0.3"

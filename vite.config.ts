@@ -7,14 +7,9 @@ export default defineConfig({
   // Rutas relativas: el sitio funciona igual servido desde la raíz o desde
   // un subdirectorio, que es como GitHub Pages publica los repos.
   base: './',
+  // Sin proxy: no hay servidor detrás. El motor corre entero en la pestaña.
   server: {
     port: 5173,
-    proxy: {
-      '/api': {
-        target: `http://localhost:${process.env.CASTRONEGRO_PORT ?? 8787}`,
-        changeOrigin: true,
-      },
-    },
   },
   build: {
     outDir: 'dist/web',

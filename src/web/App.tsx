@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Sheet, RollCard, Board, Inventory, Documents, RollHistory, Rivales } from './components.tsx';
 import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
-import { createHttpApi, serverAvailable } from '../app/api.http.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
 import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
@@ -18,24 +17,15 @@ interface Line { id: string; kind: string; text: string }
 const ORDEN_GRUPOS: GrupoAccion[] = ['observar', 'hablar', 'usar', 'mover', 'decidir'];
 
 /**
- * Elige dónde corre el motor.
+ * Dónde corre el motor: en la pestaña, siempre.
  *
- * Con `npm run dev` hay servidor Node detrás del proxy de Vite: se usa, y así
- * puede narrar Claude con la clave a salvo del lado del servidor. Publicado
- * como sitio estático no hay servidor y el motor corre entero en la pestaña,
- * con el log en IndexedDB.
- *
- * Sólo se sondea el servidor cuando puede haberlo. En el build estático el
- * sondeo fallaría siempre y dejaría un error en la consola en cada carga, que
- * en un juego publicado se lee como si algo estuviera roto.
- *
- * Para servir el build detrás del servidor Node y conservar el Keeper IA:
- *   VITE_MODO=servidor npm run build
+ * Antes esto elegía entre un servidor Node —que existía para que narrara
+ * Claude con la clave a salvo del lado del servidor— y el motor local. Esa
+ * rama se eliminó junto con el servidor: el juego es determinístico, la prosa
+ * está escrita a mano en el contenido de cada aventura, y todo corre en el
+ * navegador con el log en IndexedDB. No hace falta servidor ni clave de API.
  */
 async function elegirApi(): Promise<GameApi> {
-  const puedeHaberServidor =
-    import.meta.env.DEV || import.meta.env.VITE_MODO === 'servidor';
-  if (puedeHaberServidor && (await serverAvailable())) return createHttpApi();
   return createLocalApi();
 }
 
@@ -105,7 +95,6 @@ export function App() {
   const [lines, setLines] = useState<Line[]>([]);
   const [streaming, setStreaming] = useState('');
   const [busy, setBusy] = useState(false);
-  const [action, setAction] = useState('');
   const [options, setOptions] = useState<Opcion[]>([]);
   /**
    * Marcado de opciones nuevas. Dos conjuntos:
@@ -124,7 +113,6 @@ export function App() {
   const [pistasVistas, setPistasVistas] = useState(0);
   const [tab, setTab] = useState<Tab>('tablero');
   const [error, setError] = useState<string | null>(null);
-  const [cost, setCost] = useState<any>(null);
   /** Escenario elegido para crear personaje propio. null = no estamos creando. */
   const [creando, setCreando] = useState<string | null>(null);
   /** Campaña del simulador de combate. null = no estamos en el galpón. */
@@ -147,7 +135,6 @@ export function App() {
   const colRightRef = useRef<HTMLDivElement>(null);
   const arrastrandoPie = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     elegirApi().then(async (a) => {
@@ -327,7 +314,6 @@ export function App() {
     // desde otro panel, hay que llevarlo a donde va a pasar algo.
     setPanel('historia');
     setLines((l) => [...l, { id: `p-${Date.now()}`, kind: 'player', text }]);
-    setAction('');
 
     let acc = '';
     try {
@@ -338,7 +324,6 @@ export function App() {
           case 'roll': setLastRoll(msg.data); break;
           case 'state': setState(msg.data); break;
           case 'options': aplicarOpciones((msg.data as Opcion[]) ?? []); break;
-          case 'cost': setCost(msg.data); break;
           case 'error': setError(String(msg.data)); break;
           default: break;
         }
@@ -349,7 +334,6 @@ export function App() {
 
     if (acc) setLines((l) => [...l, { id: `k-${Date.now()}`, kind: 'keeper', text: acc }]);
     setStreaming(''); setBusy(false);
-    setTimeout(() => inputRef.current?.focus(), 50);
   }
 
   async function continueWith(investigatorId: string) {
@@ -394,15 +378,13 @@ export function App() {
       <div className="start">
         <div className="start-inner">
           <h1 className="title">El Secreto de Castronegro</h1>
-          <p className="subtitle">Motor narrativo interactivo · Keeper artificial</p>
+          <p className="subtitle">La Llamada de Cthulhu · motor narrativo interactivo</p>
           {!status && <div className="mode">Iniciando…</div>}
           {status && (
-            <div className={`mode ${status.keeperMode === 'ia' ? 'mode-ia' : 'mode-motor'}`}>
-              {status.keeperMode === 'ia'
-                ? `Keeper IA — ${status.model}, esfuerzo ${status.effort}. La clave vive en el servidor.`
-                : status.runtime === 'navegador'
-                  ? 'MODO MOTOR · todo corre en esta pestaña. Sin servidor, sin clave, sin costo. Los dados, el estado y el guardado son reales; la narración la compone el motor. Tu partida se guarda en este navegador.'
-                  : 'MODO MOTOR — sin clave de API. Dados reales, estado real, reglas reales; la narración la genera el motor. Poné ANTHROPIC_API_KEY en .env para que narre Claude.'}
+            <div className="mode mode-motor">
+              Todo corre en esta pestaña. Sin servidor, sin cuentas y sin costo.
+              Los dados, el estado y el guardado son reales, y tu partida queda
+              en este navegador.
             </div>
           )}
           {/* Una tarjeta por aventura, en el orden cronológico del universo y
@@ -602,34 +584,12 @@ export function App() {
                 </div>
               ))}
 
-            {/* La escritura libre sólo aparece con Claude narrando: es el único
-                modo donde una frase cualquiera se resuelve bien. En modo motor
-                el repertorio es acotado y prometer libertad total mentiría. */}
-            {status?.keeperMode === 'ia' && (
-              <div className="input-row">
-                <textarea
-                  ref={inputRef}
-                  className="action-input"
-                  placeholder="O escribí lo que quieras hacer."
-                  value={action}
-                  rows={2}
-                  disabled={busy}
-                  onChange={(e) => setAction(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(action); }
-                  }}
-                />
-                <button className="primary send" onClick={() => send(action)} disabled={busy || !action.trim()}>
-                  {busy ? '…' : 'Actuar'}
-                </button>
-              </div>
-            )}
+            {/* Sin escritura libre, a propósito. El repertorio del motor es
+                acotado —lo define el contenido de cada aventura— así que un
+                cuadro de texto prometería una libertad que no hay. Esta caja
+                ya estaba oculta salvo con Claude narrando; al eliminarse ese
+                modo, se eliminó también. */}
 
-            {cost && (
-              <div className="cost">
-                caché leído {cost.cacheRead} · escrito {cost.cacheWrite} · entrada {cost.inputTokens} · salida {cost.outputTokens} tokens
-              </div>
-            )}
           </div>
         )}
       </main>

@@ -1356,6 +1356,51 @@ revirtiendo a mano la frase de `d-curato` a su forma rota: la prueba la
 caza con el motivo exacto. Las 86 intenciones de tema de las seis
 aventuras publicadas pasan.
 
+### 3.2-undecies Se eliminó el Keeper IA ✔ HECHO
+
+Decisión del jugador, marzo de 2026: **quedan los botones y el motor; se va
+todo lo que existía para que narrara Claude.**
+
+**Por qué se pudo hacer sin romper nada.** El modelo nunca fue dueño del
+estado. La regla de dependencias del proyecto —`engine` jamás importa
+`keeper`— existía precisamente para esto: el Keeper IA escribía las
+oraciones y el motor decidía tiradas, gates, consecuencias, desenlaces y
+guardado. Sacarlo no cambió **una sola regla ni un solo desenlace**, y la
+batería completa pasó en verde a la primera.
+
+**Qué se borró:** `src/server/` entero (Fastify + SSE), `keeper/keeper.ts`
+(el tool loop contra el SDK), `keeper/prompt.ts`, `keeper/validate.ts`,
+`keeper/context.ts`, `app/api.http.ts`, `scenario/aguaquieta.keeper.ts`
+(el briefing con spoilers), `.env.example`, y las dependencias
+`@anthropic-ai/sdk`, `fastify`, `@fastify/static` y `concurrently` —110
+paquetes menos en `node_modules`—. `npm run dev` ahora es sólo Vite, y
+`vite.config.ts` perdió el proxy a `/api`.
+
+**Dos cosas que NO eran de la IA aunque lo parecieran, y se conservaron:**
+
+- `server/sanitize.ts` lo importaban `api.local.ts` y `api.ts` —es del modo
+  local, vivía en la carpeta equivocada—. Movido a `app/sanitize.ts`.
+- `canon/canon.ts` era el prefijo de contexto del Keeper, pero **contenía la
+  biblia de canon entera**: los siete Umbrales, las invariantes duras, la
+  escalera de revelación y la lista de lo sellado. El ROADMAP y
+  `CANON-MODULO-ORIGINAL.md` la citan como autoridad. Se conservó como
+  [CANON.md](CANON.md), que ya no lee ningún programa: la leen las personas
+  que escriben aventuras.
+
+**Y una corrección a algo que se dijo antes en este archivo.** Al documentar
+el bug de los verbos se dijo que el riesgo remanente era «sobre texto libre
+que un jugador tipee con sus propias palabras». Eso era falso: el cuadro de
+escritura libre estaba gateado detrás de `status.keeperMode === 'ia'`, así
+que **en el sitio publicado nunca hubo entrada libre**, sólo botones. El
+clasificador de verbos sólo vio jamás las intenciones que escribimos
+nosotros en el contenido, que es exactamente lo que la prueba nueva de
+3.2-decies cubre por completo. Al eliminarse el modo IA, esa caja quedó como
+código muerto y se eliminó también.
+
+**Qué queda, entonces:** un juego determinístico que corre entero en la
+pestaña, sin servidor, sin cuentas, sin clave y sin costo, con el log en
+IndexedDB. Que es, exactamente, como se venía jugando.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

@@ -38,10 +38,11 @@ const PROHIBIDO: Array<[string, string]> = [
   ['notas de dirección por lugar', 'centro de gravedad'],
   ['guía de dirección', 'FALSOS CAMINOS'],
   ['dónde está la ruta testimonial', 'actitud ≥ 40'],
-  ['system prompt del Keeper IA', 'Sos el KEEPER'],
-  ['SDK de Anthropic', 'anthropic-ai'],
+  // El canon SELLADO ya no vive en código —se eliminó junto con el Keeper IA,
+  // ver CANON.md— pero el chequeo se queda: si alguien vuelve a escribir la
+  // identidad del Primer Rostro en el contenido de una aventura, tiene que
+  // saltar acá antes de publicarse.
   ['módulos de Node', 'node:fs'],
-  ['servidor', 'fastify'],
 ];
 
 const REQUERIDO: Array<[string, string]> = [

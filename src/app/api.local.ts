@@ -20,7 +20,7 @@ import { ARMA_POR_ID } from '../rules/armas.ts';
 import { toClientRoll } from '../shared/protocol.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
-import { sanitizeForClient } from '../server/sanitize.ts';
+import { sanitizeForClient } from './sanitize.ts';
 import { conTrato } from '../rules/tratamiento.ts';
 import type { GameState } from '../shared/types.ts';
 import type { GameApi, StatusInfo, TurnEvent } from './api.ts';
@@ -75,8 +75,6 @@ export function createLocalApi(): GameApi {
   return {
     async status(): Promise<StatusInfo> {
       return {
-        keeperMode: 'motor',
-        runtime: 'navegador',
         scenarios: Object.values(SCENARIOS).map((s) => ({
           id: s.id, title: s.title, premise: s.surfacePremise,
         })),
@@ -149,7 +147,7 @@ export function createLocalApi(): GameApi {
 
         onEvent({ kind: 'state', data: sanitizeForClient(turn.state) });
         onEvent({ kind: 'options', data: result.options });
-        onEvent({ kind: 'done', data: { usedModel: false } });
+        onEvent({ kind: 'done', data: {} });
       } catch (err) {
         onEvent({ kind: 'error', data: (err as Error).message });
         onEvent({ kind: 'done', data: {} });
