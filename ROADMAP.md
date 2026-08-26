@@ -1158,10 +1158,145 @@ qué tema no cedió en cada aventura, y si algo aparece ahí siempre —como
 apareció Eusebio, antes de tener nombre—, es la señal de que vale la pena
 investigarlo a mano.
 
+### 3.2-nonies Sexta aventura — EN DISEÑO · *el viaje de vuelta*
+
+**Sexto Umbral — causalidad.** El eje lo fija `canon.ts`, no yo. Y por primera
+vez en la campaña la aventura no va hacia afuera: vuelve. Los puntos que hay
+que cerrar están desparramados por el partido y seguirlos camina hacia
+adentro, hacia Castronegro.
+
+#### De dónde sale: cinco hilos que quedaron colgando
+
+No hubo que inventarle un gancho. Estaban escritos desde 1926, cada uno
+mencionado UNA sola vez y nunca pagado. Delfina Arce tiene dos colecciones de
+puntos, y son distintas entre sí:
+
+**El mapa de la escuela** (`d-puntos`, *El Invierno Debido*) — cuatro lugares
+«que se pintan y no se tocan», contados por chicos de los campos de alrededor,
+sin conocerse entre ellos:
+
+| | |
+|---|---|
+| un aljibe | cerrado — Los Álamos, *Agua Quieta* |
+| un mojón | cerrado — La Perseverancia, *La Legua Perdida* |
+| **la base de un molino** | **abierto** |
+| **el marco de una puerta que ya no tiene puerta** | **abierto** |
+
+**Los rumores de viajeros** (`d-mapa`, *El Sueño Debido*) — cinco cosas raras
+que Delfina anotó en tres años preguntándole a quien parara en el almacén. De
+los cinco nombra tres:
+
+| | |
+|---|---|
+| un alambrado que mide distinto según de qué lado lo caminás | cerrado — *La Legua Perdida* |
+| un velorio de alguien que después apareció | cerrado — *La Firma Ajena* |
+| **un campo donde no crece el pasto en una vuelta** | **abierto** |
+| **los dos que no nombra** | **abiertos, a propósito** |
+
+Delfina cierra las dos charlas con la misma frase, que es el pie de la sexta:
+*«nunca supe qué hacer con eso»*.
+
+#### El corazón: un umbral, literalmente
+
+**El marco de una puerta que ya no tiene puerta.** Está en el contenido desde
+la cuarta aventura y nadie lo visitó nunca. Es la palabra que le da nombre a
+toda la campaña, hecha objeto físico: un marco parado solo en un campo donde
+ya no hay casa alrededor, pintado de rojo cada año y no tocado.
+
+Que la imagen central de la aventura del Sexto Umbral sea un umbral de
+albañilería no es un chiste: es la escalera de revelación de v0.8 §3 aplicada
+a un objeto. Nivel I, una anomalía chica —¿por qué lo pintan?—. Nivel V, que
+no es una anomalía aislada sino una propiedad de la realidad.
+
+Segunda locación: **la base de un molino** sin molino encima.
+
+#### Por qué causalidad, y no otro tema
+
+La pregunta de la aventura no es *qué son* estos lugares. Es **cuál fue
+primero, y si los primeros causaron los últimos o al revés.** Delfina los juntó
+«sin conectarlos entre sí»; el investigador llega con cinco aventuras de
+consecuencias encima y es el único que puede ordenarlos.
+
+Y ahí está lo que la vuelve la sexta y no otra: **el motor ya es una máquina de
+causalidad.** `sembrarHerencia` viene arrastrando consecuencias permanentes de
+aventura en aventura desde la primera, y los ecos de 3.2-septies las leen. La
+aventura convierte esa mecánica en tema. El horror no es que pase algo raro:
+es descubrir en qué orden pasó, y que el orden no es el que uno supone.
+
+#### Cómo termina, y qué deja armado
+
+El último punto del mapa —el campo donde no crece el pasto en una vuelta— es
+el más cercano al pueblo. La aventura **termina a la vista del obelisco, sin
+entrar**. Eso es todo el guiño al módulo: se ve, no se toca, no se explica.
+
+#### Y entonces la séptima
+
+`suenodebido.ts` fija que los siete Umbrales son **manifestaciones de una misma
+estructura**, y en `canon.ts` sólo el Primero tiene nombre geográfico. Ya hay
+precedente de que no es un lugar por Umbral: el Cuarto y el Quinto son los dos
+Villa Requena. Así que el Séptimo no necesita pueblo propio.
+
+**La séptima es el módulo original**, y cierra la espiral:
+
+| # | Umbral | Aventura |
+|---|---|---|
+| 1 | tiempo, observación y memoria | *Agua Quieta* toca su **borde** |
+| 2 | espacio | *La Legua Perdida* |
+| 3 | identidad | *La Firma Ajena* |
+| 4 | muerte | *El Invierno Debido* |
+| 5 | sueño | *El Sueño Debido* |
+| 6 | **causalidad** | ésta — el viaje de vuelta |
+| 7 | **realidad** | el módulo, que es además el **centro del Primero** |
+
+«Realidad» como eje del Séptimo encaja con lo que el módulo es de verdad: no un
+monstruo, sino un pueblo donde una familia lleva trescientos años editando qué
+cosas son ciertas y administrándolo como un trámite. Cruzar ese umbral es
+entender que los siete eran uno.
+
+Ver [CANON-MODULO-ORIGINAL.md](CANON-MODULO-ORIGINAL.md) para el puente
+completo con el módulo publicado.
+
+#### Deuda de tiradas, contada de verdad
+
+Misma cuenta que se hizo para la quinta, ahora sobre las cinco publicadas. El
+sistema tiene 27 habilidades. Reparto real:
+
+```
+16 psicologia · 16 descubrir · 10 persuasion · 8 fotografia · 5 POW
+ 4 ocultismo · 3 biblioteca · 2 buscar_libros · 2 ciencia_naturales
+ 2 intimidar · 2 STR · 1 cada una: orientarse, trepar, medicina,
+ primeros_auxilios, escuchar, historia, antropologia, sigilo, labia, CON
+```
+
+**Sin pedirse NUNCA en toda la campaña:** `saltar`, `nadar`, `mecanica`,
+`esquivar`, `pelea`, `armas_fuego`, `arrojar`, `mitos`, `credito`.
+
+De ésas, las que esta aventura puede estrenar sin forzar nada:
+
+- **`mecanica`** — la base del molino sin molino: qué se desarmó, cuándo, y si
+  lo desarmaron o se cayó. Es la única de las nueve que pide una escena de
+  investigación y no una pelea.
+- **`credito`** — cruzar el partido preguntando en campos ajenos. Quién le abre
+  la tranquera a un forastero y quién no depende de cómo viene vestido, y eso
+  en 1928 se llama Crédito.
+- **`orientarse`** — existe pero se pidió UNA sola vez en cinco aventuras, y
+  esta aventura es literalmente ir de un punto a otro del partido con un mapa
+  dibujado por una maestra. Debería ser un pilar acá, no una curiosidad.
+
+Las otras seis son de combate o de Mitos y no son asunto de esta aventura.
+`mitos` no se tira nunca por decisión de diseño.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
 Chaosium sigue sin poder entrar al repositorio público — eso no cambia.
+
+**Actualización:** ahora tiene número y lugar en la estructura —es la séptima,
+el Séptimo Umbral (realidad) y a la vez el centro del Primero— y el puente de
+canon está escrito en [CANON-MODULO-ORIGINAL.md](CANON-MODULO-ORIGINAL.md),
+con la tabla de transposición Nuevo México → pampa y las reglas para sembrar
+sin spoilear. La restricción de copyright no cambia: ese documento es notas y
+mapeo propios, no transcripción, y el material de Chaosium sigue afuera.
 
 ---
 
