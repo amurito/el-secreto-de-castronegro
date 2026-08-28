@@ -21,6 +21,7 @@
 import type { GameState } from '../shared/types.ts';
 import type { IntencionLeida } from './escena.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 // ── AYUDAS ───────────────────────────────────────────────────────────────────
 
@@ -32,6 +33,10 @@ const propiedadVista = (s: GameState, item: string) =>
 
 const oculta = (s: GameState, item: string) =>
   s.items[item]?.hiddenProperties[0]?.description ?? '';
+
+/** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
+const conCamara = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
 
 const aqui = (s: GameState) => s.world.currentLocation;
 const hora = (s: GameState) => Number(s.world.time.iso.slice(11, 13));
@@ -497,7 +502,7 @@ export const AGUA_QUIETA_LOGICA: LogicaDeEscenas = [
       if (propiedadVista(estado, 'it-fotoreciente')) {
         return { texto: [`Volvés sobre la placa. ${oculta(estado, 'it-fotoreciente')}`] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conCamara(estado)) {
         return {
           texto: [variante([
             'La levantás contra la luz y la mirás un buen rato. Un aljibe. El brocal, la roldana sin soga, el círculo del agua abajo.\n\nAlguien se tomó el trabajo de encuadrar esto con mucho cuidado, y después de darla vuelta contra la pared.',

@@ -9,7 +9,7 @@
  * el mundo conserva todo lo que hizo el primero.
  */
 
-import type { Investigator, SkillValue, SkillId, Characteristics } from '../shared/types.ts';
+import type { Investigator, SkillValue, SkillId, Characteristics, Item } from '../shared/types.ts';
 import { computeDerived } from '../rules/derived.ts';
 import { emptyUmbralState } from '../rules/umbral.ts';
 import { SKILLS } from '../rules/skills.ts';
@@ -161,3 +161,52 @@ export const TOMAS: Investigator = make(
     keyConnection: 't-conexion',
   },
 );
+
+/**
+ * El ítem de oficio de cada pregenerado, listo para sumarse a `Scenario.items`
+ * en cualquier aventura (ver `cargarAventura`).
+ *
+ * No puede venir del JSON de cada aventura: el validador de contenido exige
+ * que `Item.owner` sea un lugar o un NPC (`validarContenido.ts`), así que un
+ * ítem que arranca en manos de un investigador tiene que sumarse DESPUÉS de
+ * validar — mismo momento en que `engine.ts` suma el arma y el ítem de
+ * ocupación de un investigador creado a mano. Comparten id con
+ * `Ocupacion.itemInicial` (`medico-rural`, `periodista`/`fotografo` en
+ * `scenario/ocupaciones.ts`) a propósito: si algún día alguien reemplaza a
+ * Elena o a Tomás por un médico o un fotógrafo creado en la pantalla de
+ * personaje, el mismo id sigue enganchando en las mismas escenas.
+ */
+export const ITEMS_DE_OCUPACION: Item[] = [
+  {
+    id: 'it-maletin-medico',
+    name: 'Maletín médico',
+    shortDescription: 'Cuero gastado, instrumental básico y un frasco de láudano que nunca usó y no piensa tirar. ' +
+      'Lo abre siempre de la misma manera, aunque nadie la esté mirando.',
+    owner: ELENA.id,
+    carried: true,
+    roto: false,
+    publicProperties: [],
+    hiddenProperties: [],
+    discoveredProperties: [],
+    conditionalProperties: [],
+    temporalProperties: [],
+    canon: { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' },
+    usageCount: 0,
+  },
+  {
+    id: 'it-camara-fotografica',
+    name: 'Cámara de placas',
+    shortDescription: 'Heredada, más vieja que él y mejor que él. Placas de vidrio, no película: cada toma cuesta ' +
+      'tiempo y no se repite fácil.',
+    owner: TOMAS.id,
+    carried: true,
+    roto: false,
+    publicProperties: [],
+    hiddenProperties: [],
+    discoveredProperties: [],
+    conditionalProperties: [],
+    temporalProperties: [],
+    canon: { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' },
+    usageCount: 0,
+  },
+];

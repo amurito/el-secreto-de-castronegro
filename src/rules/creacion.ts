@@ -208,6 +208,14 @@ export interface Ocupacion {
    * explícito. Ausente o vacío = esta ocupación no ofrece arma inicial.
    */
   armasPermitidas?: string[];
+  /**
+   * El objeto con el que esta ocupación siempre empieza — a diferencia del
+   * arma, no es una elección del jugador. `id` es fijo y compartido entre
+   * ocupaciones que dan «el mismo objeto» (p. ej. periodista y fotógrafo
+   * ambulante comparten cámara): así una escena que lo busca por id no le
+   * importa qué ocupación se lo dio.
+   */
+  itemInicial?: { id: string; nombre: string; shortDescription: string };
 }
 
 export interface ProblemaReparto {

@@ -44,8 +44,15 @@
 
 import type { GameState } from '../shared/types.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.description.includes(frag));
+/** Lleva su propio instrumental —Elena, o quien haya nacido con `Ocupacion.itemInicial` de médico rural. */
+const conMaletin = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-maletin-medico' }, { estado: s });
+/** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
+const conCamara = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
 const consecuencia = (s: GameState, frag: string) =>
   s.consequences.some((c) => c.description.includes(frag));
 const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtainedAt);
@@ -244,13 +251,15 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_success: 'saber qué NO es, y ver lo que sí',
       stakes_failure: 'un hombre dormido, y nada más que eso',
     }),
-    resolver: ({ tirada }) => ({
+    resolver: ({ estado, tirada }) => {
+      const exito = Boolean(tirada?.exito) || conMaletin(estado);
+      return {
       texto: [
         'Le levantás un párpado con el pulgar. La pupila responde. Le buscás el pulso en el cuello y lo encontrás enseguida: lento, firme, aburrido.',
-        tirada?.exito
+        exito
           ? 'No hay fiebre. No hay rigidez de un lado ni caída de la boca: la apoplejía que todo el pueblo da por hecha no está. La lengua está húmeda, así que alguien lo hidrata y lo hidrata bien. En catorce días acostado debería haber empezado a marcarse en los talones y no se marcó.'
           : 'Duerme. Duerme como duerme cualquiera, y eso es todo lo que sacás en limpio, que en un hombre que lleva catorce días sin despertarse es exactamente ninguna información.',
-        tirada?.exito
+        exito
           ? 'Y hay dos cosas que no van con estar acostado dos semanas. La primera: tiene las plantas de los pies sucias de tierra fresca. La segunda: tiene almagre metido abajo de las uñas de las dos manos, del lado de la carne, donde entra cuando se raspa una superficie con los dedos.'
           : 'Le mirás las manos porque sí, sin buscar nada, y las volvés a apoyar donde estaban.',
       ],
@@ -267,12 +276,13 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           description: 'Revisó a Aurelio de cerca, buscando algo que lo explicara.',
           kind: 'physical' as const, source: 'el catre de la escribanía', reliability: 'reliable' as const,
         },
-        ...(tirada?.exito ? [{
+        ...(exito ? [{
           description: 'Aurelio no está enfermo de nada que se pueda diagnosticar: no hay apoplejía ni fiebre, y no tiene las marcas que deja estar acostado dos semanas. Tiene tierra fresca en las plantas de los pies y almagre bajo las uñas.',
           kind: 'physical' as const, source: 'el catre de la escribanía', reliability: 'reliable' as const,
         }] : []),
       ],
-    }),
+      };
+    },
   },
 
   {
@@ -501,20 +511,22 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_success: 'saber qué clase de borroso es',
       stakes_failure: 'catorce hombres quietos y uno movido',
     }),
-    resolver: ({ tirada }) => ({
+    resolver: ({ estado, tirada }) => {
+      const exito = Boolean(tirada?.exito) || conCamara(estado);
+      return {
       texto: [
         'Catorce hombres de galera en dos filas, delante de una escuela recién levantada. Al pie, a mano: «Comisión pro-templo y escuela, Villa Requena, 1880».',
-        tirada?.exito
+        exito
           ? 'El de la punta izquierda de la fila de atrás está movido, y no es la placa: los otros trece tienen el mismo grano y él tiene el contorno abierto hacia un solo lado. Eso no lo hace alguien que respira. Lo hace alguien que cambió de lugar y volvió durante la exposición.'
           : 'El de la punta izquierda de la fila de atrás salió movido. Con veinte segundos de pose siempre sale alguno movido; eso lo sabe cualquiera que haya posado alguna vez.',
-        tirada?.exito
+        exito
           ? 'Y hay un detalle que da vuelta el asunto: los pies le salieron nítidos. Perfectamente firmes, los dos, plantados en el mismo pasto que los otros trece. Lo que se movió fue todo lo que está más arriba de los tobillos.'
           : '',
       ].filter(Boolean),
-      exposicion: tirada?.exito
+      exposicion: exito
         ? { amount: 4, source: 'foto:1880', cause: 'lo que hizo un hombre durante veinte segundos en 1880' }
         : { amount: 1, source: 'foto:1880', cause: 'una foto de comisión de 1880' },
-      ...(tirada?.exito ? {
+      ...(exito ? {
         descubre: {
           itemId: 'it-foto', propertyId: 'p-foto-borroso',
           how: 'mirando el grano de la placa hombre por hombre',
@@ -524,7 +536,8 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           kind: 'physical' as const, source: 'la foto de la comisión', reliability: 'reliable' as const,
         }],
       } : {}),
-    }),
+      };
+    },
   },
 
   {

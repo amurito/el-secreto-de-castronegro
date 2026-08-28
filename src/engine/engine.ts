@@ -21,6 +21,7 @@ import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
 import { dieValues, damageDice, generateSeed, commitmentOf } from './rng.ts';
 import { ARMAS, ARMA_POR_ID, dadosQuePide, type Arma } from '../rules/armas.ts';
+import { OCUPACION_POR_ID } from '../scenario/ocupaciones.ts';
 import { resolverEnfrentamiento, danoDeAtaque, type Defensa } from '../rules/combate.ts';
 import {
   combineD100, degreeFor, meetsDifficulty, tensDiceNeeded, thresholdsFor,
@@ -117,6 +118,8 @@ export async function createCampaign(
   propio?: Investigator,
   /** Arma elegida en la creación (`Ocupacion.armasPermitidas`), si la ocupación ofrecía alguna. */
   armaInicialId?: string | null,
+  /** Ocupación elegida en la creación. De ahí sale, sin que el jugador lo elija, `Ocupacion.itemInicial`. */
+  ocupacionId?: string | null,
 ): Promise<string> {
   const campaignId = id();
   const seed = seedOverride ?? generateSeed();
@@ -143,6 +146,31 @@ export async function createCampaign(
         usageCount: 0,
       }
     : null;
+
+  // El ítem de oficio no es una elección del jugador —a diferencia del
+  // arma—: si la ocupación tiene uno, nace siempre. El id es fijo (viene de
+  // `Ocupacion.itemInicial`), no generado acá, para que una escena que lo
+  // busca por id lo encuentre sin importar si el investigador es pregenerado
+  // o recién creado.
+  const itemOcupacionInicial: Item | null = (() => {
+    const item = propio && ocupacionId ? OCUPACION_POR_ID[ocupacionId]?.itemInicial : undefined;
+    if (!item) return null;
+    return {
+      id: item.id,
+      name: item.nombre,
+      shortDescription: item.shortDescription,
+      owner: propio!.id,
+      carried: true,
+      roto: false,
+      publicProperties: [],
+      hiddenProperties: [],
+      discoveredProperties: [],
+      conditionalProperties: [],
+      temporalProperties: [],
+      canon: { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' },
+      usageCount: 0,
+    };
+  })();
 
   const meta: CampaignIndexEntry = {
     campaignId,
@@ -180,7 +208,7 @@ export async function createCampaign(
         : investigadoresDe(scenario, herencia)
             .map((i) => i.id)
             .filter((x) => x !== activoDe(scenario, herencia)),
-      items: itemArmaInicial ? [...scenario.items, itemArmaInicial] : scenario.items,
+      items: [...scenario.items, itemArmaInicial, itemOcupacionInicial].filter((i): i is Item => i !== null),
       npcs: scenario.npcs,
       documents: scenario.documents,
       locations: scenario.locations,

@@ -34,7 +34,7 @@
 import type { Scenario } from './types.ts';
 import type { ContenidoAventura } from './contenido.schema.ts';
 import { cargarAventura } from './cargarAventura.ts';
-import { ELENA, TOMAS } from './pregens.ts';
+import { ELENA, TOMAS, ITEMS_DE_OCUPACION } from './pregens.ts';
 import { LEGUA_LOGICA } from './legua.logica.ts';
 import contenido from './la-legua-perdida.contenido.json' with { type: 'json' };
 
@@ -42,4 +42,5 @@ export const LA_LEGUA: Scenario = cargarAventura(
   contenido as unknown as ContenidoAventura,
   LEGUA_LOGICA,
   [ELENA, TOMAS],
+  ITEMS_DE_OCUPACION,
 );

@@ -37,7 +37,7 @@
 import type { Scenario } from './types.ts';
 import type { ContenidoAventura } from './contenido.schema.ts';
 import { cargarAventura } from './cargarAventura.ts';
-import { ELENA, TOMAS } from './pregens.ts';
+import { ELENA, TOMAS, ITEMS_DE_OCUPACION } from './pregens.ts';
 import { AGUA_QUIETA_LOGICA } from './aguaquieta.logica.ts';
 import contenido from './agua-quieta.contenido.json' with { type: 'json' };
 
@@ -45,4 +45,5 @@ export const AGUA_QUIETA: Scenario = cargarAventura(
   contenido as unknown as ContenidoAventura,
   AGUA_QUIETA_LOGICA,
   [ELENA, TOMAS],
+  ITEMS_DE_OCUPACION,
 );

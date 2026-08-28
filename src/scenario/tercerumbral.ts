@@ -46,7 +46,7 @@
 import type { Scenario } from './types.ts';
 import type { ContenidoAventura } from './contenido.schema.ts';
 import { cargarAventura } from './cargarAventura.ts';
-import { ELENA, TOMAS } from './pregens.ts';
+import { ELENA, TOMAS, ITEMS_DE_OCUPACION } from './pregens.ts';
 import { TERCER_UMBRAL_LOGICA } from './tercerumbral.logica.ts';
 import contenido from './tercer-umbral.contenido.json' with { type: 'json' };
 
@@ -54,4 +54,5 @@ export const TERCER_UMBRAL: Scenario = cargarAventura(
   contenido as unknown as ContenidoAventura,
   TERCER_UMBRAL_LOGICA,
   [ELENA, TOMAS],
+  ITEMS_DE_OCUPACION,
 );

@@ -24,6 +24,8 @@ export interface Plantilla {
   investigador: Investigator;
   /** El arma con la que se armó, si su ocupación ofrecía alguna. */
   armaInicialId?: string | null;
+  /** La ocupación elegida: de ahí sale el ítem con el que arranca. */
+  ocupacionId?: string | null;
 }
 
 const CLAVE = 'castronegro:simulador:plantillas';
@@ -51,13 +53,16 @@ export function listarPlantillas(): Plantilla[] {
   return leer().sort((a, b) => b.creadoEn.localeCompare(a.creadoEn));
 }
 
-export function guardarPlantilla(investigador: Investigator, armaInicialId?: string | null): Plantilla {
+export function guardarPlantilla(
+  investigador: Investigator, armaInicialId?: string | null, ocupacionId?: string | null,
+): Plantilla {
   const p: Plantilla = {
     id: `plantilla-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
     nombre: investigador.name,
     creadoEn: new Date().toISOString(),
     investigador,
     armaInicialId: armaInicialId ?? null,
+    ocupacionId: ocupacionId ?? null,
   };
   escribir([p, ...leer()]);
   return p;

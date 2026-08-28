@@ -225,15 +225,17 @@ export function App() {
    * formulario rápido: reabrir con Elena o con una plantilla ya guardada no
    * tiene que volver a guardar nada, o cada partida dejaría una copia nueva.
    */
-  async function abrirSimulador(investigador?: unknown, guardar = false, armaInicialId: string | null = null) {
+  async function abrirSimulador(
+    investigador?: unknown, guardar = false, armaInicialId: string | null = null, ocupacionId: string | null = null,
+  ) {
     if (!api) return;
     setBusy(true); setError(null);
     try {
       const data = investigador
-        ? await api.createCampaignConFicha('simulador', investigador, armaInicialId)
+        ? await api.createCampaignConFicha('simulador', investigador, armaInicialId, ocupacionId)
         : await api.createCampaign('simulador');
       if (guardar && investigador) {
-        guardarPlantilla(investigador as Investigator, armaInicialId);
+        guardarPlantilla(investigador as Investigator, armaInicialId, ocupacionId);
         setPlantillas(listarPlantillas());
       }
       setCreando(null);
@@ -253,13 +255,14 @@ export function App() {
    */
   async function newCampaignConFicha(
     scenarioId: string, investigador: unknown, armaInicialId: string | null = null, guardar = false,
+    ocupacionId: string | null = null,
   ) {
     if (!api) return;
     setBusy(true); setError(null);
     try {
-      const data = await api.createCampaignConFicha(scenarioId, investigador, armaInicialId);
+      const data = await api.createCampaignConFicha(scenarioId, investigador, armaInicialId, ocupacionId);
       if (guardar) {
-        guardarPlantilla(investigador as Investigator, armaInicialId);
+        guardarPlantilla(investigador as Investigator, armaInicialId, ocupacionId);
         setPlantillas(listarPlantillas());
       }
       setCreando(null);
@@ -400,7 +403,9 @@ export function App() {
             ocupado={busy}
             rapido={alGalpon}
             onCancelar={() => setCreando(null)}
-            onListo={(inv, arma) => (alGalpon ? abrirSimulador(inv, true, arma) : newCampaignConFicha(creando, inv, arma, true))}
+            onListo={(inv, arma, ocupacionId) => (alGalpon
+              ? abrirSimulador(inv, true, arma, ocupacionId)
+              : newCampaignConFicha(creando, inv, arma, true, ocupacionId))}
           />
           {error && <div className="error error-inicio">{error}</div>}
         </div>
@@ -468,7 +473,9 @@ export function App() {
                     <div className="sim-plantilla-row" key={p.id}>
                       <button
                         className="sim-plantilla-usar"
-                        onClick={() => newCampaignConFicha(e.scenario.id, p.investigador, p.armaInicialId ?? null)}
+                        onClick={() => newCampaignConFicha(
+                          e.scenario.id, p.investigador, p.armaInicialId ?? null, false, p.ocupacionId ?? null,
+                        )}
                         disabled={busy || !api}
                       >
                         {p.nombre}

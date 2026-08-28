@@ -20,11 +20,15 @@
 
 import type { GameState } from '../shared/types.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.description.includes(frag));
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
+/** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
+const conCamara = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
 const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtainedAt);
 /** Cuántas de las tres marcas de las aventuras anteriores trae encima. */
 const marcasPrevias = (s: GameState) =>
@@ -250,8 +254,9 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'examinar-retrato',
+    // Con cámara propia, un paso más fácil: sabe qué mirar en una imagen.
     prueba: (s) => propiedadVista(s, 'it-retrato') ? null : ({
-      skill: 'fotografia', difficulty: 'hard',
+      skill: 'fotografia', difficulty: conCamara(s) ? 'regular' : 'hard',
       reason: 'leer un retrato de estudio de 1887 con ojo de fotógrafo, no sólo mirarlo',
       stakes_success: 'notás lo que tiene en el dorso de la mano',
       stakes_failure: 'un escribano de patillas, de 1887',

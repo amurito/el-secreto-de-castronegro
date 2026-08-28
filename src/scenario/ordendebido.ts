@@ -63,7 +63,7 @@
 import type { Scenario } from './types.ts';
 import type { ContenidoAventura } from './contenido.schema.ts';
 import { cargarAventura } from './cargarAventura.ts';
-import { ELENA, TOMAS } from './pregens.ts';
+import { ELENA, TOMAS, ITEMS_DE_OCUPACION } from './pregens.ts';
 import { ORDEN_DEBIDO_LOGICA } from './ordendebido.logica.ts';
 import contenido from './orden-debido.contenido.json' with { type: 'json' };
 
@@ -71,4 +71,5 @@ export const ORDEN_DEBIDO: Scenario = cargarAventura(
   contenido as unknown as ContenidoAventura,
   ORDEN_DEBIDO_LOGICA,
   [ELENA, TOMAS],
+  ITEMS_DE_OCUPACION,
 );

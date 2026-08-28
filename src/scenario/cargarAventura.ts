@@ -18,7 +18,7 @@ import type { ContenidoAventura } from './contenido.schema.ts';
 import type { EscenaAutoral, Escenas, IntencionLeida } from './escena.ts';
 import type { TemaConversacion, Conversaciones } from './conversacion.ts';
 import type { AccionDef } from './acciones.ts';
-import type { GameState, Investigator, SkillId } from '../shared/types.ts';
+import type { GameState, Investigator, Item, SkillId } from '../shared/types.ts';
 import { evaluarCondicion, type Condicion } from './condiciones.ts';
 import { validarContenido } from './validarContenido.ts';
 
@@ -46,6 +46,14 @@ export function cargarAventura(
   contenido: ContenidoAventura,
   logica: LogicaDeEscenas,
   investigadores: Investigator[],
+  /**
+   * Ítems que arrancan en manos de un investigador (ver `pregens.ts`,
+   * `ITEMS_DE_OCUPACION`). No pueden venir de `contenido.items`: el
+   * validador exige que `Item.owner` sea un lugar o un NPC, así que se suman
+   * DESPUÉS de validar, igual que el arma y el ítem de ocupación que
+   * `engine.ts` le suma a un investigador creado a mano.
+   */
+  itemsDeInvestigadores: Item[] = [],
 ): Scenario {
   validarContenido(contenido, logica.map((l) => l.id));
 
@@ -108,7 +116,7 @@ export function cargarAventura(
     title: contenido.title,
     surfacePremise: contenido.surfacePremise,
     investigators: investigadores,
-    items: contenido.items,
+    items: [...contenido.items, ...itemsDeInvestigadores],
     npcs: contenido.npcs,
     documents: contenido.documents,
     locations: contenido.locations,

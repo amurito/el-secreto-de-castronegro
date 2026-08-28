@@ -12,12 +12,16 @@
 
 import type { GameState } from '../shared/types.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 // ── AYUDAS ───────────────────────────────────────────────────────────────────
 // `dice`/`aqui`/`lleva`/`pistas`/`puedeDemostrar` no están: sólo las usaban
 // los bloques `cuando`, que ahora son árboles de condición en el JSON.
 
 const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.description.includes(frag));
+/** Lleva su propio instrumental —Elena, o quien haya nacido con `Ocupacion.itemInicial` de médico rural. */
+const conMaletin = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-maletin-medico' }, { estado: s });
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
@@ -519,7 +523,7 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
       stakes_success: 'establecés las dos cosas',
       stakes_failure: 'murió de sed, y eso lo dice cualquiera',
     }),
-    resolver: ({ tirada }) => tirada?.exito
+    resolver: ({ estado, tirada }) => (Boolean(tirada?.exito) || conMaletin(estado))
       ? {
           texto: [
             'Deshidratación, sin lugar a dudas, y no menos de dos días de agonía. Eso es lo fácil.\n\n' +

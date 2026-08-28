@@ -145,11 +145,12 @@ export function createLocalApi(): GameApi {
       };
     },
 
-    async createCampaignConFicha(scenarioId, investigador, armaInicialId) {
+    async createCampaignConFicha(scenarioId, investigador, armaInicialId, ocupacionId) {
       const scenario = SCENARIOS[scenarioId as keyof typeof SCENARIOS];
       if (!scenario) throw new Error(`Escenario desconocido: ${scenarioId}`);
       const campaignId = await createCampaign(
         scenario, undefined, undefined, undefined, investigador as never, armaInicialId ?? null,
+        ocupacionId ?? null,
       );
       const { state } = await loadState(campaignId);
       return {

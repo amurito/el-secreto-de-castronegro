@@ -65,7 +65,7 @@ export function Creacion({
   scenarioTitulo, onListo, onCancelar, ocupado, rapido = false,
 }: {
   scenarioTitulo: string;
-  onListo: (investigador: unknown, armaInicialId: string | null) => void;
+  onListo: (investigador: unknown, armaInicialId: string | null, ocupacionId: string) => void;
   onCancelar: () => void;
   ocupado: boolean;
   /**
@@ -131,7 +131,7 @@ export function Creacion({
       armaInicialId,
     });
     if (!r.ok) { setProblemas(r.problemas); return; }
-    onListo(r.investigador, r.armaInicialId);
+    onListo(r.investigador, r.armaInicialId, ocupacionId);
   }
 
   const ajustar = (

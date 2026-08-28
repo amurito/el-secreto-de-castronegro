@@ -12,11 +12,15 @@
 
 import type { GameState } from '../shared/types.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.description.includes(frag));
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
+/** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
+const conCamara = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
 const consecuencia = (s: GameState, frag: string) => s.consequences.some((c) => c.description.includes(frag));
 
 /**
@@ -49,8 +53,9 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'examinar-foto',
+    // Con cámara propia, un paso más fácil: sabe qué mirar en una imagen.
     prueba: (s) => propiedadVista(s, 'it-foto') ? null : ({
-      skill: 'fotografia', difficulty: 'hard',
+      skill: 'fotografia', difficulty: conCamara(s) ? 'regular' : 'hard',
       reason: 'leer la foto como una imagen, no como un objeto',
       stakes_success: 'notás el detalle',
       stakes_failure: 'un chico y un hombre mayor, nada más',

@@ -56,8 +56,12 @@ export interface GameApi {
    * Crea la campaña con un investigador armado por el jugador. `armaInicialId`
    * es el arma que eligió en la creación, si su ocupación ofrecía alguna
    * (ver `Ocupacion.armasPermitidas`) — nace como ítem real en el inventario.
+   * `ocupacionId` identifica la ocupación elegida: de ahí sale, sin que el
+   * jugador lo elija, el ítem de oficio (`Ocupacion.itemInicial`).
    */
-  createCampaignConFicha(scenarioId: string, investigador: unknown, armaInicialId?: string | null): Promise<{
+  createCampaignConFicha(
+    scenarioId: string, investigador: unknown, armaInicialId?: string | null, ocupacionId?: string | null,
+  ): Promise<{
     campaignId: string; opening: string; state: ClientState; options: Opcion[];
   }>;
   getCampaign(id: string): Promise<{ state: ClientState; opening: string; options: Opcion[] }>;
