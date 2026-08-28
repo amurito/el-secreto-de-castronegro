@@ -300,6 +300,7 @@ export function Inventory({ items }: { items: any[] }) {
           <div className="item-head">
             <b>{i.name}</b>
             {i.carried && <span className="carried-tag">encima</span>}
+            {i.roto && <span className="broken-tag">rota</span>}
           </div>
           <div className="item-desc">{i.shortDescription}</div>
           {i.properties.map((p: any, n: number) => (

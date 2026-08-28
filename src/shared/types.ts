@@ -406,6 +406,10 @@ export interface Item {
   locationDetail?: string;
   /** Si es false, está en el mundo pero el investigador no lo tiene encima. */
   carried: boolean;
+  /** Si está definido, este objeto ES un arma: el id de `rules/armas.ts` con el que se puede pelear. */
+  armaId?: string;
+  /** Si es true, este ítem ya no sirve como arma —se rompió, típicamente por una pifia con arma de fuego—. `armaId` se conserva a propósito: sigue siendo, narrativamente, esa arma, sólo que inútil. */
+  roto?: boolean;
 
   publicProperties: ItemProperty[];
   hiddenProperties: ItemProperty[];
@@ -703,6 +707,17 @@ export interface ContinuityLedger {
   temporalChange: TemporalEventId[];
 }
 
+/**
+ * Marca que hay un combate de verdad en curso, distinto del simulador: a
+ * partir de acá la interfaz cambia a la pantalla dedicada. Vive en el
+ * GameState (no en un estado local de React) para sobrevivir un refresh.
+ */
+export interface ActiveCombat {
+  npcIds: NpcId[];
+  startedAt: EventId;
+  reason: string;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // LOCALIZACIONES Y ESCENAS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -821,6 +836,8 @@ export interface GameState {
   consequences: Consequence[];
   continuity: ContinuityLedger;
   campaignCanon: Array<{ id: string; statement: string; addedAt: EventId }>;
+  /** No-nulo mientras haya un combate real en curso (no el simulador). */
+  activeCombat: ActiveCombat | null;
 
   /** Narrativa acumulada de la sesión, para mostrar y para contexto. */
   narrative: NarrativeEntry[];

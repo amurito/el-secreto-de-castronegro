@@ -192,7 +192,63 @@ function main() {
       inv.backstory.aspects.length === 3 && inv.backstory.keyConnection === 'a1');
     check('arranca sin exposición y sin marcas',
       inv.umbral.exposure === 0 && inv.experience.lastDevelopmentSeq === 0);
+    check('sin elegir arma inicial, el resultado queda en null', r.armaInicialId === null);
   }
+
+  // ── El arma inicial, sólo para las ocupaciones que la ofrecen ────────────
+  console.log('\nEL ARMA INICIAL POR OCUPACIÓN');
+  const comisarioOc = OCUPACION_POR_ID['comisario']!;
+  const repartoComisario = {
+    ocupacion: {
+      intimidar: 40, psicologia: 30, descubrir: 30, escuchar: 30,
+      orientarse: 20, persuasion: 30, primeros_auxilios: 20, credito: 30,
+    },
+    personal: {},
+  };
+  const conArma = crearInvestigador(
+    tirada,
+    {
+      nombre: 'Casilda Ferreyra', genero: 'f', edad: 44, descripcion: 'Comisaria de campaña.',
+      ocupacionId: 'comisario', caracteristicaElegida: 'DEX',
+      restaFisica: { STR: 3, CON: 2 },
+      reparto: repartoComisario, trasfondo: TRASFONDO, conexionClave: 'a1',
+      armaInicialId: 'revolver-38',
+    },
+    comisarioOc, secuencia([99, 5]), fijo(4),
+  );
+  check('la comisaria puede elegir revólver .38 al crear',
+    conArma.ok && conArma.armaInicialId === 'revolver-38',
+    conArma.ok ? String(conArma.armaInicialId) : conArma.problemas.map((p) => p.mensaje).join(' | '));
+
+  const armaIlegal = crearInvestigador(
+    tirada,
+    {
+      nombre: 'Casilda Ferreyra', genero: 'f', edad: 44, descripcion: 'Comisaria de campaña.',
+      ocupacionId: 'comisario', caracteristicaElegida: 'DEX',
+      restaFisica: { STR: 3, CON: 2 },
+      reparto: repartoComisario, trasfondo: TRASFONDO, conexionClave: 'a1',
+      armaInicialId: 'pistola-45',
+    },
+    comisarioOc, secuencia([99, 5]), fijo(4),
+  );
+  check('una pistola .45 no es una opción legal para el comisario',
+    !armaIlegal.ok && armaIlegal.problemas.some((p) => p.campo === 'arma'),
+    armaIlegal.problemas.map((p) => p.mensaje).join(' | '));
+
+  const medicoArmada = crearInvestigador(
+    tirada,
+    {
+      nombre: 'Casilda Ferreyra', genero: 'f', edad: 44, descripcion: 'Médica de pueblo.',
+      ocupacionId: 'medico-rural',
+      restaFisica: { STR: 3, CON: 2 },
+      reparto: legal, trasfondo: TRASFONDO, conexionClave: 'a1',
+      armaInicialId: 'revolver-32',
+    },
+    medico, secuencia([99, 5]), fijo(4),
+  );
+  check('una médica rural no puede empezar armada —su ocupación no ofrece nada—',
+    !medicoArmada.ok && medicoArmada.problemas.some((p) => p.campo === 'arma'),
+    medicoArmada.problemas.map((p) => p.mensaje).join(' | '));
 
   const malaEdad = crearInvestigador(
     tirada,
@@ -227,11 +283,12 @@ function main() {
   check('ninguna copia el nombre de una ocupación del manual',
     !OCUPACIONES.some((o) => /hacker|piloto|misionero|parapsic/i.test(o.nombre)));
 
-  return inv;
+  return { inv, invArmada: conArma.investigador };
 }
 
 async function conCampana() {
-  const inv = main();
+  const armado = main();
+  const inv = armado?.inv;
   if (!inv) { console.log('\nsin ficha, no se puede seguir\n'); process.exit(1); }
 
   console.log('\nLA FICHA ENTRA A UNA PARTIDA');
@@ -242,6 +299,29 @@ async function conCampana() {
   check('conserva sus números', state.investigators[inv.id]!.derived.luck === inv.derived.luck);
   check('quedan pregenerados de reserva para la muerte permanente',
     state.reserveInvestigators.length > 0, state.reserveInvestigators.join(', '));
+
+  console.log('\nEL ARMA INICIAL NACE COMO ÍTEM REAL');
+  const invArmada = armado.invArmada;
+  if (!invArmada) {
+    check('el investigador armado se pudo crear', false);
+  } else {
+    const idArmada = await createCampaign(
+      AGUA_QUIETA, 'CON ARMA', 'x'.repeat(64), undefined, invArmada, 'revolver-38',
+    );
+    const { state: estadoArmada } = await loadState(idArmada);
+    const items = Object.values(estadoArmada.items);
+    const revolver = items.find((i) => i.armaId === 'revolver-38' && i.owner === invArmada.id);
+    check('el revólver existe, es del investigador y lo lleva encima',
+      Boolean(revolver) && revolver!.carried === true,
+      revolver ? `owner=${revolver.owner} carried=${revolver.carried}` : 'no se encontró el ítem');
+    check('nace sin roturas', revolver?.roto === false, String(revolver?.roto));
+
+    const sinArma = await createCampaign(AGUA_QUIETA, 'SIN ARMA', 'y'.repeat(64), undefined, invArmada, null);
+    const { state: estadoSinArma } = await loadState(sinArma);
+    check('sin elegir arma, no nace ningún ítem de más',
+      Object.values(estadoSinArma.items).length === AGUA_QUIETA.items.length,
+      `${Object.values(estadoSinArma.items).length} vs ${AGUA_QUIETA.items.length} del escenario`);
+  }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

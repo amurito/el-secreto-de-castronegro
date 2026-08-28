@@ -67,6 +67,9 @@ export type GameEventType =
   | 'NPC_STATE_CHANGED'
   | 'NPC_DAMAGED'
   | 'NPC_COMBATE_CHANGED'
+  | 'COMBAT_STARTED'
+  | 'COMBAT_ENDED'
+  | 'ITEM_BROKEN'
   | 'INVESTIGATOR_UNCONSCIOUS'
   | 'RELATIONSHIP_CHANGED'
   | 'DOCUMENT_OBTAINED'
@@ -244,6 +247,18 @@ export interface NpcCombateChangedPayload {
   cause: string;
 }
 
+/** Arranca un combate real (no el simulador): la interfaz cambia de pantalla. */
+export interface CombatStartedPayload {
+  npcIds: NpcId[];
+  reason: string;
+}
+
+/** Cierra el combate real en curso, cualquiera sea el motivo. */
+export interface CombatEndedPayload {
+  reason: 'npc_derrotado' | 'huyo' | 'investigador_caido';
+  npcIds: NpcId[];
+}
+
 /** Herida Grave (p. 119): pérdida de 5+ o mitad de los PV máximos de un golpe. */
 export interface InvestigatorUnconsciousPayload {
   investigatorId: InvestigatorId;
@@ -259,6 +274,12 @@ export interface ItemTransferredPayload {
   from: string | null;
   to: string | null;
   carried: boolean;
+  cause: string;
+}
+
+/** Un arma queda inutilizada — típicamente por una pifia disparando. */
+export interface ItemBrokenPayload {
+  itemId: ItemId;
   cause: string;
 }
 

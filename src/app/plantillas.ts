@@ -1,16 +1,18 @@
 /**
- * PLANTILLAS DE INVESTIGADOR PARA EL SIMULADOR.
+ * PLANTILLAS DE INVESTIGADOR — fichas guardadas, listas para reusar.
  *
- * Personajes de prueba, no de campaña: no llevan partida guardada, no
- * cruzan entre aventuras, no importan para la muerte permanente. Sólo
- * necesitan existir de nuevo la próxima vez que alguien quiera probar un
- * facón en manos de alguien con Pelea 60 en vez de en las de Elena.
+ * Nacen en cualquier creación de personaje —para el simulador o para una
+ * aventura real— y quedan disponibles para las dos cosas después: el mismo
+ * investigador se puede probar en el galpón y, otro día, arrancar una
+ * campaña de verdad. La ficha en sí no cambia entre un uso y otro; lo que sí
+ * es propio de cada campaña es lo que le pase adentro —heridas, muerte
+ * permanente, lo que descubrió—, que vive en el log de esa campaña, no acá.
  *
- * `localStorage` alcanza: son pocos, chicos, y no comparten nada con el
- * log de campañas (que vive en IndexedDB vía `engine/store.browser.ts`).
- * Mezclarlos ahí sugeriría que son el mismo tipo de dato, y no lo son —
- * uno es un registro append-only con muerte permanente, el otro es una
- * ficha que se puede pisar y volver a usar.
+ * `localStorage` alcanza: son pocos, chicos, y no comparten nada con el log
+ * de campañas (que vive en IndexedDB vía `engine/store.browser.ts`).
+ * Mezclarlos ahí sugeriría que son el mismo tipo de dato, y no lo son — uno
+ * es un registro append-only con muerte permanente, el otro es una ficha que
+ * se puede pisar y volver a usar tantas veces como haga falta.
  */
 
 import type { Investigator } from '../shared/types.ts';
@@ -20,6 +22,8 @@ export interface Plantilla {
   nombre: string;
   creadoEn: string;
   investigador: Investigator;
+  /** El arma con la que se armó, si su ocupación ofrecía alguna. */
+  armaInicialId?: string | null;
 }
 
 const CLAVE = 'castronegro:simulador:plantillas';
@@ -47,12 +51,13 @@ export function listarPlantillas(): Plantilla[] {
   return leer().sort((a, b) => b.creadoEn.localeCompare(a.creadoEn));
 }
 
-export function guardarPlantilla(investigador: Investigator): Plantilla {
+export function guardarPlantilla(investigador: Investigator, armaInicialId?: string | null): Plantilla {
   const p: Plantilla = {
     id: `plantilla-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
     nombre: investigador.name,
     creadoEn: new Date().toISOString(),
     investigador,
+    armaInicialId: armaInicialId ?? null,
   };
   escribir([p, ...leer()]);
   return p;

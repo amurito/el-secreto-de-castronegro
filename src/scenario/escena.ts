@@ -137,6 +137,13 @@ export interface EfectoEscena {
     cubierto?: boolean;
     blancoMovil?: boolean;
   };
+  /**
+   * Marca el arranque de un combate de verdad: a partir de acá la interfaz
+   * cambia a la pantalla dedicada, y los asaltos siguientes se resuelven
+   * ahí, no repitiendo esta escena. Idempotente: tocar el mismo botón de
+   * nuevo mientras el combate sigue activo no reinicia nada.
+   */
+  iniciaCombate?: { npcIds: string[]; reason?: string };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   pregunta?: string;

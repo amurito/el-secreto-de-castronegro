@@ -636,6 +636,72 @@ async function main() {
       tirDefensa3?.commitment.skill === 'Pelea', tirDefensa3?.commitment.skill);
   }
 
+  console.log('\nPIFIA DISPARANDO: LA TIRADA APARTE PUEDE ROMPER EL ARMA');
+  {
+    // Regla casera: pifia con un arma de fuego (5% de las tiradas, como
+    // cualquier pifia) dispara una tirada aparte D100 contra 50 que decide
+    // si el arma queda rota. Dos capas de azar compuestas —barrer muchas
+    // semillas no garantiza ver las dos ramas de la segunda tirada, así que
+    // esta prueba pide ver AL MENOS una pifia, y que cada vez que aparece
+    // sea consistente con lo que dice el mensaje del motor.
+    const elena = AGUA_QUIETA.investigators[0]!;
+    let vistaAlgunaPifia = false;
+    let inconsistencias = 0;
+    for (let n = 0; n < 60; n++) {
+      const semilla = `pf${n}`.padEnd(4, '0').repeat(16);
+      const id = await createCampaign(
+        conMaton, `PIFIA-${n}`, semilla, undefined, elena, 'revolver-38',
+      );
+      const t = await Turn.open(id);
+      const itemAntes = Object.values(t.state.items).find((i) => i.armaId === 'revolver-38');
+      if (n === 0) {
+        check('el revólver nace en el inventario del investigador, listo para usarse',
+          Boolean(itemAntes) && itemAntes?.owner === elena.id && itemAntes?.carried === true,
+          itemAntes ? `owner=${itemAntes.owner} carried=${itemAntes.carried}` : 'no nació ningún ítem');
+      }
+      const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'revolver-38' });
+      await t.commit();
+      if (!/se traba/.test(r.message)) continue; // esta semilla no dio pifia
+
+      vistaAlgunaPifia = true;
+      const s = (await Turn.open(id)).state;
+      const item = Object.values(s.items).find((i) => i.armaId === 'revolver-38')!;
+      const diceRota = /queda inutilizada/.test(r.message);
+      if (diceRota !== item.roto) {
+        inconsistencias++;
+        check(`  · semilla ${n}: el mensaje y el estado del ítem coinciden`, false,
+          `mensaje dice rota=${diceRota}, item.roto=${item.roto}`);
+      }
+    }
+    check('se vio al menos una pifia disparando en 60 intentos', vistaAlgunaPifia);
+    check('cada vez que rompió (o no), el ítem quedó consistente con el mensaje',
+      inconsistencias === 0, `${inconsistencias} inconsistencias`);
+  }
+
+  console.log('\nUNA PIFIA CUERPO A CUERPO NUNCA ROMPE NADA');
+  {
+    // El alcance quedó acotado a propósito a `armas_fuego`. Se prueba contra
+    // el facón, que sí empala y sí hace daño, para no confundir «no rompe»
+    // con «el arma no sirve para nada».
+    const elena = AGUA_QUIETA.investigators[0]!;
+    let vistaPifia = false;
+    for (let n = 0; n < 40; n++) {
+      const semilla = `mf${n}`.padEnd(4, '0').repeat(16);
+      const id = await createCampaign(
+        conMaton, `MELEE-PIFIA-${n}`, semilla, undefined, elena, undefined,
+      );
+      const t = await Turn.open(id);
+      const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+      await t.commit();
+      const tirAtaque = t.state.rolls.filter((x) => x.investigatorId === elena.id).at(-1);
+      if (tirAtaque?.execution.degree !== 'fumble') continue;
+      vistaPifia = true;
+      check(`  · semilla ${n}: pifia cuerpo a cuerpo, sin mención de romperse`,
+        !/se traba/.test(r.message), r.message.slice(0, 80));
+    }
+    check('se vio al menos una pifia cuerpo a cuerpo en 40 intentos', vistaPifia);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

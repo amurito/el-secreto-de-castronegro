@@ -26,7 +26,7 @@ import { ARMA_POR_ID } from '../rules/armas.ts';
  */
 export type EstadoDeCombate = 'entero' | 'lastimado' | 'malherido' | 'fuera_de_combate';
 
-function estadoDeCombate(hp: number, maxHp: number): EstadoDeCombate {
+export function estadoDeCombate(hp: number, maxHp: number): EstadoDeCombate {
   if (hp <= 0) return 'fuera_de_combate';
   if (hp === maxHp) return 'entero';
   return hp > maxHp / 3 ? 'lastimado' : 'malherido';
@@ -60,6 +60,8 @@ export interface ClientState {
   seedRevealed: string | null;
   ending: unknown;
   umbralPermeability: number;
+  /** No-nulo mientras haya un combate real en curso (no el simulador). */
+  activeCombat: { npcIds: string[] } | null;
 }
 
 export function sanitizeForClient(state: GameState): ClientState {
@@ -121,6 +123,7 @@ export function sanitizeForClient(state: GameState): ClientState {
         name: i.name,
         shortDescription: i.shortDescription,
         carried: i.owner === inv.id,
+        roto: i.roto ?? false,
         // Sólo propiedades públicas + las YA descubiertas.
         properties: [
           ...i.publicProperties.map((p) => ({ description: p.description, discovered: false })),
@@ -180,5 +183,6 @@ export function sanitizeForClient(state: GameState): ClientState {
     seedRevealed: state.rng.revealedSeed,
     ending: state.ending,
     umbralPermeability: state.world.umbralPermeability,
+    activeCombat: state.activeCombat ? { npcIds: state.activeCombat.npcIds } : null,
   };
 }

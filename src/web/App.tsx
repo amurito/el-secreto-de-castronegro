@@ -6,6 +6,7 @@ import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/accio
 import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
 import { Creacion } from './Creacion.tsx';
 import { Simulador } from './Simulador.tsx';
+import { Combate } from './Combate.tsx';
 import { listarPlantillas, guardarPlantilla, borrarPlantilla, type Plantilla } from '../app/plantillas.ts';
 import type { Investigator } from '../shared/types.ts';
 import { leerPreferenciaDados, guardarPreferenciaDados, prefiereMenosMovimiento } from './dados.tsx';
@@ -117,8 +118,10 @@ export function App() {
   const [creando, setCreando] = useState<string | null>(null);
   /** Campaña del simulador de combate. null = no estamos en el galpón. */
   const [simulando, setSimulando] = useState<string | null>(null);
-  /** Personajes de prueba guardados para el simulador. Viven en localStorage. */
+  /** Personajes guardados, reusables para el simulador o para una aventura real. Viven en localStorage. */
   const [plantillas, setPlantillas] = useState<Plantilla[]>(() => listarPlantillas());
+  /** Id de la aventura cuyo selector de «Cargar personaje» está desplegado, o null si ninguno. */
+  const [cargandoEn, setCargandoEn] = useState<string | null>(null);
   /**
    * Qué panel se ve EN MÓVIL. En pantalla grande no se usa: las tres columnas
    * están a la vista y este estado lo ignora el CSS.
@@ -222,15 +225,15 @@ export function App() {
    * formulario rápido: reabrir con Elena o con una plantilla ya guardada no
    * tiene que volver a guardar nada, o cada partida dejaría una copia nueva.
    */
-  async function abrirSimulador(investigador?: unknown, guardar = false) {
+  async function abrirSimulador(investigador?: unknown, guardar = false, armaInicialId: string | null = null) {
     if (!api) return;
     setBusy(true); setError(null);
     try {
       const data = investigador
-        ? await api.createCampaignConFicha('simulador', investigador)
+        ? await api.createCampaignConFicha('simulador', investigador, armaInicialId)
         : await api.createCampaign('simulador');
       if (guardar && investigador) {
-        guardarPlantilla(investigador as Investigator);
+        guardarPlantilla(investigador as Investigator, armaInicialId);
         setPlantillas(listarPlantillas());
       }
       setCreando(null);
@@ -242,12 +245,25 @@ export function App() {
     }
   }
 
-  async function newCampaignConFicha(scenarioId: string, investigador: unknown) {
+  /**
+   * `guardar` sólo es true cuando el investigador viene RECIÉN armado por el
+   * formulario de creación —mismo criterio que `abrirSimulador`—: cargar una
+   * plantilla ya guardada para otra aventura no tiene que dejar una copia
+   * nueva cada vez.
+   */
+  async function newCampaignConFicha(
+    scenarioId: string, investigador: unknown, armaInicialId: string | null = null, guardar = false,
+  ) {
     if (!api) return;
     setBusy(true); setError(null);
     try {
-      const data = await api.createCampaignConFicha(scenarioId, investigador);
+      const data = await api.createCampaignConFicha(scenarioId, investigador, armaInicialId);
+      if (guardar) {
+        guardarPlantilla(investigador as Investigator, armaInicialId);
+        setPlantillas(listarPlantillas());
+      }
       setCreando(null);
+      setCargandoEn(null);
       setCampaignId(data.campaignId);
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
@@ -346,6 +362,26 @@ export function App() {
     }]);
   }
 
+  // ── COMBATE REAL ────────────────────────────────────────────────────────
+  // Antes que el simulador y que todo lo demás: si `GameState.activeCombat`
+  // está puesto (viene del motor, no de un estado local), la pantalla entera
+  // pasa a ser el combate hasta que termine solo —no hay botón de salir—.
+  // Sobrevive un refresh sin nada especial: `state` ya viene de la campaña
+  // cargada, y este chequeo se evalúa igual en el primer render.
+  if (state?.activeCombat && api && campaignId) {
+    return (
+      <Combate
+        api={api}
+        campaignId={campaignId}
+        onFin={(nuevoEstado, nuevasOpciones, entradas) => {
+          setState(nuevoEstado);
+          aplicarOpciones(nuevasOpciones);
+          setLines((l) => [...l, ...entradas]);
+        }}
+      />
+    );
+  }
+
   // ── SIMULADOR DE COMBATE ───────────────────────────────────────────────────
   // Va antes que todo lo demás: es una pantalla propia, sin narración ni
   // tablero, y no comparte nada con la de jugar salvo la ficha.
@@ -364,7 +400,7 @@ export function App() {
             ocupado={busy}
             rapido={alGalpon}
             onCancelar={() => setCreando(null)}
-            onListo={(inv) => (alGalpon ? abrirSimulador(inv, true) : newCampaignConFicha(creando, inv))}
+            onListo={(inv, arma) => (alGalpon ? abrirSimulador(inv, true, arma) : newCampaignConFicha(creando, inv, arma, true))}
           />
           {error && <div className="error error-inicio">{error}</div>}
         </div>
@@ -414,7 +450,42 @@ export function App() {
                 <button className="ghost" onClick={() => setCreando(e.scenario.id)} disabled={busy || !api}>
                   Crear investigador
                 </button>
+                {plantillas.length > 0 && (
+                  <button
+                    className="ghost"
+                    onClick={() => setCargandoEn(cargandoEn === e.scenario.id ? null : e.scenario.id)}
+                    disabled={busy || !api}
+                  >
+                    Cargar personaje
+                  </button>
+                )}
               </div>
+
+              {cargandoEn === e.scenario.id && (
+                <div className="sim-plantillas">
+                  <div className="sim-plantillas-titulo">Personajes guardados</div>
+                  {plantillas.map((p) => (
+                    <div className="sim-plantilla-row" key={p.id}>
+                      <button
+                        className="sim-plantilla-usar"
+                        onClick={() => newCampaignConFicha(e.scenario.id, p.investigador, p.armaInicialId ?? null)}
+                        disabled={busy || !api}
+                      >
+                        {p.nombre}
+                        <span className="sim-plantilla-datos">{p.investigador.occupation}</span>
+                      </button>
+                      <button
+                        className="sim-plantilla-borrar"
+                        onClick={() => { borrarPlantilla(p.id); setPlantillas(listarPlantillas()); }}
+                        disabled={busy}
+                        title="Borrar esta plantilla"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
 
@@ -439,7 +510,7 @@ export function App() {
 
             {plantillas.length > 0 && (
               <div className="sim-plantillas">
-                <div className="sim-plantillas-titulo">Personajes de prueba guardados</div>
+                <div className="sim-plantillas-titulo">Personajes guardados</div>
                 {plantillas.map((p) => (
                   <div className="sim-plantilla-row" key={p.id}>
                     <button

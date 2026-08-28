@@ -61,6 +61,8 @@ export interface DecisionesFicha {
   reparto: Reparto;
   trasfondo: BackstoryAspect[];
   conexionClave: string | null;
+  /** Arma inicial elegida, si la ocupación ofrece alguna. Ver `Ocupacion.armasPermitidas`. */
+  armaInicialId?: string | null;
 }
 
 export interface ResultadoCreacion {
@@ -69,6 +71,8 @@ export interface ResultadoCreacion {
   problemas: Array<{ campo: string; mensaje: string }>;
   /** Las comprobaciones de EDU que hizo la edad, para mostrarlas. */
   chequeosEdu: Array<{ tirada: number; edu: number; sube: number }>;
+  /** El arma elegida, ya validada contra la ocupación. */
+  armaInicialId: string | null;
 }
 
 /**
@@ -162,7 +166,13 @@ export function crearInvestigador(
     problemas.push({ campo: 'trasfondo', mensaje: 'La conexión clave tiene que ser una de las entradas del trasfondo.' });
   }
 
-  if (problemas.length) return { ok: false, problemas, chequeosEdu: chequeos };
+  // ── Arma inicial ─────────────────────────────────────────────────────────
+  const armaInicialId = decisiones.armaInicialId ?? null;
+  if (armaInicialId && !(ocupacion.armasPermitidas ?? []).includes(armaInicialId)) {
+    problemas.push({ campo: 'arma', mensaje: `${ocupacion.nombre} no puede empezar con esa arma.` });
+  }
+
+  if (problemas.length) return { ok: false, problemas, chequeosEdu: chequeos, armaInicialId: null };
 
   const skills = armarHabilidades(decisiones.reparto);
   // Esquivar arranca en DES/2 salvo que la ocupación la suba (regla de CoC 7e).
@@ -198,5 +208,5 @@ export function crearInvestigador(
     ringBond: null,
   };
 
-  return { ok: true, investigador, problemas: [], chequeosEdu: chequeos };
+  return { ok: true, investigador, problemas: [], chequeosEdu: chequeos, armaInicialId };
 }

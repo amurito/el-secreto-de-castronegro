@@ -249,6 +249,14 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'ITEM_BROKEN': {
+      const p = ev.payload as P.ItemBrokenPayload;
+      const item = s.items[p.itemId];
+      if (!item) break;
+      s.items[p.itemId] = { ...item, roto: true };
+      break;
+    }
+
     case 'CLUE_DISCOVERED': {
       const p = ev.payload as P.ClueDiscoveredPayload;
       if (!s.board.clues.some((c) => c.id === p.clue.id)) s.board.clues.push(p.clue);
@@ -485,6 +493,17 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'COMBAT_STARTED': {
+      const p = ev.payload as P.CombatStartedPayload;
+      s.activeCombat = { npcIds: p.npcIds, startedAt: ev.id, reason: p.reason };
+      break;
+    }
+
+    case 'COMBAT_ENDED': {
+      s.activeCombat = null;
+      break;
+    }
+
     case 'INVESTIGATOR_INTRODUCED': {
       const p = ev.payload as P.InvestigatorIntroducedPayload;
       s.activeInvestigator = p.investigatorId;
@@ -621,5 +640,6 @@ function initFromCreation(ev: GameEvent): GameState {
     campaignCanon: [],
     narrative: [],
     ending: null,
+    activeCombat: null,
   };
 }

@@ -1613,11 +1613,11 @@ mesa: el defensor que contraataca y saca un extremo NO empala.
 - Al cliente cruza **si puede pelear y si ya está en el piso, nunca cuántos
   PV le quedan**. En la mesa nadie ve la ficha del rival: se ve cómo se mueve.
 
-Ninguna de las tres aventuras publicadas tiene todavía un personaje con
-estadísticas de combate — ninguna es una aventura de pelear. El sistema se
-verifica con rivales armados dentro de `prueba-combate.ts`, igual que
-`prueba-desacople.ts` arma «El campanario» para probar el motor sin tocar el
-contenido real, y con un **simulador jugable en el navegador**
+De las aventuras publicadas, sólo Cirilo Sosa (*El Invierno Debido*) tiene
+estadísticas de combate — ver más abajo, «pantalla de combate táctico». El
+sistema se verifica con rivales armados dentro de `prueba-combate.ts`, igual
+que `prueba-desacople.ts` arma «El campanario» para probar el motor sin tocar
+el contenido real, y con un **simulador jugable en el navegador**
 (`scenario/simulador.ts` + `web/Simulador.tsx`): un galpón sin historia, con
 tres rivales de dificultad creciente, para probar las reglas con las manos
 antes de meterlas en una aventura de verdad.
@@ -1693,6 +1693,58 @@ Esquivar sin importar la preferencia del NPC; a quemarropa —que ya es
 forcejeo, no distancia— vuelve a valer la preferencia normal. Verificado en
 `prueba-combate.ts` contra el matón de siempre, en los tres casos: lejos,
 a quemarropa, y cuerpo a cuerpo (sin cambios).
+
+**HECHO TAMBIÉN: pantalla de combate táctico dentro de una aventura real.**
+
+Reportado jugando: pelear con Cirilo Sosa en *El Invierno Debido* era tocar
+el mismo botón («Enfrentar a Cirilo») una y otra vez, cada click un asalto de
+texto plano en medio de la lista normal de acciones — nada que ver con el
+simulador, con selector de arma, tarjetas de rival y `RollCard`s. El motor de
+combate era el mismo de siempre (`resolve_attack`, `ordenDeAsalto`…); lo que
+faltaba era conectarlo a una pantalla de verdad dentro de una aventura, no
+sólo en el galpón aislado.
+
+- `GameState.activeCombat` (`{npcIds, startedAt, reason} | null`) — nuevo,
+  persistido en el log (`COMBAT_STARTED`/`COMBAT_ENDED`). Lo arranca
+  `EfectoEscena.iniciaCombate` (una línea nueva en la escena de Cirilo, junto
+  al `combate` que ya existía) y lo cierra solo `cerrarCombateSiTerminado`,
+  llamado al final de `resolve_attack`/`resolve_flee`/`resolve_maneuver`:
+  todos los NPC de `activeCombat` en el piso, el investigador caído, o una
+  huida exitosa. Genérico sobre el/los NPC — no sabe nada de Cirilo en
+  particular, así que cualquier aventura futura con un rival puede usarlo
+  con la misma línea.
+- `web/Combate.tsx` (nuevo), montado por `App.tsx` con un `if` temprano sobre
+  `state.activeCombat` —antes que el simulador, antes que todo lo demás—: en
+  cuanto el motor pone la marca, la pantalla entera pasa a ser el combate, y
+  vuelve sola a la narración cuando `activeCombat` se apaga. No hay botón de
+  «salir»: de ahí no se sale por decisión de interfaz.
+- Dos diferencias de fondo con el simulador, no cosméticas: **el arma que se
+  puede elegir es la que el investigador realmente tiene encima**
+  (`Item.armaId`, `armasDelInvestigador` en `api.local.ts` — Cirilo se pelea
+  a mano limpia porque ningún ítem de la aventura declara un arma, no porque
+  esté hardcodeado); y **nunca se muestra el PV exacto del rival**, los
+  mismos cuatro escalones de `EstadoDeCombate` que ya rige para cualquier NPC
+  en el resto del juego —el simulador sí muestra el número, porque ahí no
+  hay nada que la mesa deba esconder—.
+- A diferencia del simulador (que aísla al rival elegido con `aislarRival`
+  para que los otros dos matones del galpón no se sumen), acá el motor pelea
+  con **todo** NPC de combate presente, sin aislar a nadie — la regla de
+  «el resto del cuarto» (orden por DES) que ya existía queda intacta y en
+  uso real por primera vez.
+- Cada asalto se narra al historial de la aventura (`turn.narrate(...)`) al
+  resolverse, no sólo se muestra en la pantalla de combate: volver a la
+  narración deja el intercambio entero, asalto por asalto, en la historia —
+  se puede scrollear hacia atrás y leerlo como cualquier otro tramo de la
+  partida.
+
+Probado a mano en el navegador contra Cirilo, con los tres caminos: ganar la
+pelea a golpes, una maniobra (Derribar) que no cambia nada cuando empata, y
+—por las tiradas que tocaron esa corrida— el investigador cayendo inconsciente
+y **muriendo** en el intercambio: la pantalla volvió sola a la narración con
+el cierre correcto (`reason: 'investigador_caido'`), el historial completo
+del combate quedó escrito, y el juego pasó a ofrecer continuar con un
+investigador de la reserva — exactamente el camino que ya existía para
+cualquier muerte, sin nada especial para el combate.
 
 **No entra por ahora, a propósito:** escopetas y rifles largos, porque su
 daño depende del tramo de distancia y el motor no tiene distancias dentro de

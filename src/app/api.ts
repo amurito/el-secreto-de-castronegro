@@ -8,7 +8,7 @@
  * lo que permite publicar el juego como sitio estático sin tocar la interfaz.
  */
 
-import type { ClientState } from './sanitize.ts';
+import type { ClientState, EstadoDeCombate } from './sanitize.ts';
 import type { Opcion } from '../scenario/acciones.ts';
 import type { DevelopmentReport } from '../engine/engine.ts';
 import type { Marca } from '../rules/desarrollo.ts';
@@ -52,8 +52,12 @@ export interface GameApi {
   createCampaign(scenarioId: string): Promise<{
     campaignId: string; opening: string; state: ClientState; options: Opcion[];
   }>;
-  /** Crea la campaña con un investigador armado por el jugador. */
-  createCampaignConFicha(scenarioId: string, investigador: unknown): Promise<{
+  /**
+   * Crea la campaña con un investigador armado por el jugador. `armaInicialId`
+   * es el arma que eligió en la creación, si su ocupación ofrecía alguna
+   * (ver `Ocupacion.armasPermitidas`) — nace como ítem real en el inventario.
+   */
+  createCampaignConFicha(scenarioId: string, investigador: unknown, armaInicialId?: string | null): Promise<{
     campaignId: string; opening: string; state: ClientState; options: Opcion[];
   }>;
   getCampaign(id: string): Promise<{ state: ClientState; opening: string; options: Opcion[] }>;
@@ -101,6 +105,39 @@ export interface GameApi {
   reiniciarSimulador(id: string): Promise<AttackResult & { campaignId: string }>;
   /** Los rivales del galpón y sus PV, para pintar la pantalla al entrar. */
   estadoSimulador(id: string): Promise<{ state: ClientState; rivales: Rival[] }>;
+
+  // ── COMBATE REAL (dentro de una aventura, no el simulador) ────────────────
+  // A diferencia de `atacar`/`huir`/`maniobra`: (a) nunca aísla al resto del
+  // cuarto —el motor ya hace pelear a todos los NPC de combate presentes—,
+  // (b) narra cada asalto al historial de la aventura, y (c) nunca expone el
+  // PV exacto del rival, sólo los cuatro escalones de `EstadoDeCombate`, la
+  // misma regla que ya rige para cualquier NPC en `sanitizeForClient`.
+
+  /** El estado del combate en curso: quién pelea, con qué se puede pelear. */
+  combateEstado(id: string): Promise<{ state: ClientState; rivales: RivalReal[]; armas: ArmaDisponible[] }>;
+  combateAtacar(id: string, npcId: string, armaId: string, mods?: ModsDeFuego): Promise<CombateResult>;
+  /** A diferencia del simulador, no recibe `npcId`: huir es contra todos los presentes. */
+  combateHuir(id: string, armaId: string): Promise<CombateResult>;
+  combateManiobra(id: string, npcId: string, tipo: 'desarmar' | 'derribar' | 'sujetar'): Promise<CombateResult>;
+}
+
+export interface RivalReal {
+  id: string; name: string; estadoCombate: EstadoDeCombate;
+  arma: string; derribado?: boolean; agarrado?: boolean;
+}
+
+/** Un arma que el investigador realmente puede usar en este combate. */
+export interface ArmaDisponible { id: string; nombre: string; nota?: string }
+
+export interface CombateResult {
+  ok: boolean;
+  mensaje: string;
+  state: ClientState;
+  tiradas: unknown[];
+  /** Si sigue false, el combate terminó: la pantalla vuelve a la narración. */
+  combateActivo: boolean;
+  /** Las acciones normales, listas para cuando se vuelve a la narración. */
+  options: Opcion[];
 }
 
 export interface Rival {

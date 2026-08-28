@@ -157,6 +157,15 @@ function aplicarEfecto(
       amount: efecto.mitos.amount, source: efecto.mitos.source,
     });
   }
+  if (efecto.iniciaCombate) {
+    // Antes de resolver el asalto de acá abajo, para que `activeCombat` ya
+    // esté puesto cuando el jugador vea la respuesta de este mismo turno:
+    // es lo que hace que la interfaz cambie de pantalla en el acto.
+    run('start_combat', {
+      npc_ids: efecto.iniciaCombate.npcIds.join(','),
+      reason: efecto.iniciaCombate.reason ?? 'lo dispuso la escena',
+    });
+  }
   if (efecto.combate) {
     // A diferencia de `descubre`/`documento` —donde el resultado exitoso ya
     // lo cuenta la prosa de la escena y sólo hace falta mostrar un rechazo—,

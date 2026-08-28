@@ -202,6 +202,12 @@ export interface Ocupacion {
   tratamiento?: { m: string; f: string };
   /** Si está, esta ocupación sólo admite ese género en el mundo de 1920. */
   soloGenero?: 'm' | 'f';
+  /**
+   * Ids de `rules/armas.ts` con los que esta ocupación puede empezar armada.
+   * El primero no se preselecciona en la interfaz: elegir es siempre
+   * explícito. Ausente o vacío = esta ocupación no ofrece arma inicial.
+   */
+  armasPermitidas?: string[];
 }
 
 export interface ProblemaReparto {

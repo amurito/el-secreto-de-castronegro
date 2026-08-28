@@ -66,6 +66,7 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 20, max: 50 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
     tratamiento: { m: 'comisario', f: 'comisaria' },
+    armasPermitidas: ['revolver-38', 'revolver-32'],
   },
   {
     id: 'maestra',
@@ -136,6 +137,7 @@ export const OCUPACIONES: Ocupacion[] = [
       'armas_fuego', 'psicologia', 'sigilo', 'credito'],
     credito: { min: 20, max: 45 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
+    armasPermitidas: ['derringer-25', 'revolver-32'],
   },
   {
     id: 'ocultista',

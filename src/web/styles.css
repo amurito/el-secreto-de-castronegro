@@ -726,6 +726,7 @@ button { font-family: inherit; cursor: pointer; }
 .card-item.carried { border-left-color: var(--accent-dim); }
 .item-head { display: flex; justify-content: space-between; align-items: baseline; }
 .carried-tag { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.08em; }
+.broken-tag { font-family: var(--mono); font-size: 0.6rem; color: var(--hp); letter-spacing: 0.08em; margin-left: 0.5rem; text-transform: uppercase; }
 .item-desc { color: var(--text-dim); font-size: 0.8rem; margin: 0.3rem 0; }
 .prop { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.4rem; }
 .prop-found { color: var(--text); border-left: 2px solid var(--exposure); padding-left: 0.6rem; }

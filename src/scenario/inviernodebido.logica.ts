@@ -470,6 +470,10 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
       // A mano limpia: nadie en esta historia le puso un arma al
       // investigador, y no corresponde que la escena le invente una.
       combate: { accion: 'atacar', npcId: 'npc-cirilo', armaId: 'desarmado' },
+      // A partir de este primer asalto, la interfaz cambia a la pantalla
+      // dedicada de combate: los asaltos siguientes no vuelven a pasar por
+      // este botón. Idempotente por diseño (ver `toolStartCombat`).
+      iniciaCombate: { npcIds: ['npc-cirilo'] },
       // HABER DECIDIDO PELEAR ES LO QUE QUEDA, no quién ganó el asalto. Se
       // registra en el primero y sólo en el primero: cada click es un asalto
       // y sin este chequeo quedaban ocho copias de la misma consecuencia.

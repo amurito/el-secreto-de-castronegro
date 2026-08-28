@@ -15,7 +15,7 @@ import type { GameEvent, Actor, GameEventType } from '../shared/events.ts';
 import type {
   GameState, InvestigatorId, RollRecord, RollModifier, Difficulty,
   Clue, Npc, Condition, MechanicalEffect, WorldTime, SkillId, CharacteristicId, Investigator,
-  SuccessDegree,
+  SuccessDegree, Item,
 } from '../shared/types.ts';
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
@@ -115,11 +115,34 @@ export async function createCampaign(
    * permanente y quedarse sin nadie a quien continuar sería un callejón.
    */
   propio?: Investigator,
+  /** Arma elegida en la creación (`Ocupacion.armasPermitidas`), si la ocupación ofrecía alguna. */
+  armaInicialId?: string | null,
 ): Promise<string> {
   const campaignId = id();
   const seed = seedOverride ?? generateSeed();
   const commitment = commitmentOf(seed);
   const now = new Date().toISOString();
+
+  // El arma con la que el investigador YA llega armado por su oficio: nace
+  // como ítem real, no como un `weapon_id` suelto que ninguna escena respalda.
+  const itemArmaInicial: Item | null = propio && armaInicialId
+    ? {
+        id: id(),
+        name: ARMA_POR_ID[armaInicialId]?.nombre ?? armaInicialId,
+        shortDescription: ARMA_POR_ID[armaInicialId]?.nota ?? ARMA_POR_ID[armaInicialId]?.nombre ?? armaInicialId,
+        owner: propio.id,
+        carried: true,
+        armaId: armaInicialId,
+        roto: false,
+        publicProperties: [],
+        hiddenProperties: [],
+        discoveredProperties: [],
+        conditionalProperties: [],
+        temporalProperties: [],
+        canon: { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' },
+        usageCount: 0,
+      }
+    : null;
 
   const meta: CampaignIndexEntry = {
     campaignId,
@@ -157,7 +180,7 @@ export async function createCampaign(
         : investigadoresDe(scenario, herencia)
             .map((i) => i.id)
             .filter((x) => x !== activoDe(scenario, herencia)),
-      items: scenario.items,
+      items: itemArmaInicial ? [...scenario.items, itemArmaInicial] : scenario.items,
       npcs: scenario.npcs,
       documents: scenario.documents,
       locations: scenario.locations,
@@ -672,6 +695,8 @@ export class Turn {
         case 'resolve_attack': return this.toolResolveAttack(raw);
         case 'resolve_flee': return this.toolResolveFlee(raw);
         case 'resolve_maneuver': return this.toolResolveManeuver(raw);
+        case 'start_combat': return this.toolStartCombat(raw);
+        case 'end_combat': return this.toolEndCombat(raw);
         case 'apply_sanity_loss': return this.toolApplySanityLoss(raw);
         case 'apply_mythos_knowledge': return this.toolApplyMythos(raw);
         case 'apply_umbral_exposure': return this.toolApplyExposure(raw);
@@ -1003,6 +1028,48 @@ export class Turn {
    * primeros les toca ANTES del intercambio principal —pueden interrumpirlo—
    * y a los segundos, después.
    */
+  /**
+   * Arranca un combate real (distinto del simulador): a partir de acá la
+   * interfaz cambia a la pantalla dedicada. Idempotente —insistir en el
+   * mismo botón mientras el combate sigue activo no duplica el evento—.
+   */
+  private toolStartCombat(raw: Record<string, unknown>): ToolOutcome {
+    const npcIds = String(raw.npc_ids ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+    const reason = String(raw.reason ?? '').trim();
+    if (npcIds.length === 0) return this.reject('start_combat', raw, 'Hace falta al menos un NPC.');
+    if (this.state.activeCombat && npcIds.every((id) => this.state.activeCombat!.npcIds.includes(id))) {
+      return { ok: true, message: 'El combate ya estaba en curso.' };
+    }
+    this.emit('COMBAT_STARTED', { npcIds, reason });
+    return { ok: true, message: `Empieza el combate contra ${npcIds.join(', ')}.` };
+  }
+
+  /** Cierra un combate real, cualquiera sea el motivo. */
+  private toolEndCombat(raw: Record<string, unknown>): ToolOutcome {
+    if (!this.state.activeCombat) return { ok: true, message: 'No había combate activo.' };
+    const reason = String(raw.reason ?? 'terminado');
+    this.emit('COMBAT_ENDED', { reason, npcIds: this.state.activeCombat.npcIds });
+    return { ok: true, message: 'El combate terminó.' };
+  }
+
+  /**
+   * Se llama al final de cada herramienta de combate. No hace nada si no hay
+   * un combate real en curso —el simulador nunca llama `start_combat`, así
+   * que esto no lo toca—. Genérico sobre `activeCombat.npcIds`: no sabe nada
+   * de Cirilo ni de ningún NPC en particular.
+   */
+  private cerrarCombateSiTerminado(): void {
+    const ac = this.state.activeCombat;
+    if (!ac) return;
+    const inv = this.investigator;
+    if (inv.derived.hp <= 0 || inv.status !== 'alive') {
+      this.emit('COMBAT_ENDED', { reason: 'investigador_caido', npcIds: ac.npcIds });
+      return;
+    }
+    const todosCaidos = ac.npcIds.every((id) => (this.state.npcs[id]?.combate?.hp ?? 0) <= 0);
+    if (todosCaidos) this.emit('COMBAT_ENDED', { reason: 'npc_derrotado', npcIds: ac.npcIds });
+  }
+
   private ordenDeAsalto(excluirId: string): { masRapidos: Npc[]; masLentos: Npc[] } {
     const dexInv = this.investigator.characteristics.DEX;
     const otros = Object.values(this.state.npcs).filter((n) =>
@@ -1062,6 +1129,7 @@ export class Turn {
     }
 
     if (this.investigator.derived.hp <= 0 || this.investigator.status !== 'alive') {
+      this.cerrarCombateSiTerminado();
       return {
         ok: true,
         message: `${bloques.join('\n\n')}\n\nMás rápido no le llegó a atacar a ${npc.name}: ya no está en pie.`,
@@ -1169,12 +1237,37 @@ export class Turn {
       );
     }
 
+    // ── Pifia disparando: puede trabar el arma ──
+    // Regla casera —CoC 7e no trae una tabla de atascamiento para armas
+    // cortas de esta época—: una tirada aparte, D100 contra 50 fijo, decide
+    // si se rompe. Sólo dispara si hay un ítem real detrás del arma —si el
+    // ataque se resolvió con un `weapon_id` sin objeto en el inventario
+    // (como ya puede pasar hoy), no hay nada que romper.
+    if (gradoAtacante === 'fumble' && arma.habilidad === 'armas_fuego') {
+      const itemArma = Object.values(this.state.items).find(
+        (i) => i.owner === inv.id && i.carried && i.armaId === armaId && !i.roto,
+      );
+      if (itemArma) {
+        const encasquille = this.tiradaInterna(
+          inv.id, inv.name, 'Arma trabada', 50,
+          `decidir si ${arma.nombre.toLowerCase()} se rompe con la pifia`,
+        );
+        if (meetsDifficulty(encasquille.degree, 'regular')) {
+          this.emit('ITEM_BROKEN', { itemId: itemArma.id, cause: `pifia disparando ${arma.nombre.toLowerCase()}` });
+          bloques.push(`${arma.nombre} se traba con la pifia y queda inutilizada. No vuelve a disparar hasta que alguien la revise o la reemplace.`);
+        } else {
+          bloques.push(`${arma.nombre} se traba un instante con la pifia, pero sigue sirviendo.`);
+        }
+      }
+    }
+
     // ── 4. El resto del cuarto que era más lento ──
     for (const otro of masLentos) {
       const texto = this.ataqueDeNpcContraInvestigador(otro, armaId);
       if (texto) bloques.push(texto);
     }
 
+    this.cerrarCombateSiTerminado();
     return { ok: true, message: bloques.join('\n\n') };
   }
 
@@ -1192,6 +1285,7 @@ export class Turn {
       n.combate && n.combate.hp > 0 && n.present && n.status !== 'dead');
 
     if (hostiles.length === 0) {
+      this.cerrarCombateSiTerminado();
       return { ok: true, message: `${inv.name} se retira. No hay nadie peleando que se lo impida.` };
     }
 
@@ -1206,6 +1300,14 @@ export class Turn {
     bloques.push(logro
       ? `${inv.name} logra salir.`
       : `${inv.name} no llega a irse.`);
+    // Huir con éxito cierra el combate aunque el rival siga en pie: se
+    // desentendió de la pelea, no la ganó. Si no logró irse, la marca queda
+    // en manos del chequeo genérico (puede haber caído en el intento).
+    if (logro && this.state.activeCombat) {
+      this.emit('COMBAT_ENDED', { reason: 'huyo', npcIds: this.state.activeCombat.npcIds });
+    } else {
+      this.cerrarCombateSiTerminado();
+    }
     return { ok: true, message: bloques.join('\n\n') };
   }
 
@@ -1275,6 +1377,7 @@ export class Turn {
       `${DEGREE_LABEL[gradoInv]} contra ${DEGREE_LABEL[defensor.degree]}. ${fallo.razon}`;
 
     if (fallo.golpea === null) {
+      this.cerrarCombateSiTerminado();
       return { ok: true, message: `${encabezado}\nNo pasa nada: ni la maniobra ni un golpe.` };
     }
 
@@ -1283,6 +1386,7 @@ export class Turn {
       const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
       const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, indiceDefensa, false);
       const golpe = this.toolApplyDamage({ amount: dano.total, cause: `${armaNpc.nombre} de ${npc.name}, al resistir la maniobra` });
+      this.cerrarCombateSiTerminado();
       return {
         ok: true,
         message: `${encabezado}\nLa maniobra falla y ${npc.name} conecta: ${dano.total} de daño (${dano.detalle}).\n${golpe.message}`,
@@ -1294,18 +1398,21 @@ export class Turn {
       this.emit('NPC_COMBATE_CHANGED', {
         npcId: npc.id, changes: { armaId: 'desarmado' }, cause: `desarmado por ${inv.name}`,
       });
+      this.cerrarCombateSiTerminado();
       return { ok: true, message: `${encabezado}\nLe vuela el arma de la mano. Ahora pelea desarmado, hasta que la recupere.` };
     }
     if (tipo === 'derribar') {
       this.emit('NPC_COMBATE_CHANGED', {
         npcId: npc.id, changes: { derribado: true }, cause: `derribado por ${inv.name}`,
       });
+      this.cerrarCombateSiTerminado();
       return { ok: true, message: `${encabezado}\nQueda en el piso. El próximo golpe que reciba tiene ventaja.` };
     }
     // sujetar
     this.emit('NPC_COMBATE_CHANGED', {
       npcId: npc.id, changes: { agarrado: true }, cause: `sujeto por ${inv.name}`,
     });
+    this.cerrarCombateSiTerminado();
     return { ok: true, message: `${encabezado}\nQueda sujeto: su próximo intento de pelear o de escapar sale con desventaja.` };
   }
 

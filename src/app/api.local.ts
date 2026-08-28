@@ -20,10 +20,10 @@ import { ARMA_POR_ID } from '../rules/armas.ts';
 import { toClientRoll } from '../shared/protocol.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
 import { accionesDisponibles } from '../scenario/acciones.ts';
-import { sanitizeForClient } from './sanitize.ts';
+import { sanitizeForClient, estadoDeCombate } from './sanitize.ts';
 import { conTrato } from '../rules/tratamiento.ts';
 import type { GameState } from '../shared/types.ts';
-import type { GameApi, StatusInfo, TurnEvent } from './api.ts';
+import type { GameApi, StatusInfo, TurnEvent, RivalReal, ArmaDisponible, CombateResult } from './api.ts';
 
 const activo = (state: GameState) => state.investigators[state.activeInvestigator];
 
@@ -44,6 +44,39 @@ const rivalesDe = (state: GameState) =>
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
       derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
     }));
+
+/**
+ * Los rivales de un combate real, para la pantalla dedicada. A diferencia de
+ * `rivalesDe` (sólo el simulador): nunca el PV exacto, los mismos cuatro
+ * escalones que ya usa `sanitizeForClient` para cualquier NPC.
+ */
+function rivalesReales(state: GameState): RivalReal[] {
+  const ac = state.activeCombat;
+  if (!ac) return [];
+  return ac.npcIds
+    .map((id) => state.npcs[id])
+    .filter((n): n is NonNullable<typeof n> => Boolean(n?.combate))
+    .map((n) => ({
+      id: n.id, name: n.name,
+      estadoCombate: estadoDeCombate(n.combate!.hp, n.combate!.maxHp),
+      arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
+      derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
+    }));
+}
+
+/**
+ * Las armas que el investigador activo realmente tiene encima, más
+ * «desarmado» —siempre disponible—. A diferencia del simulador, que ofrece
+ * el catálogo entero: acá sólo lo que el personaje trae puesto.
+ */
+function armasDelInvestigador(state: GameState): ArmaDisponible[] {
+  const propias = Object.values(state.items)
+    .filter((i) => i.owner === state.activeInvestigator && i.carried && i.armaId && !i.roto)
+    .map((i) => ARMA_POR_ID[i.armaId!])
+    .filter((a): a is NonNullable<typeof a> => Boolean(a));
+  const armas = [ARMA_POR_ID['desarmado']!, ...propias];
+  return armas.map((a) => ({ id: a.id, nombre: a.nombre, nota: a.nota }));
+}
 
 /** Un turno por vez, igual que el lock del servidor. */
 const enCurso = new Set<string>();
@@ -100,11 +133,11 @@ export function createLocalApi(): GameApi {
       };
     },
 
-    async createCampaignConFicha(scenarioId, investigador) {
+    async createCampaignConFicha(scenarioId, investigador, armaInicialId) {
       const scenario = SCENARIOS[scenarioId as keyof typeof SCENARIOS];
       if (!scenario) throw new Error(`Escenario desconocido: ${scenarioId}`);
       const campaignId = await createCampaign(
-        scenario, undefined, undefined, undefined, investigador as never,
+        scenario, undefined, undefined, undefined, investigador as never, armaInicialId ?? null,
       );
       const { state } = await loadState(campaignId);
       return {
@@ -328,6 +361,91 @@ export function createLocalApi(): GameApi {
     async estadoSimulador(id) {
       const { state } = await loadState(id);
       return { state: sanitizeForClient(state), rivales: rivalesDe(state) };
+    },
+
+    async combateEstado(id) {
+      const { state } = await loadState(id);
+      return {
+        state: sanitizeForClient(state),
+        rivales: rivalesReales(state),
+        armas: armasDelInvestigador(state),
+      };
+    },
+
+    async combateAtacar(id, npcId, armaId, mods): Promise<CombateResult> {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
+        const antes = turn.state.rolls.length;
+        // A diferencia del simulador: NO se aísla al resto del cuarto —el
+        // motor ya hace pelear a todo NPC de combate presente— y el mensaje
+        // del motor se narra al historial de la aventura, no se pierde en
+        // un registro local.
+        const r = turn.executeTool('resolve_attack', {
+          npc_id: npcId, weapon_id: armaId,
+          apuntando: String(Boolean(mods?.apuntando)),
+          punto_blanco: String(Boolean(mods?.puntoBlanco)),
+          cubierto: String(Boolean(mods?.cubierto)),
+          blanco_movil: String(Boolean(mods?.blancoMovil)),
+        });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          combateActivo: Boolean(state.activeCombat),
+          options: scenario ? accionesDisponibles(state, scenario) : [],
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async combateHuir(id, armaId): Promise<CombateResult> {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('resolve_flee', { weapon_id: armaId });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          combateActivo: Boolean(state.activeCombat),
+          options: scenario ? accionesDisponibles(state, scenario) : [],
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async combateManiobra(id, npcId, tipo): Promise<CombateResult> {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('resolve_maneuver', { npc_id: npcId, type: tipo });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          combateActivo: Boolean(state.activeCombat),
+          options: scenario ? accionesDisponibles(state, scenario) : [],
+        };
+      } finally {
+        enCurso.delete(id);
+      }
     },
   };
 }

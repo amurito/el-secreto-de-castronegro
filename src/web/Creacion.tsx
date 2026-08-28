@@ -22,6 +22,7 @@ import {
   type TiradaInicial,
 } from '../app/creacion.ts';
 import { calcularTratamiento } from '../rules/tratamiento.ts';
+import { ARMA_POR_ID } from '../rules/armas.ts';
 
 /** Vista previa del botón de tratamiento, antes de tocar «Tirar». */
 function tratamientoPreview(
@@ -64,7 +65,7 @@ export function Creacion({
   scenarioTitulo, onListo, onCancelar, ocupado, rapido = false,
 }: {
   scenarioTitulo: string;
-  onListo: (investigador: unknown) => void;
+  onListo: (investigador: unknown, armaInicialId: string | null) => void;
   onCancelar: () => void;
   ocupado: boolean;
   /**
@@ -83,6 +84,7 @@ export function Creacion({
   const [descripcion, setDescripcion] = useState('');
   const [ocupacionId, setOcupacionId] = useState(catalogo.ocupaciones[0]!.id);
   const [elegida, setElegida] = useState<CharacteristicId | undefined>(undefined);
+  const [armaInicialId, setArmaInicialId] = useState<string | null>(null);
 
   const [tirada, setTirada] = useState<TiradaInicial | null>(null);
   const [restaFisica, setRestaFisica] = useState<Record<string, number>>({});
@@ -126,9 +128,10 @@ export function Creacion({
       conexionClave: rapido
         ? aspectos[0]!.id
         : (aspectos.some((a) => a.id === conexion) ? conexion : (aspectos[0]?.id ?? null)),
+      armaInicialId,
     });
     if (!r.ok) { setProblemas(r.problemas); return; }
-    onListo(r.investigador);
+    onListo(r.investigador, r.armaInicialId);
   }
 
   const ajustar = (
@@ -220,7 +223,7 @@ export function Creacion({
                 key={o.id}
                 className={`ocupacion ${ocupacionId === o.id ? 'ocupacion-on' : ''}`}
                 onClick={() => {
-                  setOcupacionId(o.id); setElegida(undefined); setOcupPuntos({});
+                  setOcupacionId(o.id); setElegida(undefined); setOcupPuntos({}); setArmaInicialId(null);
                   if (o.soloGenero) setGenero(o.soloGenero);
                 }}
               >
@@ -244,6 +247,28 @@ export function Creacion({
                     onClick={() => setElegida(c)}
                   >
                     {ETIQUETA_CAR[c]} × {ocupacion.formula.eleccion!.multiplicador}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(ocupacion.armasPermitidas?.length ?? 0) > 0 && (
+            <div className="campo">
+              <span>{ocupacion.nombre} puede empezar con un arma:</span>
+              <div className="eleccion">
+                <button
+                  className={`chip ${armaInicialId === null ? 'chip-on' : ''}`}
+                  onClick={() => setArmaInicialId(null)}
+                >
+                  Ninguna
+                </button>
+                {ocupacion.armasPermitidas!.map((aid) => (
+                  <button
+                    key={aid} className={`chip ${armaInicialId === aid ? 'chip-on' : ''}`}
+                    onClick={() => setArmaInicialId(aid)}
+                  >
+                    {ARMA_POR_ID[aid]?.nombre ?? aid}
                   </button>
                 ))}
               </div>
