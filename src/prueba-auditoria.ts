@@ -231,6 +231,35 @@ async function auditar(esc: Scenario) {
   for (const m of temasRotos) console.log(`   ✗ ${m}`);
   check('la intención de cada tema clasifica como hablarle explícitamente a su NPC',
     temasRotos.length === 0, `${esc.conversations.length} temas`);
+
+  // El botón de cada tema tiene que reconocerse A SÍ MISMO.
+  //
+  // Encontrado jugando: `r-cirilo-inconsciente` en El Invierno Debido tenía
+  // `intencion: 'Le pregunto algo a Ramona'` y ninguna de sus `claves`
+  // aparecía en esa frase. `temaPorFrase` (offline.ts) busca `norm.includes(
+  // clave)` sobre el texto YA CLASIFICADO —nunca sobre el `id` del tema—, así
+  // que sin coincidencia el tema no se selecciona NI CON SU PROPIO BOTÓN: cae
+  // al `sinTema()` genérico («Pregunte lo que tenga que preguntar…»), y el
+  // jugador nunca ve la escena que escribiste para ese momento, aunque haga
+  // exactamente lo que el botón le pedía.
+  //
+  // Réplica exacta del matching real: `i.norm` sale de `classify()`, `clave`
+  // se usa cruda —temaPorFrase no la normaliza—, así que una clave con tilde
+  // o mayúscula rompe en silencio aunque este chequeo la vea «parecida».
+  const sinClave: string[] = [];
+  for (const t of esc.conversations) {
+    const loc = Object.values(esc.locations).find((l) => l.npcsPresent.includes(t.npc));
+    if (!loc) continue;
+    const s: GameState = { ...base, world: { ...base.world, currentLocation: loc.id } };
+    const i = classify(s, t.intencion);
+    const matchea = (t.claves ?? []).some((c) => i.norm.includes(c));
+    if (!matchea) {
+      sinClave.push(`«${t.id}»: «${t.intencion}» no contiene ninguna de sus claves ${JSON.stringify(t.claves)}`);
+    }
+  }
+  for (const m of sinClave) console.log(`   ✗ ${m}`);
+  check('la intención de cada tema contiene alguna de sus propias claves',
+    sinClave.length === 0, `${esc.conversations.length} temas`);
   const declarado = loQueDeclara(esc);
   const entregable = loQuePuedeEntregar(esc, estadosDeBanco(base, esc));
 

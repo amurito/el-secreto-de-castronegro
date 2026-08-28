@@ -69,9 +69,6 @@ const desenlacePrevio = (s: GameState): DesenlacePrevio => {
   return 'ninguno';
 };
 
-/** Si el año pasado le fue encima a Cirilo. Cierra puertas y abre otras. */
-const peleoConCirilo = (s: GameState) => consecuencia(s, 'le fue encima a Cirilo Sosa');
-
 /**
  * ECOS DE OTRAS AVENTURAS DE LA CAMPAÑA.
  *

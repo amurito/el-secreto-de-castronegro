@@ -1373,7 +1373,8 @@
         "usted lo pinto",
         "su hijo",
         "cirilo",
-        "el muchacho"
+        "el muchacho",
+        "algo"
       ],
       "disponible": {
         "op": "npcFuera",

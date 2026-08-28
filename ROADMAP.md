@@ -1356,6 +1356,40 @@ revirtiendo a mano la frase de `d-curato` a su forma rota: la prueba la
 caza con el motivo exacto. Las 86 intenciones de tema de las seis
 aventuras publicadas pasan.
 
+### 3.2-duodecies Un botón que no se reconocía a sí mismo ✔ ARREGLADO
+
+Reportado jugando El Invierno Debido: dejar a Cirilo Sosa fuera de combate y
+después tocar «Preguntarle algo» —el único botón que quedaba para hablar con
+Ramona en ese momento— contestaba con el genérico de no-entendí («Pregunte
+lo que tenga que preguntar…») en vez de la escena escrita para eso (Ramona
+arrodillada al lado del hijo, «Salga de mi casa»).
+
+**La causa, prima hermana de la de 3.2-decies pero no la misma.**
+`temaPorFrase` (offline.ts) selecciona un tema buscando alguna de sus
+`claves` DENTRO de la intención ya clasificada. El tema `r-cirilo-
+inconsciente` tenía `intencion: 'Le pregunto algo a Ramona'` y sus claves
+eran `["lo que se repinta", "cada invierno", ..., "cirilo", "el
+muchacho"]` — ninguna aparecía en esa frase. El tema no se podía
+seleccionar **ni con su propio botón**: caía siempre al `sinTema()`
+genérico, con el estado de Cirilo inconsciente y todo. Arreglado sumando
+`"algo"` a sus claves.
+
+**Sumada una segunda prueba permanente**, al lado de la de 3.2-decies:
+para cada tema, `classify()` real sobre su propia `intencion` tiene que
+contener alguna de sus propias `claves` —réplica exacta de
+`i.norm.includes(clave)`, sin normalizar la clave, porque `temaPorFrase`
+tampoco lo hace—. Verificada revirtiendo el arreglo a mano: la caza con el
+motivo exacto. Barridas las seis aventuras: era el único caso.
+
+**De paso**, una constante huérfana en `suenodebido.logica.ts`:
+`peleoConCirilo` estaba declarada y nunca se usaba —el mecanismo real de
+«si le pegaste a Cirilo, Ramona no colabora» vive directo en el
+`disponible` de los temas `r-1878`/`r-1878-forzado` del JSON, y funciona
+bien; se verificó jugando (simulado) las dos ramas: sin pelea sale
+`r-1878` por Persuasión, con pelea sale `r-1878-forzado` por Intimidar, y
+las dos piden actitudes y dan texto distintos—. La constante no hacía
+nada. Borrada.
+
 ### 3.2-undecies Se eliminó el Keeper IA ✔ HECHO
 
 Decisión del jugador, marzo de 2026: **quedan los botones y el motor; se va
