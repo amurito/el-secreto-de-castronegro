@@ -208,6 +208,21 @@ export function accionesDisponibles(s: GameState, escenario: Scenario): Opcion[]
     });
   }
 
+  // Soltar es el espejo de tomar: mismo criterio de grupo y orden, sólo que
+  // mira lo que el investigador YA lleva encima en vez de lo que hay en el
+  // lugar. `dropItem` (keeper/offline.ts) y el verbo «soltar» del clasificador
+  // ya resolvían esto de punta a punta — lo único que faltaba era el botón.
+  for (const item of Object.values(s.items)) {
+    if (item.owner !== s.activeInvestigator) continue;
+    out.push({
+      id: `dejar:${item.id}`,
+      etiqueta: `Dejar ${item.name.toLowerCase()}`,
+      intencion: `Dejo ${item.name.toLowerCase()}`,
+      grupo: 'usar',
+      orden: 71,
+    });
+  }
+
   for (const destino of loc?.connections ?? []) {
     const d = s.world.locations[destino];
     if (!d) continue;
