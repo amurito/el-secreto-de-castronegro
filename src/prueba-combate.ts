@@ -702,6 +702,95 @@ async function main() {
     check('se vio al menos una pifia cuerpo a cuerpo en 40 intentos', vistaPifia);
   }
 
+  console.log('\nINTIMIDAR EN COMBATE: SÓLO SI LA ESCENA LO CONFIGURÓ');
+  {
+    // Sin `salidaPacifica` (el caso de siempre, incluido el simulador), no
+    // hay ninguna salida de palabra: el motor no inventa una.
+    const id = await createCampaign(conMaton, 'INTIMIDAR-SIN-CONFIG', 'iz'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('start_combat', { npc_ids: 'npc-maton', reason: 'prueba' });
+    const r = t.executeTool('resolve_intimidate', { npc_id: 'npc-maton' });
+    check('sin salidaPacifica configurada, se rechaza', !r.ok, r.message.slice(0, 80));
+  }
+
+  const SALIDA_PACIFICA_MATON = {
+    npcId: 'npc-maton',
+    pistaCalma: {
+      description: 'El hombre del portón se calma y se hace a un lado.',
+      kind: 'experiential' as const, source: 'prueba', reliability: 'reliable' as const,
+    },
+    consecuenciaDisparo: {
+      description: 'el investigador le disparó al hombre del portón, en vez de pelear a mano limpia',
+      scope: 'campaign' as const, permanent: true, worldReminder: 'x',
+    },
+  };
+
+  console.log('\nINTIMIDAR: EL NPC TIENE QUE SER EL QUE LA ESCENA CONFIGURÓ');
+  {
+    const id = await createCampaign(conMaton, 'INTIMIDAR-NPC-DISTINTO', 'iy'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('start_combat', {
+      npc_ids: 'npc-maton', reason: 'prueba',
+      salida_pacifica: { ...SALIDA_PACIFICA_MATON, npcId: 'npc-otro' },
+    });
+    const r = t.executeTool('resolve_intimidate', { npc_id: 'npc-maton' });
+    check('si el npc no coincide con salidaPacifica.npcId, se rechaza', !r.ok, r.message.slice(0, 80));
+  }
+
+  console.log('\nINTIMIDAR: DOS RESULTADOS, IGUAL DE ARRIESGADO QUE UNA MANIOBRA');
+  {
+    let vioCalma = false, vioPelea = false;
+    for (let n = 0; n < 60 && !(vioCalma && vioPelea); n++) {
+      const semilla = `iw${n}`.padEnd(4, '0').repeat(16);
+      const id = await createCampaign(conMaton, `INTIMIDAR-${n}`, semilla);
+      const t = await Turn.open(id);
+      t.executeTool('start_combat', { npc_ids: 'npc-maton', reason: 'prueba', salida_pacifica: SALIDA_PACIFICA_MATON });
+      const r = t.executeTool('resolve_intimidate', { npc_id: 'npc-maton' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      if (/Se calma y se aparta/.test(r.message)) {
+        vioCalma = true;
+        check(`  · semilla ${n}: se calma → deja la pista configurada`,
+          s.board.clues.some((c) => c.description === SALIDA_PACIFICA_MATON.pistaCalma.description));
+        check(`  · semilla ${n}: y el combate se cierra`, s.activeCombat === null);
+      } else if (/No se calma: aprovecha para conectar/.test(r.message)) {
+        vioPelea = true;
+        check(`  · semilla ${n}: no se calma y pega → el combate sigue`, s.activeCombat !== null);
+      }
+    }
+    check('se vio la rama en la que se calma', vioCalma);
+    check('se vio la rama en la que no se calma y pega', vioPelea);
+  }
+
+  console.log('\nDISPARAR CONTRA UN NPC CONFIGURADO REGISTRA UNA CONSECUENCIA DISTINTA, UNA SOLA VEZ, Y CIERRA INTIMIDAR');
+  {
+    const id = await createCampaign(conMaton, 'DISPARO-CONSECUENCIA', 'ix'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('start_combat', { npc_ids: 'npc-maton', reason: 'prueba', salida_pacifica: SALIDA_PACIFICA_MATON });
+    t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'revolver-38' });
+    t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'revolver-38' }); // segunda vez, no debe duplicar
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    const cuenta = s.consequences.filter((c) => c.description.includes(SALIDA_PACIFICA_MATON.consecuenciaDisparo.description)).length;
+    check('la consecuencia de disparo aparece exactamente una vez tras dos disparos', cuenta === 1, `${cuenta}`);
+
+    const t2 = await Turn.open(id);
+    const r2 = t2.executeTool('resolve_intimidate', { npc_id: 'npc-maton' });
+    check('con la consecuencia de disparo ya registrada, Intimidar se rechaza', !r2.ok, r2.message.slice(0, 80));
+  }
+
+  console.log('\nPELEAR CUERPO A CUERPO CONTRA ESE MISMO NPC NO REGISTRA LA CONSECUENCIA DE DISPARO');
+  {
+    const id = await createCampaign(conMaton, 'MELEE-SIN-CONSECUENCIA', 'iv'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('start_combat', { npc_ids: 'npc-maton', reason: 'prueba', salida_pacifica: SALIDA_PACIFICA_MATON });
+    t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('a mano/facón no registra la consecuencia de disparo',
+      !s.consequences.some((c) => c.description.includes(SALIDA_PACIFICA_MATON.consecuenciaDisparo.description)));
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

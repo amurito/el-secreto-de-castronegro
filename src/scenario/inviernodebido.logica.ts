@@ -473,7 +473,30 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
       // A partir de este primer asalto, la interfaz cambia a la pantalla
       // dedicada de combate: los asaltos siguientes no vuelven a pasar por
       // este botón. Idempotente por diseño (ver `toolStartCombat`).
-      iniciaCombate: { npcIds: ['npc-cirilo'] },
+      iniciaCombate: {
+        npcIds: ['npc-cirilo'],
+        salidaPacifica: {
+          npcId: 'npc-cirilo',
+          pistaCalma: {
+            // MISMO texto que ya usa el tema «Tratar de calmarlo»
+            // (`c-calmar`, en el JSON): los gates de «enfrentar-cirilo» y
+            // «huir-cirilo» ya buscan este fragmento exacto para saber si
+            // Cirilo se apartó, y no hay que tocarlos.
+            description: 'Cirilo se aparta y deja pasar sin pelear: la enojada era la situacion, no el investigador.',
+            kind: 'experiential',
+            source: 'Cirilo Sosa',
+            reliability: 'reliable',
+          },
+          // Distinta de la de mano limpia a propósito —ningún fragmento en
+          // común— para que El Sueño Debido pueda discriminar entre las dos.
+          consecuenciaDisparo: {
+            description: 'En el patio de los Sosa, el investigador sacó un arma de fuego y le disparó a Cirilo Sosa, delante de la madre.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Ramona Sosa vio al investigador sacar un arma y dispararle a su hijo en su propio patio. No es lo mismo que un golpe de puño, y ella lo sabe.',
+          },
+        },
+      },
       // HABER DECIDIDO PELEAR ES LO QUE QUEDA, no quién ganó el asalto. Se
       // registra en el primero y sólo en el primero: cada click es un asalto
       // y sin este chequeo quedaban ocho copias de la misma consecuencia.

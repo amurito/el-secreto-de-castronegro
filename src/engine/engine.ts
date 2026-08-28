@@ -15,7 +15,7 @@ import type { GameEvent, Actor, GameEventType } from '../shared/events.ts';
 import type {
   GameState, InvestigatorId, RollRecord, RollModifier, Difficulty,
   Clue, Npc, Condition, MechanicalEffect, WorldTime, SkillId, CharacteristicId, Investigator,
-  SuccessDegree, Item,
+  SuccessDegree, Item, ActiveCombat,
 } from '../shared/types.ts';
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
@@ -697,6 +697,7 @@ export class Turn {
         case 'resolve_maneuver': return this.toolResolveManeuver(raw);
         case 'start_combat': return this.toolStartCombat(raw);
         case 'end_combat': return this.toolEndCombat(raw);
+        case 'resolve_intimidate': return this.toolResolveIntimidate(raw);
         case 'apply_sanity_loss': return this.toolApplySanityLoss(raw);
         case 'apply_mythos_knowledge': return this.toolApplyMythos(raw);
         case 'apply_umbral_exposure': return this.toolApplyExposure(raw);
@@ -1040,7 +1041,8 @@ export class Turn {
     if (this.state.activeCombat && npcIds.every((id) => this.state.activeCombat!.npcIds.includes(id))) {
       return { ok: true, message: 'El combate ya estaba en curso.' };
     }
-    this.emit('COMBAT_STARTED', { npcIds, reason });
+    const salidaPacifica = raw.salida_pacifica as ActiveCombat['salidaPacifica'] | undefined;
+    this.emit('COMBAT_STARTED', { npcIds, reason, salidaPacifica });
     return { ok: true, message: `Empieza el combate contra ${npcIds.join(', ')}.` };
   }
 
@@ -1137,6 +1139,25 @@ export class Turn {
     }
 
     const inv = this.investigator;
+
+    // Sacar un arma de fuego contra un NPC configurado con `salidaPacifica`
+    // cierra el camino amable para siempre y deja una consecuencia propia,
+    // más grave que la de pelear a mano limpia. Se registra dispare o falle
+    // el tiro —el gesto de disparar ya es la escalada—, y antes de tirar los
+    // dados del asalto, para que no dependa de si el golpe llega.
+    const ac = this.state.activeCombat;
+    const sp = ac?.salidaPacifica;
+    if (sp && sp.npcId === npc.id && arma.habilidad === 'armas_fuego') {
+      const yaRegistrada = this.state.consequences.some((c) => c.description.includes(sp.consecuenciaDisparo.description));
+      if (!yaRegistrada) {
+        this.toolRecordConsequence({
+          description: sp.consecuenciaDisparo.description,
+          scope: sp.consecuenciaDisparo.scope,
+          permanent: String(sp.consecuenciaDisparo.permanent),
+          world_reminder: sp.consecuenciaDisparo.worldReminder,
+        });
+      }
+    }
 
     // Un arma de fuego no se «contraataca» a mano, salvo a quemarropa —ahí
     // ya no es un disparo a distancia, es forcejeo, y devolver el golpe
@@ -1414,6 +1435,91 @@ export class Turn {
     });
     this.cerrarCombateSiTerminado();
     return { ok: true, message: `${encabezado}\nQueda sujeto: su próximo intento de pelear o de escapar sale con desventaja.` };
+  }
+
+  /**
+   * Intimidar en pleno combate, para terminarlo en paz. Sólo existe si la
+   * escena que abrió el combate lo configuró (`activeCombat.salidaPacifica`)
+   * — el motor no sabe qué NPC es ni por qué esta pelea admite hablar en vez
+   * de pegar, sólo sabe leer lo que la escena dejó dicho.
+   *
+   * Tirada enfrentada: Intimidar del investigador contra la resistencia del
+   * NPC. Se usa `combate.pelea` como resistencia —es la única cifra que un
+   * NPC de esta ficha tiene, no hay `POW` en ningún NPC del motor— mismo
+   * criterio que ya usa `toolResolveManeuver`. Si el investigador pierde el
+   * cruce, el NPC conecta un golpe normal: ofrecer esto gratis, sin el mismo
+   * riesgo que cualquier maniobra, lo volvería la opción dominante.
+   */
+  private toolResolveIntimidate(raw: Record<string, unknown>): ToolOutcome {
+    const npcId = String(raw.npc_id ?? '').trim();
+    const sp = this.state.activeCombat?.salidaPacifica;
+    if (!sp) {
+      return this.reject('resolve_intimidate', raw, 'Este combate no tiene una salida de palabra configurada.');
+    }
+    if (sp.npcId !== npcId) {
+      return this.reject('resolve_intimidate', raw, `«${npcId}» no es a quien se le puede hablar en este combate.`);
+    }
+    const yaDisparo = this.state.consequences.some((c) => c.description.includes(sp.consecuenciaDisparo.description));
+    if (yaDisparo) {
+      return this.reject('resolve_intimidate', raw, 'Ya se sacó un arma de fuego: ese camino se cerró.');
+    }
+
+    const npc = this.state.npcs[npcId];
+    if (!npc) return this.reject('resolve_intimidate', raw, `El personaje «${npcId}» no existe.`);
+    if (!npc.combate) {
+      return this.reject('resolve_intimidate', raw, `${npc.name} no tiene estadísticas de combate: no hay pelea que calmar.`);
+    }
+    if (!npc.present || npc.status === 'dead') {
+      return this.reject('resolve_intimidate', raw, `${npc.name} no está acá.`);
+    }
+    if (npc.combate.hp <= 0) {
+      return this.reject('resolve_intimidate', raw, `${npc.name} ya está fuera de combate.`);
+    }
+
+    const inv = this.investigator;
+    const ataque = this.toolRequestRoll({
+      skill: 'intimidar',
+      difficulty: 'regular',
+      reason: `que ${npc.name} se calme y la pelea termine en paz`,
+      stakes_success: 'se calma y se aparta',
+      stakes_failure: 'no se calma',
+    });
+    if (!ataque.ok) return ataque;
+    const gradoInv = this.ctx.lastRollDegree as SuccessDegree;
+
+    const defensor = this.tiradaInterna(npc.id, npc.name, 'Pelea', npc.combate.pelea, 'no dejarse intimidar');
+    const indiceDefensa = this.state.rng.nextIndex - 1;
+
+    const fallo = resolverEnfrentamiento({ atacante: gradoInv, defensor: defensor.degree, defensa: 'contraataca' });
+    const encabezado =
+      `INTIMIDAR — ${inv.name} intenta que ${npc.name} se calme.\n` +
+      `${DEGREE_LABEL[gradoInv]} contra ${DEGREE_LABEL[defensor.degree]}. ${fallo.razon}`;
+
+    if (fallo.golpea === null) {
+      this.cerrarCombateSiTerminado();
+      return { ok: true, message: `${encabezado}\nNo se calma, pero tampoco reacciona. Sigue la pelea.` };
+    }
+
+    if (fallo.golpea === 'atacante') {
+      const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
+      const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, indiceDefensa, false);
+      const golpe = this.toolApplyDamage({ amount: dano.total, cause: `${armaNpc.nombre} de ${npc.name}, al no dejarse intimidar` });
+      this.cerrarCombateSiTerminado();
+      return {
+        ok: true,
+        message: `${encabezado}\nNo se calma: aprovecha para conectar. ${dano.total} de daño (${dano.detalle}).\n${golpe.message}`,
+      };
+    }
+
+    // Se calma.
+    if (!this.state.board.clues.some((c) => c.description === sp.pistaCalma.description)) {
+      this.toolAddClue({
+        description: sp.pistaCalma.description, kind: sp.pistaCalma.kind,
+        source: sp.pistaCalma.source, reliability: sp.pistaCalma.reliability,
+      });
+    }
+    this.emit('COMBAT_ENDED', { reason: 'se_calmo', npcIds: this.state.activeCombat!.npcIds });
+    return { ok: true, message: `${encabezado}\nSe calma y se aparta. No hace falta pelear más.` };
   }
 
   // ── ESTADO DEL INVESTIGADOR ────────────────────────────────────────────────

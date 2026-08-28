@@ -78,6 +78,18 @@ function armasDelInvestigador(state: GameState): ArmaDisponible[] {
   return armas.map((a) => ({ id: a.id, nombre: a.nombre, nota: a.nota }));
 }
 
+/**
+ * Contra quién se puede intentar Intimidar ahora mismo. `null` si la escena
+ * no configuró una salida de palabra para este combate, o si ya se cerró
+ * porque el investigador sacó un arma de fuego.
+ */
+function intimidarDisponible(state: GameState): { npcId: string } | null {
+  const sp = state.activeCombat?.salidaPacifica;
+  if (!sp) return null;
+  const yaDisparo = state.consequences.some((c) => c.description.includes(sp.consecuenciaDisparo.description));
+  return yaDisparo ? null : { npcId: sp.npcId };
+}
+
 /** Un turno por vez, igual que el lock del servidor. */
 const enCurso = new Set<string>();
 
@@ -369,6 +381,7 @@ export function createLocalApi(): GameApi {
         state: sanitizeForClient(state),
         rivales: rivalesReales(state),
         armas: armasDelInvestigador(state),
+        intimidar: intimidarDisponible(state),
       };
     },
 
@@ -398,6 +411,7 @@ export function createLocalApi(): GameApi {
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
+          intimidar: intimidarDisponible(state),
         };
       } finally {
         enCurso.delete(id);
@@ -420,6 +434,7 @@ export function createLocalApi(): GameApi {
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
+          intimidar: intimidarDisponible(state),
         };
       } finally {
         enCurso.delete(id);
@@ -442,6 +457,30 @@ export function createLocalApi(): GameApi {
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
+          intimidar: intimidarDisponible(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async combateIntimidar(id, npcId): Promise<CombateResult> {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('resolve_intimidate', { npc_id: npcId });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          combateActivo: Boolean(state.activeCombat),
+          options: scenario ? accionesDisponibles(state, scenario) : [],
+          intimidar: intimidarDisponible(state),
         };
       } finally {
         enCurso.delete(id);

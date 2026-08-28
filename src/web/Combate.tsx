@@ -21,7 +21,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import type { GameApi, CombateResult, RivalReal, ArmaDisponible } from '../app/api.ts';
+import type { GameApi, CombateResult, RivalReal, ArmaDisponible, IntimidarDisponible } from '../app/api.ts';
 import type { Opcion } from '../scenario/acciones.ts';
 import { ARMA_POR_ID } from '../rules/armas.ts';
 import { Sheet, RollCard } from './components.tsx';
@@ -45,6 +45,7 @@ export function Combate({
   const [estado, setEstado] = useState<any>(null);
   const [rivales, setRivales] = useState<RivalReal[]>([]);
   const [armas, setArmas] = useState<ArmaDisponible[]>([]);
+  const [intimidar, setIntimidar] = useState<IntimidarDisponible>(null);
   const [rivalId, setRivalId] = useState('');
   const [arma, setArma] = useState('desarmado');
   const [registro, setRegistro] = useState<Array<{ mensaje: string; tiradas: any[]; ok: boolean }>>([]);
@@ -68,6 +69,7 @@ export function Combate({
         setEstado(r.state);
         setRivales(r.rivales);
         setArmas(r.armas);
+        setIntimidar(r.intimidar);
         setRivalId(r.rivales[0]?.id ?? '');
         setDesde((r.state as any).narrative?.length ?? 0);
       })
@@ -76,6 +78,7 @@ export function Combate({
 
   function aplicar(r: CombateResult) {
     setEstado(r.state);
+    setIntimidar(r.intimidar);
     const nuevas: Entrada[] = (r.state.narrative as Entrada[]).slice(desde);
     setDesde(r.state.narrative.length);
     setEntradas((prev) => [...prev, ...nuevas]);
@@ -119,6 +122,18 @@ export function Combate({
     setError(null);
     try {
       agregarAlRegistro(await api.combateManiobra(campaignId, rivalId, tipo));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function intimidarClick() {
+    setOcupado(true);
+    setError(null);
+    try {
+      agregarAlRegistro(await api.combateIntimidar(campaignId, rivalId));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -216,6 +231,11 @@ export function Combate({
           <button className="ghost" onClick={huir} disabled={ocupado || !investigadorEnPie}>
             Huir
           </button>
+          {intimidar && intimidar.npcId === rivalId && (
+            <button className="ghost" onClick={intimidarClick} disabled={ocupado || !enPie || !investigadorEnPie}>
+              Intimidar
+            </button>
+          )}
         </div>
 
         <div className="sim-maniobras">

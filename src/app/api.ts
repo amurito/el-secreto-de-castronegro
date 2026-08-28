@@ -114,11 +114,16 @@ export interface GameApi {
   // misma regla que ya rige para cualquier NPC en `sanitizeForClient`.
 
   /** El estado del combate en curso: quién pelea, con qué se puede pelear. */
-  combateEstado(id: string): Promise<{ state: ClientState; rivales: RivalReal[]; armas: ArmaDisponible[] }>;
+  combateEstado(id: string): Promise<{ state: ClientState; rivales: RivalReal[]; armas: ArmaDisponible[]; intimidar: IntimidarDisponible }>;
   combateAtacar(id: string, npcId: string, armaId: string, mods?: ModsDeFuego): Promise<CombateResult>;
   /** A diferencia del simulador, no recibe `npcId`: huir es contra todos los presentes. */
   combateHuir(id: string, armaId: string): Promise<CombateResult>;
   combateManiobra(id: string, npcId: string, tipo: 'desarmar' | 'derribar' | 'sujetar'): Promise<CombateResult>;
+  /**
+   * Intentar que el rival se calme y la pelea termine en paz. Sólo existe si
+   * la escena que abrió este combate lo configuró — ver `CombateResult.intimidar`.
+   */
+  combateIntimidar(id: string, npcId: string): Promise<CombateResult>;
 }
 
 export interface RivalReal {
@@ -129,6 +134,9 @@ export interface RivalReal {
 /** Un arma que el investigador realmente puede usar en este combate. */
 export interface ArmaDisponible { id: string; nombre: string; nota?: string }
 
+/** Contra quién se puede intentar Intimidar ahora mismo. `null` = no hay salida de palabra (no se configuró, o ya se cerró por un disparo). */
+export type IntimidarDisponible = { npcId: string } | null;
+
 export interface CombateResult {
   ok: boolean;
   mensaje: string;
@@ -138,6 +146,7 @@ export interface CombateResult {
   combateActivo: boolean;
   /** Las acciones normales, listas para cuando se vuelve a la narración. */
   options: Opcion[];
+  intimidar: IntimidarDisponible;
 }
 
 export interface Rival {

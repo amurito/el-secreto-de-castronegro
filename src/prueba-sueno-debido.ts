@@ -220,12 +220,19 @@ async function main() {
     'Le pregunto a Ramona por qué tiene las manos limpias',
   ];
   const PELEA = 'En el patio de los Sosa, el investigador le fue encima a Cirilo Sosa a mano limpia, delante de la madre.';
+  // En el juego real, el primer asalto de `combate-cirilo` SIEMPRE registra
+  // PELEA (está hardcodeado a mano limpia) — un disparo sólo puede pasar
+  // desde el segundo asalto en adelante, así que DISPARO nunca aparece sin
+  // PELEA también presente. Se siembran las dos juntas para reflejar eso.
+  const DISPARO = 'En el patio de los Sosa, el investigador sacó un arma de fuego y le disparó a Cirilo Sosa, delante de la madre.';
 
   const enPaz = await jugar('RAMONA-PAZ', 'f', AL_PATIO);
   const conPelea = await jugar('RAMONA-PELEA', 'f', AL_PATIO, [PELEA]);
+  const conDisparo = await jugar('RAMONA-DISPARO', 'f', AL_PATIO, [PELEA, DISPARO]);
 
   const bPaz = botones(enPaz.estado);
   const bPelea = botones(conPelea.estado);
+  const bDisparo = botones(conDisparo.estado);
   check('en paz, Ramona se deja preguntar por el setenta y ocho',
     bPaz.includes('tema:r-1878'), bPaz.join(', '));
   check('en paz, NO aparece la vía de apretarla',
@@ -234,6 +241,12 @@ async function main() {
     !bPelea.includes('tema:r-1878'), bPelea.join(', '));
   check('después de pelearse, aparece la de apretarla',
     bPelea.includes('tema:r-1878-forzado'), bPelea.join(', '));
+  check('después de un disparo, tampoco la vía por las buenas',
+    !bDisparo.includes('tema:r-1878'), bDisparo.join(', '));
+  check('después de un disparo, la de apretarla YA NO alcanza —ese camino se cerró del todo—',
+    !bDisparo.includes('tema:r-1878-forzado'), bDisparo.join(', '));
+  check('después de un disparo, aparece la rama nueva, más grave',
+    bDisparo.includes('tema:r-1878-forzado-disparo'), bDisparo.join(', '));
 
   // ── 6. LAS HABILIDADES RARAS ENRIQUECEN, NUNCA BLOQUEAN ─────────────────
   console.log('\n6. LAS HABILIDADES QUE NINGUNA FICHA TRAE NO BLOQUEAN NADA');

@@ -13,7 +13,7 @@ import type {
   WorldTime, RollRecord, TemporalCategory, UmbralThreshold,
   Condition, KnowledgeEntry, SuccessDegree, Difficulty, RollModifier,
   RollVisibility, CanonRef, Secret, DiegeticDocument, Npc, NpcSeed, Item,
-  Investigator, Clue,
+  Investigator, Clue, ActiveCombat,
 } from './types.ts';
 
 export type Actor =
@@ -251,11 +251,12 @@ export interface NpcCombateChangedPayload {
 export interface CombatStartedPayload {
   npcIds: NpcId[];
   reason: string;
+  salidaPacifica?: ActiveCombat['salidaPacifica'];
 }
 
 /** Cierra el combate real en curso, cualquiera sea el motivo. */
 export interface CombatEndedPayload {
-  reason: 'npc_derrotado' | 'huyo' | 'investigador_caido';
+  reason: 'npc_derrotado' | 'huyo' | 'investigador_caido' | 'se_calmo';
   npcIds: NpcId[];
 }
 

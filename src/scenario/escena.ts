@@ -24,7 +24,7 @@
  * del proyecto se mantiene: el contenido propone, el motor dispone.
  */
 
-import type { GameState, Clue, SkillId, LocationId, SuccessDegree } from '../shared/types.ts';
+import type { GameState, Clue, Consequence, SkillId, LocationId, SuccessDegree } from '../shared/types.ts';
 import type { Dificultad } from './conversacion.ts';
 
 /**
@@ -143,7 +143,22 @@ export interface EfectoEscena {
    * ahí, no repitiendo esta escena. Idempotente: tocar el mismo botón de
    * nuevo mientras el combate sigue activo no reinicia nada.
    */
-  iniciaCombate?: { npcIds: string[]; reason?: string };
+  iniciaCombate?: {
+    npcIds: string[];
+    reason?: string;
+    /**
+     * Si está, este combate admite terminar en paz: la escena decide si HAY
+     * una salida de palabra, con qué pista queda si funciona, y qué
+     * consecuencia distinta (más grave) deja usar un arma de fuego contra
+     * este NPC en vez de pelear a mano limpia. Sin esto, el combate se pelea
+     * como hasta ahora — es opcional a propósito.
+     */
+    salidaPacifica?: {
+      npcId: string;
+      pistaCalma: { description: string; kind: Clue['kind']; source: string; reliability: Clue['reliability'] };
+      consecuenciaDisparo: { description: string; scope: Consequence['scope']; permanent: boolean; worldReminder: string };
+    };
+  };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   pregunta?: string;

@@ -716,6 +716,16 @@ export interface ActiveCombat {
   npcIds: NpcId[];
   startedAt: EventId;
   reason: string;
+  /**
+   * Configurado por la escena que abrió el combate. Sin esto, no hay botón
+   * de Intimidar ni consecuencia distinta por disparar: el combate se pelea
+   * igual que hoy — así queda el simulador, que nunca lo setea.
+   */
+  salidaPacifica?: {
+    npcId: NpcId;
+    pistaCalma: { description: string; kind: Clue['kind']; source: string; reliability: Clue['reliability'] };
+    consecuenciaDisparo: { description: string; scope: Consequence['scope']; permanent: boolean; worldReminder: string };
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

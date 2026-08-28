@@ -64,7 +64,7 @@ async function jugar(titulo: string, semilla: string, guion: string[], marcas: s
     await t.commit();
     narrado.push(r.narration);
   }
-  return { estado: (await Turn.open(id)).state, narrado: narrado.join('\n') };
+  return { id, estado: (await Turn.open(id)).state, narrado: narrado.join('\n') };
 }
 
 /**
@@ -266,6 +266,51 @@ async function main() {
 
   const huida = await jugar('HUIR-CIRILO', 'g', [...AL_CONFLICTO, 'Me voy corriendo de la casa de los Sosa']);
   check('huir también tira: el golpe de oportunidad', huida.estado.rolls.length > conflicto.estado.rolls.length);
+
+  // ── 7-BIS. LA SALIDA DE PALABRA: INTIMIDAR DENTRO DEL COMBATE REAL ────────
+  console.log('\n7-BIS. LA SALIDA DE PALABRA, DENTRO DE LA PANTALLA DE COMBATE');
+
+  const primerAsalto = await jugar('CIRILO-PRIMER-ASALTO', 'h', [...AL_CONFLICTO, 'Enfrento a Cirilo']);
+  check('el primer asalto deja activeCombat con la salida de palabra configurada',
+    primerAsalto.estado.activeCombat?.salidaPacifica?.npcId === 'npc-cirilo',
+    JSON.stringify(primerAsalto.estado.activeCombat?.salidaPacifica));
+
+  // Rama disparo: desde el segundo asalto, la pantalla real deja elegir
+  // cualquier arma. Se simula llamando al motor directo, como hace
+  // `Combate.tsx` —no hace falta que el revólver esté en el inventario:
+  // `resolve_attack` nunca lo exige, sólo la interfaz filtra por eso.
+  {
+    const t = await Turn.open(primerAsalto.id);
+    t.executeTool('resolve_attack', { npc_id: 'npc-cirilo', weapon_id: 'revolver-38' });
+    await t.commit();
+    const s = (await Turn.open(primerAsalto.id)).state;
+    check('dispararle a Cirilo deja la consecuencia distinta, más grave',
+      s.consequences.some((c) => c.description.includes('sacó un arma de fuego y le disparó a Cirilo Sosa')));
+    const t2 = await Turn.open(primerAsalto.id);
+    const r2 = t2.executeTool('resolve_intimidate', { npc_id: 'npc-cirilo' });
+    check('y ya no se puede intentar calmarlo: ese camino se cerró', !r2.ok, r2.message.slice(0, 80));
+  }
+
+  // Rama calma: insistiendo dentro del mismo combate, sin volver a pasar por
+  // la escena —igual que insistir en Atacar ya insiste dentro del combate—.
+  {
+    const inicioCalma = await jugar('CIRILO-CALMA', 'h3', [...AL_CONFLICTO, 'Enfrento a Cirilo']);
+    let calmado = false;
+    for (let n = 0; n < 30 && !calmado; n++) {
+      const t = await Turn.open(inicioCalma.id);
+      if (!t.state.activeCombat) break;
+      if (t.investigator.derived.hp <= 0 || t.investigator.status !== 'alive') break;
+      t.executeTool('resolve_intimidate', { npc_id: 'npc-cirilo' });
+      await t.commit();
+      calmado = (await Turn.open(inicioCalma.id)).state.activeCombat === null;
+    }
+    check('insistiendo, Cirilo se puede calmar dentro del combate real —si no, subir la semilla o la cuenta—', calmado);
+    if (calmado) {
+      const s = (await Turn.open(inicioCalma.id)).state;
+      check('y deja la pista de que se apartó',
+        s.board.clues.some((c) => c.description.includes('Cirilo se aparta y deja pasar')));
+    }
+  }
 
   // ── 8. GANAR LA PELEA TIENE CONSECUENCIA: CIRILO YA NO CONTESTA, Y RAMONA TAMPOCO ──
   console.log('\n8. DEJAR A CIRILO INCONSCIENTE CAMBIA LO QUE SE PUEDE HABLAR DESPUÉS');

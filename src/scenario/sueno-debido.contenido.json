@@ -947,6 +947,13 @@
           {
             "op": "consecuencia",
             "contiene": "le fue encima a Cirilo Sosa"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "sacó un arma de fuego y le disparó a Cirilo Sosa"
+            }
           }
         ]
       },
@@ -975,6 +982,44 @@
       "agotado": {
         "op": "narrado",
         "contiene": "—Usted en esta casa levantó la mano una vez"
+      }
+    },
+    {
+      "id": "r-1878-forzado-disparo",
+      "npc": "npc-ramona",
+      "orden": 14,
+      "etiqueta": "Preguntarle por el setenta y ocho de todos modos",
+      "intencion": "Le pregunto a Ramona qué pasó en 1878, aunque sepa cómo terminó lo del año pasado",
+      "claves": [
+        "setenta y ocho",
+        "1878",
+        "lo que vio una vez",
+        "que paso en 1878",
+        "el otro que fue",
+        "apretarla"
+      ],
+      "disponible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "1878"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "sacó un arma de fuego y le disparó a Cirilo Sosa"
+          }
+        ]
+      },
+      "cede": {
+        "actitud": -4,
+        "texto": [
+          "—No.\n\nLo dice antes de que termines de preguntar, y no lo dice como quien se niega: lo dice como quien ya lo tenía decidido de antes de que llegaras.\n\n—A usted no le debo ni el clima. Vino a esta casa con un arma y se la sacó a mi hijo. Lo que yo vi en el setenta y ocho es mío, y me lo llevo.\n\nNo se levanta de la silla. No hace falta: ya dijo lo único que iba a decir."
+        ]
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "A usted no le debo ni el clima"
       }
     },
     {
