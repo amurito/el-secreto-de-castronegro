@@ -2219,6 +2219,66 @@ de contenido.
 `npm run prueba:todo` completo otra vez, incluidas las dos suites de Agua
 Blanca y El Vigésimo.
 
+### 3.2-sexvicies El bug grave del segundo playtest: los dos combates se mezclaban
+
+Jugando de verdad en el navegador —guardián del sótano, después Bernardo—
+apareció el bug más serio de toda la séptima: al ganarle al guardián y
+entrar en combate con Bernardo, la pantalla de Combate seguía mostrando al
+guardián mezclado con Bernardo en el mismo registro, con las armas y los PV
+del combate anterior. **Imposible de ganar**, porque ni siquiera se estaba
+peleando lo que la pantalla decía.
+
+La causa: `App.tsx` monta `<Combate>` cuando `GameState.activeCombat` se
+pone, y lo desmonta cuando se limpia. Entre el fin del combate del guardián
+y el arranque del de Bernardo, los dos montajes usan el mismo
+`campaignId` —ningún prop cambia— así que React reutilizó el mismo
+componente en vez de desmontar y volver a montar, y el `useEffect` que trae
+rivales/armas/estado del combate nuevo nunca se disparó otra vez. La
+pantalla se quedó peleando contra los datos viejos.
+
+Es un bug de motor genérico, no de El Vigésimo: **le pasaba a cualquier
+aventura con dos combates reales seguidos**, sólo que hasta ahora ninguna
+los tenía —Cirilo, en *El Invierno Debido*, es el único combate de su
+aventura—. Arreglado con una `key={state.activeCombat.startedAt}` en el
+`<Combate>` de `App.tsx`: cada combate real tiene su propio id de evento
+de arranque, así que React ahora sí remonta entre uno y otro.
+
+**Otros tres, del mismo playtest:**
+
+- **El cuchillo de cocina tampoco tenía `armaId`** —mismo error que el hacha
+  del granero (§3.2-quinvicies), esta vez en El Vigésimo. Arreglado.
+- **Bernardo agotaba la paciencia y decía la frase genérica de "tengo que
+  hacer la cena"** —el aviso de paciencia en cero (`social.ts`) nunca tuvo
+  forma de personalizarse por NPC: es un genérico pensado para alguien como
+  Rosa, y le quedaba absurdo a un personaje central de otra escala. Se
+  agregó `Npc.patienceExhaustedText` (opcional, sin romper a nadie que no
+  lo declare) y Bernardo ya tiene el suyo.
+- **Las cinco preguntas con tirada de Bernardo compartían la misma esquiva
+  genérica** ("—No sé —dice—. Le estoy diciendo que no sé.") cuando la
+  tirada de Psicología fallaba. Cada una tiene ahora su propia esquiva.
+- **La apertura de Ercilia en el puente de `subir` prometía acompañar al
+  sótano y no lo hacía** —el sótano era, de hecho, una salida más de la
+  lista, sin nada que descubrir—. Se sacó la promesa falsa; queda pendiente
+  (ver más abajo) convertir el acceso en algo que de verdad haya que
+  encontrar.
+
+**Lo que queda para una vuelta próxima, no resuelto todavía:**
+
+- **Hacer secreto el acceso al sótano.** El motor no tiene hoy manera de
+  ocultar una conexión: los botones «ir» se generan solos desde
+  `connections`, sin gate, y `move_to_location` exige que el destino ya
+  esté en esa lista aunque el movimiento lo dispare una escena. Hacerlo bien
+  pide una función nueva —una conexión que exista para el motor pero no
+  genere botón hasta que se cumpla una condición— y no una parchada de una
+  tarde.
+- **Cordura sin aviso en el momento.** La pérdida de Cordura es real —baja
+  el número, cuenta para el techo de después de los Mitos, puede disparar
+  fobias/manías— pero no hay ningún aviso visual puntual cuando pasa, sólo
+  el número de la ficha que cambió. Es así en toda la campaña, no sólo acá.
+- **Sin economía en el bazar.** Se puede llevar cualquier cosa de la tienda
+  de Herminio sin pagar nada; no hay ningún sistema de plata o Crédito
+  implementado todavía en ningún lado del motor.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

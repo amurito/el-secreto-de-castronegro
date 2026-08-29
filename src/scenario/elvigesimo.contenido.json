@@ -10,6 +10,7 @@
       "shortDescription": "Hoja larga, mango de hueso gastado por el uso de verdad. Colgado de un gancho junto a la mesada, no guardado: es de los que se usan.",
       "owner": "cocina",
       "carried": false,
+      "armaId": "cuchillo-carnear",
       "publicProperties": [],
       "hiddenProperties": [],
       "discoveredProperties": [],
@@ -157,6 +158,10 @@
       ],
       "relationships": [],
       "attitude": { "inv-elena": 0, "inv-tomas": 0 },
+      "patience": 4,
+      "patienceExhaustedText": [
+        "Bernardo levanta una mano, apenas, y con eso alcanza.\n\n—Ya contesté lo que iba a contestar. Lo que sigue no se pregunta: se hace.\n\nEl Ahijado deja de fingir que duerme."
+      ],
       "combate": {
         "hp": 16,
         "maxHp": 16,
@@ -529,7 +534,7 @@
       "disponible": { "op": "consecuencia", "contiene": "por su propia voluntad, la misma noche" },
       "cede": {
         "texto": [
-          "—Subió por su cuenta, ¿no? —dice, y no espera respuesta—. Eso ya lo sabíamos desde la tarde. Acompáñeme, que él lo está esperando en el sótano. Ahí trabaja, a esta hora."
+          "—Subió por su cuenta, ¿no? —dice, y no espera respuesta—. Eso ya lo sabíamos desde la tarde.\n\n—Él está trabajando. No le puedo decir dónde, porque a esta hora yo tampoco entro. Pero la casa es la casa: si busca bien, va a encontrar por dónde se baja."
         ],
         "actitud": 1,
         "pregunta": "¿Cómo sabían, desde la tarde, que iba a subir esta misma noche?"
@@ -649,6 +654,10 @@
           "kind": "testimonial",
           "reliability": "reliable"
         }
+      },
+      "esquiva": {
+        "texto": ["Se mira la mano izquierda un segundo de más, y cuando levanta la vista ya decidió no seguir por ahí.\n\n—Ésa no se la voy a contestar todavía. Pregúnteme otra cosa."],
+        "actitud": -3
       }
     },
     {
@@ -671,6 +680,10 @@
           "reliability": "reliable"
         },
         "pregunta": "¿Para quién dejó Bernardo el vigésimo lugar, si dice que no sabía?"
+      },
+      "esquiva": {
+        "texto": ["—El vigésimo lugar es mío, hasta que deje de serlo —dice, y ahí corta, como quien cierra un cajón—. No insista con ésa."],
+        "actitud": -3
       }
     },
     {
@@ -692,6 +705,10 @@
           "kind": "testimonial",
           "reliability": "reliable"
         }
+      },
+      "esquiva": {
+        "texto": ["—Ya le dije lo que le iba a decir de ésos —dice, y por primera vez suena cansado, no evasivo—. No hay más."],
+        "actitud": -3
       }
     },
     {
@@ -708,6 +725,10 @@
         ],
         "actitud": -10,
         "pregunta": "¿Bernardo miente, o de verdad no sabe lo que él mismo empezó?"
+      },
+      "esquiva": {
+        "texto": ["Se queda callado el tiempo suficiente para que la pregunta deje de estar en el aire.\n\n—Ésa la vamos a dejar así."],
+        "actitud": -3
       }
     },
     {
@@ -728,6 +749,10 @@
           "kind": "testimonial",
           "reliability": "reliable"
         }
+      },
+      "esquiva": {
+        "texto": ["—De lo que hay abajo no hablo más de lo que ya hablé —dice, y por primera vez mira hacia la puerta del fondo, no hacia usted."],
+        "actitud": -3
       }
     }
   ],

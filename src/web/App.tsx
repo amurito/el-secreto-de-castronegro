@@ -374,6 +374,17 @@ export function App() {
   if (state?.activeCombat && api && campaignId) {
     return (
       <Combate
+        // `startedAt` es el id del evento que abrió ESTE combate en particular
+        // (ver reducers.ts, caso COMBAT_STARTED). Sin esta key, dos combates
+        // reales seguidos en la misma campaña —el guardián del sótano y
+        // Bernardo, en El Vigésimo— reutilizan el mismo componente montado:
+        // React no ve cambiar ningún prop entre uno y otro (`campaignId` es
+        // el mismo), así que el `useEffect` que trae rivales/armas del
+        // combate nuevo nunca se vuelve a disparar, y la pantalla se queda
+        // peleando contra los datos del combate anterior. Bug real, reportado
+        // jugando: el guardián y Bernardo aparecían mezclados en el mismo
+        // combate.
+        key={state.activeCombat.startedAt}
         api={api}
         campaignId={campaignId}
         onFin={(nuevoEstado, nuevasOpciones, entradas) => {

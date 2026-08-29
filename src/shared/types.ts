@@ -595,6 +595,14 @@ export interface Npc {
   /** Temas que esquivó. Insistir cuesta más y tira con penalización. */
   dodgedTopics: string[];
   /**
+   * Variantes propias para cuando la paciencia llega a cero. Sin esto, el
+   * motor usa un genérico de personaje doméstico («tengo que hacer la
+   * cena»), que le queda bien a alguien como Rosa y mal a un NPC central de
+   * otra escala —a Bernardo Díaz, en El Vigésimo, ese genérico le sonaba
+   * ajeno del todo—. Reportado jugando.
+   */
+  patienceExhaustedText?: string[];
+  /**
    * Con qué pelea, si es que pelea. Ausente en la enorme mayoría: una viuda
    * en su cocina no tiene estadísticas de combate, y dárselas «por las
    * dudas» sería sugerir que pegarle es una opción que el juego contempla.

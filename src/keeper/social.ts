@@ -228,7 +228,7 @@ function avisarSiSeAgota(turn: Turn, npc: Npc, out: string[], run: Runner): void
     attitude_delta: ACTITUD_POR_AGOTAR, patience_delta: 0, dodged_topic: '',
     cause: 'lo agotaron a preguntas',
   });
-  out.push(pickVariant(turn.state, [
+  out.push(pickVariant(turn.state, ahora.patienceExhaustedText ?? [
     `\n${ahora.name.split(' ')[0]} deja lo que está haciendo y se queda mirándote.\n\n` +
     // {trato} en minúscula a propósito y no al principio de la frase: `conTrato`
     // hace un reemplazo literal, así que si el token abriera la oración
