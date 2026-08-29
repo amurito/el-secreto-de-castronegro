@@ -363,10 +363,11 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
           'Levantás la vista. Aurelio no te está mirando. Está mirando el brasero, con la cara de alguien que acaba de perder algo y sabía desde hace media hora que lo iba a perder.',
           '—Bueno —dice—. Ya somos dos.',
         ],
-        // La única entrega de Mitos del juego, y detrás de un aviso explícito
-        // que el jugador tuvo que ignorar a propósito. Cuatro puntos: baja el
-        // techo de Cordura a 95, para siempre y para todas las aventuras que
-        // vengan después.
+        // La primera entrega de Mitos del juego —la segunda y última es la
+        // talla verde del bazar de Herminio, en Agua Blanca (§3.2-unvicies)—,
+        // y detrás de un aviso explícito que el jugador tuvo que ignorar a
+        // propósito. Cuatro puntos: baja el techo de Cordura a 95, para
+        // siempre y para todas las aventuras que vengan después.
         mitos: { amount: 4, source: 'la cuarta hoja del procedimiento, que Aurelio le pidió que no diera vuelta' },
         cordura: {
           amount: 4,

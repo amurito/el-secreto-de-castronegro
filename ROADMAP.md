@@ -1849,6 +1849,199 @@ están en `accionesDisponibles`, mientras que `subir` e `irse` siguen
 ofrecidos. El recorrido de investigación completo se actualizó para seguir
 alcanzando los cuatro finales con la vara nueva.
 
+### 3.2-octodecies Unificación de canon — el bucle de Bernardo, y una corrección ✔ HECHO
+
+Aparecieron dos documentos nuevos para consultar, ninguno de los dos para el
+repositorio: una versión más vieja y más completa de la biblia de canon
+(`biblia.md`, v0.7 sin condensar) y el texto completo del módulo original
+traducido (`castronegro.md`). Los dos quedan fuera de git (`.gitignore`,
+sección de documentos de diseño) por la misma razón que ya sacaba a `*.docx`:
+son spoiler total o son de Chaosium, y el repo es público.
+
+**Se usaron para tres cosas, sin transcribir nada:**
+
+1. **Verificar la tabla de hechos duros de [CANON-MODULO-ORIGINAL.md](CANON-MODULO-ORIGINAL.md)
+   contra el texto real.** Casi todo cerraba exacto —incluidas las cifras del
+   laberinto (~300, kilómetros de túnel), que venían de una crítica de una IA
+   sin fuente que yo mismo había puesto en duda y resultaron ciertas—, con una
+   excepción: **«lenguas arrancadas» no aparece en el módulo.** Entró a la
+   tabla por esa misma crítica sin fuente. Se sacó de las dos tablas que lo
+   tenían (hechos duros y transposición pampa).
+2. **Encontrar contenido de `biblia.md` que `CANON.md` (la versión vigente,
+   condensada en marzo de 2026 al eliminarse el Keeper IA) había dejado
+   afuera al resumir.** El más importante: el anillo tiene afinidad por sus
+   futuros portadores (§5.2), y antes de fundar Castronegro Bernardo ya ve,
+   en fragmentos sueltos, a quien más adelante se lo va a llevar (§6, "el
+   bucle Bernardo → futuro portador"). No es una idea nueva: es canon v0.7
+   que no había sobrevivido a la condensación. **Se adoptó** — decisión
+   tuya, preguntada porque cambia qué puede insinuar Bernardo en *El
+   Vigésimo*. Reincorporado a `CANON.md` como §5.2 y §6.
+3. **Descartar, a propósito, lo que `biblia.md` marca como "CAMPAÑA
+   PROPUESTA" y no como canon firme** — un §12 con una línea de tiempo previa
+   a Bernardo (un "Círculo Rojo" c.1650-1675 recuperando conocimiento del
+   anillo, "El Hombre que Miraba el Agua" c.1670-1680) y una lista de futuras
+   aventuras con títulos que no son los que se terminaron escribiendo (*Las
+   Cosas que Quedaron Despiertas*, *Los Siete Umbrales*, *El Último
+   Observador*). No se adopta ninguna de las dos cosas: son un borrador de
+   diseño anterior, superado por lo que el ROADMAP ya documenta en
+   §3.2-terdecies. Dejarlas afuera evita además un choque de nombre: el
+   "Círculo Rojo" de ese borrador (una secta pre-Bernardo) no tiene nada que
+   ver con el Círculo Rojo real de esta campaña —el aparato administrativo
+   que "anota lo que la parroquia no puede", inventado para *El Invierno
+   Debido* (§3.2-quater) y ya en el contenido publicado—; al no traer el
+   primero, el nombre sigue significando una sola cosa.
+
+Ningún cambio de código. Sólo `CANON.md`, `CANON-MODULO-ORIGINAL.md` y este
+ROADMAP.
+
+### 3.2-novodecies Antagonismo activo en Agua Blanca ✔ HECHO — el cabo Restituto Ledesma
+
+Quedó pendiente de la vez pasada: "si después de jugar la 7a sentís que sigue
+faltando presión activa". La respuesta llegó junto con `castronegro.md`, y es
+que el módulo original sí tiene una autoridad local que hostiga al
+investigador — un hecho real, no una invención de la crítica sin fuente que
+ya se descartó en §3.2-octodecies. Se adapta la IDEA —no hay una sola línea
+transcripta del módulo—: nombre nuevo, pueblo nuevo, motivo nuevo.
+
+**Restituto Ledesma**, cabo de la sub-comisaría, es la única autoridad que
+vive en Castronegro —la policía de verdad está en la cabecera y ya archivó
+las tres desapariciones sin pisar el pueblo—. Nuevo NPC en la plaza, con
+cuatro temas de conversación:
+
+- **`c-quien-es`** — se presenta y avisa, desde el minuto uno, que no va a
+  ayudar. Es la primera cara hostil que ve el investigador, no una más.
+- **`c-desaparecidos`** — pide explícitamente que no se reabra el caso, sin
+  explicar por qué le importa a él.
+- **`c-amenaza`** — gateado a haber encontrado los tres cráneos del granero:
+  amenaza con anotar «merodeo» en su libro, lo que alcanza para una noche
+  presa y perder el próximo tren. Es la primera amenaza concreta de toda la
+  aventura, y viene de la única autoridad que hay.
+- **`c-plata`** — tirada dura de Persuasión, gateada a la amenaza anterior:
+  revela que cobra un sobre trimestral de la administración de la casa de la
+  loma a cambio de anotar novedades. Nuevo secreto (`s-comisario-paga`) y
+  nueva pista.
+
+**Ninguna de las cuatro toca las condiciones de los cuatro finales.** Sólo
+suma una pista más al conteo de `escribir` (que ya pedía seis, y las sigue
+pidiendo) — no ablanda nada de lo que arregló §3.2-septdecies. `subir`,
+`llamar` e `irse` no lo mencionan para nada.
+
+**Dos bugs de la auditoría, atrapados antes de publicar:**
+
+1. La intención de los tres primeros temas decía «le pregunto al cabo», y en
+   la plaza ahora hay dos NPC (Sixto y Restituto): sin el nombre propio en la
+   frase, el clasificador no sabía a quién de los dos le estaba hablando el
+   jugador. Se corrigió agregando «Restituto» a cada intención — el mismo
+   patrón que ya usan los temas de Sixto.
+2. `c-amenaza` decía «voy a seguir preguntando», y `seguir` es una palabra
+   reservada del clasificador (verbo `meta`, primero en la lista de verbos):
+   ganaba antes de que el clasificador llegara a `hablar`. Se sacó la palabra
+   de la intención y se ajustaron sus claves para que sigan coincidiendo.
+
+Los dos son el mismo tipo de bug que ya cazó `prueba-auditoria.ts` en otras
+aventuras (§3.2-decies, y el «pedir» de §3.2-septdecies): el validador de
+contenido no los puede ver —la intención es una frase válida—, pero la
+auditoría sí, porque de verdad clasifica cada una contra el motor real antes
+de que exista una partida.
+
+`npm run prueba:todo` completo, incluida la suite de Agua Blanca, la
+auditoría de las siete aventuras y el build + `revisar:bundle`.
+
+### 3.2-vicies La fonda: séptimo lugar de Agua Blanca ✔ HECHO
+
+Segunda cosa real del módulo que faltaba en la 7a: un lugar donde dormir, con
+hostigamiento nocturno que drena Cordura de verdad. Otra vez, se adapta la
+IDEA —quedarse a dormir cuesta algo— y no una sola línea de `castronegro.md`:
+el hecho concreto que ocurre de noche es invención propia, elegida para atar
+el eje del **Primero** Umbral (tiempo, observación, memoria — la tabla de
+[CANON.md](CANON.md)) a un objeto físico del pueblo, cosa que Agua Blanca
+todavía no había hecho de forma jugable.
+
+**Séptimo lugar: la fonda**, atendida por **Encarnación Zambrano**, viuda,
+la única persona del pueblo que vive de que lleguen forasteros. Tiene un
+patio con un aljibe que se usa para los caballos y que hace treinta años que
+nadie del pueblo toma, sin que nadie lo haya prohibido nunca — su único tema
+de conversación (`e-aljibe`) lo cuenta y revela su secreto
+(`s-encarnacion-aljibe`).
+
+**La escena (`noche-posada`).** Acción nueva, visible sólo de noche
+(`{op:'hora', minimo:19}`) y sólo en la fonda: tratar de dormir. Un ruido de
+agua a medianoche, el aljibe que queda perfectamente inmóvil justo después de
+que algo cayera adentro, un cielo reflejado que no es el de esta noche, y una
+forma del otro lado del reflejo que saluda antes de que el investigador haga
+ningún gesto. Dos puntos de Cordura reales, exposición, una contradicción
+para el tablero y una pista más —de las experienciales, `reliability:
+unknown`— que suma al piso de seis de `escribir` sin ablandarlo: sigue
+pidiendo las mismas seis pistas de siempre, ahora con una fuente más posible.
+
+**No toca ningún final.** `subir`, `llamar` e `irse` no la mencionan, y
+`escribir` sigue pidiendo exactamente lo que pedía después de §3.2-septdecies.
+Es la primera aventura de la campaña con siete lugares en vez de seis.
+
+`npm run prueba:todo` completo otra vez, incluida la auditoría (mapa
+simétrico de 7 lugares, secreto de Encarnación con camino, escena sin
+explotar) y el build + `revisar:bundle`. Verificación en navegador: la app
+carga y el menú responde: llegar a Agua Blanca por la interfaz real exige
+haber terminado las seis aventuras anteriores, así que la prueba de la escena
+en sí se apoya en la suite determinística, que corre exactamente el mismo
+`Turn.executeTool` / `accionesDisponibles` que usa la UI.
+
+### 3.2-unvicies El bazar de Herminio y la segunda entrega de Mitos ✔ HECHO
+
+Tercera cosa real del módulo original que se adapta a Agua Blanca —después
+del cabo (§3.2-novodecies) y la fonda (§3.2-vicies)—: una tienda de
+curiosidades que no debería poder sostenerse en un pueblo de seiscientas
+personas, y que en realidad es un tercer nodo de la misma red de la casa de
+la loma que ya usan la salita de la biblioteca (§`s-prudencio-donante`) y el
+cabo (§`s-comisario-paga`). Esta vez, a pedido explícito tuyo, con Mitos de
+Cthulhu de verdad — pero **objeto, dueño y textos son invención propia,
+ninguna línea es del módulo**, ni siquiera cuando la pegaste directo en el
+chat: esa restricción no se negocia, la pidas como la pidas.
+
+**Octavo lugar: el bazar**, atendido por **Herminio Díaz** —primo lejano de
+la familia fundadora, con los mismos ojos verdes que ya lleva Sixto (regla 4
+de [CANON-MODULO-ORIGINAL.md](CANON-MODULO-ORIGINAL.md) §5, usada por primera
+vez del lado Díaz)—. Un tema de conversación (`h-negocio`, Persuasión difícil)
+revela que reenvía sin abrir la mitad de sus cajones a la casa de la loma.
+
+**Tres objetos, cada uno con su propio mecanismo:**
+
+- **La talla verde** — Arqueología revela que está tallada con la misma
+  técnica que el monolito. Ahí se abre `talla-girar`, la única acción nueva
+  con aviso explícito: el propio hallazgo dice que conviene no seguir
+  mirando, y la acción está para quien decide mirar igual.
+- **El cilindro de cera** — sin tirada, como la convención real de este tipo
+  de objeto en la mesa: escucharlo cuesta Cordura por el solo hecho de
+  escucharlo, no por fallar nada.
+- **El cuaderno de cuentas tachado** — Buscar Libros (difícil) revela, contra
+  la luz, una segunda cuenta de nacimientos que no lleva el cura. Deja una
+  contradicción con el registro de la parroquia (`doc-bautismos`).
+
+**`girar-talla` es la segunda y última entrega de Mitos del juego.** La
+primera es El Invierno Debido (§4.6, "la cuarta hoja"): un punto de Mitos,
+detrás del mismo patrón —aviso explícito dentro de la propia ficción, sin
+tirada que lo evite, el jugador elige igual—. Se actualizó el comentario de
+esa escena, que decía "la única", porque dejó de serlo.
+
+**No toca ningún final** — igual que el cabo y la fonda, sólo suma piso a
+`escribir`.
+
+**Un bug de infraestructura, no de contenido, que encontró la auditoría al
+crecer el mapa a ocho lugares:** `prueba-auditoria.ts` camina cada aventura
+sola, y su tope de reintentos por acción (4) contaba `ir:plaza` como UN SOLO
+id sin importar desde qué punta del mapa se volviera. Con seis puntas
+saliendo de la plaza —capilla, almacén, biblioteca, granero, fonda y ahora el
+bazar—, el cupo de vueltas se gastaba antes de terminar de explorar, y el
+andador quedaba varado en la fonda sin poder volver a buscar el bazar. No era
+que el bazar fuera inalcanzable: era que el propio andador se quedaba corto
+de piernas. Subido a 6. Es un ajuste del test genérico, no de esta aventura
+en particular, y no esconde una acción rota: una que de verdad no se pueda
+completar sigue fallando igual, la reintente seis veces o sesenta.
+
+`npm run prueba:todo` completo, incluida `prueba:mitos` (para confirmar que
+la segunda entrega acumula bien con la primera) y la auditoría con el cupo
+nuevo, en las siete aventuras.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

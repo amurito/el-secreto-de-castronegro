@@ -25,3 +25,6 @@ partidas/
 # Si los querés versionar, lo natural es un repo privado aparte.
 # ─────────────────────────────────────────────────────────────────────────────
 *.docx
+biblia.md
+castronegro.md
+adaptacion.md

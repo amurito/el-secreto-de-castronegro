@@ -120,7 +120,15 @@ function estadosDeBanco(s: GameState, esc: Scenario): GameState[] {
 async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
   const id = await createCampaign(esc, 'AUDIT', semilla.repeat(64).slice(0, 64));
   const veces = new Map<string, number>();
-  const REINTENTOS = 4;
+  // `ir:plaza` es UN SOLO id de acción sin importar desde qué punta del mapa
+  // se vuelva, así que un mapa en estrella con seis puntas (Agua Blanca, con
+  // la fonda y el bazar) gasta ese cupo sólo volviendo, antes de agotar nada
+  // más. Con 4 el andador quedaba varado en la fonda sin poder volver a
+  // buscar el bazar — no era un lugar inalcanzable, era el propio cupo del
+  // andador quedándose corto. 6 le da margen para un mapa más grande sin
+  // dejar de cazar una acción de verdad rota (que sigue fallando siempre,
+  // la tire seis veces o sesenta).
+  const REINTENTOS = 6;
 
   let murio = false;
   let atrapado = false;

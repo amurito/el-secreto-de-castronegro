@@ -478,6 +478,172 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
     },
   },
 
+  // ══ EL BAZAR DE HERMINIO ══════════════════════════════════════════════════
+
+  {
+    id: 'fechar-talla',
+    prueba: (s) => (s.items['it-talla-verde']?.discoveredProperties.length ?? 0) > 0 ? null : ({
+      skill: 'arqueologia', difficulty: 'regular',
+      reason: 'reconocer la técnica de tallado de una figura que no debería estar en el mostrador de un pueblo así',
+      stakes_success: 'sabés con qué herramienta se hizo y de qué tradición viene',
+      stakes_failure: 'una figura verde sin cara reconocible',
+    }),
+    resolver: ({ estado, tirada }) => {
+      if ((estado.items['it-talla-verde']?.discoveredProperties.length ?? 0) > 0) {
+        return { texto: ['Le das otra vuelta a la cara de adelante. Sigue siendo la misma técnica, la misma piedra.'] };
+      }
+      if (!tirada?.exito) {
+        return { texto: ['Piedra verde, pulida, con una cara sentada que no termina de ser humana. No le sacás más que eso.'] };
+      }
+      return [
+        {
+          descubre: { itemId: 'it-talla-verde', propertyId: 'p-talla-factura', how: 'mirando las marcas de herramienta de la cara tallada' },
+        },
+        {
+          texto: [
+            'La cara de adelante está picada, no cortada: la misma manera de trabajar la piedra que el monolito del sudoeste, golpe contra golpe, sin cincel.\n\nHerminio te mira mientras la mirás. No dice nada, pero deja de acomodar lo que estaba acomodando.',
+            'Le das vuelta a la figura para ver si el reverso tiene la misma factura, y del otro lado hay algo que no termina de leerse como dibujo, y que preferirías, sin saber por qué, dejar de mirar antes de entenderlo del todo.',
+          ],
+          pistas: [{
+            description: 'La talla verde del bazar de Herminio está trabajada con la misma técnica que el monolito —piedra contra piedra, sin cincel—, y el reverso tiene una marca que no termina de leerse como dibujo.',
+            kind: 'physical',
+            source: 'el bazar de Herminio',
+            reliability: 'reliable',
+          }],
+          exposicion: { amount: 5, source: 'talla:factura', cause: 'un objeto de la misma mano que el monolito, en venta en un mostrador' },
+          pregunta: '¿Cómo llegó al mostrador de un bazar algo hecho por la misma gente que clavó el monolito?',
+        },
+      ];
+    },
+  },
+
+  {
+    // El segundo y último otorgamiento de Mitos de la campaña —el primero
+    // fue El Invierno Debido, §4.6—, con el mismo aviso explícito y sin
+    // tirada que lo evite: la acción sólo se ofrece después de haber visto
+    // el reverso (`talla-girar.visible` pide `p-talla-factura`), y el propio
+    // texto de esa propiedad ya avisa que conviene no seguir mirando. El
+    // jugador elige girarla igual.
+    id: 'girar-talla',
+    resolver: () => ({
+      texto: [
+        'Ya la viste una vez y ya sentiste las ganas de no seguir mirando. La das vuelta igual.',
+        'El dibujo no es un dibujo: es una manera de tallar líneas que se juntan en un punto sin perspectiva, como si quien lo hizo hubiera visto ese punto desde un lugar donde las líneas se juntan de verdad.\n\nEntendés, mirándolo, que no es una representación de nada. Es una instrucción. Y entendés, sin querer entenderlo, para qué sirve esa instrucción y por qué el monolito está clavado exactamente donde está.',
+        'Herminio te saca la figura de la mano, despacio, sin apuro. —Ya fue suficiente —dice, y no es una amenaza: es lo más parecido a amabilidad que le vas a escuchar en todo el pueblo.',
+      ],
+      mitos: { amount: 1, source: 'el reverso de la talla verde del bazar de Herminio, después de que la cara de adelante ya avisara que no valía la pena seguir mirando' },
+      cordura: {
+        amount: 3,
+        cause: 'entender que el dibujo del reverso es una instrucción, no un adorno',
+      },
+      pista: {
+        description: 'El reverso de la talla verde no es decorativo: es una instrucción de tallado que explica por qué el monolito está clavado exactamente donde está, no en otro punto del campo.',
+        kind: 'physical',
+        source: 'el reverso de la talla verde',
+        reliability: 'reliable',
+      },
+    }),
+  },
+
+  {
+    id: 'leer-cuaderno-tachado',
+    prueba: (s) => (s.items['it-cuaderno-tachado']?.discoveredProperties.length ?? 0) > 0 ? null : ({
+      skill: 'buscar_libros', difficulty: 'hard',
+      reason: 'leer contra la luz lo que alguien tachó a propósito sin arrancar la hoja',
+      stakes_success: 'ves la columna que la tachadura no llegó a esconder del todo',
+      stakes_failure: 'gastos de campo, tachados, ilegibles',
+    }),
+    resolver: ({ estado, tirada }) => {
+      if ((estado.items['it-cuaderno-tachado']?.discoveredProperties.length ?? 0) > 0) {
+        return { texto: ['Ya sabés lo que dice debajo de la tachadura. Volver a mirarlo no cambia la columna.'] };
+      }
+      if (!tirada?.exito) {
+        return { texto: ['Forraje, jornales, veterinario. Debajo de la raya no se distingue nada, por más que lo pongas contra la ventana.'] };
+      }
+      return [
+        { descubre: { itemId: 'it-cuaderno-tachado', propertyId: 'p-cuaderno-columna', how: 'poniendo la hoja contra la luz de la vidriera' } },
+        {
+          texto: [
+            'Contra la luz, debajo de la raya, aparece una columna que no es de gastos de campo: nombres de pila, sin apellido, con una fecha de nacimiento al lado y un espacio en blanco donde en las otras filas iría una fecha de defunción.\n\nEs la misma clase de cuenta que lleva el padre Anselmo en el libro de bautismos. Sólo que ésta la lleva alguien que no es cura, y que no la escribió para la parroquia.',
+          ],
+          pistas: [{
+            description: 'El cuaderno de cuentas del bazar de Herminio tiene, tachada, una columna de nombres de pila con fecha de nacimiento y sin fecha de defunción: el mismo tipo de registro que el libro de bautismos de la parroquia, llevado por alguien que no es el cura.',
+            kind: 'documentary',
+            source: 'el cuaderno tachado del bazar',
+            reliability: 'reliable',
+          }],
+          exposicion: { amount: 4, source: 'cuaderno:columna', cause: 'un segundo registro de nacimientos, llevado por alguien que no tenía por qué llevarlo' },
+          contradiccion: {
+            description: 'El padre Anselmo lleva la única cuenta de bautismos que debería existir en el pueblo. El bazar de Herminio tiene, tachada, una segunda cuenta de nacimientos, escrita por otra mano.',
+            between: 'el registro de la parroquia / el cuaderno tachado del bazar',
+          },
+        },
+      ];
+    },
+  },
+
+  {
+    // Sin tirada, porque la pérdida no depende de entender lo que se
+    // escucha: pasa por el solo hecho de escucharlo, igual que la
+    // convención real de este tipo de grabaciones. Un punto, automático.
+    id: 'escuchar-cilindro',
+    antes: () => ({
+      texto: ['Herminio le da cuerda al fonógrafo sin que se lo pidas dos veces, como si estuviera esperando que alguien preguntara.'],
+      tiempo: { minutes: 10, reason: 'escuchar el cilindro de cera' },
+    }),
+    resolver: () => ({
+      texto: [
+        'La aguja encuentra el surco y sale un canto. No tiene palabras que reconozcas de ningún idioma, y la voz que lo canta —si es una voz— no es una voz humana: no respira donde tendría que respirar, y sostiene notas más tiempo del que un pulmón sostiene nada.',
+        'Dura menos de un minuto. Cuando termina, Herminio levanta la aguja sin que se lo pidas, y durante un segundo los dos se quedan mirando el cilindro en silencio, como si acabaran de hacer algo que no se puede deshacer poniendo la aguja al principio otra vez.',
+      ],
+      cordura: { amount: 1, cause: 'un canto que no lo canta nada con pulmones' },
+      pista: {
+        description: 'El cilindro de cera del bazar de Herminio contiene un canto en una lengua irreconocible, cantado por algo que no respira como algo que canta debería respirar.',
+        kind: 'experiential',
+        source: 'el fonógrafo del bazar',
+        reliability: 'reliable',
+      },
+    }),
+  },
+
+  // ══ LA NOCHE EN LA FONDA ══════════════════════════════════════════════════
+
+  {
+    // Único hostigamiento nocturno de la aventura: opcional, no gatea ningún
+    // desenlace, y suma como mucho una pista más al piso de `escribir`
+    // (§3.2-septdecies ya lo sube a seis; esto no lo vuelve a bajar). Ata el
+    // primer eje de los siete Umbrales —tiempo, observación, memoria— a un
+    // objeto concreto del pueblo, en vez de dejarlo sólo en la prosa del
+    // desaparecido: la Reciprocidad de v0.7 §2 ("quien mira puede ser mirado
+    // desde el otro momento") tiene acá su único beat jugable de la 7a.
+    id: 'noche-posada',
+    antes: () => ({
+      texto: ['Apagás la vela y te quedás mirando un techo de junco, que en la fonda no es de teja y por eso se oye distinto el viento.'],
+      tiempo: { minutes: 180, reason: 'tratar de dormir en la fonda' },
+    }),
+    resolver: () => ({
+      texto: [
+        'No te dormís. A eso de la medianoche un sonido de agua te hace abrir los ojos: no es lluvia, es algo que cae adentro del aljibe una sola vez, como una piedra.',
+        'Te asomás a la ventana. El patio está igual que a la tarde: tierra, el brocal de piedra, los caballos quietos.\n\nMenos el aljibe. La superficie está perfectamente inmóvil —sin una onda, y hace un minuto cayó algo ahí adentro— y refleja un cielo con más estrellas de las que hay esta noche sobre Castronegro.',
+        'Te quedás mirando un momento de más, contra todo lo que te dice que dejes de mirar. Y entre esas estrellas que no son las de esta noche hay una forma, parada del otro lado del brocal.\n\nDel lado de acá el patio sigue vacío.',
+        'La forma, en el agua, levanta una mano. Vos no levantaste la tuya.\n\nCerrás la ventana. Eso lo sabés seguro, y es lo único que sabés seguro el resto de la noche.',
+      ],
+      pistas: [{
+        description: 'El aljibe de la fonda quedó perfectamente quieto justo después de que algo cayera adentro, y de noche reflejó un cielo con más estrellas de las que había, y una figura que levantaba la mano del lado de adentro del reflejo. Del lado de afuera no había nadie.',
+        kind: 'experiential',
+        source: 'la ventana de la fonda, pasada la medianoche',
+        reliability: 'unknown',
+      }],
+      exposicion: { amount: 7, source: 'posada:aljibe', cause: 'un reflejo que no era ni el cielo de esta noche ni el de quien estaba mirando' },
+      cordura: { amount: 4, cause: 'ver que algo, del otro lado del agua, devolvía un saludo que nadie de este lado hizo' },
+      contradiccion: {
+        description: 'El aljibe de la fonda quedó perfectamente inmóvil justo después de que algo cayera adentro, y reflejó un cielo distinto del real. Ningún aljibe hace ninguna de las dos cosas, y éste hizo las dos juntas.',
+        between: 'lo que tendría que hacer un pozo de agua / lo que hizo éste',
+      },
+      pregunta: '¿Del otro lado de qué está mirando esa forma, si del lado de acá no hay nadie?',
+    }),
+  },
+
   // ══ DESENLACES ════════════════════════════════════════════════════════════
 
   {

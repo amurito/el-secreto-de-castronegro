@@ -35,7 +35,7 @@ semanal a Silver City, y no hay líneas telefónicas.
 | Las familias | Díaz y Villeira-Pereira son ~30% del pueblo. Degeneración hereditaria por endogamia. Dientes largos, extremidades finas, postura encorvada, **ojos verde intenso**, pómulos marcados, pelo muy negro |
 | Los peores | Confinados en un **laberinto** bajo la Casa de Díaz. ~300 caníbales, kilómetros de túnel |
 | Los niños | Más de **200 desaparecidos** en cien años, en Castronegro y alrededores |
-| El ganado | Mutilaciones desde hace ~6 años, ~2 vacas por mes por establecimiento. Lenguas arrancadas |
+| El ganado | Mutilaciones desde hace ~6 años, ~2 vacas por mes por establecimiento |
 
 ### Los lugares
 
@@ -125,7 +125,7 @@ para el nombre viejo. **No hay dos Castronegros: hay uno, y está en la pampa.**
 | Biblioteca Carnegie | **Biblioteca popular** (Ley 419) | Más argentino y más antiguo |
 | Club privado con alcohol de la Prohibición | Almacén de ramos generales / boliche | Acá no hubo Ley Seca. El almacén ya aparece en *El Invierno Debido* |
 | Rancheros, vaqueros | Estancieros, peones | Ya establecido |
-| Mutilaciones de ganado, lenguas arrancadas | Igual | Encaja mejor todavía en la pampa |
+| Mutilaciones de ganado | Igual | Encaja mejor todavía en la pampa |
 | Misa a 30 km en el pueblo vecino | Igual, con otro nombre | |
 | Nombres Díaz, Villeira-Pereira, Herrera, García | Se conservan | Todos plausibles en el Río de la Plata; Villeira-Pereira pasa por portugués-brasilero |
 
@@ -209,3 +209,8 @@ puente con el módulo.
   principio.
 - **El laberinto** → se baja a la primera cámara y no se recorre. El horror es
   saber que sigue, no medirlo.
+- **El bucle Bernardo → futuro portador** → es canon (v0.7 §5.2/§6, ver
+  [CANON.md](CANON.md)). Antes de fundar Castronegro, Bernardo ya ve
+  fragmentos de quien más adelante le va a llevar el anillo. Es información
+  que puede insinuar en *El Vigésimo*, con la misma regla de siempre: contesta
+  todo y no confirma nada.

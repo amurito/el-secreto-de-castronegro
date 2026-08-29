@@ -61,10 +61,26 @@ constructores originales **NO** intentaban invocar a Yog-Sothoth: marcaban el
 límite de una zona donde el agua y el cielo se comportaban de forma anómala.
 Bernardo lo reutilizó e interpretó mal.
 
+**[v0.7 §5.2] Función del anillo.** Permite a su portador recibir fragmentos de
+otros puntos temporales. Tiene una afinidad especial por los futuros
+portadores: quien lo lleva puede ver a quien más adelante lo va a heredar.
+
 **[v0.7 §5.3] Los límites del anillo.** **NO** controla el tiempo, **NO**
 permite elegir una fecha, **NO** muestra el futuro completo y **NO** garantiza
 que una visión sea el único futuro posible. Las visiones pueden estar fuera de
 orden. Retirarlo puede matar al portador.
+
+**[v0.7 §6] El bucle Bernardo → futuro portador.** Antes de fundar
+Castronegro, Bernardo contempla el agua y el rubí y ve a un grupo de
+investigadores de un futuro lejano. Reconoce entre ellos a quien más adelante
+va a tomar el anillo tras su derrota — fragmentos sueltos: el obelisco, una
+herida, él mismo cayendo, una mano que toma el anillo, el futuro portador
+mirando el rubí. No conoce el nombre. **NO** se establece que el bucle tenga
+un primer acontecimiento externo: puede ser una propiedad de la realidad bajo
+las condiciones del Umbral, no una causa con origen. Bernardo puede hablar de
+esto — contestar todo y no confirmar nada, como el resto de lo que dice — pero
+sólo en la aventura donde se lo puede encontrar (ver tabla de los siete
+Umbrales).
 
 **[v0.7 §15] LA REGLA DE ORO.** Cuanto más cerca estén los investigadores de
 la verdad, **MÁS** información deben obtener y **MENOS** seguridad deben tener

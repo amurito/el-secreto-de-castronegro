@@ -88,6 +88,120 @@
       "usageCount": 0
     },
     {
+      "id": "it-talla-verde",
+      "name": "Talla de piedra verde",
+      "aliases": [
+        "talla",
+        "la talla",
+        "figura verde",
+        "estatuilla verde",
+        "piedra verde"
+      ],
+      "shortDescription": "Quince centímetros de una piedra verde que no es jade ni ninguna otra que sepas nombrar, en el estante más alto del bazar de Herminio. Tiene una cara tallada del lado de adelante y, del otro lado, algo que no da ganas de mirar de entrada.",
+      "owner": "tienda",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-talla-basico",
+          "description": "Una figura sentada, con las piernas cruzadas de una manera que un cuerpo humano no cruza. La cara de adelante está gastada de que la tocaran; el reverso está intacto, con líneas que se juntan en un punto y no terminan de leerse como dibujo.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-talla-factura",
+          "description": "La cara de adelante está trabajada con la misma técnica del monolito: picada, no cortada, herramienta de piedra contra piedra. Es del mismo pueblo que levantó el obelisco, o de uno que aprendió de él.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "arqueologia",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-cilindro-cera",
+      "name": "Cilindro de cera",
+      "aliases": [
+        "cilindro",
+        "el cilindro",
+        "grabación",
+        "fonógrafo",
+        "el disco de cera"
+      ],
+      "shortDescription": "Un cilindro de metal cubierto de cera, de los que se usaban para grabar sonido antes de que existieran los discos planos. Al lado, en el bazar de Herminio, hay un fonógrafo de cilindro con la bocina abollada, todavía a cuerda.",
+      "owner": "tienda",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-cilindro-basico",
+          "description": "Sin etiqueta, sin fecha, sin nombre de quien grabó. Herminio dice que le llegó en un cajón junto con otras cosas y que nunca se molestó en escucharlo.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-cuaderno-tachado",
+      "name": "Cuaderno de cuentas tachado",
+      "aliases": [
+        "cuaderno",
+        "el cuaderno",
+        "libro de cuentas",
+        "cuaderno tachado"
+      ],
+      "shortDescription": "Un cuaderno de tapa dura, de los que se usan para llevar cuentas de campo, en una caja de saldos del bazar. La mitad de las páginas están tachadas con una sola línea prolija, no arrancadas.",
+      "owner": "tienda",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-cuaderno-basico",
+          "description": "Anotaciones de gastos de una estancia: forraje, jornales, veterinario. Nada raro, salvo que la mitad de las hojas están tachadas de punta a punta con una sola raya, prolija, como quien no quiere destruir el dato pero tampoco quiere que se lea de corrido.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-cuaderno-columna",
+          "description": "Debajo de la tachadura, contra la luz, se lee una columna que no es de gastos: nombres de pila, sin apellido, con una fecha de nacimiento y un espacio en blanco donde en las otras filas hay una fecha de defunción. Es el mismo tipo de cuenta que el libro de bautismos de la parroquia, llevada por alguien que no es el cura.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "buscar_libros",
+            "difficulty": "hard"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
       "id": "it-lasca",
       "name": "Lasca del monolito",
       "aliases": [
@@ -240,6 +354,116 @@
       "isCompanion": false
     },
     {
+      "id": "npc-comisario",
+      "name": "Restituto Ledesma",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cabo de la sub-comisaría. La policía de verdad está a tres leguas, en la cabecera, y archivó las tres desapariciones sin pisar el pueblo; a él lo dejaron acá, solo, con un uniforme sin planchar y una manera de pararse que ocupa más vereda de la que necesita.",
+      "motivation": "Que el forastero se vaya de Castronegro sin escribir una sola palabra sobre el pueblo en ningún lado.",
+      "fears": [
+        "Que alguien de la cabecera le pregunte alguna vez por qué él nunca preguntó nada",
+        "Perder el puesto: es el único trabajo fijo que tuvo en la vida"
+      ],
+      "refusals": [
+        "No dice quién le pidió que vigile al forastero",
+        "No entra al almacén cuando hay clientes de las dos familias"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-comisario-paga",
+          "content": "Cada tres meses recibe un sobre de la administración de la casa de la loma, a cambio de anotar en un cuaderno propio cualquier novedad del pueblo. Él no lo llama soborno: lo llama «colaboración».",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": -5,
+        "inv-tomas": -5
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-herminio",
+      "name": "Herminio Díaz",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Primo lejano de la familia fundadora, con los mismos ojos verdes y el mismo apellido que un tercio del padrón. Atiende su bazar solo, sentado casi siempre detrás del mostrador, y tiene la costumbre de contestar una pregunta con otra antes de contestarla de verdad.",
+      "motivation": "Que los cajones sigan llegando por el correo de la cabecera y que nadie del pueblo le pregunte qué hace con la mitad de lo que llega.",
+      "fears": [
+        "Que alguien de afuera entienda demasiado rápido para qué sirve realmente el bazar",
+        "Quedarse sin la única ocupación que la familia le permitió tener"
+      ],
+      "refusals": [
+        "No dice cómo sobrevive un bazar así en un pueblo de seiscientas personas",
+        "No abre los cajones que todavía tienen la faja de la aduana delante de un cliente"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-herminio-cajones",
+          "content": "Los cajones que le llegan por correo no son para vender: la mitad los reenvía sin abrir a la casa de la loma, y la otra mitad la pone en el mostrador para que el bazar parezca lo que aparenta ser.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 3,
+        "inv-tomas": 3
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-encarnacion",
+      "name": "Encarnación Zambrano",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Viuda, cincuenta y pico. Es la única persona del pueblo que vive de que lleguen forasteros, y por eso mismo la única que no se pone rara cuando llega uno.",
+      "motivation": "Que el que se hospeda pague, no se queje del catre, y no le pregunte por qué los caballos no toman del aljibe.",
+      "fears": [
+        "Quedarse sin la única renta que tiene",
+        "Que alguien le pregunte hace cuánto que ella tampoco toma agua de ese aljibe"
+      ],
+      "refusals": [
+        "No dice desde cuándo dejó de usar el agua del aljibe para la cocina"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-encarnacion-aljibe",
+          "content": "Hace treinta años que nadie en el pueblo toma agua del aljibe de la fonda, ni ella, ni sus huéspedes, ni los vecinos que antes venían a sacar de ahí. Nadie lo prohibió nunca. Simplemente dejaron.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 8,
+        "inv-tomas": 8
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
       "id": "npc-sixto",
       "name": "Sixto Villeira-Pereira",
       "canon": {
@@ -347,17 +571,21 @@
       "atmosphere": [
         "Pasa una mujer con un chico de la mano y cruza a la vereda de enfrente antes de llegar a donde estás.",
         "En la vereda del almacén hay dos hombres tomando mate que no dejan de hablar cuando {lo} ven pasar, y eso —después de seis aventuras en el campo— resulta más raro que si dejaran.",
+        "Apoyado en el mástil sin bandera, un cabo de policía {lo} mira bajar del sulky y no deja de mirar{lo} después. No se acerca. Tampoco se va.",
         "La loma tiene la casa, y la casa tiene doce ventanas, y las doce están cerradas a las diez de la mañana de un día de sol."
       ],
       "connections": [
         "capilla",
         "almacen",
         "biblioteca",
-        "granero"
+        "granero",
+        "posada",
+        "tienda"
       ],
       "itemsPresent": [],
       "npcsPresent": [
-        "npc-sixto"
+        "npc-sixto",
+        "npc-comisario"
       ],
       "visited": false,
       "umbralIntensity": 3,
@@ -660,6 +888,74 @@
           }
         }
       ]
+    },
+    "tienda": {
+      "id": "tienda",
+      "name": "El bazar de Herminio",
+      "aliases": [
+        "tienda",
+        "bazar",
+        "el bazar",
+        "curiosidades",
+        "antigüedades"
+      ],
+      "description": "Un local angosto entre el almacén y la nada, con el escaparate lleno de objetos que no deberían tener comprador en un pueblo de seiscientas personas: figuras talladas, un fonógrafo de cilindro ya pasado de moda, libros encuadernados en algo que no siempre es cuero. Atiende Herminio Díaz, solo, casi siempre sentado detrás del mostrador con las manos cruzadas.",
+      "atmosphere": [
+        "Nadie del pueblo entra mientras estás vos. Los que entran son de afuera, y son pocos.",
+        "Herminio no vende: espera a que elijas, y después dice el precio como si el precio fuera lo de menos.",
+        "Tiene los ojos del mismo verde que Sixto, y el pelo igual de negro, y cuando lo notás él ya te vio notarlo."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [
+        "it-talla-verde",
+        "it-cilindro-cera",
+        "it-cuaderno-tachado"
+      ],
+      "npcsPresent": [
+        "npc-herminio"
+      ],
+      "visited": false,
+      "umbralIntensity": 5,
+      "senses": {
+        "sight": "Estantes hasta el techo, un fonógrafo de cilindro con la bocina abollada, y un mostrador de vidrio con lo más chico adentro.",
+        "sound": "Nada, salvo lo que hagas sonar vos mismo.",
+        "smell": "Papel viejo, cera de embalar, y algo mineral debajo de las dos cosas."
+      },
+      "features": []
+    },
+    "posada": {
+      "id": "posada",
+      "name": "La fonda",
+      "aliases": [
+        "fonda",
+        "la fonda",
+        "posada",
+        "el hospedaje",
+        "donde dormir"
+      ],
+      "description": "Dos piezas para alquilar, un comedor con tres mesas que nunca están las tres puestas, y atrás, un patio de tierra con un aljibe de piedra que se usa para los caballos. Encarnación Zambrano la atiende sola desde que enviudó.",
+      "atmosphere": [
+        "Encarnación pone la pava sin preguntar si querés café: a esta hora, en la fonda, hay una sola cosa para tomar, y es esa.",
+        "De las dos piezas, la de la izquierda tiene la llave puesta. La de la derecha no, y nadie la ofrece.",
+        "El aljibe del patio se ve desde la ventana de la pieza: un círculo de piedra oscura con el brocal gastado mucho más parejo de lo que un aljibe para caballos necesita."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-encarnacion"
+      ],
+      "visited": false,
+      "umbralIntensity": 7,
+      "senses": {
+        "sight": "Dos piezas, un comedor con tres mesas, y atrás un aljibe de piedra en un patio de tierra.",
+        "sound": "La pava. Los caballos atados afuera, que no se quedan quietos.",
+        "smell": "Café recalentado y jabón de lavar ropa."
+      },
+      "features": []
     },
     "obelisco": {
       "id": "obelisco",
@@ -1338,6 +1634,197 @@
           "reliability": "unknown"
         }
       }
+    },
+    {
+      "id": "c-quien-es",
+      "npc": "npc-comisario",
+      "etiqueta": "Preguntarle al cabo quién es y qué hace ahí parado",
+      "intencion": "Le pregunto al cabo Restituto quién es y qué hace parado ahí",
+      "claves": [
+        "cabo",
+        "comisario",
+        "policia",
+        "policía",
+        "quien es",
+        "quién es"
+      ],
+      "orden": 1,
+      "cede": {
+        "texto": [
+          "—Ledesma —dice, y no da la mano—. Cabo de la sub-comisaría.\n\n—La comisaría de verdad está en la cabecera, a tres leguas. Acá lo que hay soy yo, que vivo enfrente de la capilla y veo quién llega y quién se va. Y usted llegó hoy.\n\n—No le pregunto qué vino a hacer. Se lo voy a decir yo: nada que le vaya a servir. Acá no pasa nada que le interese a nadie de afuera."
+        ],
+        "actitud": -1,
+        "pista": {
+          "description": "El cabo Restituto Ledesma es la única autoridad que vive en el pueblo —la comisaría de verdad está en la cabecera— y desde que el investigador bajó del sulky no dejó de vigilarlo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "c-desaparecidos",
+      "npc": "npc-comisario",
+      "etiqueta": "Preguntarle al cabo por las tres desapariciones",
+      "intencion": "Le pregunto a Restituto por los tres que desaparecieron",
+      "claves": [
+        "desaparecidos",
+        "tres",
+        "profesor",
+        "ferrari",
+        "onesimo",
+        "onésimo"
+      ],
+      "orden": 2,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "no dejó de vigilarlo"
+      },
+      "cede": {
+        "texto": [
+          "—Ah, eso. Está en el acta de la cabecera: se ausentaron del domicilio. Los tres. Firmado y archivado.\n\n—Y le voy a dar un consejo que no me pidió. Ese asunto ya se cerró una vez. No hace falta que alguien de afuera venga a abrirlo de nuevo."
+        ],
+        "actitud": -1,
+        "pista": {
+          "description": "El cabo Ledesma no sólo no investigó las tres desapariciones: le pide directamente al forastero que no lo haga, sin explicar por qué le importa a él.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "pregunta": "¿Por qué le importa a un cabo de pueblo que un forastero pregunte por un expediente ya archivado?"
+      }
+    },
+    {
+      "id": "c-amenaza",
+      "npc": "npc-comisario",
+      "etiqueta": "Decirle que va a seguir preguntando",
+      "intencion": "Le digo a Restituto que voy a preguntar más, le guste o no",
+      "claves": [
+        "preguntar mas",
+        "preguntar más",
+        "le guste o no",
+        "amenaza"
+      ],
+      "orden": 3,
+      "disponible": {
+        "op": "pista",
+        "contiene": "tres cráneos recientes"
+      },
+      "cede": {
+        "texto": [
+          "No levanta la voz. Al contrario: la baja.\n\n—Puedo escribir en mi libro que anduvo merodeando un galpón ajeno sin autorización del dueño. Eso, en la cabecera, alcanza para una noche adentro y para perder el próximo tren.\n\n—No lo estoy amenazando. Le estoy explicando cómo funciona esto, para que no se sorprenda después."
+        ],
+        "actitud": -2,
+        "exposicion": 1,
+        "jugadorNota": {
+          "statement": "El cabo Ledesma no defiende a las dos familias por simpatía: las defiende por trabajo. Y lo que acaba de hacer —explicar con calma cómo podría arruinarle el viaje de vuelta— es la primera amenaza concreta de todo el pueblo, y viene de la única autoridad que hay.",
+          "source": "la plaza",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "c-plata",
+      "npc": "npc-comisario",
+      "etiqueta": "Preguntarle quién le paga",
+      "intencion": "Le pregunto a Restituto quién le paga por vigilarme",
+      "claves": [
+        "quien le paga",
+        "quién le paga",
+        "sobre",
+        "plata",
+        "soborno"
+      ],
+      "orden": 4,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "cómo podría arruinarle"
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": -10,
+        "razon": "sonsacarle a un cabo hostil que cobra por mirar para otro lado"
+      },
+      "cede": {
+        "texto": [
+          "Se ríe, y es la primera vez que se le mueve la cara.\n\n—Colaboración, se llama. Cada tres meses me llega un sobre de la administración de la casa de la loma, y a cambio yo anoto en un cuaderno mío cualquier novedad del pueblo. Nada más.\n\n—Y no me mire así. Con lo que me pagan en la cabecera, ¿usted no anotaría?"
+        ],
+        "actitud": 1,
+        "revelaSecreto": "s-comisario-paga",
+        "pista": {
+          "description": "El cabo Ledesma cobra cada tres meses un sobre de la administración de la casa de la loma a cambio de anotar en un cuaderno propio las novedades del pueblo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Cuidado con lo que insinúa. —Y se acomoda la gorra, que no necesitaba acomodarse—."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "e-aljibe",
+      "npc": "npc-encarnacion",
+      "etiqueta": "Preguntarle por el aljibe del patio",
+      "intencion": "Le pregunto a Encarnación por el aljibe del patio",
+      "claves": [
+        "aljibe",
+        "pozo",
+        "agua del patio",
+        "caballos"
+      ],
+      "orden": 1,
+      "cede": {
+        "texto": [
+          "—Es para los caballos —dice, y no levanta la vista de la pava—. Buena agua, dicen, pero nadie la toma. Ni yo, y hace treinta años que vivo con ese aljibe en el patio.\n\n—No sé quién lo decidió. Un día dejamos todos, y ya está. No es una regla, no está escrita en ningún lado. Es de esas cosas que se hacen y no se explican."
+        ],
+        "actitud": 1,
+        "revelaSecreto": "s-encarnacion-aljibe",
+        "pista": {
+          "description": "Nadie en Castronegro toma agua del aljibe de la fonda desde hace treinta años, ni siquiera la dueña. Nadie decidió prohibirlo: dejaron de hacerlo todos, sin ponerse de acuerdo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "h-negocio",
+      "npc": "npc-herminio",
+      "etiqueta": "Preguntarle cómo sobrevive un bazar así en un pueblo tan chico",
+      "intencion": "Le pregunto a Herminio cómo sobrevive un bazar así en un pueblo tan chico",
+      "claves": [
+        "negocio",
+        "clientela",
+        "sobrevive",
+        "como se mantiene",
+        "cómo se mantiene"
+      ],
+      "orden": 1,
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 0,
+        "razon": "que un hombre que vive de contestar preguntas con otra pregunta conteste ésta derecho"
+      },
+      "cede": {
+        "texto": [
+          "Sonríe antes de contestar, y la sonrisa dura más de lo que dura la respuesta.\n\n—Correo. Vendo por correo, a gente de la capital que paga bien por cosas que acá no valen nada.\n\n—Y los cajones que me llegan a mí, la mitad los reenvío sin abrir. A la casa de la loma le interesan cosas que a mí no, y de algún lado tengo que sacar para pagar el alquiler del local."
+        ],
+        "actitud": 1,
+        "revelaSecreto": "s-herminio-cajones",
+        "pista": {
+          "description": "Herminio Díaz reenvía sin abrir la mitad de los cajones que recibe por correo a la casa de la loma. El bazar, según él mismo admite, no se sostiene con lo que vende en el mostrador.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Un negocio como cualquier otro —dice, y vuelve a acomodar algo del mostrador que ya estaba acomodado."
+        ],
+        "actitud": -1
+      }
     }
   ],
   "scenes": [
@@ -1511,6 +1998,95 @@
             "op": "lugar",
             "es": [
               "obelisco"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fechar-talla",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "la talla verde|quien la hizo|quién la hizo"
+          },
+          {
+            "op": "lleva",
+            "item": "it-talla-verde"
+          }
+        ]
+      }
+    },
+    {
+      "id": "girar-talla",
+      "prioridad": 75,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "doy vuelta la talla|dar vuelta la talla|miro el reverso|el reverso de la talla"
+          },
+          {
+            "op": "lleva",
+            "item": "it-talla-verde"
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-cuaderno-tachado",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "el cuaderno de cuentas|cuaderno tachado|contra la luz"
+          },
+          {
+            "op": "lleva",
+            "item": "it-cuaderno-tachado"
+          }
+        ]
+      }
+    },
+    {
+      "id": "escuchar-cilindro",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "el cilindro de cera|escucho el cilindro|el fonografo|el fonógrafo"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "tienda"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "noche-posada",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "me acuesto a dormir|trato de dormir en la pieza|apago la vela|duermo en la fonda"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "posada"
             ]
           }
         ]
@@ -1695,6 +2271,75 @@
       "hecha": {
         "op": "narrado",
         "contiene": "los pasos no cierran"
+      }
+    },
+    {
+      "id": "talla-fechar",
+      "grupo": "usar",
+      "lugar": "tienda",
+      "orden": 22,
+      "intencion": "Miro de cerca la talla verde y trato de saber quién la hizo",
+      "etiqueta": "Ver quién hizo la talla verde",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-talla-verde"
+      }
+    },
+    {
+      "id": "talla-girar",
+      "grupo": "usar",
+      "lugar": "tienda",
+      "orden": 23,
+      "intencion": "Doy vuelta la talla verde y miro el reverso",
+      "etiqueta": "Dar vuelta la talla y mirar el reverso",
+      "visible": {
+        "op": "propiedad",
+        "item": "it-talla-verde",
+        "prop": "p-talla-factura"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Le diste la vuelta igual"
+      }
+    },
+    {
+      "id": "cuaderno-leer",
+      "grupo": "usar",
+      "lugar": "tienda",
+      "orden": 24,
+      "intencion": "Reviso el cuaderno de cuentas tachado contra la luz",
+      "etiqueta": "Leer el cuaderno tachado contra la luz",
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-cuaderno-tachado"
+      }
+    },
+    {
+      "id": "cilindro-escuchar",
+      "grupo": "usar",
+      "lugar": "tienda",
+      "orden": 25,
+      "intencion": "Pongo el cilindro de cera en el fonógrafo y lo escucho",
+      "etiqueta": "Escuchar el cilindro de cera",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "no es una voz humana"
+      }
+    },
+    {
+      "id": "posada-dormir",
+      "grupo": "usar",
+      "lugar": "posada",
+      "orden": 21,
+      "intencion": "Me acuesto a tratar de dormir en la pieza de la fonda",
+      "etiqueta": "Tratar de dormir en la fonda",
+      "visible": {
+        "op": "hora",
+        "minimo": 19
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Cerrás la ventana"
       }
     },
     {
