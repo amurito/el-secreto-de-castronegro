@@ -48,7 +48,14 @@ async function jugar(titulo: string, semilla: string, guion: string[]): Promise<
   return (await Turn.open(id)).state;
 }
 
-/** El recorrido de investigación, sin llegar a ningún final. */
+/**
+ * El recorrido de investigación, sin llegar a ningún final. Toca las cuatro
+ * cosas que gatean los desenlaces —el nombre viejo, los cráneos del granero,
+ * la última hoja de la libreta y seis pistas reales— para que los cuatro
+ * finales sigan siendo alcanzables después de subir la vara (ver el bug de
+ * `pistas: minimo 3` reportado jugando: dos conversaciones alcanzaban para
+ * desbloquear «ir a la cabecera» y «escribirle a Delfina»).
+ */
 const RECORRIDO = [
   'Mirar cartel de cerca',
   'Rasco la cal del cartel para leer el nombre de abajo',
@@ -57,6 +64,12 @@ const RECORRIDO = [
   'Voy al almacén',
   'Le pregunto a Faustino por los tres que desaparecieron',
   'Mirar padron de cerca',
+  'Agarro libreta de tapas negras',
+  'Leo la libreta del profesor de arriba abajo',
+  'Voy a la plaza',
+  'Voy al granero de los shephard',
+  'Mirar mesa de cerca',
+  'Reviso el piso del fondo, abajo de la mesa',
   'Voy a la plaza',
   'Voy a la capilla',
   'Le pregunto al padre Anselmo por qué no va nadie a misa',
@@ -65,6 +78,34 @@ const RECORRIDO = [
 ];
 
 async function main() {
+  // ── El bug reportado jugando ─────────────────────────────────────────────
+  //
+  // `llamar` y `escribir` estaban gateadas con `{op:'pistas', minimo:3}` —
+  // TRES PISTAS CUALESQUIERA. Rascar el cartel, mirar la loma y hablar una
+  // vez con Sixto ya daban cuatro, así que los cuatro desenlaces aparecían
+  // después de una sola conversación, sin haber pisado el granero ni leído
+  // una línea de la libreta del profesor. Reportado jugando, con captura.
+  //
+  // El arreglo no es «más pistas»: es pistas CONCRETAS. Denunciar necesita
+  // algo que denunciar —los cráneos—, y escribirle a Delfina necesita haber
+  // llegado hasta donde llegó el que vino antes.
+  console.log('\nHABLAR UNA VEZ NO ALCANZA PARA CERRAR LA AVENTURA');
+  {
+    const s = await jugar('AB SUPERFICIAL', 'a', [
+      'Mirar cartel de cerca',
+      'Rasco la cal del cartel para leer el nombre de abajo',
+      'Mirar loma de cerca',
+      'Hablo con Sixto, el muchacho de la plaza',
+    ]);
+    const opciones = accionesDisponibles(s, AGUA_BLANCA).map((o) => o.id);
+    check('con cuatro pistas de ambiente, «llamar» sigue sin aparecer',
+      !opciones.includes('llamar'), opciones.join(', '));
+    check('con cuatro pistas de ambiente, «escribir» sigue sin aparecer',
+      !opciones.includes('escribir'), opciones.join(', '));
+    check('«subir» e «irse» siguen ofrecidos —no dependen de investigar—',
+      opciones.includes('subir') && opciones.includes('irse'));
+  }
+
   console.log('\nEL RECORRIDO DE INVESTIGACIÓN');
   const s = await jugar('AB RECORRIDO', 'a', RECORRIDO);
   check('el pueblo revela su nombre viejo',

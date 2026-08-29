@@ -1818,6 +1818,37 @@ contárselo a Delfina, o irse. El que sigue es el primero.
 Suite propia en `prueba-agua-blanca.ts` (suite 27), que además corre el
 arreglo de los párrafos contra contenido real.
 
+#### Un cuarto bug, reportado jugando después de publicada: los finales se
+   desbloqueaban con una sola conversación ✔ ARREGLADO
+
+`llamar` («ir a la cabecera») y `escribir` («escribirle a Delfina») estaban
+gateadas con `{op:'pistas', minimo:3}` — **tres pistas cualesquiera**. Rascar
+el cartel, mirar la loma de cerca y hablar una vez con Sixto ya daban cuatro,
+así que los cuatro desenlaces aparecían juntos después de una sola
+conversación, sin haber pisado el granero ni leído una línea de la libreta del
+profesor. Reportado jugando, con captura de pantalla.
+
+El arreglo no es «más pistas»: es pistas CONCRETAS, distintas para cada una,
+porque las dos acciones significan cosas distintas.
+
+- **`llamar`** ahora pide `{op:'pista', contiene:'tres cráneos recientes'}`.
+  Denunciar necesita algo que denunciar, y «vi un cartel raro» no es una
+  denuncia — los cráneos del granero sí.
+- **`escribir`** ahora pide haber descubierto la última hoja de la libreta de
+  Ferrari (`p-libreta-ultima`) Y seis pistas, no tres. Contarle a Delfina lo
+  que averiguaste tiene que significar haber llegado adonde llegó el que vino
+  antes, no simplemente haber caminado por la plaza.
+- **`subir`** se dejó igual, a propósito: es la salida de quien tiene coraje y
+  poca evidencia, y su propio texto lo dice («sabiendo lo poco que sabe»). Ya
+  pedía una tirada de Descubrir real sobre un detalle concreto, no una cuenta
+  de pistas genérica.
+
+`prueba-agua-blanca.ts` fija el caso exacto reportado —esa misma secuencia de
+cuatro acciones— y comprueba que después de ella `llamar` y `escribir` NO
+están en `accionesDisponibles`, mientras que `subir` e `irse` siguen
+ofrecidos. El recorrido de investigación completo se actualizó para seguir
+alcanzando los cuatro finales con la vara nueva.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

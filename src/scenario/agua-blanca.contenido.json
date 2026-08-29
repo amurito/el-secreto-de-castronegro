@@ -1717,8 +1717,8 @@
       "intencion": "Voy a la cabecera a traer a la policía",
       "etiqueta": "Ir a la cabecera a buscar autoridad",
       "visible": {
-        "op": "pistas",
-        "minimo": 3
+        "op": "pista",
+        "contiene": "tres cráneos recientes"
       }
     },
     {
@@ -1729,8 +1729,18 @@
       "intencion": "Le escribo a Delfina lo que averigüé",
       "etiqueta": "Escribirle a Delfina lo que averiguaste",
       "visible": {
-        "op": "pistas",
-        "minimo": 3
+        "op": "y",
+        "de": [
+          {
+            "op": "propiedad",
+            "item": "it-libreta",
+            "prop": "p-libreta-ultima"
+          },
+          {
+            "op": "pistas",
+            "minimo": 6
+          }
+        ]
       }
     },
     {
