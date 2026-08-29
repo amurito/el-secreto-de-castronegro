@@ -1713,6 +1713,43 @@ es una suite entera para una sola herramienta con evento propio. Cubre las
 cinco cosas que tienen que ser ciertas, incluido que el vínculo se relea
 **desde el log** y no de la memoria del turno.
 
+### 3.2-sedecies Doce finales que se leían con comas ✔ ARREGLADO
+
+Encontrado escribiendo la séptima, al ir a fijarme qué forma tenía que darle a
+sus desenlaces. Es de la familia de bug que este proyecto ya encontró seis
+veces: **algo declarado en los datos que el código no interpreta como
+esperaba, y que no rompe nada**.
+
+`EfectoEscena.desenlace.text` estaba tipado `string`, y las tres primeras
+aventuras lo escriben así, con `\n\n` entre párrafos. Las tres últimas —El
+Invierno Debido, El Sueño Debido y El Orden Debido— lo escriben como **lista de
+párrafos**, que es más cómodo de leer en el código y permite meter una línea
+condicional en el medio. TypeScript no lo detectó porque el valor viaja hasta
+la herramienta dentro de un `Record<string, unknown>`, y ahí
+`toolReachEnding` hacía `String(raw.text ?? '')`.
+
+`String(['a','b'])` es `'a,b'`.
+
+Así que los **doce desenlaces** de esas tres aventuras salían como un solo
+párrafo corrido, con una coma donde iba cada punto y aparte:
+
+```
+Llegás con la última luz.,Hay un pueblo. Tiene calles,…
+```
+
+En el texto que cierra la historia, que es el último que el jugador lee y el
+que se queda pensando después.
+
+**El arreglo va en la herramienta y no en el contenido**, por dos razones: son
+doce lugares contra uno, y las dos formas son legítimas —una lista de párrafos
+es más legible cuando uno de ellos es condicional—. `toolReachEnding` une la
+lista con renglón en blanco, que es exactamente lo que las tres primeras
+aventuras escriben a mano; el tipo pasa a `string | string[]` para que la forma
+que ya usaba la mitad del contenido deje de ser un accidente.
+
+Lo fija `prueba-desenlaces.ts`: que la lista se una con `\n\n`, que no queden
+comas pegando dos párrafos, y que el string con `\n\n` siga pasando intacto.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

@@ -2298,10 +2298,19 @@ export class Turn {
 
   private toolReachEnding(raw: Record<string, unknown>): ToolOutcome {
     if (this.state.ending) return { ok: false, message: 'La aventura ya tiene un final registrado.' };
+    // El texto llega como string con `\n\n` o como lista de párrafos, y las
+    // dos formas conviven en el contenido publicado. `String(unArray)` los une
+    // con COMAS: el final entero salía como un solo párrafo con comas donde
+    // iban los puntos y aparte. Pasó en los doce desenlaces de las tres
+    // últimas aventuras, y no rompía nada — sólo se leía mal, que en el texto
+    // que cierra la historia es peor.
+    const text = Array.isArray(raw.text)
+      ? raw.text.map((p) => String(p)).filter((p) => p.trim()).join('\n\n')
+      : String(raw.text ?? '');
     this.emit('ENDING_REACHED', {
       id: String(raw.ending_id ?? 'propio'),
       title: String(raw.title ?? 'Final'),
-      text: String(raw.text ?? ''),
+      text,
     });
     return { ok: true, message: 'Final registrado. La campaña queda cerrada; la semilla del RNG puede revelarse para auditoría.' };
   }

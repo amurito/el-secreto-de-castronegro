@@ -127,6 +127,38 @@ async function main() {
     check(`semilla ${semilla}: ocho miradas dan la pista`, tiene, `${s.board.clues.length} pistas`);
   }
 
+  // ── El texto del final, que es lo último que lee el jugador ──────────────
+  //
+  // `desenlace.text` admite el párrafo entero con `\n\n` o la lista de
+  // párrafos, y las dos formas conviven en el contenido publicado: las tres
+  // primeras aventuras usan string y las tres últimas, lista. `String(array)`
+  // las unía con COMAS, así que los doce desenlaces de El Invierno, El Sueño y
+  // El Orden salían como un párrafo corrido con comas donde iban los puntos y
+  // aparte. No rompía nada: sólo se leía mal, en el texto que cierra la
+  // historia. Encontrado escribiendo la séptima.
+  console.log('\nEL TEXTO DEL FINAL RESPETA LOS PÁRRAFOS');
+  {
+    const id = await createCampaign(AGUA_QUIETA, 'TEXTO FINAL', 'z'.repeat(64));
+    const t = await Turn.open(id);
+    t.executeTool('reach_ending', {
+      ending_id: 'irse', title: 'Prueba',
+      text: ['Primer párrafo.', 'Segundo párrafo.', 'Tercero.'],
+    });
+    await t.commit();
+    const texto = (await Turn.open(id)).state.ending?.text ?? '';
+    check('una lista de párrafos se une con renglón en blanco',
+      texto === 'Primer párrafo.\n\nSegundo párrafo.\n\nTercero.', JSON.stringify(texto));
+    check('y no quedan comas pegando dos párrafos', !texto.includes('.,'), JSON.stringify(texto));
+  }
+  {
+    const id = await createCampaign(AGUA_QUIETA, 'TEXTO FINAL 2', 'y'.repeat(64));
+    const t = await Turn.open(id);
+    t.executeTool('reach_ending', { ending_id: 'irse', title: 'Prueba', text: 'Uno.\n\nDos.' });
+    await t.commit();
+    check('un string con \\n\\n sigue pasando intacto',
+      (await Turn.open(id)).state.ending?.text === 'Uno.\n\nDos.');
+  }
+
   console.log('\nCOBERTURA');
   const faltan = AGUA_QUIETA.endings.filter((e) => !alcanzados.has(e.id));
   check(

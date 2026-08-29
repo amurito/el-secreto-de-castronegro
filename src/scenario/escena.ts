@@ -197,8 +197,15 @@ export interface EfectoEscena {
     patienceDelta?: number;
     cause: string;
   };
-  /** Cierra la aventura. */
-  desenlace?: { id: string; title: string; text: string };
+  /**
+   * Cierra la aventura.
+   *
+   * `text` acepta el párrafo entero con `\n\n` o la lista de párrafos; el
+   * motor une la lista con renglón en blanco. Las dos formas conviven en el
+   * contenido publicado y ahora las dos salen igual — antes la lista se unía
+   * con comas, ver `toolReachEnding`.
+   */
+  desenlace?: { id: string; title: string; text: string | string[] };
   /**
    * Algo que nota QUIEN JUEGA, no el investigador. No aparece en su ficha ni
    * en su tablero de conocimiento; la interfaz lo muestra aparte. Sirve para
