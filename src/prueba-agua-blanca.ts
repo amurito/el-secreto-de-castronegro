@@ -29,6 +29,7 @@ import type { GameState } from './shared/types.ts';
 useStore(fileStore);
 
 const noop = () => {};
+const insistir = (paso: string, veces = 4) => Array(veces).fill(paso) as string[];
 let fallos = 0;
 const check = (n: string, ok: boolean, d = '') => {
   console.log(`  ${ok ? '✓' : '✗'} ${n}${d ? ' — ' + d : ''}`);
@@ -153,6 +154,52 @@ async function main() {
   check('el círculo del monolito deja su contradicción',
     conObjetos.board.contradictions.some((c) => c.description.includes('cuarenta y cuatro')),
     `${conObjetos.board.contradictions.length} contradicciones`);
+
+  console.log('\nLA GRIETA TIENE ALGO MÁS QUE TRES CRÁNEOS, Y ES OPCIONAL');
+  {
+    const AL_GRANERO = [
+      'Voy al granero',
+      ...insistir('Mirar mesa de cerca'),
+      ...insistir('Reviso el piso del fondo, abajo de la mesa'),
+    ];
+    const sinTocar = await jugar('AB SIN GRIETA', 'c', AL_GRANERO);
+    const botones = accionesDisponibles(sinTocar, AGUA_BLANCA).map((o) => o.id);
+    check('«meter el brazo más adentro» es un botón real, y no obliga a nadie',
+      botones.includes('granero-grieta-mas'), botones.join(', '));
+
+    async function jugarConId(titulo: string, semilla: string, guion: string[]) {
+      const id = await createCampaign(AGUA_BLANCA, titulo, semilla.repeat(64).slice(0, 64));
+      for (const intencion of guion) {
+        const t = await Turn.open(id);
+        if (t.state.ending) break;
+        t.submitIntent(intencion, 'p1');
+        const r = await runOfflineTurn(t, AGUA_BLANCA, intencion, noop);
+        t.narrate(r.narration, r.options);
+        await t.commit();
+      }
+      return { id, state: (await Turn.open(id)).state };
+    }
+
+    const primerAsalto = await jugarConId('AB GRIETA ASALTO', 'c', [...AL_GRANERO, 'Meto el brazo más adentro de la grieta']);
+    check('el primer asalto deja activeCombat con salida de palabra',
+      primerAsalto.state.activeCombat?.salidaPacifica?.npcId === 'npc-cosa-grieta',
+      JSON.stringify(primerAsalto.state.activeCombat?.salidaPacifica));
+    check('deja la consecuencia del cruce, para que la lea El Vigésimo',
+      primerAsalto.state.consequences.some((c) => c.description.includes('se cruzó cuerpo a cuerpo con algo')));
+
+    const inicioCalma = await jugarConId('AB GRIETA CALMA', 'c', [...AL_GRANERO, 'Meto el brazo más adentro de la grieta']);
+    let calmado = false;
+    for (let n = 0; n < 30 && !calmado; n++) {
+      const t = await Turn.open(inicioCalma.id);
+      if (!t.state.activeCombat) break;
+      if (t.investigator.derived.hp <= 0 || t.investigator.status !== 'alive') break;
+      t.executeTool('resolve_intimidate', { npc_id: 'npc-cosa-grieta' });
+      await t.commit();
+      const s = (await Turn.open(inicioCalma.id)).state;
+      calmado = !s.activeCombat;
+    }
+    check('se puede espantarlo sin pelear a muerte', calmado);
+  }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);

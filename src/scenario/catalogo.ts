@@ -130,6 +130,11 @@ const ENTRADAS: EntradaCatalogo[] = [
     requiere: ['orden-debido'],
     continuacion: true,
   },
+  // El Vigésimo (séptimo Umbral, segundo acto) todavía no está escrito —
+  // diseño cerrado en ROADMAP §3.2-terdecies/§3.2-duovicies, contenido en
+  // construcción—. Entra acá, con `requiere: ['agua-blanca']` y
+  // `cuando: '1928-10-01'` (mismo día: `mesesEntre` ya está preparado para
+  // devolver 0 en ese caso, ver esa función), cuando esté listo para jugarse.
 ];
 
 /** El catálogo, en orden cronológico del universo. */
@@ -157,12 +162,24 @@ export function siguienteDe(id: string): EntradaCatalogo | null {
   return CATALOGO[i + 1] ?? null;
 }
 
-/** Meses diegéticos entre una aventura y la siguiente. */
+/**
+ * Meses diegéticos entre una aventura y la siguiente.
+ *
+ * El piso de 1 mes vale para toda transición real —la más corta de las
+ * siete anteriores son varios meses— pero El Vigésimo (§3.2-terdecies) es la
+ * primera vez que dos aventuras se pegan por horas, no por meses: forzar el
+ * piso ahí decaería la Exposición de Agua Blanca por un mes que no pasó.
+ * Por debajo de un día de diferencia se devuelve 0 —lo que `heredarInvestigador`
+ * ya trata como «sin decaimiento», ver `exposicionTrasMeses`— y arriba de eso
+ * se mantiene el piso de siempre.
+ */
 export function mesesEntre(desde: string, hasta: string): number {
   const a = entradaDe(desde), b = entradaDe(hasta);
   if (!a || !b) return 1;
   const ms = new Date(b.cuando).getTime() - new Date(a.cuando).getTime();
-  return Math.max(1, Math.round(ms / (1000 * 60 * 60 * 24 * 30)));
+  const dias = ms / (1000 * 60 * 60 * 24);
+  if (dias < 1) return 0;
+  return Math.max(1, Math.round(dias / 30));
 }
 
 /** El primero en la línea de tiempo: el que se ofrece por defecto. */

@@ -2042,6 +2042,73 @@ completar sigue fallando igual, la reintente seis veces o sesenta.
 la segunda entrega acumula bien con la primera) y la auditoría con el cupo
 nuevo, en las siete aventuras.
 
+### 3.2-duovicies El Vigésimo — el diseño se cierra
+
+Cuarto y último punto del orden de trabajo de §3.2-terdecies. Cuatro
+preguntas que quedaban abiertas, resueltas en dos rondas:
+
+| Pregunta | Decisión |
+|---|---|
+| Puente 7a→7b | **Los cuatro finales de Agua Blanca llevan a la Casa**, cada uno con su propio marco: `subir` ya está adentro; `llamar` vuelve al otro día con el sargento; `escribir` no puede dormir y sube igual esa noche; `irse` da la vuelta a tres leguas —el propio texto de ese final ya lo dejó sembrado: «no vas a volver a saber de Castronegro hasta que Castronegro sepa de vos»—. Mismo criterio que usa toda la campaña: la aventura siguiente lee la consecuencia real, sea cual sea, nunca exige una específica |
+| Formato de la Casa | **Rompe el molde.** Nada de lugares libres con botones de ir: una secuencia fija de escenas, una lleva a la siguiente. Es la primera vez que la campaña lo hace, y marca que esto ya no es una investigación |
+| Cómo se habla con Bernardo | **Audiencia acotada**, no temas libres. Un límite real de preguntas antes de que dé la charla por terminada — obliga a elegir, no a agotar la lista |
+| Puddock y Greedygut | **Nombres propios nuevos para los dos**, mismo rol narrativo (el familiar de Bernardo; la entidad que aparece tras un cambio de portador). El equivalente de Puddock no aparece hasta que alguien herede el anillo, que es cuando el canon ya dice que aparece |
+| Cómo se corta el ciclo | **Combate real**, con el motor de combate que ya existe (el mismo que usa Cirilo en *El Invierno Debido*) — sin que ganarlo confirme que sirvió de algo |
+
+**Lo que esto implica construir, en orden:**
+
+1. Nombres propios para los dos roles heredados del módulo (el familiar de
+   Bernardo, la entidad post-cambio-de-portador).
+2. Cuatro escenas puente, una por final de Agua Blanca, que narran cómo cada
+   investigador llega esa noche (o al otro día) a la puerta de la Casa.
+3. El mecanismo de audiencia acotada con Bernardo — previsiblemente
+   extendiendo `patienceDelta` (`EfectoEscena.npc`, ya existe en el motor
+   para otro propósito) en vez de inventar un campo nuevo.
+4. La secuencia lineal: mausoleo (veinte sarcófagos, el vigésimo vacío),
+   la entrada al laberinto (una o dos escenas, no se recorre), el cuarto de
+   Bernardo.
+5. Ficha de combate propia para Bernardo — inventada para esta campaña, no
+   la del módulo: sólo se respetan los hechos ya fijados por canon (el
+   anillo lo sostiene, sacárselo es letal, no controla el tiempo).
+6. Los cuatro desenlaces (Cortar / Heredar / Denunciar / Irse), cada uno
+   leyendo lo que corresponda de las seis aventuras anteriores.
+
+Sigue sin escribirse. Es el paso que sigue.
+
+### 3.2-trevicies Retrofit del granero — el primer combate de Agua Blanca ✔ HECHO
+
+Antes de escribir la Casa, un pendiente de Agua Blanca (7a) que quedó
+anotado en la ronda de preguntas del Vigésimo: un combate opcional en el
+granero, con una criatura propia —no la del módulo—, y un arma real
+disponible para quien llega a la Casa sin una.
+
+- **`it-hacha-granero`**, apoyada contra un poste, libre de tomar sin pelear
+  nada.
+- **`npc-cosa-grieta`**: algo que sale de la grieta si alguien mete el brazo
+  más allá de los tres cráneos. Sin nombre, sin confirmar si es un Díaz, un
+  Villeira-Pereira o algo que aprendió de cerca a parecerse a los dos.
+  Bernardo y el laberinto siguen sin aparecer en la 7a — esto es un pariente
+  suelto, no una confirmación de nada más grande.
+- **`grieta-mas-alla`**: la escena, con `iniciaCombate` + `salidaPacifica`
+  real (mismas herramientas que ya usa Cirilo en *El Invierno Debido*).
+  Totalmente opcional: quien se conforma con los tres cráneos nunca la
+  encuentra, y la suite de la HABLAR UNA VEZ... y el recorrido normal no la
+  tocan.
+- Deja una consecuencia (`scope: 'world'`) con el cruce cuerpo a cuerpo, para
+  que **El Vigésimo** la lea al empezar y regrant el arma sin necesitar un
+  mecanismo nuevo de inventario entre aventuras.
+
+**Un bug de scene-bank, no de contenido:** la nueva escena competía por
+prioridad con `granero-craneos` —las dos matcheaban la palabra «grieta»— y
+en un empate de prioridad gana la que está antes en el array, así que
+«Meto el brazo más adentro de la grieta» seguía repitiendo el texto de los
+tres cráneos en vez de disparar el combate. Subida la prioridad de
+`grieta-mas-alla` de 74 a 76 para que gane el empate. Encontrado por la
+propia suite nueva, no por jugar.
+
+`npm run prueba:todo` completo, incluida la auditoría de las siete
+aventuras con el nuevo combate en el mapa.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

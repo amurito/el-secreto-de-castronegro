@@ -255,6 +255,48 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
     },
   },
 
+  // ══ MÁS ALLÁ DE LA GRIETA ═════════════════════════════════════════════════
+
+  {
+    // Único combate opcional de la aventura. No lo obliga nada: quien se
+    // conforma con los tres cráneos nunca lo encuentra. Salida de palabra
+    // incluida a propósito —Bernardo y el laberinto siguen sin aparecer acá;
+    // esto es UN pariente suelto, no una confirmación de nada más grande.
+    id: 'grieta-mas-alla',
+    resolver: () => ({
+      texto: [
+        'La grieta sigue más allá de donde llegan los tres cráneos. Metés el brazo hasta el codo, tanteando, y por un segundo tocás algo que no es tierra ni piedra.',
+        'Se mueve antes de que puedas sacar la mano. Sale de la grieta encorvado, más rápido de lo que un cuerpo así debería moverse, y te mira con unos ojos que ya viste esta mañana en la plaza.',
+      ],
+      combate: { accion: 'atacar', npcId: 'npc-cosa-grieta', armaId: 'desarmado' },
+      iniciaCombate: {
+        npcIds: ['npc-cosa-grieta'],
+        salidaPacifica: {
+          npcId: 'npc-cosa-grieta',
+          pistaCalma: {
+            description: 'Retrocedió despacio, sin correr, hasta perderse otra vez en la grieta. No te siguió.',
+            kind: 'experiential',
+            source: 'la grieta del granero',
+            reliability: 'reliable',
+          },
+          consecuenciaDisparo: {
+            description: 'En el granero de Castronegro, el investigador le disparó a algo que salió de la grieta, en vez de dejarlo volver adentro.',
+            scope: 'world',
+            permanent: true,
+            worldReminder: 'Usó un arma de fuego contra algo que no llegó a identificar. No es lo mismo que espantarlo con las manos.',
+          },
+        },
+      },
+      exposicion: { amount: 6, source: 'grieta:algo', cause: 'tocar algo en la oscuridad que después tuvo cara' },
+      consecuencia: {
+        description: 'En el granero de Castronegro, el investigador se cruzó cuerpo a cuerpo con algo que salió de la grieta —encorvado, dientes largos, ojos verdes— y no se quedó a preguntar qué era.',
+        scope: 'world',
+        permanent: true,
+        worldReminder: 'Sabe, de primera mano y no de oídas, que hay algo vivo debajo de Castronegro además de la gente que se ve caminar.',
+      },
+    }),
+  },
+
   // ══ EL MONOLITO ═══════════════════════════════════════════════════════════
 
   {

@@ -202,6 +202,29 @@
       "usageCount": 0
     },
     {
+      "id": "it-hacha-granero",
+      "name": "Hacha de leña",
+      "aliases": [
+        "hacha",
+        "el hacha",
+        "hacha de leña"
+      ],
+      "shortDescription": "Apoyada contra un poste, cerca de la pila de leña partida que nadie usa porque el granero no tiene fogón. El filo está bien cuidado para una herramienta que no debería servir para nada acá.",
+      "owner": "granero",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
       "id": "it-lasca",
       "name": "Lasca del monolito",
       "aliases": [
@@ -460,6 +483,40 @@
         "inv-tomas": 8
       },
       "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-cosa-grieta",
+      "name": "Algo que salió de la grieta",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Encorvado, con los dientes más largos de lo que un dientes debería, y los ojos de un verde que ya reconocés. No dice una palabra. No se sabe si es un Díaz, un Villeira-Pereira, o algo que se les parece porque los imitó demasiado tiempo cerca.",
+      "motivation": "Que no lo saquen de donde vive.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": -20,
+        "inv-tomas": -20
+      },
+      "combate": {
+        "hp": 10,
+        "maxHp": 10,
+        "pelea": 40,
+        "esquivar": 25,
+        "armaId": "desarmado",
+        "bonificacionDano": "1d4",
+        "defensaPorDefecto": "contraataca",
+        "dex": 60,
+        "build": 0
+      },
       "present": true,
       "isCompanion": false
     },
@@ -838,9 +895,12 @@
         "obelisco"
       ],
       "itemsPresent": [
-        "it-estatuilla"
+        "it-estatuilla",
+        "it-hacha-granero"
       ],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-cosa-grieta"
+      ],
       "visited": false,
       "umbralIntensity": 6,
       "senses": {
@@ -1894,6 +1954,25 @@
       }
     },
     {
+      "id": "grieta-mas-alla",
+      "prioridad": 76,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "meto el brazo|mas adentro de la grieta|más adentro de la grieta"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "granero"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "fechar-monolito",
       "prioridad": 74,
       "cuando": {
@@ -2189,6 +2268,22 @@
       "hecha": {
         "op": "pista",
         "contiene": "tres cráneos"
+      }
+    },
+    {
+      "id": "granero-grieta-mas",
+      "grupo": "usar",
+      "lugar": "granero",
+      "orden": 16.5,
+      "intencion": "Meto el brazo más adentro de la grieta, más allá de los cráneos",
+      "etiqueta": "Meter el brazo más adentro de la grieta",
+      "visible": {
+        "op": "pista",
+        "contiene": "tres cráneos"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "No te siguió"
       }
     },
     {
