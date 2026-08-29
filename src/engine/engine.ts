@@ -152,9 +152,19 @@ export async function createCampaign(
   // `Ocupacion.itemInicial`), no generado acá, para que una escena que lo
   // busca por id lo encuentre sin importar si el investigador es pregenerado
   // o recién creado.
+  //
+  // Si la aventura YA declaró un objeto con ese id —la rueda de agrimensor de
+  // La Legua Perdida, por ejemplo—, no se fabrica un duplicado vacío: se
+  // RECLAMA el que ya existe, con sus propiedades reales intactas, sólo
+  // cambiándole dueño y `carried`. Un duplicado en blanco le pisaría a esa
+  // rueda la propiedad oculta que la aventura ya le escribió. En cualquier
+  // otra aventura, donde ese id no existe, nace como objeto de oficio
+  // genérico, sin propiedades.
   const itemOcupacionInicial: Item | null = (() => {
     const item = propio && ocupacionId ? OCUPACION_POR_ID[ocupacionId]?.itemInicial : undefined;
     if (!item) return null;
+    const yaDeclarado = scenario.items.find((i) => i.id === item.id);
+    if (yaDeclarado) return { ...yaDeclarado, owner: propio!.id, carried: true };
     return {
       id: item.id,
       name: item.nombre,

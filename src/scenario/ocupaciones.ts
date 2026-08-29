@@ -64,10 +64,16 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 20, max: 60 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['DEX', 'INT'], multiplicador: 2 } },
     tratamiento: { m: 'agrimensor', f: 'agrimensora' },
+    // Mismo id que la rueda de Herminia en La Legua Perdida (`it-rueda`), a
+    // propósito: si quien juega esa aventura es agrimensor, `createCampaign`
+    // (engine.ts) no fabrica un objeto nuevo — RECLAMA el que ya declaró el
+    // contenido, con sus propiedades intactas, en vez de a Herminia. En
+    // cualquier otra aventura, donde `it-rueda` no existe, nace como objeto
+    // de oficio genérico.
     itemInicial: {
-      id: 'it-libreta-mensura', nombre: 'Libreta de mensura',
-      shortDescription: 'Números, ángulos y mojones, en una letra apretada que sólo su dueño puede leer del todo. ' +
-        'Cada página lleva fecha y firma: es un documento, no un anotador.',
+      id: 'it-rueda', nombre: 'Rueda de agrimensor',
+      shortDescription: 'Una rueda de medir con contador de vueltas, propia, de tanto uso que ya no hace falta ' +
+        'mirarle el contador para saber si dio una vuelta entera o no.',
     },
   },
   {
