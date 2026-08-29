@@ -73,6 +73,17 @@ function formaDeCondicion(cond: unknown, donde: string, out: string[]): void {
     case 'pista': case 'narrado': case 'consecuencia':
       if (!c.contiene) out.push(`${donde}: \`${c.op}\` necesita un fragmento en \`contiene\`; vacío se cumple siempre.`);
       break;
+    // El espejo del caso de arriba: sin `feature`, el `find` no encuentra
+    // nada y la condición da FALSE siempre, así que el botón que gatea no
+    // aparece nunca. No rompe nada tampoco — sólo no pasa, y no pasar es más
+    // difícil de notar que pasar de más. Encontrado jugando la séptima, donde
+    // tres botones quedaron invisibles por escribir sólo `lugar`.
+    case 'detalleVisto':
+      if (!c.lugar) out.push(`${donde}: \`detalleVisto\` necesita \`lugar\`.`);
+      if (!c.feature) {
+        out.push(`${donde}: \`detalleVisto\` necesita \`feature\`; sin él no encuentra ningún detalle y da falso siempre.`);
+      }
+      break;
     case 'y': case 'o':
       if (!Array.isArray(c.de) || c.de.length === 0) out.push(`${donde}: \`${c.op}\` necesita al menos una condición en \`de\`.`);
       else c.de.forEach((sub, n) => formaDeCondicion(sub, `${donde} → ${c.op}[${n}]`, out));

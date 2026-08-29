@@ -1605,7 +1605,7 @@ prueba, y sin contenido nuevo encima.
 1. ~~Las tres habilidades, con prueba propia.~~ ✔ HECHO — §3.2-quaterdecies
 2. ~~La herramienta del anillo (`RingBond`), con prueba propia.~~ ✔ HECHO —
    §3.2-quindecies
-3. **7a — Agua Blanca.**
+3. ~~**7a — Agua Blanca.**~~ ✔ HECHA — §3.2-septdecies
 4. **7b — El Vigésimo**, que lee los desenlaces de la 7a igual que la quinta
    lee a la cuarta.
 
@@ -1749,6 +1749,74 @@ que ya usaba la mitad del contenido deje de ser un accidente.
 
 Lo fija `prueba-desenlaces.ts`: que la lista se una con `\n\n`, que no queden
 comas pegando dos párrafos, y que el string con `\n\n` siga pasando intacto.
+
+### 3.2-septdecies Séptima aventura, primer acto ✔ HECHA — *Agua Blanca*
+
+Seis lugares, catorce escenas, cuatro NPC, catorce temas, tres documentos y
+cuatro desenlaces. Octubre de 1928, seis meses después de la sexta — y el 1º
+de octubre porque ésa es la fecha con la que arranca el módulo original.
+
+**Permeabilidad 22**, la más alta de la campaña (las otras seis van de 8 a 18),
+y el claro del monolito en intensidad 9. Es el centro: tenía que notarse en el
+número y no sólo en la prosa. Queda 10 para el segundo acto.
+
+#### Lo que la aventura hace y ninguna anterior hacía
+
+- **Estrena Arqueología y Geología**, agregadas para ella. El monolito se
+  fecha con una y se ubica con la otra, y las dos preguntas son distintas: de
+  cuándo es, y de dónde salió la piedra. La respuesta de la segunda es que el
+  basalto más cercano está a ochenta leguas.
+- **El círculo que no cierra.** El corazón de la aventura es medir a pasos el
+  anillo de pasto enfermo: ocho de radio en cualquier dirección, cuarenta y
+  cuatro de vuelta, cuando con ese radio tendrían que ser cincuenta. Se mide
+  dos veces. Es la única cosa del pueblo que no tiene explicación por ninguna
+  vía, y es la que deja contradicción en el tablero.
+- **Lee las seis anteriores**, que es el pago de la campaña: las marcas del
+  Círculo Rojo cambian qué se reconoce al leer el nombre viejo; la compulsión
+  de contar de *La Legua* vuelve sola al medir el círculo; el acta que no le
+  sirvió a nadie aparece como nota de jugador al medirlo; y haber cumplido un
+  turno, haberse llevado el libro o haberse anotado en la quinta hoja cambia
+  qué significa la última palabra que escribió el profesor desaparecido.
+
+#### El gancho, cosido de los dos lados
+
+Se llega por el último punto del mapa de Delfina y, ya en el pueblo, faltan
+tres personas desde julio. El módulo aporta el caso; la campaña, la razón de
+estar ahí. Nadie tiene que fingir una casualidad.
+
+Los tres desaparecidos son el dispositivo del que vino antes: la libreta del
+profesor quedó en el almacén y se puede leer entera. Llegó exactamente hasta
+donde llega el investigador, y su última anotación es «no es una familia, es
+un turno». La sala cerrada de la biblioteca tiene un registro de consultas con
+dos renglones en dieciocho años, y son él y el otro, con tres días de
+diferencia, la semana que desaparecieron los dos.
+
+#### Tres bugs que encontró escribirla
+
+1. **Doce finales se leían con comas** — §3.2-sedecies. Salió de ir a fijarse
+   qué forma darle a los desenlaces de ésta.
+2. **«Pedir» no es un verbo del motor, otra vez.** Un tema escrito «Le pido a
+   Prudencio que abra la sala» no se podía preguntar nunca. Ya había pasado en
+   §3.2-decies, y la prueba de auditoría que quedó de aquella vez lo cazó acá
+   antes de que existiera una partida. Funcionó exactamente como se esperaba.
+3. **`detalleVisto` sin `feature` es falso para siempre.** La condición hace
+   `features.find(f => f.id === cond.feature)`; sin `feature` no encuentra
+   nada y devuelve falso, así que el botón que gatea no aparece nunca. Tres
+   botones quedaron invisibles. **Lo encontró jugar, no las pruebas** — un
+   botón que no aparece no deja rastro de haber faltado, que es lo contrario
+   del bug de `contiene` vacío (§4.6), que se cumple siempre. Ahora el
+   validador rechaza las dos formas, y `prueba-carga-contenido.ts` lo fija.
+
+#### Lo que NO tiene, a propósito
+
+Bernardo no aparece. Nada de Mitos: `apply_mythos_knowledge` no se llama ni
+una vez, y el precio de entender se paga en Cordura, Estabilidad y Exposición.
+La casa de la loma se ve desde todas partes, se sabe que se sube caminando y
+que abren la puerta, y no se sube: los cuatro desenlaces son subir, denunciar,
+contárselo a Delfina, o irse. El que sigue es el primero.
+
+Suite propia en `prueba-agua-blanca.ts` (suite 27), que además corre el
+arreglo de los párrafos contra contenido real.
 
 ### 3.3 La aventura original publicada
 

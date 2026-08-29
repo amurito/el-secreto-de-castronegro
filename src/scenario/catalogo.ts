@@ -22,6 +22,7 @@ import { TERCER_UMBRAL } from './tercerumbral.ts';
 import { INVIERNO_DEBIDO } from './inviernodebido.ts';
 import { SUENO_DEBIDO } from './suenodebido.ts';
 import { ORDEN_DEBIDO } from './ordendebido.ts';
+import { AGUA_BLANCA } from './aguablanca.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -109,6 +110,24 @@ const ENTRADAS: EntradaCatalogo[] = [
     // cuyo tema ES la cadena de consecuencias, y los ecos de las cinco
     // anteriores aparecen en casi todas sus escenas.
     requiere: ['sueno-debido'],
+    continuacion: true,
+  },
+  {
+    scenario: AGUA_BLANCA,
+    cuando: '1928-10-01',
+    epoca: 'Octubre de 1928 · el pueblo de Castronegro',
+    duracion: 'Una hora y media aproximadamente',
+    // Séptimo Umbral, primer acto: el centro del que la campaña salió en la
+    // primera aventura sin llegar a tocarlo. La sexta terminó a la vista del
+    // obelisco, sin entrar; ésta entra al pueblo y termina sabiendo que hay
+    // que subir a la casa de la loma.
+    //
+    // `continuacion` y no «se puede jugar sola» a propósito: es la única
+    // aventura de la campaña escrita sabiendo que hay seis atrás. Sus cuatro
+    // desenlaces leen lo que el investigador viene arrastrando desde 1924, y
+    // el que se ofrece primero —subir— sólo se entiende habiendo visto lo que
+    // hay abajo.
+    requiere: ['orden-debido'],
     continuacion: true,
   },
 ];

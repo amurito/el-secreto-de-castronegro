@@ -1,0 +1,1768 @@
+{
+  "id": "agua-blanca",
+  "title": "Agua Blanca",
+  "surfacePremise": "El último punto del mapa de Delfina Arce cae en un pueblo de seiscientas personas a tres leguas de Villa Requena, donde nadie de Villa Requena conoce a nadie. Se llega el 1º de octubre. Hace once semanas que faltan tres personas, y la policía de la cabecera archivó las tres.",
+  "items": [
+    {
+      "id": "it-libreta",
+      "name": "Libreta de tapas negras",
+      "aliases": [
+        "libreta",
+        "libreta negra",
+        "cuaderno del profesor",
+        "libreta del forastero",
+        "las notas"
+      ],
+      "shortDescription": "Quedó en el almacén, arriba del estante de la yerba, desde julio. Es del profesor que no volvió a buscarla. Faustino la guarda porque no se le ocurrió qué otra cosa hacer con ella.",
+      "owner": "almacen",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-libreta-basico",
+          "description": "Tapas de hule negro, gastadas en las esquinas. Adentro, letra chica y prolija de alguien acostumbrado a tomar notas rápido sin que se le vuelvan ilegibles. Las últimas páginas están escritas con otra letra: la misma mano, más apurada.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-libreta-ultima",
+          "description": "La última anotación no es una frase: son cuatro apellidos, uno abajo del otro, y al lado de cada uno un número de dos cifras. Los números no son edades ni años. Están en orden creciente y el último, el que va al lado de Díaz, es el más alto de los cuatro.\n\nDebajo, subrayado dos veces: «no es una familia, es un turno».",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "buscar_libros",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-estatuilla",
+      "name": "Estatuilla de piedra",
+      "aliases": [
+        "estatuilla",
+        "figura",
+        "figurita",
+        "la piedra tallada",
+        "muñeco"
+      ],
+      "shortDescription": "Del tamaño de una mano cerrada. Estaba en el granero, entre la paja, como si se le hubiera caído a alguien y nadie hubiera vuelto a buscarla.",
+      "owner": "granero",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-estatuilla-basico",
+          "description": "Una figura humana de piedra gris, sin cara, con los brazos pegados al cuerpo y las piernas juntas. Está pulida de tanto que la agarraron: los bordes que deberían tener filo no lo tienen.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-estatuilla-fecha",
+          "description": "El pulido no es de uso: es de fabricación, y la técnica no corresponde a nada que se haya hecho en esta provincia en trescientos años. Las herramientas que dejaron esas marcas eran de piedra.\n\nY sin embargo la pieza está entera, sin una lasca, sin una veta abierta por el frío. Algo así, tirado en un granero, tendría que estar roto. Lo que quiere decir que no estuvo tirado: estuvo guardado, mucho tiempo, por gente que sabía cómo guardarlo.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "arqueologia",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-lasca",
+      "name": "Lasca del monolito",
+      "aliases": [
+        "lasca",
+        "pedazo de piedra",
+        "esquirla",
+        "el pedacito"
+      ],
+      "shortDescription": "Un pedazo del tamaño de una moneda grande, desprendido de la base del monolito quién sabe cuándo. Estaba entre el pasto, a un paso de la piedra.",
+      "owner": "obelisco",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-lasca-basico",
+          "description": "Piedra oscura, casi negra, con un brillo apagado en la cara fresca. Pesa más de lo que uno calcula mirándola.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-lasca-origen",
+          "description": "Es basalto, y el basalto viene de donde hubo lava.\n\nAcá no hubo. Acá hay dos metros de tierra negra encima de arcilla, encima de más arcilla, y así hasta donde alcanza cualquier perforación que se haya hecho en el partido. La cantera de basalto más cercana está en Tandil, y Tandil está a ochenta leguas.\n\nAlguien trajo tres metros de piedra ochenta leguas, en una época en que no había ni caminos ni ruedas para hacerlo.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "geologia",
+            "difficulty": "regular"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-faustino",
+      "name": "Faustino Otamendi",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Almacenero. Cincuenta y pico, delantal gris, la cara de alguien que atiende a las mismas cien personas hace veinte años. Vino de afuera, de Chivilcoy, y en el pueblo eso todavía se dice de él: «el que vino».",
+      "motivation": "Que el forastero compre lo que tenga que comprar y se vaya antes de que oscurezca, sin que él tenga que decirle por qué.",
+      "fears": [
+        "Que lo tomen por uno que habla de más",
+        "Quedarse sin la clientela de las dos familias, que es un tercio del pueblo"
+      ],
+      "refusals": [
+        "No dice apellidos en voz alta si hay alguien más en el mostrador",
+        "No opina sobre la casa de la loma"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-faustino-libreta",
+          "content": "Leyó la libreta del profesor de arriba abajo la semana que desapareció, y por eso no la entregó a la policía de la cabecera cuando vinieron. Dice que se la olvidó. No se la olvidó.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 5,
+        "inv-tomas": 5
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-anselmo",
+      "name": "el padre Anselmo",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cura. Ocho años en la parroquia de un pueblo de seiscientas almas donde a misa de once van entre cuatro y siete personas, siempre las mismas, todas de más de setenta. Habla rápido y mucho, como quien no tiene con quién.",
+      "motivation": "Que alguien de afuera le confirme que lo que pasa en su parroquia no es culpa suya.",
+      "fears": [
+        "Que el obispado crea que la culpa del banco vacío es de él",
+        "Subir al campanario de noche, cosa que no admite"
+      ],
+      "refusals": [
+        "No toca el tema de la estatua si no se lo tocan primero"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-anselmo-bautismos",
+          "content": "En ocho años bautizó a once chicos en un pueblo de seiscientos. En Del Valle, que tiene la mitad de habitantes, se bautizan veinte por año. Hizo la cuenta una vez, en 1926, y no se la mandó a nadie.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 15,
+        "inv-tomas": 15
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-prudencio",
+      "name": "Prudencio Herrera",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Bibliotecario de la popular, que se fundó hace dieciocho años con libros donados. Setenta años, saco cruzado en octubre, y una llave chata en el bolsillo del chaleco que toca cuando se pone nervioso.",
+      "motivation": "Que la salita del fondo siga cerrada y que nadie le pregunte de quién eran los libros que hay adentro.",
+      "fears": [
+        "Que le pidan abrir la salita delante de testigos",
+        "Su propio apellido, dicho por alguien que sepa de dónde viene"
+      ],
+      "refusals": [
+        "No abre la salita a nadie que no le explique para qué"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-prudencio-donante",
+          "content": "Los libros de la salita no los donó la comisión: los mandó la casa de la loma, en cajones, el mismo año que se fundó la biblioteca. La condición era que estuvieran a resguardo y que se pudieran consultar «cuando hiciera falta». Nadie fue nunca a consultarlos.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 0,
+        "inv-tomas": 0
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-sixto",
+      "name": "Sixto Villeira-Pereira",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Diecinueve años. Alto, flaco de muñecas, encorvado de una manera que no le corresponde a la edad, con los pómulos altos y el pelo muy negro. Los ojos son verdes de un verde que no se parece a ningún otro verde del pueblo. Está en la plaza a las diez de la mañana de un lunes, sin hacer nada, y no parece que sea la primera vez.",
+      "motivation": "Hablar con alguien que no sepa de antemano quién es él.",
+      "fears": [
+        "Que lo manden a la casa de la loma, como mandaron a su hermano",
+        "Cumplir veintiuno"
+      ],
+      "refusals": [
+        "No dice qué le pasó a su hermano",
+        "No entra a la capilla"
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-sixto-hermano",
+          "content": "Su hermano mayor tenía los mismos ojos y los dientes más largos, y a los veintiuno lo llevaron a la casa de la loma «a que lo vieran». De eso hace cuatro años. Sigue ahí. Nadie del pueblo lo nombra y en la casa nadie contesta.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {
+        "inv-elena": 10,
+        "inv-tomas": 10
+      },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-notas",
+      "title": "Las últimas hojas de la libreta negra",
+      "author": "Aníbal Ferrari, profesor de psicología, La Plata",
+      "date": "julio de 1928",
+      "location": "el almacén de ramos generales",
+      "kind": "diary",
+      "content": "12 de julio.\n\nLlegué preguntando por sugestión colectiva y me voy a ir preguntando por otra cosa. Acá no hay una creencia compartida: hay una administración. La diferencia no es menor. Una creencia se discute; un trámite se cumple.\n\n14 de julio.\n\nEl pueblo tiene seiscientos habitantes y una iglesia a la que no va nadie. Los que se dicen católicos viajan treinta leguas a Del Valle. Le pregunté a cuatro personas por qué y las cuatro me contestaron lo mismo, con las mismas palabras: «allá la iglesia está, pero no es para nosotros». Cuatro personas que no se hablan entre ellas no coinciden en una frase por casualidad. Coinciden porque se la enseñaron.\n\n15 de julio.\n\nDos apellidos son un tercio del padrón. Dos. En un pueblo fundado por dos familias, en 1680, eso no es endogamia rural: eso es que en doscientos cincuenta años no entró casi nadie más y no salió casi nadie.\n\n17 de julio.\n\nEl monolito. Fui solo y volví antes de que oscureciera, y no me da vergüenza escribirlo. Tres metros de piedra oscura en un campo llano, y alrededor, en un círculo de unos seis metros, el pasto está enfermo. No seco: enfermo. Y no se oye un pájaro. Conté hasta doscientos parado ahí y no se oyó un pájaro.\n\n18 de julio.\n\nEl bibliotecario tiene una sala cerrada con llave y me dijo que adentro hay libros de la comisión. Le pregunté qué comisión. Se tocó el chaleco y me dijo que la comisión.\n\n19 de julio.\n\nHay una cosa que anoté mal desde el principio y la corrijo acá. Yo venía buscando qué creen. La pregunta es quién lleva la cuenta.",
+      "authenticity": "authentic",
+      "accuracy": "partially_accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-bautismos",
+      "title": "La cuenta que el padre Anselmo no mandó a nadie",
+      "author": "el padre Anselmo, parroquia de Castronegro",
+      "date": "1926",
+      "location": "la sacristía",
+      "kind": "file",
+      "content": "Hoja suelta, escrita a máquina, doblada en cuatro dentro del libro de bautismos.\n\n«Resumen de sacramentos administrados, 1920-1926.\n\nBautismos: once.\nConfirmaciones: dos.\nMatrimonios: cuatro, tres de ellos entre primos hermanos con dispensa solicitada y concedida.\nDefunciones con sepultura eclesiástica: ciento nueve.\n\nObservación, para uso propio: la parroquia de Del Valle, con la mitad de feligreses, registra un promedio de veinte bautismos anuales. La diferencia no se explica por la distancia ni por la pobreza, que son parecidas.\n\nO en este pueblo no nacen chicos, o los que nacen no se traen.\n\nNo elevo esta hoja. La dejo escrita para no tener que volver a hacer la cuenta.»",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-recorte",
+      "title": "Recorte del diario de la cabecera",
+      "author": "La Voz del Partido",
+      "date": "marzo de 1928",
+      "location": "el fichero de la biblioteca popular",
+      "kind": "clipping",
+      "content": "«PERSISTEN LAS MUTILACIONES DE HACIENDA EN LA ZONA OESTE\n\nPor sexto año consecutivo los establecimientos del oeste del partido denuncian pérdidas de hacienda en circunstancias que la policía no ha logrado esclarecer. El promedio se mantiene, según los propios damnificados, en dos animales mensuales por establecimiento.\n\nLas reses aparecen sin signos de forcejeo y sin rastros de animal predador en el terreno circundante. En todos los casos relevados se consigna la ausencia de la lengua.\n\nEl comisario de la cabecera declaró a este diario que se trata de 'obra de cuatreros con métodos poco usuales' y que la investigación sigue su curso.\n\nCabe consignar que las denuncias provienen exclusivamente de establecimientos ubicados dentro de un radio de tres leguas del pueblo de Castronegro, y que ningún establecimiento situado más allá de esa distancia ha registrado pérdidas de esta naturaleza.»",
+      "authenticity": "authentic",
+      "accuracy": "partially_accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "plaza": {
+      "id": "plaza",
+      "name": "La plaza",
+      "aliases": [
+        "plaza",
+        "la plaza",
+        "el centro",
+        "pueblo"
+      ],
+      "description": "Cuatro paraísos podados a lo bruto y un mástil sin bandera. Enfrente, la capilla. A la izquierda, el almacén de ramos generales. A la derecha, una casa baja con una chapa que dice BIBLIOTECA POPULAR. Y sobre la única loma del partido, a seis cuadras y arriba de todo, una casa de dos plantas con las persianas cerradas.",
+      "atmosphere": [
+        "Pasa una mujer con un chico de la mano y cruza a la vereda de enfrente antes de llegar a donde estás.",
+        "En la vereda del almacén hay dos hombres tomando mate que no dejan de hablar cuando {lo} ven pasar, y eso —después de seis aventuras en el campo— resulta más raro que si dejaran.",
+        "La loma tiene la casa, y la casa tiene doce ventanas, y las doce están cerradas a las diez de la mañana de un día de sol."
+      ],
+      "connections": [
+        "capilla",
+        "almacen",
+        "biblioteca",
+        "granero"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-sixto"
+      ],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sight": "Cuatro paraísos, un mástil pelado, y arriba de todo una casa con las persianas bajas.",
+        "sound": "Chicharras. Un molino lejos. Ningún chico.",
+        "smell": "Tierra mojada de regar la vereda, y humo de leña a las diez de la mañana."
+      },
+      "features": [
+        {
+          "id": "f-cartel",
+          "names": [
+            "cartel",
+            "el cartel",
+            "letrero",
+            "el nombre del pueblo"
+          ],
+          "description": "El cartel de chapa de la entrada, apoyado contra el mástil desde que lo cambiaron. Dice CASTRONEGRO en letras negras sobre fondo blanco.",
+          "closerLook": "El fondo blanco es cal, y la cal está puesta encima de otra cosa. A contraluz, debajo de la mano de cal, se leen dos palabras más largas que la que está pintada arriba. La segunda empieza con B.",
+          "examineSkill": "descubrir",
+          "exposure": 1
+        },
+        {
+          "id": "f-loma",
+          "names": [
+            "loma",
+            "la casa",
+            "casa de la loma",
+            "la casa de arriba",
+            "las persianas"
+          ],
+          "description": "La casa de la loma. Dos plantas, techo de pizarra —pizarra, acá—, y un camino de tierra que sube en curva desde el final de la calle principal. No hay alambrado ni tranquera: no hace falta.",
+          "closerLook": "Doce ventanas y ninguna abierta. Pero el camino que sube está usado: la tierra está apisonada en dos huellas de rueda, frescas, y en el medio hay pisadas. Sube gente. Sube seguido.",
+          "examineSkill": "descubrir",
+          "exposure": 2,
+          "clue": {
+            "description": "A la casa de la loma sube gente, y sube seguido: las huellas de rueda y las pisadas del camino son frescas. Pero ninguna de las doce ventanas se abre.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "capilla": {
+      "id": "capilla",
+      "name": "La capilla",
+      "aliases": [
+        "capilla",
+        "la capilla",
+        "iglesia",
+        "la iglesia"
+      ],
+      "description": "Una nave sola, ocho bancos, y un altar con un mantel limpio. Está impecable y está vacía, y las dos cosas juntas dan una impresión rara: es una iglesia cuidada por alguien que no tiene a quién abrirle la puerta. Al fondo, una escalera de madera sube al campanario.",
+      "atmosphere": [
+        "Los bancos están lustrados. Los reclinatorios, en cambio, están nuevos: nadie se arrodilla lo suficiente como para gastarlos.",
+        "El padre Anselmo acomoda cosas que ya están acomodadas.",
+        "Por la puerta abierta entra el sol y no entra nadie más."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-anselmo"
+      ],
+      "visited": false,
+      "umbralIntensity": 4,
+      "senses": {
+        "sight": "Ocho bancos vacíos y una escalera de madera al fondo.",
+        "sound": "Madera que cruje sola. Los pasos del cura. Nada más.",
+        "smell": "Cera, humedad de pared gruesa, y un fondo de encierro que el sol de la puerta no saca."
+      },
+      "features": [
+        {
+          "id": "f-estatua",
+          "names": [
+            "estatua",
+            "la estatua",
+            "figura de piedra",
+            "basalto",
+            "el campanario"
+          ],
+          "description": "En el campanario, al lado de la campana y atornillada al piso con cuatro pernos de hierro, hay una estatua de piedra negra de un metro y medio. Es una figura humana mal hecha, o hecha por alguien que no tenía la misma idea de qué es una figura humana. En la mano izquierda sostiene algo curvo. La derecha está estirada hacia adelante, señalando.",
+          "closerLook": "Señala. No es una pose: es un señalamiento, con el índice separado del resto y el brazo en línea. Y no señala al altar, ni al pueblo, ni al este.\n\nSeñala al sudoeste, por encima de los techos, hacia el campo abierto. Si uno se para exactamente detrás del brazo y sigue la línea, la línea no termina en nada que se vea desde acá.\n\nLa piedra es la misma piedra negra de la que nadie en este pueblo tiene una cantera.",
+          "examineSkill": "descubrir",
+          "exposure": 4,
+          "clue": {
+            "description": "La estatua del campanario —basalto negro, traída por el fundador— tiene el brazo derecho estirado señalando al sudoeste, hacia el campo abierto, y está atornillada al piso con cuatro pernos para que siga señalando ahí.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-pernos",
+          "names": [
+            "pernos",
+            "los pernos",
+            "los tornillos",
+            "la base"
+          ],
+          "description": "Los cuatro pernos de hierro que sujetan la estatua al piso del campanario.",
+          "closerLook": "Los pernos son cuatro y hay ocho agujeros. Los otros cuatro están tapados con masilla y quedan a un palmo de los que se usan, girados.\n\nAlguien la movió una vez, y después la volvió a poner apuntando exactamente adonde apuntaba antes.",
+          "examineSkill": "mecanica",
+          "exposure": 3,
+          "clue": {
+            "description": "La estatua del campanario fue desatornillada y vuelta a atornillar al menos una vez, y quedó apuntando exactamente adonde apuntaba antes. Hay ocho agujeros y se usan cuatro.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "almacen": {
+      "id": "almacen",
+      "name": "El almacén de ramos generales",
+      "aliases": [
+        "almacen",
+        "almacén",
+        "ramos generales",
+        "boliche",
+        "el mostrador"
+      ],
+      "description": "Mostrador de estaño, estantes hasta el techo, y en la punta dos hombres que toman en silencio con el sombrero puesto. Faustino atiende. Arriba del estante de la yerba, entre una balanza rota y una caja de velas, hay una libreta de tapas negras que no es de nadie de acá.",
+      "atmosphere": [
+        "Los dos del fondo no miran, y no mirar así de bien también es una manera de mirar.",
+        "Faustino acomoda la balanza rota, que no se va a arreglar acomodándola.",
+        "Entra un chico, compra sal, y se va sin decir una palabra ni esperar el vuelto."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [
+        "it-libreta"
+      ],
+      "npcsPresent": [
+        "npc-faustino"
+      ],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": {
+        "sight": "Estaño, estantes hasta el techo, y una libreta negra que sobra en el estante de la yerba.",
+        "sound": "Vasos. Moscas. Dos hombres que no hablan.",
+        "smell": "Yerba, querosén, jabón amarillo."
+      },
+      "features": [
+        {
+          "id": "f-padron",
+          "names": [
+            "padron",
+            "padrón",
+            "la lista",
+            "el padrón del pueblo",
+            "libreta de fiado"
+          ],
+          "description": "Clavado con una chinche al costado del estante, el padrón de la última elección municipal, que Faustino usa para acordarse de quién le debe.",
+          "closerLook": "Seiscientos doce nombres. Los conté una vez y los vuelvo a contar acá: Díaz y Villeira-Pereira, entre los dos, son doscientos uno.\n\nUn tercio del pueblo son dos apellidos. Y los dos apellidos son los de las dos familias que lo fundaron en 1680.",
+          "examineSkill": "buscar_libros",
+          "exposure": 2,
+          "clue": {
+            "description": "En el padrón de seiscientos doce vecinos, doscientos uno son Díaz o Villeira-Pereira: un tercio del pueblo son los apellidos de las dos familias fundadoras de 1680.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "biblioteca": {
+      "id": "biblioteca",
+      "name": "La biblioteca popular",
+      "aliases": [
+        "biblioteca",
+        "la biblioteca",
+        "la popular",
+        "los libros"
+      ],
+      "description": "Dos ambientes. En el primero, cuatro estantes de novelas gastadas, un fichero de madera y una mesa larga con dos sillas. En el segundo —una puerta al fondo, con cerradura y sin picaporte— no se sabe, porque está cerrada. Prudencio Herrera atiende desde un escritorio puesto de manera que queda entre la mesa y esa puerta.",
+      "atmosphere": [
+        "No hay nadie leyendo. Prudencio pasa fichas de una caja a otra, que es lo que hace cuando no hay nadie leyendo, que es siempre.",
+        "La puerta del fondo tiene el marco lustrado a la altura de la mano, de tanto que alguien se apoya ahí sin abrirla.",
+        "Prudencio se toca el bolsillo del chaleco cada vez que mirás para el fondo."
+      ],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-prudencio"
+      ],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sight": "Cuatro estantes, un fichero, y una puerta cerrada al fondo.",
+        "sound": "Fichas de cartón. Un reloj de pared. La respiración del bibliotecario.",
+        "smell": "Papel viejo, y detrás de la puerta del fondo, algo más seco y más frío."
+      },
+      "features": [
+        {
+          "id": "f-fichero",
+          "names": [
+            "fichero",
+            "el fichero",
+            "las fichas",
+            "el diario",
+            "recortes"
+          ],
+          "description": "El fichero de madera, con las fichas de los libros y, en el último cajón, una carpeta con recortes del diario de la cabecera que Prudencio guarda por costumbre.",
+          "closerLook": "En la carpeta de recortes hay seis años de lo mismo: hacienda mutilada, siempre en los campos de alrededor, siempre sin lengua, siempre sin rastro. El último es de marzo de este año.\n\nY hay una cosa que el diario dice sin darse cuenta de que la está diciendo: las denuncias son todas de establecimientos que están a menos de tres leguas del pueblo. Ni una de más lejos.",
+          "examineSkill": "buscar_libros",
+          "exposure": 2,
+          "clue": {
+            "description": "Seis años de hacienda mutilada sin lengua, y todas las denuncias vienen de establecimientos a menos de tres leguas del pueblo. Ninguna de más lejos.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-puerta-salita",
+          "names": [
+            "puerta",
+            "la puerta del fondo",
+            "salita",
+            "la sala cerrada",
+            "cerradura"
+          ],
+          "description": "La puerta del fondo. Cerradura de bronce, sin picaporte del lado de afuera, y el marco lustrado a la altura de la mano.",
+          "closerLook": "La cerradura es buena y es nueva: mucho más nueva que la puerta y que la casa. El polvo del umbral está barrido hacia adentro, no hacia afuera, lo que quiere decir que la puerta se abrió desde adentro alguna vez, y no hace tanto.",
+          "examineSkill": "descubrir",
+          "exposure": 3
+        }
+      ]
+    },
+    "granero": {
+      "id": "granero",
+      "name": "El granero de los Shephard",
+      "aliases": [
+        "granero",
+        "el granero",
+        "galpon",
+        "galpón",
+        "el campo de los shephard"
+      ],
+      "description": "Media legua al sudoeste, saliendo del pueblo. Un galpón de chapa sobre pilares de ladrillo, en un campo que fue de los Shephard hasta que los Shephard se fueron, hace más de veinte años, y que desde entonces no es de nadie que se sepa. La puerta está entornada y no tiene candado.",
+      "atmosphere": [
+        "Adentro hay paja vieja, y encima de la paja hay marcas de que alguien viene: la paja está pisada en un camino que va derecho al fondo.",
+        "Huele a animal, pero no hay animales, y no hay bosta.",
+        "Por las juntas de la chapa entra sol en tiras, y en el aire se ve el polvo moverse cuando caminás."
+      ],
+      "connections": [
+        "plaza",
+        "obelisco"
+      ],
+      "itemsPresent": [
+        "it-estatuilla"
+      ],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sight": "Chapa, paja vieja, y un camino pisado que va derecho al fondo.",
+        "sound": "La chapa que se dilata al sol. Nada más. Ni un pájaro adentro ni afuera.",
+        "smell": "Animal, sin animal. Y abajo de eso, dulce, algo que conviene no terminar de identificar."
+      },
+      "features": [
+        {
+          "id": "f-mesa",
+          "names": [
+            "mesa",
+            "la mesa",
+            "altar",
+            "la mesa del fondo",
+            "tablones"
+          ],
+          "description": "En el fondo del galpón, adonde va el camino pisado, hay una mesa de tablones a la altura de la cintura, con las patas hundidas en la tierra. La superficie está limpia. Es lo único limpio del galpón.",
+          "closerLook": "Limpia de haberla lavado, no de no haberla usado. La madera está más clara en el centro que en los bordes, en un óvalo del tamaño de un cuerpo chico, y en las juntas de los tablones la lavandina no llegó a sacar todo.\n\nA los costados, clavadas en las patas, hay dos argollas de hierro a la altura donde irían las manos.",
+          "examineSkill": "descubrir",
+          "exposure": 6,
+          "clue": {
+            "description": "En el fondo del granero hay una mesa de tablones lavada con lavandina, con la madera aclarada en un óvalo del tamaño de un cuerpo chico y dos argollas de hierro clavadas donde irían las manos.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-ropa",
+          "names": [
+            "ropa",
+            "los atuendos",
+            "las telas",
+            "el arcon",
+            "arcón"
+          ],
+          "description": "Contra la pared, un arcón de madera sin candado, con telas dobladas adentro.",
+          "closerLook": "Nueve túnicas de arpillera cruda, dobladas con cuidado, de nueve tamaños distintos. Las más chicas son de chico.\n\nNinguna tiene bordado, ni símbolo, ni nada que un cura reconocería. Son sólo arpillera cruda cosida a mano, y están limpias, y están dobladas como se dobla lo que se va a volver a usar.",
+          "examineSkill": "descubrir",
+          "exposure": 5,
+          "clue": {
+            "description": "En el granero hay nueve túnicas de arpillera cruda, de nueve tamaños distintos, las más chicas de chico, dobladas limpias como lo que se va a volver a usar.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "obelisco": {
+      "id": "obelisco",
+      "name": "El claro del monolito",
+      "aliases": [
+        "obelisco",
+        "el obelisco",
+        "monolito",
+        "el monolito",
+        "la piedra",
+        "el claro"
+      ],
+      "description": "Una legua más al sudoeste, siguiendo exactamente la línea que señala el brazo de la estatua. En medio de un campo llano, sin una piedra en veinte leguas a la redonda, hay un monolito de tres metros de piedra negra, clavado derecho, tan derecho que se nota que alguien lo puso así.\n\nAlrededor, en un círculo de unos seis metros, el pasto está enfermo: no seco, enfermo. Amarillo desde la raíz.",
+      "atmosphere": [
+        "No se oye un pájaro. Se oyen a lo lejos, del otro lado del círculo. Adentro no.",
+        "El aire no está más frío ni más caliente, y sin embargo tenés la sensación exacta de haber entrado en algún lado.",
+        "La sombra del monolito cae donde tiene que caer para esta hora, y eso —después de todo lo demás— es casi una decepción."
+      ],
+      "connections": [
+        "granero"
+      ],
+      "itemsPresent": [
+        "it-lasca"
+      ],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 9,
+      "senses": {
+        "sight": "Tres metros de piedra negra clavada derecha en un campo sin piedras.",
+        "sound": "Nada. Y a treinta pasos, del otro lado del pasto amarillo, pájaros.",
+        "smell": "Pasto enfermo, tierra, y ningún insecto que la esté moviendo."
+      },
+      "features": [
+        {
+          "id": "f-almagre",
+          "names": [
+            "almagre",
+            "la pintura",
+            "el circulo pintado",
+            "círculo pintado",
+            "la base"
+          ],
+          "description": "En la base del monolito, a la altura de la rodilla, corre un círculo pintado que da toda la vuelta a la piedra. Está fresco de este año y hay ocho o diez capas debajo.",
+          "closerLook": "Es almagre. La misma tierra colorada molida con la misma fracción más clara mezclada, en la misma proporción, que se usa en el brocal de Los Álamos, en el mojón del oeste y en el marco de una puerta que ya no tiene puerta.\n\nAcá no está en una cosa que alguien construyó. Está en la única cosa del partido que ya estaba.",
+          "examineSkill": "ciencia_naturales",
+          "exposure": 6,
+          "clue": {
+            "description": "El monolito tiene la base pintada con el mismo almagre preparado que los otros puntos del mapa, y con ocho o diez capas debajo. Es el único de los puntos que nadie construyó.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-pasto",
+          "names": [
+            "pasto",
+            "el pasto",
+            "el circulo",
+            "círculo",
+            "el follaje"
+          ],
+          "description": "El anillo de pasto enfermo, de unos seis metros de radio, con el monolito en el centro.",
+          "closerLook": "El borde es nítido. No se degrada: hay pasto sano y a un paso pasto amarillo, y la línea entre los dos es tan limpia que se podría seguir con el pie.\n\nUn círculo de suelo envenenado tendría el borde sucio, porque el veneno corre con el agua. Éste no corre. Éste termina donde termina.",
+          "examineSkill": "ciencia_naturales",
+          "exposure": 5,
+          "clue": {
+            "description": "El círculo de pasto enfermo alrededor del monolito tiene el borde nítido, sin degradado: no se comporta como suelo envenenado, que correría con el agua.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "startLocation": "plaza",
+  "startTime": {
+    "iso": "1928-10-01T10:00:00",
+    "precision": "minute",
+    "display": "las diez de la mañana"
+  },
+  "startUmbralPermeability": 22,
+  "timeline": [
+    {
+      "id": "ab-1650",
+      "description": "Un pueblo anterior a los querandíes, sin parentesco con ninguno de los vecinos, levanta el monolito para marcar el límite de una zona donde el agua y el cielo se comportan mal. Hacia 1650 no queda ninguno. No custodiaron nada durante siglos: marcaron un borde y los borraron.",
+      "when": {
+        "iso": "1650-01-01T00:00:00",
+        "precision": "vague",
+        "display": "antes de 1650"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "v0.7"
+      }
+    },
+    {
+      "id": "ab-1680",
+      "description": "Bernardo de Díaz funda el paraje con dos familias: la suya y los Villeira-Pereira. Le pone Agua Blanca. Reutiliza el monolito, que ya estaba, y lo interpreta mal.",
+      "when": {
+        "iso": "1680-01-01T00:00:00",
+        "precision": "day",
+        "display": "1680"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "v0.7"
+      }
+    },
+    {
+      "id": "ab-1728",
+      "description": "Llegan refugiados de la Inquisición, entre ellos los Herrera y los García, con fama de hechiceros. Se suman a los nueve apellidos.",
+      "when": {
+        "iso": "1728-01-01T00:00:00",
+        "precision": "day",
+        "display": "1728"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "ab-siglo18",
+      "description": "En algún momento del siglo XVIII el paraje deja de llamarse Agua Blanca y pasa a llamarse Castronegro. Ningún papel del pueblo explica por qué, y el cartel de la entrada lleva el nombre viejo debajo de una mano de cal.",
+      "when": {
+        "iso": "1750-01-01T00:00:00",
+        "precision": "vague",
+        "display": "el siglo XVIII"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "v0.7"
+      }
+    },
+    {
+      "id": "ab-1922",
+      "description": "Empiezan las mutilaciones de hacienda en los campos de alrededor. Dos animales por mes por establecimiento, sin lengua, y ninguna denuncia a más de tres leguas del pueblo.",
+      "when": {
+        "iso": "1922-06-01T00:00:00",
+        "precision": "day",
+        "display": "1922"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "ab-1928-julio",
+      "description": "En dos semanas de julio desaparecen tres personas: Aníbal Ferrari, profesor de psicología de La Plata; un viajero norteamericano de apellido Prewitt que había venido preguntando lo mismo; y Onésimo Villeira-Pereira, de veintiuno, del pueblo. La policía de la cabecera archivó las tres.",
+      "when": {
+        "iso": "1928-07-19T00:00:00",
+        "precision": "day",
+        "display": "julio de 1928"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "f-tres",
+      "npc": "npc-faustino",
+      "etiqueta": "Preguntarle por los tres que faltan",
+      "intencion": "Le pregunto a Faustino por los tres que desaparecieron",
+      "claves": [
+        "tres",
+        "desaparecidos",
+        "faltan",
+        "profesor",
+        "ferrari"
+      ],
+      "orden": 1,
+      "cede": {
+        "texto": [
+          "—Uno era profesor, de La Plata. Ferrari. Paraba acá y comía acá, y preguntaba mucho, y anotaba todo en una libreta. Buen tipo. Pagaba al día.\n\n—El otro era un americano, Prewitt, que llegó tres días después que el profesor y preguntaba lo mismo. Los dos no se conocían de antes: se conocieron acá, en este mostrador. Y eso a mí, si quiere que le diga, me pareció mucha casualidad.\n\n—Y el tercero era Onésimo, de acá. Villeira-Pereira. Veintiún años.",
+          "—La policía vino de la cabecera, estuvo dos días, preguntó en cuatro casas y se volvió. Pusieron «se ausentaron del domicilio». Los tres.\n\n—A los dos de afuera, mire, uno puede pensar que se fueron. Se van, la gente se va. Pero Onésimo tenía la madre acá, y hermanos, y no tenía adónde irse."
+        ],
+        "actitud": 2,
+        "pista": {
+          "description": "En julio desaparecieron tres: el profesor Ferrari, un americano llamado Prewitt que preguntaba lo mismo, y Onésimo Villeira-Pereira, del pueblo, de veintiún años. La policía archivó las tres como «se ausentó del domicilio».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "pregunta": "¿Por qué los tres al mismo tiempo, y por qué dos de los tres estaban preguntando lo mismo?"
+      },
+      "esquiva": {
+        "texto": [
+          "—Se fueron —dice, y acomoda algo que no hace falta acomodar—. Eso dice el acta."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "f-libreta",
+      "npc": "npc-faustino",
+      "etiqueta": "Preguntarle de quién es la libreta del estante",
+      "intencion": "Le pregunto a Faustino por la libreta de tapas negras",
+      "claves": [
+        "libreta",
+        "tapas negras",
+        "cuaderno"
+      ],
+      "orden": 2,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "Ferrari"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 5,
+        "razon": "darse cuenta de que la guardó a propósito, y decírselo sin acusarlo"
+      },
+      "cede": {
+        "texto": [
+          "Se queda un segundo con la balanza rota en la mano.\n\n—Es del profesor. Se la olvidó.\n\n—No se la olvidó. La dejó acá el jueves y desapareció el viernes, y cuando vino la policía yo no la entregué. —Deja la balanza—. Llévesela, si quiere. Yo ya la leí y no me sirvió de nada, y hace tres meses que la miro desde el otro lado del mostrador."
+        ],
+        "actitud": 3,
+        "revelaSecreto": "s-faustino-libreta"
+      },
+      "esquiva": {
+        "texto": [
+          "—Ah, eso. Alguien se lo olvidó. Pasa."
+        ],
+        "actitud": -1
+      },
+      "cerrado": {
+        "texto": [
+          "—Ya le dije lo que sé de esa libreta —dice, y esta vez no deja de mirar{lo}—. Y usted ya me preguntó por ella dos veces, y las dos veces me preguntó como quien sabe la respuesta."
+        ]
+      }
+    },
+    {
+      "id": "f-familias",
+      "npc": "npc-faustino",
+      "etiqueta": "Preguntarle por los Díaz y los Villeira-Pereira",
+      "intencion": "Le pregunto a Faustino por las dos familias del pueblo",
+      "claves": [
+        "familias",
+        "diaz",
+        "díaz",
+        "villeira",
+        "pereira",
+        "apellidos"
+      ],
+      "orden": 3,
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "que hable de apellidos con dos parroquianos en el mostrador"
+      },
+      "cede": {
+        "texto": [
+          "Baja la voz sin darse cuenta de que la baja.\n\n—Son la mitad de mi libreta de fiado y un tercio del pueblo. Y son buenos pagadores, no tengo nada que decir de eso.\n\n—Lo que pasa es que se casan entre ellos. Hace doscientos años. Y eso se ve: usted los ve por la calle y sabe cuáles son, aunque nunca los haya visto antes. Los dientes, la manera de pararse. Y los ojos.\n\n—Yo vine de Chivilcoy en el ocho. Veinte años acá. Y todavía, cuando entra uno de ellos, tardo un segundo en acordarme de que es una persona del pueblo y no otra cosa. Un segundo. Después se me pasa."
+        ],
+        "actitud": 1,
+        "pista": {
+          "description": "Los Díaz y los Villeira-Pereira se casan entre ellos hace doscientos años y se reconocen a simple vista: los dientes, la postura, los ojos. Faustino, que vino de afuera hace veinte años, tarda «un segundo» en verlos como gente del pueblo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 2
+      },
+      "esquiva": {
+        "texto": [
+          "—Familias del pueblo, como en todos lados. —Mira a los dos del fondo—. Después le cuento."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "f-casa",
+      "npc": "npc-faustino",
+      "etiqueta": "Preguntarle quién vive en la casa de la loma",
+      "intencion": "Le pregunto a Faustino por la casa de la loma",
+      "claves": [
+        "casa",
+        "loma",
+        "la casa de arriba",
+        "quien vive"
+      ],
+      "orden": 4,
+      "cede": {
+        "texto": [
+          "—De eso no.\n\nLo dice sin dureza, casi con cansancio, como quien repite algo que ya dijo muchas veces y que sabe que no va a poder explicar.\n\n—Mire, yo le vendo lo que quiera y le contesto lo que sepa. De la casa no. No porque me manden: porque no. Hace veinte años que no, y no me pregunte desde cuándo lo decidí, porque no me acuerdo de haberlo decidido."
+        ],
+        "actitud": -1,
+        "exposicion": 3,
+        "pista": {
+          "description": "Faustino no habla de la casa de la loma, y cuando se le pregunta desde cuándo no habla de eso, no puede acordarse de haberlo decidido.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "jugadorNota": {
+          "statement": "Faustino no se niega a hablar de la casa: no puede acordarse de cuándo decidió no hablar de la casa. Eso no es discreción, es otra cosa.",
+          "source": "el almacén",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "a-nadie",
+      "npc": "npc-anselmo",
+      "etiqueta": "Preguntarle por qué su iglesia está vacía",
+      "intencion": "Le pregunto al padre Anselmo por qué no va nadie a misa",
+      "claves": [
+        "iglesia",
+        "vacia",
+        "vacía",
+        "misa",
+        "nadie",
+        "feligreses"
+      ],
+      "orden": 1,
+      "cede": {
+        "texto": [
+          "—Ocho años —dice, y se sienta en el primer banco como si hiciera rato que quería sentarse—. A misa de once vienen seis. Siempre las mismas seis, todas de más de setenta, y cuando se mueran no van a venir seis.\n\n—Y no es que sean ateos, ¿eh? Ojo. Se bautizan, se casan, se entierran. Pero se bautizan en Del Valle. A treinta leguas. Van y vuelven en el día, con el chico, en sulky.\n\n—Le pregunté a una mujer por qué. Me contestó una cosa que le repito textual, porque hace dos años que la pienso: «allá la iglesia está, pero no es para nosotros». Y le juro que lo dijo sin ninguna intención de ofenderme."
+        ],
+        "actitud": 3,
+        "pista": {
+          "description": "En Castronegro se bautizan en Del Valle, a treinta leguas, y no en la parroquia del pueblo. La explicación que dan es siempre la misma frase: «allá la iglesia está, pero no es para nosotros».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "a-estatua",
+      "npc": "npc-anselmo",
+      "etiqueta": "Preguntarle por la estatua del campanario",
+      "intencion": "Le pregunto al padre Anselmo por la estatua del campanario",
+      "claves": [
+        "estatua",
+        "campanario",
+        "figura",
+        "piedra negra"
+      ],
+      "orden": 2,
+      "disponible": {
+        "op": "detalleVisto",
+        "lugar": "capilla",
+        "feature": "f-estatua"
+      },
+      "cede": {
+        "texto": [
+          "—Ah. La vio.\n\nSe pasa la mano por la cara.\n\n—La trajo el fundador, dicen. Está atornillada al piso con cuatro pernos de hierro que no sé quién puso ni cuándo. Yo pedí sacarla el primer año. Escribí al obispado dos veces.\n\n—La primera vez no me contestaron. La segunda me contestaron que la parroquia no tiene fondos para obras en el campanario y que me abstenga de innovar.\n\n—Y le voy a decir una cosa que no le dije a nadie. —Mira la escalera del fondo—. Yo subo a tocar la campana los domingos. Ocho años. Y nunca, ni una vez, subí de noche."
+        ],
+        "actitud": 2,
+        "exposicion": 3,
+        "pista": {
+          "description": "La estatua del campanario la trajo el fundador y está atornillada al piso. El cura pidió dos veces sacarla y el obispado le contestó que se abstenga de innovar. En ocho años nunca subió de noche.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Es vieja. Estaba cuando llegué. —Se ocupa del mantel del altar—. Hay cosas que uno hereda."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "a-bautismos",
+      "npc": "npc-anselmo",
+      "etiqueta": "Preguntarle cuántos chicos bautizó",
+      "intencion": "Le pregunto al padre Anselmo cuántos bautismos hizo",
+      "claves": [
+        "bautismos",
+        "bautizo",
+        "chicos",
+        "cuantos",
+        "cuántos"
+      ],
+      "orden": 3,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "no es para nosotros"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 10,
+        "razon": "preguntarle un número que él ya calculó y no le mostró a nadie"
+      },
+      "cede": {
+        "texto": [
+          "No contesta enseguida. Se levanta, va a la sacristía, y vuelve con el libro de bautismos y una hoja doblada en cuatro adentro.\n\n—Once —dice—. En ocho años. Seiscientas personas.\n\n—Hice la cuenta en el veintiséis y la escribí a máquina para mandarla, y no la mandé. Porque cuando la terminé me di cuenta de que la conclusión tenía dos ramas, y que las dos eran horribles, y que yo no tenía cómo saber cuál era.\n\n—O en este pueblo no nacen chicos. O nacen y no se traen."
+        ],
+        "actitud": 4,
+        "revelaSecreto": "s-anselmo-bautismos",
+        "cordura": 3,
+        "exposicion": 2
+      },
+      "esquiva": {
+        "texto": [
+          "—Pocos —dice—. Menos de los que quisiera. Pero eso pasa en todos lados ahora."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "p-salita",
+      "npc": "npc-prudencio",
+      "etiqueta": "Pedirle que abra la sala del fondo",
+      "intencion": "Le pregunto a Prudencio si me deja ver la sala del fondo",
+      "claves": [
+        "salita",
+        "sala",
+        "puerta",
+        "abrir",
+        "el fondo"
+      ],
+      "orden": 1,
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 0,
+        "razon": "que abra delante de un desconocido una puerta que no abrió en dieciocho años"
+      },
+      "cede": {
+        "texto": [
+          "Se toca el chaleco, se levanta, y se queda un momento de pie sin ir a ningún lado.\n\n—Le voy a abrir —dice— y le voy a pedir una cosa. Que no me pregunte quién los mandó mientras esté adentro. Adentro no.\n\nSaca la llave chata del bolsillo del chaleco. La cerradura anda sola, sin forzarla, engrasada."
+        ],
+        "actitud": 2
+      },
+      "esquiva": {
+        "texto": [
+          "—Es depósito. Hay humedad. No conviene.",
+          "—La comisión no autoriza el préstamo de ese material. —Y no dice qué material, ni qué comisión."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "p-apellido",
+      "npc": "npc-prudencio",
+      "etiqueta": "Preguntarle por su apellido",
+      "intencion": "Le pregunto a Prudencio de dónde viene su apellido",
+      "claves": [
+        "apellido",
+        "herrera",
+        "su familia",
+        "de donde viene"
+      ],
+      "orden": 2,
+      "cede": {
+        "texto": [
+          "—Herrera —dice, como si lo estuviera leyendo—. De los del veintiocho.\n\n—Del mil setecientos veintiocho. Vinieron cuatro familias huyendo de la Inquisición, de arriba, y las recibieron acá. Herrera y García eran dos de esas cuatro. En cualquier otro pueblo eso sería una anécdota de doscientos años.\n\n—Acá no es una anécdota. Acá es una categoría. Yo no soy Díaz y no soy Villeira-Pereira, pero tampoco soy como usted: soy de los del veintiocho, y los del veintiocho tenemos ciertas obligaciones que nadie escribió y que todos cumplimos."
+        ],
+        "actitud": 2,
+        "pista": {
+          "description": "Los Herrera y los García llegaron en 1728 huyendo de la Inquisición y en el pueblo son una categoría propia, distinta de las dos familias fundadoras y distinta de los de afuera. Prudencio dice que «los del veintiocho» tienen obligaciones que nadie escribió.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3
+      },
+      "esquiva": {
+        "texto": [
+          "—Es un apellido común. —No es un apellido común acá.—"
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "p-donante",
+      "npc": "npc-prudencio",
+      "etiqueta": "Preguntarle quién donó los libros del fondo",
+      "intencion": "Le pregunto a Prudencio quién donó los libros de la sala cerrada",
+      "claves": [
+        "donacion",
+        "donación",
+        "quien dono",
+        "los libros del fondo",
+        "comision",
+        "comisión"
+      ],
+      "orden": 3,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "engrasada"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 2,
+        "razon": "preguntarle justo lo que pidió que no le preguntaran"
+      },
+      "cede": {
+        "texto": [
+          "Estamos afuera de la salita otra vez, y con la puerta cerrada contesta.\n\n—Vinieron en cajones. Diez cajones, el mismo año que se fundó la biblioteca. No los mandó la comisión: la comisión los recibió.\n\n—Los mandaron de arriba. De la casa. Con una nota que decía que quedaban a resguardo de la biblioteca popular y que podían consultarse cuando hiciera falta.\n\n—Dieciocho años. Nunca hizo falta. —Se toca el chaleco—. Y yo, todos los meses, les paso un trapo."
+        ],
+        "actitud": 3,
+        "revelaSecreto": "s-prudencio-donante",
+        "exposicion": 4
+      },
+      "esquiva": {
+        "texto": [
+          "—Le pedí que adentro no. Estamos afuera, pero le pedí igual."
+        ],
+        "actitud": -2
+      }
+    },
+    {
+      "id": "s-ojos",
+      "npc": "npc-sixto",
+      "etiqueta": "Hablar con el muchacho de la plaza",
+      "intencion": "Hablo con Sixto, el muchacho de la plaza",
+      "claves": [
+        "muchacho",
+        "sixto",
+        "el chico de la plaza",
+        "hablar"
+      ],
+      "orden": 1,
+      "cede": {
+        "texto": [
+          "—Usted es el que llegó hoy —dice, sin saludar—. Sixto.\n\nDa la mano y la da bien, con firmeza, y es una mano larga y fría.\n\n—No me pregunte si conozco a alguien que le pueda contar algo, porque conozco a todos y no le va a contar nadie. Pregúnteme a mí, que estoy acá parado desde las ocho y no tengo adónde ir.\n\nY cuando levanta la cara para decirlo, los ojos son verdes. Un verde que no es el verde de nadie más en este pueblo, ni de nadie que hayas visto en cuatro años de andar por el campo."
+        ],
+        "actitud": 3,
+        "exposicion": 2,
+        "pista": {
+          "description": "Sixto Villeira-Pereira, diecinueve años, tiene los ojos de un verde que no se parece a ningún otro del pueblo, los pómulos altos, las muñecas finas y la espalda encorvada de alguien mucho mayor.",
+          "kind": "physical",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "s-familia",
+      "npc": "npc-sixto",
+      "etiqueta": "Preguntarle por su familia",
+      "intencion": "Le pregunto a Sixto por su familia",
+      "claves": [
+        "familia",
+        "su familia",
+        "los suyos",
+        "hermano"
+      ],
+      "orden": 2,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "los ojos son verdes"
+      },
+      "cede": {
+        "texto": [
+          "—Somos muchos. Y todos parecidos, ya se habrá dado cuenta, porque todo el mundo se da cuenta y nadie lo dice.\n\n—Mi abuela era Díaz y se casó con un Villeira-Pereira. La madre de ella también. Y la madre de ella. Y así para atrás hasta donde llega el libro de la parroquia de Del Valle, porque acá el libro no llega, acá el libro empieza en el ochenta.\n\n—Yo sé lo que le pasa a la gente que se casa así. Lo leí. Está en la biblioteca, en los estantes de afuera, cualquiera lo puede sacar. —Se encoge de hombros—. Lo que no está en ningún libro es por qué lo seguimos haciendo cuando todos sabemos leer."
+        ],
+        "actitud": 2,
+        "pista": {
+          "description": "Sixto sabe qué produce doscientos años de casamientos entre las mismas dos familias, y lo leyó él mismo. Lo que no sabe es por qué lo siguen haciendo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 2
+      }
+    },
+    {
+      "id": "s-hermano",
+      "npc": "npc-sixto",
+      "etiqueta": "Preguntarle por su hermano",
+      "intencion": "Le pregunto a Sixto qué pasó con su hermano",
+      "claves": [
+        "hermano",
+        "su hermano",
+        "onesimo",
+        "onésimo"
+      ],
+      "orden": 3,
+      "disponible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "por qué lo seguimos haciendo"
+          },
+          {
+            "op": "pista",
+            "contiene": "sube gente, y sube seguido"
+          }
+        ]
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 5,
+        "razon": "preguntarle por el hermano que el pueblo entero no nombra"
+      },
+      "cede": {
+        "texto": [
+          "Se queda callado tanto tiempo que parece que no va a contestar.\n\n—Onésimo no desapareció —dice al final—. A Onésimo lo subieron.\n\n—Cumplió veintiuno en julio. A los veintiuno los llevan a la casa, a que los vean. No a todos: a los que tienen los dientes largos y las manos así. —Levanta las suyas, largas y finas, y las vuelve a bajar—. Él los tenía más que yo.\n\n—Subió caminando, con mi madre, un martes a la mañana. Mi madre volvió a la tarde. Él no.\n\n—Y en el pueblo dicen que se ausentó del domicilio, y en el acta de la cabecera dice eso, y yo voy a cumplir veintiuno en marzo."
+        ],
+        "actitud": 3,
+        "cordura": 4,
+        "exposicion": 5,
+        "pista": {
+          "description": "Onésimo Villeira-Pereira no desapareció: subió caminando a la casa de la loma con su madre, un martes de julio, «a que lo vieran» al cumplir veintiuno. La madre volvió. Él no. Sixto cumple veintiuno en marzo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-sixto-hermano",
+        "pregunta": "¿Qué se ve, exactamente, cuando en esa casa «los ven»?"
+      },
+      "esquiva": {
+        "texto": [
+          "—De ése no hablo. —Y mira la loma, que es una manera de hablar de él."
+        ],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "s-casa",
+      "npc": "npc-sixto",
+      "etiqueta": "Preguntarle cómo se sube a la casa",
+      "intencion": "Le pregunto a Sixto cómo se sube a la casa de la loma",
+      "claves": [
+        "subir",
+        "como se sube",
+        "el camino",
+        "la casa de arriba"
+      ],
+      "orden": 4,
+      "disponible": {
+        "op": "narrado",
+        "contiene": "A Onésimo lo subieron"
+      },
+      "cede": {
+        "texto": [
+          "—Se sube por el camino. No hay tranquera, no hay perro y no hay nadie que lo pare. Eso es lo que le va a costar entender: que se puede subir.\n\n—Golpea y le abren. Le abre una mujer que se llama Ercilia y que no es de la familia, que es de las que sirven. Y lo hacen pasar, y le dan de tomar algo, y le contestan todo lo que pregunte.\n\n—El problema no es subir. —Se para derecho por primera vez en toda la conversación—. El problema es que de la casa se baja cuando ellos terminan de hablar, no cuando uno termina de preguntar. Y no hay manera de saber de antemano cuánto tienen para decir."
+        ],
+        "actitud": 2,
+        "pista": {
+          "description": "A la casa de la loma se sube sin obstáculo: no hay tranquera ni perro, abren, hacen pasar y contestan. Según Sixto, lo que no se controla es cuándo se baja.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-cartel",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "rasco|raspo|cal|debajo del cartel|nombre viejo|leer el cartel"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "plaza"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-libreta",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "leo la libreta|leer la libreta|las notas del profesor|hojeo la libreta"
+      }
+    },
+    {
+      "id": "abrir-salita",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "entro a la sala|entro a la salita|miro los libros del fondo|reviso la salita"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "biblioteca"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "granero-craneos",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "grieta|el hueco|abajo de la mesa|el piso del granero|reviso el fondo"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "granero"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fechar-monolito",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "fecho el monolito|fechar el monolito|de cuando es el monolito|de cuándo es el monolito|quien hizo el monolito|quién hizo el monolito"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "obelisco"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fechar-estatuilla",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "la estatuilla"
+          },
+          {
+            "op": "lleva",
+            "item": "it-estatuilla"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-lasca",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "la lasca"
+          },
+          {
+            "op": "lleva",
+            "item": "it-lasca"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ver-bautismos",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "la hoja del libro de bautismos"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "capilla"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ver-recorte",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "la carpeta de recortes"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "biblioteca"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "medir-vuelta",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "doy la vuelta|rodeo el monolito|camino alrededor|mido el circulo|mido el círculo"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "obelisco"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-subir",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "subo a la casa|subo a la loma|voy a la casa de la loma"
+      }
+    },
+    {
+      "id": "fin-llamar",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "voy a la cabecera|traigo a la policia|traigo a la policía|denuncio esto"
+      }
+    },
+    {
+      "id": "fin-escribir",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "le escribo a delfina|mando la carta|escribo lo que averigüé|escribo lo que averigue"
+      }
+    },
+    {
+      "id": "fin-irse",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me voy del pueblo|me vuelvo a villa requena|abandono el pueblo"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "cartel",
+      "grupo": "usar",
+      "lugar": "plaza",
+      "orden": 10,
+      "intencion": "Rasco la cal del cartel para leer el nombre de abajo",
+      "etiqueta": "Rascar la cal del cartel",
+      "visible": {
+        "op": "detalleVisto",
+        "lugar": "plaza",
+        "feature": "f-cartel"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "AGUA BLANCA"
+      }
+    },
+    {
+      "id": "libreta-leer",
+      "grupo": "usar",
+      "orden": 12,
+      "intencion": "Leo la libreta del profesor de arriba abajo",
+      "etiqueta": "Leer la libreta del profesor",
+      "visible": {
+        "op": "lleva",
+        "item": "it-libreta"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-notas"
+      }
+    },
+    {
+      "id": "salita-entrar",
+      "grupo": "usar",
+      "lugar": "biblioteca",
+      "orden": 14,
+      "intencion": "Entro a la sala del fondo y miro los libros",
+      "etiqueta": "Entrar a la sala del fondo",
+      "visible": {
+        "op": "narrado",
+        "contiene": "engrasada"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "diez cajones"
+      }
+    },
+    {
+      "id": "granero-fondo",
+      "grupo": "usar",
+      "lugar": "granero",
+      "orden": 16,
+      "intencion": "Reviso el piso del fondo, abajo de la mesa",
+      "etiqueta": "Revisar el piso abajo de la mesa",
+      "visible": {
+        "op": "detalleVisto",
+        "lugar": "granero",
+        "feature": "f-mesa"
+      },
+      "hecha": {
+        "op": "pista",
+        "contiene": "tres cráneos"
+      }
+    },
+    {
+      "id": "monolito-fechar",
+      "grupo": "usar",
+      "lugar": "obelisco",
+      "orden": 18,
+      "intencion": "Fecho el monolito y trato de decir quién lo hizo",
+      "etiqueta": "Fechar el monolito",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "anterior a todo lo que"
+      }
+    },
+    {
+      "id": "estatuilla-fechar",
+      "grupo": "usar",
+      "orden": 17,
+      "intencion": "Miro de cerca la estatuilla y trato de fecharla",
+      "etiqueta": "Fechar la estatuilla",
+      "visible": {
+        "op": "lleva",
+        "item": "it-estatuilla"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-estatuilla"
+      }
+    },
+    {
+      "id": "lasca-mirar",
+      "grupo": "usar",
+      "orden": 20,
+      "intencion": "Miro la lasca y trato de decir de dónde salió esa piedra",
+      "etiqueta": "Ver de dónde salió la piedra",
+      "visible": {
+        "op": "lleva",
+        "item": "it-lasca"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-lasca"
+      }
+    },
+    {
+      "id": "bautismos-ver",
+      "grupo": "usar",
+      "lugar": "capilla",
+      "orden": 13,
+      "intencion": "Le pregunto por la hoja del libro de bautismos",
+      "etiqueta": "Ver la hoja del libro de bautismos",
+      "visible": {
+        "op": "narrado",
+        "contiene": "no es para nosotros"
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-bautismos"
+      }
+    },
+    {
+      "id": "recorte-ver",
+      "grupo": "usar",
+      "lugar": "biblioteca",
+      "orden": 15,
+      "intencion": "Reviso la carpeta de recortes del fichero",
+      "etiqueta": "Revisar la carpeta de recortes",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-recorte"
+      }
+    },
+    {
+      "id": "monolito-vuelta",
+      "grupo": "usar",
+      "lugar": "obelisco",
+      "orden": 19,
+      "intencion": "Doy la vuelta al monolito contando los pasos",
+      "etiqueta": "Dar la vuelta al monolito contando los pasos",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "los pasos no cierran"
+      }
+    },
+    {
+      "id": "subir",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Subo a la casa de la loma",
+      "etiqueta": "Subir a la casa de la loma",
+      "visible": {
+        "op": "pista",
+        "contiene": "sube gente, y sube seguido"
+      }
+    },
+    {
+      "id": "llamar",
+      "grupo": "decidir",
+      "orden": 91,
+      "final": true,
+      "intencion": "Voy a la cabecera a traer a la policía",
+      "etiqueta": "Ir a la cabecera a buscar autoridad",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      }
+    },
+    {
+      "id": "escribir",
+      "grupo": "decidir",
+      "orden": 92,
+      "final": true,
+      "intencion": "Le escribo a Delfina lo que averigüé",
+      "etiqueta": "Escribirle a Delfina lo que averiguaste",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      }
+    },
+    {
+      "id": "irse",
+      "grupo": "decidir",
+      "orden": 93,
+      "final": true,
+      "intencion": "Me voy del pueblo",
+      "etiqueta": "Irse del pueblo sin decidir nada"
+    }
+  ],
+  "endings": [
+    {
+      "id": "subir",
+      "title": "Lo que hay que subir",
+      "condition": "El investigador sube a la casa de la loma esa misma noche, sabiendo lo poco que sabe."
+    },
+    {
+      "id": "llamar",
+      "title": "Lo que se denuncia",
+      "condition": "El investigador va a la cabecera a buscar una autoridad que se haga cargo."
+    },
+    {
+      "id": "escribir",
+      "title": "Lo que se le cuenta a otro",
+      "condition": "El investigador le escribe a Delfina Arce para no ser el único que lo sabe."
+    },
+    {
+      "id": "irse",
+      "title": "Lo que no se sigue",
+      "condition": "El investigador se va de Castronegro sin subir y sin contarle a nadie."
+    }
+  ],
+  "opening": "El pueblo del oeste queda a tres leguas de Villa Requena y entre los dos no hay más que campo. Se llega por una huella que alguna vez fue camino real y ahora son dos surcos.\n\nEs el 1º de octubre y son las diez de la mañana. Delfina le dio el último punto de su mapa dibujado en el margen de una carta, y el último punto es esto: seiscientas personas, una plaza con cuatro paraísos, una capilla con campanario, un almacén, una biblioteca popular de las que fundó la ley, y sobre la única loma del partido —la única loma en veinte leguas— una casa de dos plantas con las doce ventanas cerradas.\n\nEn la entrada hay un cartel de chapa que dice CASTRONEGRO. El fondo es blanco y el blanco es cal, y la cal está puesta encima de algo.\n\nHace once semanas que faltan tres personas: un profesor de La Plata, un viajero americano y un muchacho de veintiuno del pueblo. La policía de la cabecera archivó las tres como «se ausentó del domicilio».\n\nY hay una cosa más, que notás antes de bajar del sulky y que va a tardar un rato en poder decir con palabras: en la vereda del almacén hay dos hombres tomando mate, y cuando {lo} ven llegar no dejan de hablar."
+}

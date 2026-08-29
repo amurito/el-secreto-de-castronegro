@@ -145,7 +145,14 @@ async function main() {
       // OJO: esto no exime a nada que YA tire. «Medir la separación de los
       // pernos» pide Mecánica y la sigue pidiendo: ahí lo incierto no es la
       // medida, es saber qué torre la usa.
-      && !/\bregla\b/i.test(f.etiqueta),
+      && !/\bregla\b/i.test(f.etiqueta)
+      // Rascar la cal del cartel de Agua Blanca. Mismo criterio que la regla:
+      // es trabajo, no perspicacia. Y acá el paso de percepción YA tiró — el
+      // detalle del cartel pide Descubrir para notar que el fondo blanco está
+      // puesto encima de algo—, así que esto es lo que se hace DESPUÉS de
+      // haber notado. Pedir un segundo dado sería decir que a veces la cal no
+      // sale si uno tuvo mala suerte.
+      && !/rasc/i.test(f.etiqueta),
   );
   for (const f of examinarSinDado) console.log(`   ⚠ ${f.aventura}: «${f.etiqueta}» sin tirada`);
   check('examinar algo siempre pide un dado, salvo procedimientos de resultado determinado',

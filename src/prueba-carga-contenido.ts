@@ -97,6 +97,14 @@ function main() {
       };
     }, 'it-inventado');
 
+  // Sin `feature`, el `find` no encuentra nada y la condición da falso
+  // siempre: el botón que gatea no aparece nunca. Encontrado jugando la
+  // séptima, y no lo cazaba nada — ni la auditoría, porque un botón que no
+  // aparece no deja rastro de haber faltado.
+  rompe('un `detalleVisto` sin `feature`, que sería falso para siempre',
+    (c) => { c.actions[0]!.visible = { op: 'detalleVisto', lugar: 'patio' } as never; },
+    'da falso siempre');
+
   rompe('un patrón de texto que no compila',
     (c) => { c.scenes[0]!.cuando = { op: 'texto', patron: '(sin cerrar' }; }, 'no compila');
 
