@@ -2191,6 +2191,34 @@ Suite propia en `prueba-el-vigesimo.ts`. `npm run prueba:todo` completo,
 incluida la auditoría con las conexiones de ida ya conocidas, y el build +
 `revisar:bundle`.
 
+### 3.2-quinvicies Dos bugs reportados jugando en el navegador ✔ ARREGLADOS
+
+El primer playtest real de El Vigésimo desplegado encontró dos cosas que
+ningún validador ni suite había cazado, porque las dos son de interfaz, no
+de contenido.
+
+1. **El hacha del granero no aparecía como arma en el combate.** Se agregó
+   como ítem cuando se escribió el retrofit del granero (§3.2-trevicies),
+   pero un `Item` sólo cuenta como arma jugable si declara `armaId` —el id
+   de `rules/armas.ts` con el que se pelea—, y esa línea faltaba. El motor
+   no rechaza nada raro acá: el ítem simplemente no calificaba como arma, y
+   `Combate.tsx` filtra las opciones exactamente por eso. Agregado
+   `armaId: 'hacha-lena'`.
+2. **Cualquier combate real arrancaba sin mostrar el texto que lo motiva.**
+   `App.tsx` cambia a la pantalla de `Combate` en cuanto
+   `GameState.activeCombat` está puesto, y esto pasa en el MISMO turno que
+   la escena narra por qué empezó la pelea — React nunca llega a pintar esa
+   narración antes de reemplazar toda la pantalla. No es nuevo de esta
+   sesión: el mismo mecanismo ya lo tenía el combate de Cirilo en *El
+   Invierno Debido*, sólo que nadie lo había reportado jugando hasta ahora.
+   `iniciaCombate` ya tenía un campo `reason` sin usar en ningún escenario;
+   se le puso un texto real a los tres combates de la campaña (la grieta del
+   granero, el guardián del sótano, Bernardo) y `Combate.tsx` ahora lo
+   muestra debajo del título, en vez de arrancar en blanco.
+
+`npm run prueba:todo` completo otra vez, incluidas las dos suites de Agua
+Blanca y El Vigésimo.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

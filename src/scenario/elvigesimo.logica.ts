@@ -126,6 +126,7 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
       combate: { accion: 'atacar', npcId: 'npc-guardian-sotano', armaId: 'desarmado' },
       iniciaCombate: {
         npcIds: ['npc-guardian-sotano'],
+        reason: 'No hay otra manera de pasar por esta puerta que no sea al lado de él.',
         salidaPacifica: {
           npcId: 'npc-guardian-sotano',
           pistaCalma: {
@@ -160,7 +161,10 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
         'Bernardo no se para. Ni siquiera suelta al Ahijado del brazo del sillón.\n\n—Ya lo veía venir —dice, y por primera vez en trescientos años no suena aliviado de que así sea.',
       ],
       combate: { accion: 'atacar', npcId: 'npc-bernardo', armaId: 'desarmado' },
-      iniciaCombate: { npcIds: ['npc-bernardo'] },
+      iniciaCombate: {
+        npcIds: ['npc-bernardo'],
+        reason: 'Bernardo no se para. Ya lo veía venir, y esta vez no va a bastar con hablar.',
+      },
       consecuencia: {
         description: 'El investigador entró en combate real contra Bernardo Díaz, en el laboratorio de la Casa.',
         scope: 'campaign',

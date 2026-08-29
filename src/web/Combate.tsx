@@ -160,6 +160,9 @@ export function Combate({
             <p className="sim-sub">
               Esto es de verdad: los dados que salgan acá son los que valen para la historia.
             </p>
+            {estado?.activeCombat?.reason && estado.activeCombat.reason !== 'lo dispuso la escena' && (
+              <p className="sim-sub">{estado.activeCombat.reason}</p>
+            )}
           </div>
         </header>
 

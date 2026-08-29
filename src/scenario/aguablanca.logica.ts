@@ -271,6 +271,7 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
       combate: { accion: 'atacar', npcId: 'npc-cosa-grieta', armaId: 'desarmado' },
       iniciaCombate: {
         npcIds: ['npc-cosa-grieta'],
+        reason: 'Algo salió de la grieta cuando metiste el brazo más allá de los tres cráneos.',
         salidaPacifica: {
           npcId: 'npc-cosa-grieta',
           pistaCalma: {

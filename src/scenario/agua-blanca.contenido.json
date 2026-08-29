@@ -212,6 +212,7 @@
       "shortDescription": "Apoyada contra un poste, cerca de la pila de leña partida que nadie usa porque el granero no tiene fogón. El filo está bien cuidado para una herramienta que no debería servir para nada acá.",
       "owner": "granero",
       "carried": false,
+      "armaId": "hacha-lena",
       "publicProperties": [],
       "hiddenProperties": [],
       "discoveredProperties": [],
