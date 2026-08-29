@@ -37,6 +37,9 @@ const oculta = (s: GameState, item: string) =>
 /** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
 const conCamara = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
+/** Lleva sus propias vendas de mano —`Ocupacion.itemInicial` de boxeador. */
+const conVendas = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-vendas-boxeador' }, { estado: s });
 
 const aqui = (s: GameState) => s.world.currentLocation;
 const hora = (s: GameState) => Number(s.world.time.iso.slice(11, 13));
@@ -336,7 +339,7 @@ export const AGUA_QUIETA_LOGICA: LogicaDeEscenas = [
       if (propiedadVista(estado, 'it-reloj')) {
         return { texto: [`Volvés a sostenerlo sobre el agua. ${oculta(estado, 'it-reloj')}`] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conVendas(estado)) {
         return {
           texto: [variante([
             'Lo sostenés un buen rato con el brazo estirado. Está parado a las cuatro y veinte, como siempre. ' +

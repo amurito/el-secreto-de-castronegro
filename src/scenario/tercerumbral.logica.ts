@@ -21,6 +21,9 @@ const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0
 /** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
 const conCamara = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
+/** Lleva su propia placa y credencial —`Ocupacion.itemInicial` de detective privado. */
+const conCredencial = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-credencial-detective' }, { estado: s });
 const consecuencia = (s: GameState, frag: string) => s.consequences.some((c) => c.description.includes(frag));
 
 /**
@@ -92,7 +95,7 @@ export const TERCER_UMBRAL_LOGICA: LogicaDeEscenas = [
       if (propiedadVista(estado, 'it-cuchillo')) {
         return { texto: [oculta(estado, 'it-cuchillo')] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conCredencial(estado)) {
         return { texto: ['Un cuchillo de hoja corta, mango de asta gastado, con una M grabada cerca de la virola. Nada que no se vea a simple vista.'] };
       }
       return [

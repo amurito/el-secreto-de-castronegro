@@ -56,6 +56,12 @@ const conCamara = (s: GameState) =>
 /** Lleva su propio cuaderno de anotaciones ocultas —`Ocupacion.itemInicial` de ocultista. */
 const conCuaderno = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-cuaderno-ocultista' }, { estado: s });
+/** Lleva su propio breviario y crucifijo —`Ocupacion.itemInicial` de cura de pueblo. */
+const conBreviario = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-breviario-cura' }, { estado: s });
+/** Lleva su propio lazo trenzado —`Ocupacion.itemInicial` de domador. */
+const conLazo = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-lazo-domador' }, { estado: s });
 const consecuencia = (s: GameState, frag: string) =>
   s.consequences.some((c) => c.description.includes(frag));
 const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtainedAt);
@@ -299,18 +305,20 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_success: 'entender qué es lo que repite',
       stakes_failure: 'aire, y una consonante cada tanto',
     }),
-    resolver: ({ tirada, estado }) => ({
+    resolver: ({ tirada, estado }) => {
+      const exito = Boolean(tirada?.exito) || conLazo(estado);
+      return {
       texto: [
         'Acercás la oreja hasta que te queda a un palmo de su boca. Huele a agua, no a enfermo.',
-        tirada?.exito
+        exito
           ? 'No habla. Cuenta. Es una lista, dicha bajísimo y sin ninguna emoción, y son años: mil ochocientos cincuenta y dos, mil ochocientos setenta y ocho, mil novecientos cuatro. Después se queda callado unos segundos exactos y vuelve a empezar por el primero.'
           : 'Hay palabras ahí abajo, pero no llegan enteras: una consonante, una vocal larga, aire. Podría estar rezando. Podría estar contando ovejas. No hay manera de saberlo con esta respiración encima.',
-        tirada?.exito
+        exito
           ? 'Tres años, en orden, en bucle. Y ninguno de los tres es el año en que estamos ni el año pasado.'
           : '',
       ].filter(Boolean),
       exposicion: { amount: 2, source: 'aurelio:murmullo', cause: 'lo que dice cuando no le habla a nadie' },
-      ...(tirada?.exito ? {
+      ...(exito ? {
         pistas: [{
           description: 'Aurelio, dormido, repite una secuencia de tres años en bucle y en orden: 1852, 1878 y 1904. No dice nada más.',
           kind: 'testimonial' as const, source: 'Aurelio Requena, dormido', reliability: 'unknown' as const,
@@ -326,7 +334,8 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           },
         } : {}),
       } : {}),
-    }),
+      };
+    },
   },
 
   {
@@ -833,10 +842,12 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_success: 'entender qué quedó de él, más allá de lo que dice',
       stakes_failure: 'un silencio que dura demasiado, y nada más',
     }),
-    resolver: ({ tirada, estado }) => ({
+    resolver: ({ tirada, estado }) => {
+      const exito = Boolean(tirada?.exito) || conBreviario(estado);
+      return {
       texto: [
         'Le preguntás quién es, antes de tocar nada. La pluma no se detiene.',
-        tirada?.exito
+        exito
           ? 'Pero contesta, sin levantar la vista.\n\n—Eso ya lo sabe usted, si llegó hasta acá —dice—. Lo raro no es quién soy yo. Lo raro es que a usted todavía le importe.\n\nY algo en cómo lo dice —sin rencor, sin tristeza, sin nada que se le parezca— te dice más de lo que dice: no es que esté enojado ni resignado. Es, simplemente, lo que quedó de alguien que dejó de tener adónde ir.'
           : 'No contesta nada. Sigue escribiendo, y el silencio dura tanto que empezás a preguntarte si dijiste algo en voz alta.',
         ...cierreNocheDos,
@@ -856,7 +867,7 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           description: 'El que escribe el libro en el sueño es un hombre de veintiún años con ropa de otro siglo, y tiene la cara del hombre movido de la foto de 1880. Pregunta si uno ya está anotado.',
           kind: 'experiential' as const, source: 'la segunda noche', reliability: 'unknown' as const,
         },
-        ...(tirada?.exito ? [{
+        ...(exito ? [{
           description: 'El joven de la escribanía del sueño no contesta con rencor ni con tristeza: contesta como quien dejó de tener adónde ir. No parece sufrir estar ahí, y eso es peor que si sufriera.',
           kind: 'experiential' as const, source: 'la segunda noche', reliability: 'unknown' as const,
         }] : []),
@@ -869,7 +880,8 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           },
         }
         : {}),
-    }),
+      };
+    },
   },
 
   {

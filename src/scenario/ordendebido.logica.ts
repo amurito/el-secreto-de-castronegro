@@ -38,12 +38,16 @@
 
 import type { GameState } from '../shared/types.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.description.includes(frag));
 const consecuencia = (s: GameState, frag: string) =>
   s.consequences.some((c) => c.description.includes(frag));
 const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtainedAt);
 const aqui = (s: GameState) => s.world.currentLocation;
+/** Lleva su propia libreta de actas —`Ocupacion.itemInicial` de comisario de campaña. */
+const conLibretaActas = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-libreta-actas' }, { estado: s });
 
 // ══ ECOS DE LAS CINCO ANTERIORES ═══════════════════════════════════════════
 //
@@ -187,10 +191,12 @@ export const ORDEN_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_success: 'ver qué entra al pueblo dos veces por año',
       stakes_failure: 'cuentas de bolsas y kerosén',
     }),
-    resolver: ({ tirada }) => ({
+    resolver: ({ estado, tirada }) => {
+      const exito = Boolean(tirada?.exito) || conLibretaActas(estado);
+      return {
       texto: [
         'El almacenero te deja mirar el cuaderno del fiado con la indiferencia de quien no tiene nada que esconder y tampoco ganas de charlar.',
-        tirada?.exito
+        exito
           ? 'Entre bolsas, kerosén y yerba hay un renglón que se repite dos veces por año, siempre en marzo y en septiembre, siempre por la misma cantidad: «almagre, preparado, 1 lata», a nombre de Ubaldo Leiva.\n\nPreguntás quién lo trae. El almacenero dice que ya viene con el pedido general, desde la cabecera, y que él lo único que hace es apartarlo. Nunca le pareció una pregunta.'
           : 'Trescientos renglones de bolsas, kerosén, yerba y grasa de eje, en cuatro letras distintas de cuatro almaceneros distintos. Si hay algo raro ahí adentro, no salta a la primera pasada.',
       ],
@@ -203,15 +209,16 @@ export const ORDEN_DEBIDO_LOGICA: LogicaDeEscenas = [
           description: 'Revisó el libro de fiado del almacén, renglón por renglón.',
           kind: 'documentary' as const, source: 'el almacén de Villa Requena', reliability: 'reliable' as const,
         },
-        ...(tirada?.exito ? [{
+        ...(exito ? [{
           description: 'Al almacén llega, dos veces al año y con el pedido general de la cabecera, una lata de almagre ya preparado a nombre de Ubaldo Leiva. Nadie sabe quién la manda.',
           kind: 'documentary' as const, source: 'el libro de fiado del almacén', reliability: 'reliable' as const,
         }] : []),
       ],
-      ...(tirada?.exito
+      ...(exito
         ? { exposicion: { amount: 2, source: 'almacen:fiado', cause: 'un pedido que llega solo desde hace décadas' } }
         : {}),
-    }),
+      };
+    },
   },
 
   // ══ EL CAMPO DEL MARCO ═══════════════════════════════════════════════════

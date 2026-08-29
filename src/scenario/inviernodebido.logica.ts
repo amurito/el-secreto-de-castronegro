@@ -29,6 +29,9 @@ const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0
 /** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
 const conCamara = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
+/** Lleva su propia lupa de joyero —`Ocupacion.itemInicial` de anticuario. */
+const conLupa = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-lupa-anticuario' }, { estado: s });
 const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtainedAt);
 /** Cuántas de las tres marcas de las aventuras anteriores trae encima. */
 const marcasPrevias = (s: GameState) =>
@@ -235,7 +238,7 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
       if (pista(estado, 'no es un adorno')) {
         return { texto: ['Ya lo pensaste. Sigue siendo lo mismo: un círculo cerrado, sin entrada.'] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conLupa(estado)) {
         return { texto: ['Un círculo grabado en piedra. Podría ser cualquier cosa: una marca de cantera, un juego de niños, una casualidad de la erosión. No hay manera de saber cuál, mirándolo.'] };
       }
       return {

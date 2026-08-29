@@ -25,6 +25,12 @@ const conMaletin = (s: GameState) =>
 /** Lleva su propio sello y protocolo notarial —`Ocupacion.itemInicial` de escribano. */
 const conProtocolo = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-sello-notarial' }, { estado: s });
+/** Lleva su propio registro escolar —`Ocupacion.itemInicial` de maestra rural. */
+const conRegistro = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-registro-escolar' }, { estado: s });
+/** Lleva sus propios prismáticos de campo —`Ocupacion.itemInicial` de capataz de estancia. */
+const conPrismaticos = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-prismaticos-capataz' }, { estado: s });
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
@@ -384,7 +390,7 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
       if (estado.documents['doc-mensura1903']?.obtainedAt) {
         return { texto: ['Ya tenés las mensuras y el título. Están en tus documentos.'] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conRegistro(estado)) {
         return {
           texto: [variante([
             'Media hora entre legajos. Boletos de marca, cuentas del almacén de Rufino, una carpeta entera de ' +
@@ -468,7 +474,7 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
       if (propiedadVista(estado, 'it-cantimplora')) {
         return { texto: [oculta(estado, 'it-cantimplora')] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conPrismaticos(estado)) {
         return { texto: ['Vacía. Abollada. La correa cortada limpio. Nada que un peón muerto de sed no tenga.'] };
       }
       return [
