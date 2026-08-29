@@ -26,9 +26,19 @@ export const SKILLS: SkillDef[] = [
   { id: 'intimidar', label: 'Intimidar', defaultBase: 15, useWhen: 'Forzar una respuesta por presión o amenaza.' },
   { id: 'biblioteca', label: 'Uso de Bibliotecas', defaultBase: 20, useWhen: 'Encontrar el dato correcto entre muchos papeles.' },
   { id: 'historia', label: 'Historia', defaultBase: 5, useWhen: 'Ubicar un objeto, estilo o costumbre en su época.' },
+  // Arqueología y Geología entran por la séptima aventura, donde el obelisco
+  // es una estructura anterior a Bernardo (v0.7 §8) y hasta ahora no había con
+  // qué leerlo. Historia ubica un objeto en SU época; Arqueología fecha una
+  // piedra trabajada y dice quién la trabajó, que no es lo mismo cuando lo que
+  // hay que fechar es anterior a todo lo que el investigador sabe.
+  { id: 'arqueologia', label: 'Arqueología', defaultBase: 1, useWhen: 'Fechar una construcción o una piedra trabajada, y decir quiénes la hicieron.' },
   { id: 'medicina', label: 'Medicina', defaultBase: 1, useWhen: 'Diagnóstico, causa de muerte, estado de un cuerpo.' },
   { id: 'primeros_auxilios', label: 'Primeros Auxilios', defaultBase: 30, useWhen: 'Estabilizar una herida en el momento.' },
   { id: 'ciencia_naturales', label: 'Ciencias Naturales', defaultBase: 10, useWhen: 'Agua, suelo, plantas, animales, química elemental.' },
+  // En una llanura sin canteras, «esta piedra no es de acá» es media aventura.
+  // Ciencias Naturales mira el suelo; Geología mira de dónde vino lo que está
+  // apoyado encima.
+  { id: 'geologia', label: 'Geología', defaultBase: 1, useWhen: 'Decir de dónde salió una piedra, y a qué distancia está su cantera.' },
   { id: 'ocultismo', label: 'Ocultismo', defaultBase: 5, useWhen: 'Reconocer símbolos, prácticas y literatura esotérica.' },
   { id: 'antropologia', label: 'Antropología', defaultBase: 1, useWhen: 'Interpretar costumbres, tabúes y marcadores de un grupo.' },
   { id: 'buscar_libros', label: 'Investigar', defaultBase: 25, useWhen: 'Rastrear información en registros y archivos.' },
@@ -39,6 +49,11 @@ export const SKILLS: SkillDef[] = [
   { id: 'mecanica', label: 'Reparar (Mecánica)', defaultBase: 10, useWhen: 'Forzar, desarmar o arreglar un mecanismo.' },
   { id: 'fotografia', label: 'Arte/Oficio (Fotografía)', defaultBase: 5, useWhen: 'Leer, fechar o interpretar una imagen fotográfica.' },
   { id: 'orientarse', label: 'Orientarse', defaultBase: 10, useWhen: 'Ubicarse en el espacio o reconstruir un recorrido.' },
+  // Orientarse es «reconstruir un recorrido»: se apoya en referencias que ya
+  // existen. Navegación es cruzar donde no hay ninguna —de noche, a campo
+  // abierto, sin caminos ni mojones—, que es lo que pide el partido cuando se
+  // sale de las huellas.
+  { id: 'navegacion', label: 'Navegación', defaultBase: 10, useWhen: 'Cruzar a campo abierto sin caminos ni referencias, y llegar a donde uno quería.' },
   { id: 'esquivar', label: 'Esquivar', defaultBase: 0, useWhen: 'Evitar un golpe o un peligro inmediato.' },
   // Combate. Esquivar ya estaba —se usa para más cosas que pelear— pero sin
   // estas tres no había con qué atacar: el motor podía aplicar daño y nadie

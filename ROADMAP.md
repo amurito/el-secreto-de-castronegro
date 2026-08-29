@@ -1286,7 +1286,8 @@ De ésas, las que esta aventura puede estrenar sin forzar nada:
 Las otras seis son de combate o de Mitos y no son asunto de esta aventura.
 `mitos` no se tira nunca por decisión de diseño.
 
-**Pendiente: tres habilidades que el sistema no tiene y van a hacer falta.**
+**Tres habilidades que el sistema no tiene y van a hacer falta ✔ AGREGADAS**
+(agosto de 2026, antes de escribir la séptima — ver §3.2-quaterdecies).
 Al buscarlas para esta aventura resultó que no existen en `rules/skills.ts`
 (son 27 y ninguna de éstas está). No se agregan ahora —agregar una habilidad
 toca las fichas pregeneradas, las ocupaciones y el reparto de puntos de la
@@ -1601,7 +1602,7 @@ prueba, y sin contenido nuevo encima.
 
 #### Orden de trabajo
 
-1. Las tres habilidades, con prueba propia.
+1. ~~Las tres habilidades, con prueba propia.~~ ✔ HECHO — §3.2-quaterdecies
 2. La herramienta del anillo (`RingBond`), con prueba propia.
 3. **7a — Agua Blanca.**
 4. **7b — El Vigésimo**, que lee los desenlaces de la 7a igual que la quinta
@@ -1609,6 +1610,42 @@ prueba, y sin contenido nuevo encima.
 
 Y una restricción que no cambia: el material de Chaosium sigue sin entrar al
 repositorio. Esto son notas y mapeo propios, no transcripción.
+
+### 3.2-quaterdecies Arqueología, Geología y Navegación ✔ AGREGADAS
+
+Primer paso del orden de trabajo de la séptima, y se hizo solo: **la mecánica
+va antes que el contenido que se apoya en ella**, igual que el operador
+`consecuencia` y `apply_mythos_knowledge` se escribieron antes de la cuarta.
+
+| Habilidad | Base | Contra qué se distingue de la que ya había |
+|---|---|---|
+| `arqueologia` | 1 | `historia` ubica un objeto en SU época. Arqueología fecha una piedra trabajada y dice quiénes la hicieron — que no es lo mismo cuando lo que hay que fechar es anterior a todo lo que el investigador sabe |
+| `geologia` | 1 | `ciencia_naturales` mira el suelo. Geología mira de dónde vino lo que está apoyado encima |
+| `navegacion` | 10 | `orientarse` es reconstruir un recorrido, apoyándose en referencias que ya existen. Navegación es cruzar donde no hay ninguna |
+
+Las tres son de CoC 7e con sus bases del manual, así que no inventan nada.
+
+**Por qué no tocan las ocupaciones, todavía.** La regla del proyecto es ocho
+habilidades por ocupación, ni más ni menos, así que darle Arqueología al
+anticuario obliga a sacarle otra. Eso es una decisión de balance y va aparte:
+acá se agregó el catálogo y nada más, que es reversible de una línea.
+
+No quedan inservibles por eso. La pantalla de creación ofrece como interés
+personal **todo lo que no sea de la ocupación y no sea `mitos`**, y el
+presupuesto personal es grande: verificado en el navegador, 75 puntos llevan
+Arqueología de 1% a 76% y bajan el presupuesto de 130 a 55. Quien quiera un
+investigador que sepa leer una piedra, puede armarlo hoy.
+
+**Qué se actualizó solo, y por qué eso era el punto.** La ficha se arma
+recorriendo `SKILLS` (`pregens.ts`, `rules/creacion.ts`) y la pantalla de
+creación filtra sobre `SKILLS`, así que Elena y Tomás recibieron las tres en
+su base sin tocar sus fichas, y las tres aparecen en el reparto sin tocar la
+interfaz. Cero archivos de contenido modificados.
+
+Las pruebas nuevas van en `prueba-creacion.ts` y no en una suite propia,
+porque el lugar donde una habilidad nueva se nota es la creación. Cubren lo
+que se propaga en silencio si se rompe: ids repetidos, bases fuera de rango,
+etiquetas vacías, y que la ficha recién creada las traiga.
 
 ### 3.3 La aventura original publicada
 

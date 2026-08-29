@@ -18,6 +18,7 @@ import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import { OCUPACION_POR_ID, OCUPACIONES } from './scenario/ocupaciones.ts';
+import { SKILLS, SKILL_BY_ID } from './rules/skills.ts';
 import {
   tirarCaracteristicas, tirarSuerte, efectoEdad, puntosDeOcupacion,
   puntosPersonales, validarReparto, TOPE_CREACION, FORMULA,
@@ -282,6 +283,44 @@ function main() {
     OCUPACIONES.every((o) => o.credito.min < o.credito.max && o.credito.max <= 99));
   check('ninguna copia el nombre de una ocupación del manual',
     !OCUPACIONES.some((o) => /hacker|piloto|misionero|parapsic/i.test(o.nombre)));
+
+  // ── El catálogo de habilidades ───────────────────────────────────────────
+  //
+  // Agregar una habilidad es barato de escribir y caro de olvidar: la ficha
+  // se arma recorriendo SKILLS, así que una entrada mal formada —sin base, con
+  // el id repetido— no explota, se propaga en silencio a todos los
+  // investigadores. Se comprueba acá y no en una suite propia porque el lugar
+  // donde una habilidad nueva se nota es la creación.
+  console.log('\nEL CATÁLOGO DE HABILIDADES');
+  console.log(`  ${SKILLS.length} habilidades`);
+  check('no hay ids repetidos', new Set(SKILLS.map((s) => s.id)).size === SKILLS.length);
+  check('todas tienen etiqueta y useWhen',
+    SKILLS.every((s) => s.label.trim() && s.useWhen.trim()));
+  check('ninguna base es negativa ni pasa de 99',
+    SKILLS.every((s) => s.defaultBase >= 0 && s.defaultBase <= 99));
+
+  // Las tres de la séptima aventura (ROADMAP §3.2-terdecies). Bases de CoC 7e.
+  for (const [id, base] of [['arqueologia', 1], ['geologia', 1], ['navegacion', 10]] as const) {
+    check(`«${id}» existe con base ${base}`, SKILL_BY_ID[id]?.defaultBase === base,
+      SKILL_BY_ID[id] ? `${SKILL_BY_ID[id]!.label} · ${SKILL_BY_ID[id]!.defaultBase}` : 'NO EXISTE');
+  }
+
+  // Una habilidad que no es de la ocupación y no es `mitos` tiene que poder
+  // comprarse con interés personal — si no, existe en el catálogo y nadie
+  // puede tenerla, que es peor que no tenerla.
+  const personales = SKILLS.filter(
+    (d) => !OCUPACION_POR_ID['medico-rural']!.habilidades.includes(d.id) && d.id !== 'mitos',
+  );
+  check('las tres se ofrecen en el reparto de interés personal',
+    ['arqueologia', 'geologia', 'navegacion'].every((id) => personales.some((d) => d.id === id)));
+
+  // La ficha se arma recorriendo el catálogo, así que una habilidad nueva
+  // aparece sola en todo investigador. Se comprueba sobre la recién creada.
+  check('la ficha recién creada las trae en su base',
+    inv.skills['arqueologia']?.base === 1
+    && inv.skills['geologia']?.base === 1
+    && inv.skills['navegacion']?.base === 10,
+    `arq ${inv.skills['arqueologia']?.base} · geo ${inv.skills['geologia']?.base} · nav ${inv.skills['navegacion']?.base}`);
 
   return { inv, invArmada: conArma.investigador };
 }
