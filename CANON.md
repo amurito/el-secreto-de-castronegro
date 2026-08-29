@@ -113,7 +113,7 @@ geográficos NO son canon definitivo** — y de hecho sólo el primero tiene uno
 | 4 | muerte | *El Invierno Debido* |
 | 5 | sueño | *El Sueño Debido* |
 | 6 | **causalidad** | *El Orden Debido* |
-| 7 | **realidad** | el módulo original, que es además el **centro del Primero** |
+| 7 | **realidad** | el módulo original, que es además el **centro del Primero** — en dos actos: *Agua Blanca* y *El Vigésimo* |
 
 Ver [CANON-MODULO-ORIGINAL.md](CANON-MODULO-ORIGINAL.md) para el puente con el
 módulo publicado.

@@ -99,8 +99,8 @@ Y las invariantes duras que este puente **no puede romper**:
 | 3 | identidad | *La Firma Ajena* |
 | 4 | muerte | *El Invierno Debido* |
 | 5 | sueño | *El Sueño Debido* |
-| 6 | **causalidad** | — |
-| 7 | realidad | — |
+| 6 | **causalidad** | *El Orden Debido* — el viaje de vuelta |
+| 7 | realidad | el módulo, en dos actos: *Agua Blanca* y *El Vigésimo* |
 
 **Consecuencia de diseño:** el módulo original transcurre en el **Primer**
 Umbral, no en el último. Cuando se implemente, no es «la octava aventura»: es
@@ -166,9 +166,11 @@ la estructura del módulo** sin copiarla.
    nombre Agua Blanca, el obelisco, el anillo, los ojos verdes, un Díaz— sin
    que ninguna aventura confirme qué son. Regla de oro v0.7 §15: más cerca de
    la verdad, más información y menos certeza.
-2. **Bernardo no aparece.** Ni de lejos, ni en sueños. Su lugar es el módulo.
-   Lo que sí puede aparecer es **el efecto** de alguien que lleva 300 años
-   llevando la cuenta.
+2. **Bernardo no aparece** en ninguna de las seis primeras. Ni de lejos, ni en
+   sueños. Lo que sí puede aparecer es **el efecto** de alguien que lleva 300
+   años llevando la cuenta. Su lugar es el módulo, y dentro del módulo es la
+   segunda mitad: en *Agua Blanca* tampoco aparece; se habla con él en *El
+   Vigésimo* (ver §6).
 3. **Nada de Mitos explícitos** fuera de lo ya sembrado. Yog-Sothoth aparece
    una sola vez en toda la campaña, escrito en una pared, y nadie lo explica.
 4. **Los ojos verdes son la firma.** El módulo los repite en cada Díaz y cada
@@ -180,13 +182,30 @@ la estructura del módulo** sin copiarla.
 
 ---
 
-## 6. Qué falta decidir
+## 6. Qué se decidió
 
-- Si el **Sexto Umbral (causalidad)** transcurre lejos, como el Segundo y el
-  Tercero, o si ya es el viaje de vuelta hacia el partido.
-- Si el **Séptimo (realidad)** existe como aventura propia o si es el módulo
-  original leído desde adentro.
-- Nombre del pueblo vecino al que se va a misa.
-- Qué pasa con **Greedygut**: se conserva el nombre, se traduce, o se lo deja
-  fuera de cuadro. `Puddock` ya está sellado en v0.7 §9 y viene del módulo, así
-  que el precedente es conservar.
+Lo que esta sección listaba como abierto ya está resuelto. El diseño completo
+de la séptima está en ROADMAP §3.2-terdecies; acá queda sólo lo que afecta al
+puente con el módulo.
+
+- **Sexto Umbral (causalidad)** → *El Orden Debido*, el viaje de vuelta. No va
+  lejos: cruza el partido hacia adentro y termina a la vista del obelisco, sin
+  entrar.
+- **Séptimo (realidad)** → es el módulo original leído desde adentro, **en dos
+  aventuras**: *Agua Blanca* (el pueblo) y *El Vigésimo* (la Casa de Díaz), la
+  segunda arrancando la misma noche que termina la primera.
+- **Pueblo vecino al que se va a misa** → **Del Valle**, que ya existe en el
+  contenido publicado con su curato, y cuya línea ya está escrita en *El Orden
+  Debido*: «Mi madre iba a misa a Del Valle. Treinta leguas de ida. Teniendo
+  iglesia a tres».
+- **Greedygut** → se conserva el nombre, por el precedente de `Puddock`.
+- **Bernardo** → deja de estar fuera de cuadro y se puede hablar con él, pero
+  sólo en *El Vigésimo*. Contesta todo y lo que contesta no alcanza: por canon
+  (v0.7 §7) sus textos son verdades reales mezcladas con conclusiones falsas, y
+  él en persona es eso mismo hablando. **No** confirma qué es el Umbral, ni
+  quién es el Primer Rostro, ni que Yog-Sothoth explique nada.
+- **El anillo** → entra en juego, y ponérselo es uno de los desenlaces. Usa
+  `RingBond` de `shared/types.ts`, que estaba construido y sin usar desde el
+  principio.
+- **El laberinto** → se baja a la primera cámara y no se recorre. El horror es
+  saber que sigue, no medirlo.

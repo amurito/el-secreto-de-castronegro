@@ -1435,6 +1435,181 @@ código muerto y se eliminó también.
 pestaña, sin servidor, sin cuentas, sin clave y sin costo, con el log en
 IndexedDB. Que es, exactamente, como se venía jugando.
 
+### 3.2-terdecies Séptima aventura — el diseño, en dos actos
+
+El Séptimo Umbral (**realidad**) es el módulo original, y es además el centro
+del Primero. No es «la octava»: es volver al lugar del que la campaña salió,
+con seis aventuras de consecuencias encima.
+
+Esto es el diseño. La aventura no está escrita todavía — mismo orden que se
+usó con la sexta, donde el diseño fue un paso propio y anterior.
+
+#### Lo que ya estaba decidido, y no se volvió a abrir
+
+De [CANON.md](CANON.md) y [CANON-MODULO-ORIGINAL.md](CANON-MODULO-ORIGINAL.md):
+el eje es realidad; el pueblo es Castronegro en la pampa (no hay dos); Bernardo
+tiene el anillo y el ciclo de nacimientos cada treinta años; el obelisco es
+anterior a él y lo leyó mal; y lo sellado sigue sellado. Los desenlaces tienen
+que leer las consecuencias de las seis anteriores: **ése es el pago de toda la
+campaña**, y es la única aventura escrita sabiendo que hay seis atrás.
+
+#### Lo que se decidió ahora
+
+| Pregunta | Decisión |
+|---|---|
+| Tamaño | **Dos aventuras**, 7a y 7b, cada una del tamaño normal |
+| Dónde corta | 7a el pueblo · 7b la Casa de Díaz |
+| Bernardo | **Se habla con él.** Es la pieza central de la 7b |
+| Intervalo | **Horas.** La 7b arranca la misma noche que termina la 7a |
+| El laberinto | Se baja, **no se recorre** |
+| El anillo | Entra, y **ponérselo es un desenlace** |
+| El cierre | Se puede cortar el ciclo, **sin saber si sirvió** |
+| El gancho | Los dos cosidos: el mapa de Delfina lleva al pueblo, y en el pueblo faltan tres personas |
+| Los títulos | **Rompen la fórmula «Debido»**, a propósito |
+| Greedygut | Se conserva el nombre, como `Puddock` |
+
+#### El corte, y por qué es geográfico y no dramático
+
+**7a — el pueblo.** Todo lo averiguable desde afuera: la capilla que un pueblo
+de seiscientos no usa, la biblioteca popular con su salita cerrada, el almacén,
+el granero, el obelisco. Termina sabiendo que hay que subir a la casa de la
+colina, y sin haber subido.
+
+**7b — la Casa.** Bernardo, el mausoleo, la entrada al laberinto, el anillo.
+
+El corte es geográfico porque el dramático —«7a termina al conocerlo»— hacía
+que toda la primera aventura fuera una antesala, y una aventura entera que
+consiste en conseguir una entrevista se lee como trámite. Así cada una tiene su
+propio centro: la 7a es **un pueblo que no mira**, la 7b es **un hombre que
+lleva la cuenta**.
+
+**Horas, no meses.** Es la única vez en la campaña que dos aventuras se pegan.
+Todas las anteriores dejan pasar meses —y `exposicionTrasMeses` los usa para
+que la Exposición decaiga hasta su piso—. Acá no: se sube esa noche, con lo
+puesto y con la Exposición de la 7a intacta. La mecánica dice lo mismo que la
+ficción: esto ya no se puede dejar para mañana.
+
+#### Los títulos
+
+| | Título propuesto | Por qué |
+|---|---|---|
+| 7a | **Agua Blanca** | El nombre viejo del lugar (v0.7 §12), que hasta ahora apareció UNA vez en toda la campaña, en un asiento catastral, y que el escribiente que lo explica cree que habla de un mineral. Que sea el título es el descubrimiento: el pueblo se llamaba de otra manera |
+| 7b | **El Vigésimo** | El mausoleo tiene veinte sarcófagos: diecinueve con momias y el vigésimo dice «Bernardo de Díaz 1580-», sin fecha de cierre, y está vacío. El título significa dos cosas y no se sabe cuál hasta el final — porque si el investigador se pone el anillo, el vigésimo puede ser él |
+
+Las cuatro anteriores son la familia «Debido». Éstas dos se salen a propósito:
+avisan que se cambió de régimen.
+
+#### Lo que ya estaba escrito sin saberlo
+
+Igual que en §4 del puente de canon, la campaña **ya venía escribiendo el
+módulo**. Tres cosas que no hay que inventar porque ya existen en el contenido
+publicado:
+
+- **Del Valle ya es el pueblo de la misa.** El módulo dice que los buenos
+  católicos viajan treinta kilómetros a otro pueblo a misa teniendo iglesia
+  propia. En *El Orden Debido*, Remigia ya lo dijo: «Mi madre iba a misa a Del
+  Valle. Treinta leguas de ida. Teniendo iglesia a tres». No hay que nombrar
+  nada nuevo.
+- **Y ya dijo por qué**: «allá la iglesia está, pero no es para nosotros».
+- **El pueblo del oeste es Castronegro.** Remigia, en setenta y cuatro años, no
+  conoció a nadie de un pueblo que está a tres leguas. Ése es el pueblo de la
+  7a, ya descrito desde afuera, por alguien que no quiere ir.
+
+**Los ojos verdes** son lo único de la firma del módulo que la campaña todavía
+no gastó (regla 4 del puente). En la 7a valen un solo renglón, en un solo NPC,
+sin comentario. En la 7b ya son la mitad del pueblo.
+
+#### Bernardo, y el problema de escribirlo
+
+La regla vigente era «Bernardo no aparece, ni de lejos, ni en sueños». Se
+levanta acá porque acá es su lugar, pero el riesgo es real y es de tono: un
+personaje que sabe todo y contesta, explica; y la regla de oro (v0.7 §15) dice
+que cuanto más cerca de la verdad, **más información y menos certeza**.
+
+La salida es la que ya funcionó dos veces en esta campaña. Aurelio Requena
+sabe muchísimo y lo que dice no cierra; Ramona sostiene una obligación de
+cuarenta años y admite de entrada que no sabe para qué sirve. Bernardo se
+escribe igual, un escalón más arriba: **contesta todo lo que se le pregunta, y
+lo que contesta no alcanza**. No miente por ocultar — miente porque interpretó
+mal hace trescientos años y nunca tuvo con quién comprobarlo. Sus textos ya
+son, por canon, «verdades reales mezcladas con conclusiones falsas» (v0.7 §7);
+él en persona es eso mismo, hablando.
+
+Lo que **no** puede pasar: que confirme qué es el Umbral, quién es el Primer
+Rostro, o que Yog-Sothoth sea la explicación de algo. Sigue sellado, y él
+tampoco lo sabe.
+
+#### El laberinto: se baja y no se recorre
+
+El módulo pone ~300 caníbales en kilómetros de túnel. Este motor no hace
+dungeon crawl, y hacerlo sería la única parte de la campaña que se juega como
+otro juego. Se entra a la primera cámara y se entiende qué hay más adentro sin
+ir a contarlo: el ruido, el olor, las marcas en las paredes, algo que contesta.
+Una o dos escenas. **El horror es saber que sigue, no medirlo** — que es el
+mismo criterio con que la sexta terminó a la vista del obelisco sin entrar.
+
+#### El anillo: `RingBond` deja de ser código muerto
+
+`RingBond { itemId, bondedAt, removalLethal }` está en `shared/types.ts` desde
+el principio, con un comentario que cita v0.7 §5.3, y **nunca se usó**: los
+siete pregenerados nacen con `ringBond: null` y nada lo escribe jamás.
+
+Acá se usa, y paga literalmente lo que sembró la quinta. *El Sueño Debido*
+termina, en una de sus ramas, con «el investigador se anotó en la quinta hoja
+en lugar de Aurelio Requena, y salió del brocal con algo que antes no traía».
+Ponerse el anillo es esa misma decisión tomada despierto y con el nombre
+puesto: **anotarse en lugar de otro**.
+
+Tres cosas que el canon ya fija y hay que respetar: quitarlo puede matar al
+portador; no controla el tiempo ni permite elegir fecha; y Bernardo **no** lo
+creó. La herramienta nueva del motor tendrá que emitir su propio evento —igual
+que `apply_mythos_knowledge` emite `MYTHOS_GAINED` y no `SKILL_IMPROVED`—
+porque ponerse el anillo no es equipar un objeto.
+
+#### Cómo cierra: se puede cortar, sin saber si sirvió
+
+Al menos un desenlace corta el ciclo de verdad. **Ninguno confirma que eso
+haya estado bien, ni que haya terminado algo.** Es la regla de oro aplicada al
+final de toda la campaña, y rima con la cuarta, cuya pregunta central —¿sirve
+de algo?— no se contesta en ninguna rama.
+
+Las familias de desenlace, a desarrollar al escribir la 7b:
+
+| | |
+|---|---|
+| **Cortar** | El ciclo se detiene. No se sabe si hacía falta que siguiera |
+| **Heredar** | El investigador se pone el anillo. La cuenta sigue, con otra mano |
+| **Denunciar** | Se saca del pueblo lo que se averiguó. Ya se probó en la cuarta que un juzgado no es una respuesta |
+| **Irse** | La quinta vez que este investigador puede subir sin hacer nada. `vecesQueSeFue` ya lleva la cuenta desde la quinta |
+
+#### Prerrequisito: tres habilidades que el sistema no tiene
+
+Decidido: **se agregan antes de escribir**, como paso propio y probado. Es el
+mismo criterio con que se escribieron el operador `consecuencia` y
+`apply_mythos_knowledge` antes de la cuarta — la mecánica va antes que el
+contenido que se apoya en ella.
+
+| Habilidad | Base | Para qué, acá |
+|---|---|---|
+| `arqueologia` | 1 | Fechar el obelisco y decir quién lo trabajó. Es anterior a Bernardo (v0.7 §8) y hoy no hay con qué leerlo |
+| `geologia` | 1 | De dónde salió esa piedra. En una llanura sin canteras, «esto no es de acá» es media aventura |
+| `navegacion` | 10 | Cruzar a campo abierto sin caminos ni mojones. `orientarse` es «reconstruir un recorrido», que no es lo mismo |
+
+Las tres son de CoC 7e. Tocan `rules/skills.ts`, las fichas pregeneradas, las
+ocupaciones y el reparto de puntos de la creación, así que van solas, con su
+prueba, y sin contenido nuevo encima.
+
+#### Orden de trabajo
+
+1. Las tres habilidades, con prueba propia.
+2. La herramienta del anillo (`RingBond`), con prueba propia.
+3. **7a — Agua Blanca.**
+4. **7b — El Vigésimo**, que lee los desenlaces de la 7a igual que la quinta
+   lee a la cuarta.
+
+Y una restricción que no cambia: el material de Chaosium sigue sin entrar al
+repositorio. Esto son notas y mapeo propios, no transcripción.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
