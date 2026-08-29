@@ -1,0 +1,930 @@
+{
+  "id": "el-vigesimo",
+  "title": "El Vigésimo",
+  "surfacePremise": "La misma noche que en Castronegro, la puerta de la Casa de Díaz se abre antes de golpearla dos veces. Adentro hay más gente de la que nadie ve nunca entrar ni salir, y en alguna parte, abajo de todo, hay alguien que lleva trescientos años contestando preguntas sin que ninguna respuesta alcance.",
+  "items": [
+    {
+      "id": "it-cuchillo-cocina",
+      "name": "Cuchillo de cocina",
+      "aliases": ["cuchillo", "el cuchillo", "cuchillo de cocina"],
+      "shortDescription": "Hoja larga, mango de hueso gastado por el uso de verdad. Colgado de un gancho junto a la mesada, no guardado: es de los que se usan.",
+      "owner": "cocina",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-anillo-rubi",
+      "name": "Anillo de rubí",
+      "aliases": ["anillo", "el anillo", "anillo de rubi", "anillo de rubí"],
+      "shortDescription": "Un rubí oscuro montado en un aro de un metal que no termina de ser oro. Bernardo lo lleva en la mano izquierda, y la mano izquierda no tiembla nunca.",
+      "owner": "npc-bernardo",
+      "carried": true,
+      "publicProperties": [
+        {
+          "id": "p-anillo-basico",
+          "description": "Pesa más de lo que un anillo debería pesar, y el rubí no refleja la luz de la lámpara: la retiene un segundo antes de devolverla.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "v0.7" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-diario-bernardo",
+      "name": "Cuaderno de Bernardo",
+      "aliases": ["cuaderno", "el cuaderno de bernardo", "diario", "el diario"],
+      "shortDescription": "En un atril, en la biblioteca, abierto siempre en la misma página. Letra antigua, tinta que se retocó más de una vez sin cambiar una palabra.",
+      "owner": "biblioteca",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-diario-basico",
+          "description": "La página abierta dice, subrayado dos veces: «Encontré la llave. Todavía no sé de qué puerta». Está fechado en 1679, un año antes de fundar el pueblo.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-diario-turno",
+          "description": "Más adelante, con otra letra —la misma mano, treinta años más vieja—, hay una lista de nombres con una edad al lado de cada uno. El último de la lista no tiene tachadura. Los anteriores, todos, sí.",
+          "discoveryCondition": { "kind": "skill_check", "skill": "buscar_libros", "difficulty": "regular" },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-ercilia",
+      "name": "Ercilia",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Sesenta años, delantal, no es de la familia: es de las que sirven. Sixto ya la nombró en el pueblo. Abre la puerta sin preguntar quién sos, porque hace horas que la casa sabe que venís.",
+      "motivation": "Que la noche termine sin que nadie de afuera se quede a vivir acá también.",
+      "fears": ["Que le pregunten hace cuánto que trabaja en la casa, y tener que hacer la cuenta en voz alta"],
+      "refusals": ["No dice qué hay en el sótano", "No sube al primer piso si no la llaman"],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-ercilia-anos",
+          "content": "Entró a servir en la casa en 1901. Tendría que tener la edad que tiene, y la aparenta, pero no envejeció al ritmo que le tocaba: entre 1901 y ahora faltan más años de los que se le notan en la cara.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": { "inv-elena": 5, "inv-tomas": 5 },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-guardian-sotano",
+      "name": "El que quedó en la puerta",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Más grande que el que salió de la grieta del granero, y más viejo. Custodia la entrada al laberinto sin que nadie se lo tenga que pedir dos veces por generación. Ojos verdes, como todos los que ya no tienen nombre para nadie.",
+      "motivation": "Que nadie pase de acá para abajo sin que Bernardo lo autorice.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": { "inv-elena": -15, "inv-tomas": -15 },
+      "combate": {
+        "hp": 16,
+        "maxHp": 16,
+        "pelea": 55,
+        "esquivar": 30,
+        "armaId": "desarmado",
+        "bonificacionDano": "1d6",
+        "defensaPorDefecto": "contraataca",
+        "dex": 55,
+        "build": 1
+      },
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-ahijado",
+      "name": "Ahijado",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Del tamaño de un gato grande y con forma de rata, aunque nadie en la casa lo llama rata. Bernardo lo llama el Ahijado, y lo dice como quien dice un parentesco, no un apodo. Duerme enroscado cerca de donde esté Bernardo y no duerme nunca del todo.",
+      "motivation": "Que nadie le ponga la mano encima a Bernardo mientras él esté mirando.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": { "inv-elena": -10, "inv-tomas": -10 },
+      "combate": null,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-bernardo",
+      "name": "Bernardo Díaz",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "v0.7" },
+      "status": "alive",
+      "description": "No aparenta trescientos años ni aparenta cincuenta: aparenta la edad de alguien que dejó de contar. Manos grandes, la izquierda con el anillo, y una manera de escuchar una pregunta entera antes de decidir qué parte va a contestar.",
+      "motivation": "Que alguien, alguna vez, le confirme que interpretó bien lo que encontró en 1679. Trescientos años después, sigue sin saberlo.",
+      "fears": ["Que el ciclo se corte antes de que alguien le diga si sirvió de algo"],
+      "refusals": ["No confirma qué es el Umbral", "No dice quién es el Primer Rostro", "No usa a Yog-Sothoth como explicación de nada"],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-bernardo-turno-sabido",
+          "content": "Vio, antes de fundar el pueblo, a quien algún día se lo iba a llevar puesto. No sabía el nombre entonces y no lo sabe ahora, pero cuando lo tiene enfrente, lo reconoce.",
+          "disclosure": "DISCOVERABLE",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": { "inv-elena": 0, "inv-tomas": 0 },
+      "combate": {
+        "hp": 16,
+        "maxHp": 16,
+        "pelea": 45,
+        "esquivar": 35,
+        "armaId": "facon",
+        "bonificacionDano": "0",
+        "defensaPorDefecto": "esquiva",
+        "dex": 50,
+        "build": 0
+      },
+      "present": true,
+      "isCompanion": false
+    }
+  ],
+  "documents": [],
+  "locations": {
+    "vestibulo": {
+      "id": "vestibulo",
+      "name": "El vestíbulo",
+      "aliases": ["vestibulo", "vestíbulo", "la entrada", "el hall"],
+      "description": "Cielorraso alto, una araña de luz con la mitad de las velas encendidas, y una escalera de madera oscura que sube en curva. Cuatro puertas además de la que acaba de cerrarse detrás tuyo.",
+      "atmosphere": [
+        "Ercilia ya está guardando el sombrero que todavía tenés en la mano, aunque no te lo pediste sacar.",
+        "La casa no suena vacía. Suena ocupada por gente que no hace ruido.",
+        "Arriba, un piso de madera cruje una vez, despacio, como si alguien hubiera decidido no terminar el paso."
+      ],
+      "connections": ["salon", "comedor", "cocina", "biblioteca", "pasillo-alto", "trastero-sotano"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-ercilia"],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {
+        "sight": "Una araña a media luz y una escalera que sube en curva hacia la oscuridad del primer piso.",
+        "sound": "El reloj de pie del salón, y un crujido de madera arriba que no se repite.",
+        "smell": "Cera derretida y algo dulce, de fondo, que no termina de identificarse."
+      },
+      "features": []
+    },
+    "salon": {
+      "id": "salon",
+      "name": "El salón",
+      "aliases": ["salon", "salón"],
+      "description": "Sillones tapizados, un piano cerrado con llave, y una pared entera de retratos ovalados. La mitad de las caras tienen los mismos ojos verdes, en marcos que van del daguerrotipo a la fotografía de estudio.",
+      "atmosphere": [
+        "El reloj de pie da la hora, y da una hora que no es la que es.",
+        "Uno de los retratos más nuevos tiene la cara raspada, no rota: raspada a propósito."
+      ],
+      "connections": ["vestibulo", "comedor"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 8,
+      "senses": {
+        "sight": "Una pared de retratos ovalados, la mitad con los mismos ojos verdes.",
+        "sound": "El reloj de pie, que da una hora equivocada.",
+        "smell": "Tapizado viejo y cera de piso."
+      },
+      "features": [
+        {
+          "id": "f-retratos",
+          "names": ["retratos", "los retratos", "la pared de retratos", "fotos"],
+          "description": "Una hilera de retratos ovalados, generación tras generación, todos con el mismo par de apellidos al pie del marco.",
+          "closerLook": "Los marcos tienen una placa con nombre y dos fechas. En casi todos, la segunda fecha es entre dieciocho y veintidós años después de la primera. Uno de los marcos, el más nuevo, tiene la cara raspada con una moneda o un cuchillo, prolijo, sin romper el vidrio. La placa dice «Bernardo Díaz, 1580—» y no tiene segunda fecha.",
+          "examineSkill": "descubrir",
+          "exposure": 8,
+          "clue": {
+            "description": "La pared de retratos del salón repite un patrón: casi todas las segundas fechas caen entre dieciocho y veintidós años después de la primera. El marco más nuevo, sin segunda fecha, tiene la cara raspada a propósito y dice «Bernardo Díaz, 1580—».",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "comedor": {
+      "id": "comedor",
+      "name": "El comedor",
+      "aliases": ["comedor", "el comedor"],
+      "description": "Una mesa larga, puesta para doce, con manteles que no tienen ni una arruga de uso. Nadie come acá hace mucho, y sin embargo está puesta.",
+      "atmosphere": [
+        "Doce sillas, doce servicios, y ni una miga en ningún plato.",
+        "El polvo del aparador está limpio en un rectángulo del tamaño de una bandeja que ya no está."
+      ],
+      "connections": ["vestibulo", "salon", "cocina"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sight": "Una mesa puesta para doce, sin una arruga de uso.",
+        "sound": "Nada. Ni siquiera el reloj llega hasta acá.",
+        "smell": "Mantel limpio, y cera de piso otra vez."
+      },
+      "features": [
+        {
+          "id": "f-mesa-puesta",
+          "names": ["mesa", "la mesa puesta", "los servicios", "los platos"],
+          "description": "Doce lugares servidos, con cubiertos de plata ennegrecida por falta de uso, no por vejez.",
+          "closerLook": "La plata está ennegrecida pareja, como si la hubieran pulido una última vez y después la hubieran dejado. Contás los platos dos veces. Doce. Contás las familias que hoy viven en Castronegro con ese apellido en la cabeza, y no te da doce.",
+          "examineSkill": "descubrir",
+          "exposure": 5,
+          "clue": {
+            "description": "El comedor de la Casa está puesto para doce, con cubiertos de plata pulidos una última vez y nunca más usados. Doce no es el número de Díaz vivos hoy en el pueblo.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "cocina": {
+      "id": "cocina",
+      "name": "La cocina",
+      "aliases": ["cocina", "la cocina"],
+      "description": "Una cocina económica todavía tibia, ollas más grandes de lo que dos personas necesitan, y un cuchillo colgado de un gancho junto a la mesada.",
+      "atmosphere": [
+        "Hay comida hecha para más gente de la que vas a ver esta noche.",
+        "Ercilia no cocinó sola: hay dos maneras distintas de picar la cebolla en la misma tabla."
+      ],
+      "connections": ["vestibulo", "comedor", "despensa"],
+      "itemsPresent": ["it-cuchillo-cocina"],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 5,
+      "senses": {
+        "sight": "Ollas grandes, una cocina económica tibia, un cuchillo colgado junto a la mesada.",
+        "sound": "Algo que hierve despacio, sin que nadie lo esté cuidando.",
+        "smell": "Caldo, cebolla, y leña quemándose bien."
+      },
+      "features": []
+    },
+    "despensa": {
+      "id": "despensa",
+      "name": "La despensa",
+      "aliases": ["despensa", "la despensa"],
+      "description": "Estantes hasta el techo, casi todos con conservas caseras. En el estante más bajo, aparte de los demás, hay frascos que no tienen etiqueta de fruta ni de verdura.",
+      "atmosphere": [
+        "El olor acá es más fuerte y menos apetitoso que en la cocina.",
+        "Alguien barrió el piso de la despensa hace poco. No hace falta barrer una despensa."
+      ],
+      "connections": ["cocina"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 7,
+      "senses": {
+        "sight": "Estantes de conservas, y un estante bajo aparte de los demás.",
+        "sound": "Nada. El silencio de acá pesa distinto que el del comedor.",
+        "smell": "Vinagre, salmuera, y algo más, debajo."
+      },
+      "features": [
+        {
+          "id": "f-frascos-bajos",
+          "names": ["frascos", "los frascos", "el estante bajo", "conservas raras"],
+          "description": "El estante más bajo tiene seis frascos sin etiqueta, con algo adentro que no es fruta.",
+          "closerLook": "No mirás mucho tiempo. Es suficiente para saber que no es fruta y para decidir que no hace falta saber más.",
+          "examineSkill": "descubrir",
+          "exposure": 9,
+          "clue": {
+            "description": "El estante más bajo de la despensa tiene seis frascos sin etiquetar, aparte de las conservas, con algo adentro que decidiste no terminar de mirar.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "biblioteca": {
+      "id": "biblioteca",
+      "name": "La biblioteca",
+      "aliases": ["biblioteca", "la biblioteca"],
+      "description": "Del piso al techo, en tres idiomas que reconocés y dos que no. Un atril en el centro sostiene un solo cuaderno, abierto, como si alguien lo estuviera esperando a uno solo de los que entran.",
+      "atmosphere": [
+        "Ningún libro tiene polvo. Alguien pasa un trapo acá, y seguido.",
+        "El cuaderno del atril está abierto siempre en la misma página, aunque lo cerraras."
+      ],
+      "connections": ["vestibulo"],
+      "itemsPresent": ["it-diario-bernardo"],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 9,
+      "senses": {
+        "sight": "Estantes hasta el techo y un atril con un cuaderno abierto.",
+        "sound": "Nada, salvo el paso de página que no diste vos.",
+        "smell": "Papel viejo y tinta que todavía no terminó de secarse del todo."
+      },
+      "features": []
+    },
+    "pasillo-alto": {
+      "id": "pasillo-alto",
+      "name": "El pasillo del primer piso",
+      "aliases": ["pasillo", "el pasillo", "primer piso", "arriba"],
+      "description": "Tres puertas de un lado, una del otro. La alfombra amortigua los pasos, cosa que en esta casa no tranquiliza a nadie.",
+      "atmosphere": [
+        "Una de las puertas está apenas entornada, y por la rendija no se ve nada que explique por qué está así.",
+        "Hace más frío acá que en la planta baja, y no hay ventana abierta que lo explique."
+      ],
+      "connections": ["vestibulo", "habitaciones-huespedes", "dormitorio-bernardo"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 9,
+      "senses": {
+        "sight": "Cuatro puertas, alfombra gruesa, y una de las puertas apenas entornada.",
+        "sound": "Nada, y ese nada es más denso que el silencio de abajo.",
+        "smell": "Naftalina y, debajo, algo mineral."
+      },
+      "features": []
+    },
+    "habitaciones-huespedes": {
+      "id": "habitaciones-huespedes",
+      "name": "Las habitaciones de huéspedes",
+      "aliases": ["habitaciones", "cuartos de huespedes", "cuartos de huéspedes", "las piezas"],
+      "description": "Dos camas hechas, con las sábanas estiradas al milímetro, en dos cuartos que dan al mismo pasillo. Ninguna tiene una valija, un abrigo colgado, nada que diga que alguien las usa.",
+      "atmosphere": [
+        "Las dos camas están hechas con la misma esquina en escuadra, como las hace alguien que aprendió a hacerlas para un inspector que nunca vino.",
+        "En la mesa de luz de una de las dos hay un vaso de agua, servido esta misma noche, sin tomar."
+      ],
+      "connections": ["pasillo-alto"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 7,
+      "senses": {
+        "sight": "Dos camas hechas al milímetro, sin una sola marca de uso.",
+        "sound": "Nada.",
+        "smell": "Sábanas limpias, planchadas hoy."
+      },
+      "features": [
+        {
+          "id": "f-vaso-agua",
+          "names": ["vaso", "el vaso de agua", "vaso servido"],
+          "description": "Un vaso de agua servido esta noche, en la mesa de luz, sin que nadie lo haya tocado.",
+          "closerLook": "Está servido para alguien que todavía no llegó a acostarse, en un cuarto donde nadie duerme. O para alguien que sí duerme acá, y que esta noche todavía no subió.",
+          "examineSkill": "descubrir",
+          "exposure": 3,
+          "clue": {
+            "description": "En una de las habitaciones de huéspedes hay un vaso de agua servido esta misma noche, sin tomar, en una cama que nunca se usa.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "dormitorio-bernardo": {
+      "id": "dormitorio-bernardo",
+      "name": "El dormitorio principal",
+      "aliases": ["dormitorio", "el dormitorio de bernardo", "cuarto principal", "dormitorio principal"],
+      "description": "Una cama que no se deshizo en años, un ropero cerrado, y una ventana con las cortinas cosidas al marco, no corridas: cosidas.",
+      "atmosphere": [
+        "Nadie duerme acá. Y sin embargo la habitación está más limpia que las de huéspedes.",
+        "El ropero tiene puesto un candado nuevo en una madera vieja."
+      ],
+      "connections": ["pasillo-alto"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 9,
+      "senses": {
+        "sight": "Una cama sin deshacer en años, y una ventana con las cortinas cosidas al marco.",
+        "sound": "El mismo nada de todo el piso, pero acá parece que alguien lo está sosteniendo.",
+        "smell": "Cerrado. Un cerrado que no es de puerta trancada: es de aire que no se cambia hace mucho."
+      },
+      "features": [
+        {
+          "id": "f-ropero-candado",
+          "names": ["ropero", "el ropero", "candado", "armario"],
+          "description": "Un ropero de madera vieja con un candado de latón, nuevo, que no tiene sentido en una puerta que nadie más abriría.",
+          "closerLook": "Adentro no hay ropa: hay una sola percha con un traje de otra época, y en el piso del ropero, una caja de zapatos sin zapatos, con recortes de diario atados con hilo.",
+          "examineSkill": "mecanica",
+          "exposure": 6,
+          "clue": {
+            "description": "El ropero cerrado del dormitorio principal no guarda ropa: guarda un traje de otra época y una caja con recortes de diario atados con hilo, aparte de todo lo demás de la casa.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "trastero-sotano": {
+      "id": "trastero-sotano",
+      "name": "El trastero del sótano",
+      "aliases": ["trastero", "sotano", "sótano", "escalera del sotano"],
+      "description": "El aire cambia apenas se pisa el primer escalón: más frío, más quieto. Un trastero angosto, cajones apilados, y una sola puerta al fondo, sin picaporte de este lado.",
+      "atmosphere": [
+        "Los escalones de piedra están gastados en el medio, de mucho más tránsito del que una casa de este tamaño explicaría.",
+        "No hay vuelta fácil por la escalera: algo la hace sentir más larga bajando que lo que se ve subiendo."
+      ],
+      "connections": ["entrada-laberinto"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-guardian-sotano"],
+      "visited": false,
+      "umbralIntensity": 14,
+      "senses": {
+        "sight": "Cajones apilados, piedra gastada, y una puerta al fondo sin picaporte de este lado.",
+        "sound": "Un goteo que no encuentra su propio ritmo, dos veces seguidas.",
+        "smell": "Tierra húmeda y algo más viejo que la tierra."
+      },
+      "features": []
+    },
+    "entrada-laberinto": {
+      "id": "entrada-laberinto",
+      "name": "La entrada al laberinto",
+      "aliases": ["laberinto", "el laberinto", "la entrada al laberinto", "los tuneles", "los túneles"],
+      "description": "Un túnel de tierra apuntalada con vigas viejas, que baja apenas y se pierde en una curva a quince metros. No hace falta caminar los quince metros para saber que sigue mucho más allá.",
+      "atmosphere": [
+        "Se oye algo, lejos, que podría ser agua o podría ser respiración.",
+        "El olor de acá es el mismo de la despensa, multiplicado por algo que no querés calcular."
+      ],
+      "connections": ["laboratorio"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 18,
+      "senses": {
+        "sight": "Un túnel apuntalado que se pierde en una curva a quince metros.",
+        "sound": "Algo lejos que podría ser agua o podría ser respiración.",
+        "smell": "Como la despensa, pero mucho peor."
+      },
+      "features": []
+    },
+    "laboratorio": {
+      "id": "laboratorio",
+      "name": "El laboratorio",
+      "aliases": ["laboratorio", "el laboratorio", "el cuarto de bernardo", "donde esta bernardo", "donde está bernardo"],
+      "description": "Mesas de piedra, instrumentos que no son de ninguna farmacia ni de ningún hospital, y al fondo, sentado en un sillón que no combina con nada de lo demás, Bernardo Díaz. El Ahijado duerme, o hace como que duerme, enroscado en el brazo del sillón.",
+      "atmosphere": [
+        "Bernardo no se sobresalta con la llegada. Hace trescientos años que espera visita.",
+        "—Pase —dice, sin levantarse—. Ya era hora."
+      ],
+      "connections": [],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-bernardo", "npc-ahijado"],
+      "visited": false,
+      "umbralIntensity": 24,
+      "senses": {
+        "sight": "Mesas de piedra, instrumentos sin nombre, y Bernardo Díaz sentado al fondo.",
+        "sound": "La respiración pareja de alguien que dejó de tener apuro hace mucho.",
+        "smell": "Metal, cera, y algo mineral que ya reconocés del claro del monolito."
+      },
+      "features": []
+    }
+  },
+  "startLocation": "vestibulo",
+  "startTime": {
+    "iso": "1928-10-01T23:30:00",
+    "precision": "minute",
+    "display": "las once y media de la noche"
+  },
+  "startUmbralPermeability": 32,
+  "timeline": [
+    {
+      "id": "ev-1928-noche",
+      "description": "La misma noche que Castronegro reveló su nombre viejo, la Casa de Díaz recibe visita.",
+      "when": { "iso": "1928-10-01T23:30:00", "precision": "minute", "display": "esa noche" },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "e-puente-subir",
+      "npc": "npc-ercilia",
+      "etiqueta": "Preguntarle a Ercilia qué está pasando",
+      "intencion": "Le pregunto a Ercilia qué está pasando",
+      "claves": ["que esta pasando", "qué está pasando", "ercilia"],
+      "orden": 1,
+      "disponible": { "op": "consecuencia", "contiene": "por su propia voluntad, la misma noche" },
+      "cede": {
+        "texto": [
+          "—Subió por su cuenta, ¿no? —dice, y no espera respuesta—. Eso ya lo sabíamos desde la tarde. Acompáñeme, que él lo está esperando en el sótano. Ahí trabaja, a esta hora."
+        ],
+        "actitud": 1,
+        "pregunta": "¿Cómo sabían, desde la tarde, que iba a subir esta misma noche?"
+      }
+    },
+    {
+      "id": "e-puente-llamar",
+      "npc": "npc-ercilia",
+      "etiqueta": "Preguntarle a Ercilia qué está pasando",
+      "intencion": "Le pregunto a Ercilia qué está pasando",
+      "claves": ["que esta pasando", "qué está pasando", "ercilia"],
+      "orden": 1,
+      "disponible": { "op": "consecuencia", "contiene": "fue a la cabecera a denunciar" },
+      "cede": {
+        "texto": [
+          "—El sargento llega mañana, dicen. —Lo dice sin preocupación, como quien avisa que va a llover—. Bernardo quiere hablar con usted antes de que llegue. Dice que dos visitas en dos días son mejor que una sola, y no explica por qué."
+        ],
+        "actitud": 1,
+        "pregunta": "¿Por qué le conviene a Bernardo hablar antes de que llegue la policía, y no después?"
+      }
+    },
+    {
+      "id": "e-puente-escribir",
+      "npc": "npc-ercilia",
+      "etiqueta": "Preguntarle a Ercilia qué está pasando",
+      "intencion": "Le pregunto a Ercilia qué está pasando",
+      "claves": ["que esta pasando", "qué está pasando", "ercilia"],
+      "orden": 1,
+      "disponible": { "op": "consecuencia", "contiene": "le escribió a Delfina Arce" },
+      "cede": {
+        "texto": [
+          "—Mandó la carta y después no pudo dormir, ¿no es cierto? —Ercilia sonríe apenas—. Le pasa a todos los que escriben antes de subir. Como si escribirlo primero fuera una manera de venir con testigo, aunque el testigo esté a tres leguas y todavía no lo haya leído."
+        ],
+        "actitud": 1,
+        "pregunta": "¿Cuántos más escribieron una carta antes de subir, para no ser los únicos que sabían?"
+      }
+    },
+    {
+      "id": "e-puente-irse",
+      "npc": "npc-ercilia",
+      "etiqueta": "Preguntarle a Ercilia qué está pasando",
+      "intencion": "Le pregunto a Ercilia qué está pasando",
+      "claves": ["que esta pasando", "qué está pasando", "ercilia"],
+      "orden": 1,
+      "disponible": { "op": "consecuencia", "contiene": "se fue de Castronegro sin subir" },
+      "cede": {
+        "texto": [
+          "—Dio la vuelta a tres leguas, ¿no? —Ercilia lo dice sin sorpresa—. Y volvió igual. Eso también pasa. Bernardo dice que los que dan la vuelta terminan subiendo más seguido que los que suben derecho la primera vez."
+        ],
+        "actitud": 1,
+        "pregunta": "¿Por qué volvería alguien que ya había decidido no venir?"
+      }
+    },
+    {
+      "id": "e-ercilia-anos",
+      "npc": "npc-ercilia",
+      "etiqueta": "Preguntarle a Ercilia hace cuánto que trabaja acá",
+      "intencion": "Le pregunto a Ercilia hace cuánto que trabaja en la casa",
+      "claves": ["hace cuanto", "hace cuánto", "trabaja aca", "trabaja acá", "años"],
+      "orden": 2,
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": 0, "razon": "que haga la cuenta en voz alta delante de un desconocido" },
+      "cede": {
+        "texto": [
+          "Se queda contando con los labios, como quien no hizo esta cuenta en mucho tiempo.\n\n—Entré en el uno. Mil novecientos uno. —Se mira las manos, que no son manos de sesenta años recién cumplidos—. No le voy a decir la edad que tengo, porque no se la puedo explicar."
+        ],
+        "actitud": -1,
+        "revelaSecreto": "s-ercilia-anos",
+        "pista": {
+          "description": "Ercilia entró a servir en la Casa de Díaz en 1901 y aparenta sesenta años. La cuenta no cierra, y ella misma lo sabe: no puede explicar la edad que tiene.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Hace mucho —dice, y se va a la cocina antes de que insista."],
+        "actitud": -1
+      }
+    },
+    {
+      "id": "b-quien-sos",
+      "npc": "npc-bernardo",
+      "etiqueta": "Preguntarle a Bernardo quién es",
+      "intencion": "Le pregunto a Bernardo quién es",
+      "claves": ["quien es", "quién es", "bernardo", "quien sos"],
+      "orden": 1,
+      "cede": {
+        "texto": [
+          "—Bernardo Díaz —dice, y lo dice como quien contesta una pregunta que le hicieron una sola vez en trescientos años, porque nadie más llegó tan lejos para preguntarla—. Fundé este pueblo en 1680. Todavía estoy averiguando si hice bien.\n\n—Le voy a contestar todo lo que me pregunte. Le aviso de entrada que eso no es lo mismo que confirmarle nada."
+        ],
+        "actitud": -10,
+        "pista": {
+          "description": "Bernardo Díaz confirma en persona que fundó Castronegro en 1680 y que sigue vivo. Avisa de entrada que va a contestar todo, y que contestar no es lo mismo que confirmar.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Ya le dije lo que tenía para decirle de eso —dice, y no agrega nada más."],
+        "actitud": -2
+      }
+    },
+    {
+      "id": "b-anillo",
+      "npc": "npc-bernardo",
+      "etiqueta": "Preguntarle por el anillo",
+      "intencion": "Le pregunto a Bernardo por el anillo que lleva puesto",
+      "claves": ["anillo", "rubi", "rubí", "el anillo"],
+      "orden": 2,
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": -30, "razon": "que siga dispuesto a esta altura de la charla" },
+      "cede": {
+        "texto": [
+          "Levanta la mano izquierda, despacio, como si mostrarlo fuera parte de la respuesta.\n\n—No lo hice yo. Lo encontré, ya hecho, en el mismo lugar donde encontré todo lo demás. Me sostiene. Si me lo saca alguien, o me lo saco yo, no queda mucho de mí en los segundos siguientes.\n\n—No controla el tiempo, si es lo que va a preguntar después. Muestra cosas. Yo elegí creer que esas cosas eran promesas, y llevo trescientos años sin poder probar que estaba equivocado ni que tenía razón."
+        ],
+        "actitud": -10,
+        "pista": {
+          "description": "Bernardo no fabricó el anillo: lo encontró ya hecho. Lo sostiene con vida, y sacárselo —a él, o él mismo— lo mata en segundos. No controla el tiempo: muestra cosas, y él decidió leerlas como promesas.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "b-turno",
+      "npc": "npc-bernardo",
+      "etiqueta": "Preguntarle por el ciclo de nacimientos",
+      "intencion": "Le pregunto a Bernardo por qué nace un Bernardo Díaz nuevo cada treinta años",
+      "claves": ["ciclo", "turno", "cada treinta anos", "nacimientos", "vigesimo"],
+      "orden": 3,
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": -30, "razon": "que siga dispuesto a esta altura de la charla" },
+      "cede": {
+        "texto": [
+          "—Porque yo no sé cómo pararlo —dice, y por primera vez no suena a alguien que eligió cada palabra—. Cada tanto nace otro. Cada tanto se muere el anterior, unos veinte años después. Yo sigo estando en el medio de todos, y no sé si soy la causa o si soy el primero al que le pasó y el resto es sólo la costumbre repitiéndose sola.\n\n—El mausoleo tiene veinte lugares. Diecinueve están ocupados. El vigésimo lo dejé vacío a propósito, hace mucho, antes de saber para quién era."
+        ],
+        "actitud": -10,
+        "revelaSecreto": "s-bernardo-turno-sabido",
+        "pista": {
+          "description": "Bernardo no sabe si el ciclo de nacimientos cada treinta años depende de él o si es una costumbre que ya no necesita causa. El mausoleo tiene veinte lugares: diecinueve ocupados, el vigésimo vacío desde hace mucho, «antes de saber para quién era».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "pregunta": "¿Para quién dejó Bernardo el vigésimo lugar, si dice que no sabía?"
+      }
+    },
+    {
+      "id": "b-tres-desaparecidos",
+      "npc": "npc-bernardo",
+      "etiqueta": "Preguntarle por Ferrari, Prewitt y Onésimo",
+      "intencion": "Le pregunto a Bernardo por el profesor, el americano y Onésimo",
+      "claves": ["ferrari", "prewitt", "onesimo", "onésimo", "desaparecidos", "tres"],
+      "orden": 4,
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": -30, "razon": "que siga dispuesto a esta altura de la charla" },
+      "cede": {
+        "texto": [
+          "—El profesor y el americano llegaron preguntando lo mismo que usted, con menos paciencia. Onésimo no preguntó nada: cumplió veintiuno, y acá a los que cumplen veintiuno con ciertos rasgos se los trae a que los vean. Eso ya lo sabe, si habló con el hermano.\n\n—Los tres están abajo. No le voy a decir en qué estado, porque no se lo va a preguntar dos veces si se lo digo."
+        ],
+        "actitud": -10,
+        "estabilidad": { "amount": -6, "cause": "que lo confirme sin que haga falta preguntarlo dos veces" },
+        "pista": {
+          "description": "Bernardo confirma que Ferrari, Prewitt y Onésimo están «abajo», sin decir en qué estado. Ferrari y Prewitt llegaron preguntando lo mismo que cualquier investigador; a Onésimo lo trajeron al cumplir veintiuno, «a que lo vieran».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "b-primer-rostro",
+      "npc": "npc-bernardo",
+      "etiqueta": "Preguntarle qué es el Umbral, y quién es el Primer Rostro",
+      "intencion": "Le pregunto a Bernardo qué es el Umbral y quién es el Primer Rostro",
+      "claves": ["umbral", "primer rostro", "yog-sothoth", "que es esto"],
+      "orden": 5,
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": -30, "razon": "que siga dispuesto a esta altura de la charla" },
+      "cede": {
+        "texto": [
+          "Por primera vez tarda en contestar.\n\n—No sé qué es. Sé que se puede mirar, y que el que mira, a veces, también está siendo observado —desde otro momento, no desde otro lugar—. Le puse un nombre a eso, hace trescientos años, porque un hombre necesita nombrar lo que encuentra, y elegí mal el nombre.\n\n—No le voy a decir quién fue el primero que miró antes que yo. No porque no quiera: porque tampoco lo sé, y lleva trescientos años molestándome no saberlo."
+        ],
+        "actitud": -10,
+        "pregunta": "¿Bernardo miente, o de verdad no sabe lo que él mismo empezó?"
+      }
+    },
+    {
+      "id": "b-laberinto",
+      "npc": "npc-bernardo",
+      "etiqueta": "Preguntarle qué hay en el laberinto",
+      "intencion": "Le pregunto a Bernardo qué hay en el laberinto",
+      "claves": ["laberinto", "tuneles", "túneles", "abajo de la casa"],
+      "orden": 6,
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": -30, "razon": "que siga dispuesto a esta altura de la charla" },
+      "cede": {
+        "texto": [
+          "—Familia —dice, y no aclara más—. La que no salió bien, y la que salió peor. Los cuido. No sé si es piedad o es que no me animo a otra cosa.\n\n—No le recomiendo bajar más de lo que ya bajó. Ni por curiosidad, ni por deber."
+        ],
+        "actitud": -10,
+        "pista": {
+          "description": "Bernardo llama «familia» a lo que hay en el laberinto y dice que los cuida, sin distinguir piedad de cobardía. Recomienda no bajar más de lo ya bajado.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "diario-turno",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "sigo leyendo el cuaderno|busco mas paginas|busco más páginas|reviso el resto del cuaderno" },
+          { "op": "lleva", "item": "it-diario-bernardo" }
+        ]
+      }
+    },
+    {
+      "id": "dormitorio-buscar-sigilo",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "sin hacer ruido|sin que se entere|registro el dormitorio" },
+          { "op": "lugar", "es": ["dormitorio-bernardo"] }
+        ]
+      }
+    },
+    {
+      "id": "sotano-pasar-sigilo",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "trato de pasar sin que me vea|paso sin que me vea|me escabullo" },
+          { "op": "lugar", "es": ["trastero-sotano"] }
+        ]
+      }
+    },
+    {
+      "id": "sotano-enfrentar",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "lo enfrento|enfrento a lo que quedo en la puerta|peleo con el guardian" },
+          { "op": "lugar", "es": ["trastero-sotano"] }
+        ]
+      }
+    },
+    {
+      "id": "bernardo-enfrentar",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "enfrento a bernardo|me le voy encima|voy por el anillo|ataco a bernardo" },
+          { "op": "lugar", "es": ["laboratorio"] }
+        ]
+      }
+    },
+    {
+      "id": "fin-cortar",
+      "prioridad": 90,
+      "cuando": { "op": "texto", "patron": "le saco el anillo y lo tiro|destruyo el anillo|corto el ciclo" }
+    },
+    {
+      "id": "fin-heredar",
+      "prioridad": 90,
+      "cuando": { "op": "texto", "patron": "me pongo el anillo|me quedo con el anillo" }
+    },
+    {
+      "id": "fin-denunciar-vigesimo",
+      "prioridad": 90,
+      "cuando": { "op": "texto", "patron": "salgo de la casa a denunciar|escapo con lo que se" }
+    },
+    {
+      "id": "fin-irse-vigesimo",
+      "prioridad": 90,
+      "cuando": { "op": "texto", "patron": "salgo de la casa sin mirar atras|salgo de la casa sin mirar atrás|me voy de la casa" }
+    }
+  ],
+  "actions": [
+    {
+      "id": "diario-turno",
+      "grupo": "usar",
+      "orden": 19,
+      "intencion": "Sigo leyendo el cuaderno, busco más páginas",
+      "etiqueta": "Buscar más en el cuaderno de Bernardo",
+      "visible": { "op": "lleva", "item": "it-diario-bernardo" },
+      "hecha": { "op": "propiedad", "item": "it-diario-bernardo" }
+    },
+    {
+      "id": "dormitorio-sigilo",
+      "grupo": "usar",
+      "lugar": "dormitorio-bernardo",
+      "orden": 20,
+      "intencion": "Registro el dormitorio sin hacer ruido",
+      "etiqueta": "Registrar el dormitorio sin hacer ruido",
+      "hecha": { "op": "narrado", "contiene": "No hacía falta tanto cuidado" }
+    },
+    {
+      "id": "sotano-sigilo",
+      "grupo": "usar",
+      "lugar": "trastero-sotano",
+      "orden": 20,
+      "intencion": "Trato de pasar sin que me vea",
+      "etiqueta": "Tratar de pasar sin que me vea",
+      "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-guardian-sotano" } },
+      "hecha": { "op": "o", "de": [{ "op": "narrado", "contiene": "No te vio pasar" }, { "op": "npcFuera", "npc": "npc-guardian-sotano" }] }
+    },
+    {
+      "id": "sotano-combate",
+      "grupo": "usar",
+      "lugar": "trastero-sotano",
+      "orden": 21,
+      "intencion": "Enfrento a lo que quedó en la puerta",
+      "etiqueta": "Enfrentarlo",
+      "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-guardian-sotano" } }
+    },
+    {
+      "id": "confrontar-bernardo",
+      "grupo": "usar",
+      "lugar": "laboratorio",
+      "orden": 30,
+      "intencion": "Voy por el anillo y ataco a Bernardo",
+      "etiqueta": "Ir por el anillo",
+      "hecha": { "op": "o", "de": [{ "op": "npcFuera", "npc": "npc-bernardo" }, { "op": "consecuencia", "contiene": "entró en combate real contra Bernardo Díaz" }] }
+    },
+    {
+      "id": "cortar",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Le saco el anillo y lo tiro al horno del laboratorio",
+      "etiqueta": "Cortar el ciclo",
+      "visible": { "op": "npcFuera", "npc": "npc-bernardo" }
+    },
+    {
+      "id": "heredar",
+      "grupo": "decidir",
+      "orden": 91,
+      "final": true,
+      "intencion": "Me pongo el anillo de Bernardo",
+      "etiqueta": "Ponerse el anillo",
+      "visible": { "op": "npcFuera", "npc": "npc-bernardo" }
+    },
+    {
+      "id": "denunciar",
+      "grupo": "decidir",
+      "orden": 92,
+      "final": true,
+      "intencion": "Salgo de la casa a denunciar lo que sé",
+      "etiqueta": "Salir a denunciar lo que sabe",
+      "visible": {
+        "op": "y",
+        "de": [
+          { "op": "consecuencia", "contiene": "entró en combate real contra Bernardo Díaz" },
+          { "op": "no", "de": { "op": "npcFuera", "npc": "npc-bernardo" } }
+        ]
+      }
+    },
+    {
+      "id": "irse-vigesimo",
+      "grupo": "decidir",
+      "orden": 93,
+      "final": true,
+      "intencion": "Salgo de la casa sin mirar atrás",
+      "etiqueta": "Salir de la casa sin mirar atrás",
+      "visible": {
+        "op": "y",
+        "de": [
+          { "op": "consecuencia", "contiene": "entró en combate real contra Bernardo Díaz" },
+          { "op": "no", "de": { "op": "npcFuera", "npc": "npc-bernardo" } }
+        ]
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "cortar",
+      "title": "El vigésimo, vacío",
+      "condition": "El investigador le saca el anillo a Bernardo y corta el ciclo, sin saber si hacía falta que siguiera."
+    },
+    {
+      "id": "heredar",
+      "title": "El vigésimo, ocupado",
+      "condition": "El investigador se pone el anillo de Bernardo y la cuenta sigue, con otra mano."
+    },
+    {
+      "id": "denunciar",
+      "title": "Lo que se saca de la casa",
+      "condition": "El investigador escapa de la Casa con lo que averiguó, para llevarlo a un juzgado."
+    },
+    {
+      "id": "irse-vigesimo",
+      "title": "La quinta vez",
+      "condition": "El investigador sale de la Casa sin enfrentar a Bernardo hasta el final."
+    }
+  ],
+  "opening": "La puerta de la Casa de Díaz se abre antes de que la golpees dos veces.\n\nNo importa cómo llegaste esta noche: caminando desde el pueblo con lo puesto, volviendo con un sargento que va a llegar recién mañana, con una carta ya en camino hacia Villa Requena, o dando la vuelta a tres leguas y sintiendo que la vuelta no cuenta. La casa te esperaba igual.\n\n—Pase —dice la mujer que abre—. Lo estaban esperando desde la mañana.\n\nAdentro hay más luz de la que se ve desde afuera, y más silencio del que esa luz debería permitir."
+}

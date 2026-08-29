@@ -86,6 +86,14 @@ function aplicarEfecto(
       item_id: efecto.usa.itemId, times: efecto.usa.times ?? 1, cause: efecto.usa.cause,
     });
   }
+  if (efecto.traslada) {
+    run('transfer_item', {
+      item_id: efecto.traslada.itemId,
+      to: efecto.traslada.a,
+      carried: String(efecto.traslada.carried ?? false),
+      cause: efecto.traslada.cause,
+    });
+  }
   if (efecto.anillo) {
     const r = run('bind_ring', {
       item_id: efecto.anillo.itemId,

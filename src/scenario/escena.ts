@@ -171,6 +171,15 @@ export interface EfectoEscena {
   /** Registra que se usó un objeto. Destraba las propiedades por uso. */
   usa?: { itemId: string; times?: number; cause: string };
   /**
+   * Mueve un objeto a un nuevo dueño —investigador, NPC o lugar—, sin que
+   * sea el investigador quien lo agarra con sus propias manos. Es el
+   * `transfer_item` que la nota de `anillo` deja pendiente: para cuando un
+   * objeto cambia de manos como consecuencia de lo que pasó en la escena
+   * (se lo sacan a alguien, se lo entregan, queda tirado) y no porque el
+   * jugador lo tomó de un estante.
+   */
+  traslada?: { itemId: string; a: string; carried?: boolean; cause: string };
+  /**
    * El investigador se pone un anillo, y queda vinculado a él.
    *
    * Pide que ya lo lleve encima —el motor lo rechaza si no— porque ponerse

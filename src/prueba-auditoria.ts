@@ -191,10 +191,18 @@ async function auditar(esc: Scenario) {
   check('se llega a todas las localizaciones', sueltos.length === 0,
     `${Object.keys(esc.locations).length} lugares`);
 
-  const ida = conexionesDeIda(esc);
+  // El Vigésimo tiene tres pasajes sin vuelta a propósito: el sótano de la
+  // Casa de Díaz es la única parte de la campaña que rompe el formato libre
+  // (ROADMAP §3.2-duovicies) — una vez que se baja, no hay caminar de vuelta.
+  // No es un lugar inalcanzable ni un accidente: está declarado así porque
+  // la aventura decide que ya dejó de ser una investigación en ese punto.
+  const IDA_CONOCIDA = new Set(esc.id === 'el-vigesimo'
+    ? ['vestibulo→trastero-sotano', 'trastero-sotano→entrada-laberinto', 'entrada-laberinto→laboratorio']
+    : []);
+  const ida = conexionesDeIda(esc).filter((c) => !IDA_CONOCIDA.has(`${c.desde}→${c.hasta}`));
   for (const c of ida) console.log(`   ⚠ ${c.desde} → ${c.hasta} sin vuelta`);
-  check('ninguna conexión es de ida sin vuelta declarada', ida.length === 0,
-    ida.length ? `${ida.length}` : 'todas simétricas');
+  check('ninguna conexión es de ida sin vuelta declarada (fuera de las conocidas)', ida.length === 0,
+    ida.length ? `${ida.length}` : 'todas simétricas o ya conocidas');
 
   const perdidos = objetosPerdidos(esc);
   for (const o of perdidos) console.log(`   ✗ ${o}`);

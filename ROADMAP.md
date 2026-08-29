@@ -2109,6 +2109,88 @@ propia suite nueva, no por jugar.
 `npm run prueba:todo` completo, incluida la auditoría de las siete
 aventuras con el nuevo combate en el mapa.
 
+### 3.2-quatervicies El Vigésimo, escrita ✔ HECHA — séptimo Umbral, segundo acto
+
+Cierra el orden de trabajo de §3.2-terdecies. La Casa de Díaz, la misma
+noche que termina Agua Blanca — doce lugares, tres NPC nuevos, once temas de
+conversación, un combate obligatorio y cuatro finales que leen lo que pasó
+en la 7a. Adaptación por idea, no transcripción: ni el plano de la casa que
+se pegó en el chat ni el texto del módulo entraron a ningún archivo.
+
+**La planta baja y el primer piso se caminan libres**: vestíbulo, salón,
+comedor, cocina, despensa y biblioteca en la planta baja; pasillo,
+habitaciones de huéspedes y dormitorio de Bernardo en el primer piso.
+**El sótano rompe el molde**, como ya se había decidido:
+trastero → entrada al laberinto → laboratorio, sin conexión de vuelta
+declarada — la primera vez que la campaña usa un pasaje sin retorno a
+propósito, y por eso `prueba-auditoria.ts` ahora tiene una lista chica y
+explícita de conexiones de ida conocidas, sólo para esta aventura.
+
+**Los cuatro puentes.** Cada final de Agua Blanca abre El Vigésimo con su
+propio marco —`subir` ya está adentro, `llamar` vuelve con el sargento al
+otro día, `escribir` no puede dormir y sube igual, `irse` da la vuelta a
+tres leguas, pagando la frase que el propio final de `irse` ya había
+sembrado—. Implementado con cuatro temas de conversación de Ercilia,
+mutuamente excluyentes por `{op:'consecuencia', contiene:...}`; no hizo
+falta ningún campo nuevo del motor, sólo entender que la herencia entre
+campañas (`Herencia`/`sembrarHerencia`, que ya existía) hace exactamente
+este trabajo.
+
+**El sigilo hace algo de verdad.** Registrar el dormitorio de Bernardo y
+pasar al lado de lo que custodia el sótano son tiradas reales: fallar dega
+ruido (una consecuencia que se puede contar), y una pifia en el dormitorio
+manda al guardián arriba a ver qué fue ese golpe.
+
+**La audiencia con Bernardo es acotada de verdad**, sin inventar mecanismo
+nuevo: arranca en actitud 0, cada tema cuesta -10, y seis de los siete
+temas piden un piso de -30 —a los cuatro reales, la actitud ya está en -40
+y el resto queda cerrado—. Contesta todo (fundación, el anillo, el ciclo de
+treinta años, los tres desaparecidos de la 7a, el laberinto) y no confirma
+lo sellado (ni el Primer Rostro, ni qué es el Umbral, ni a Yog-Sothoth como
+explicación de nada), tal como fija v0.7 §7.
+
+**El combate es real y obligatorio.** Mismo motor que ya usa Cirilo en *El
+Invierno Debido*. Bernardo empezó con una ficha demasiado dura —25 PV,
+Pelea 65%, contraataque por defecto— y una investigadora de 11 PV moría en
+dos o tres asaltos casi siempre; bajado a 16 PV, Pelea 45%, esquiva por
+defecto, hasta que ganar o huir dejaron de ser un accidente de suerte y
+pasaron a ser una posibilidad real. `resolve_flee` (ya existente, sin
+salida de palabra para éste en particular) abre Denunciar/Irse; ganarle
+abre Cortar/Heredar.
+
+**Nombres propios, no los del módulo.** El familiar de Bernardo se llama
+Ahijado (sin "el" adelante, a propósito — con "el Ahijado" el clasificador
+lo confundía con Bernardo cada vez que una frase decía "el anillo" o "el
+laberinto", porque "el" es la primera palabra de su nombre y una de las más
+comunes del idioma). La entidad que aparece recién si alguien hereda el
+anillo no tiene nombre todavía en el texto — aparece una sola vez, en el
+desenlace de Heredar, sin confirmarse a sí misma.
+
+**Bugs que encontró escribirla, todos antes de jugar:**
+
+1. `{op:'no', de:[...]}` no es un array: es una condición sola. Cuatro
+   condiciones rotas, mismo error las cuatro veces.
+2. Una clave con tilde (`"cada treinta años"`) nunca matchea contra el texto
+   ya normalizado, que le sacó la tilde — el propio comentario de
+   `prueba-auditoria.ts` ya avisaba de este error exacto, y pasó igual.
+3. El familiar llamado "el Ahijado" secuestraba el objetivo de cualquier
+   pregunta a Bernardo que contuviera la palabra "el" —la mayoría—, porque
+   los dos están presentes en el mismo lugar y el clasificador prioriza el
+   primer nombre que aparece en el texto.
+4. Una frase propia («…es mirado de vuelta desde otro momento») coincidía
+   por casualidad con la cadena que `revisar:bundle` usa para cazar canon
+   sellado que se filtró al bundle público — no había ningún secreto
+   filtrándose, era una paráfrasis nueva de la Reciprocidad (que no está
+   sellada) tropezando con el detector. Reescrita.
+5. El combate contra Bernardo, tal como se diseñó la primera vez, era
+   letal en dos asaltos para una investigadora pregenerada. No lo encontró
+   ningún validador: lo encontró jugarlo de verdad con las herramientas
+   reales de combate, en la suite nueva.
+
+Suite propia en `prueba-el-vigesimo.ts`. `npm run prueba:todo` completo,
+incluida la auditoría con las conexiones de ida ya conocidas, y el build +
+`revisar:bundle`.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

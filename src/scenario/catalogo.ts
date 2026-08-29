@@ -23,6 +23,7 @@ import { INVIERNO_DEBIDO } from './inviernodebido.ts';
 import { SUENO_DEBIDO } from './suenodebido.ts';
 import { ORDEN_DEBIDO } from './ordendebido.ts';
 import { AGUA_BLANCA } from './aguablanca.ts';
+import { EL_VIGESIMO } from './elvigesimo.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -130,11 +131,19 @@ const ENTRADAS: EntradaCatalogo[] = [
     requiere: ['orden-debido'],
     continuacion: true,
   },
-  // El Vigésimo (séptimo Umbral, segundo acto) todavía no está escrito —
-  // diseño cerrado en ROADMAP §3.2-terdecies/§3.2-duovicies, contenido en
-  // construcción—. Entra acá, con `requiere: ['agua-blanca']` y
-  // `cuando: '1928-10-01'` (mismo día: `mesesEntre` ya está preparado para
-  // devolver 0 en ese caso, ver esa función), cuando esté listo para jugarse.
+  {
+    scenario: EL_VIGESIMO,
+    cuando: '1928-10-01',
+    epoca: 'La misma noche · la Casa de Díaz',
+    duracion: 'Una hora y media aproximadamente',
+    // Séptimo Umbral, segundo acto. La única transición de la campaña que se
+    // mide en horas y no en meses —`mesesEntre` devuelve 0 acá a propósito,
+    // ver el comentario de esa función— porque es la misma noche que terminó
+    // Agua Blanca. Los cuatro finales de la 7a llevan acá, cada uno con su
+    // propio puente de apertura.
+    requiere: ['agua-blanca'],
+    continuacion: true,
+  },
 ];
 
 /** El catálogo, en orden cronológico del universo. */

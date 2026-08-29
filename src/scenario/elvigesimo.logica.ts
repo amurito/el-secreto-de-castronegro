@@ -1,0 +1,264 @@
+/**
+ * LA LÓGICA DE LAS ESCENAS DE EL VIGÉSIMO — lo único que no puede ser dato.
+ *
+ * Séptimo Umbral, segundo acto. Todo lo demás vive en
+ * `elvigesimo.contenido.json`.
+ *
+ * Bernardo SÍ aparece acá —es la pieza central de la 7b— pero sigue sin
+ * confirmar lo sellado (v0.7 §7, y ver ROADMAP §3.2-terdecies). El combate
+ * contra él es real y es obligatorio como clímax; lo que se hace CON esa
+ * pelea —rematarlo, ponerse el anillo, huir, denunciar— es lo que abre los
+ * cuatro finales.
+ */
+
+import type { GameState } from '../shared/types.ts';
+import type { LogicaDeEscenas } from './cargarAventura.ts';
+import type { EfectoEscena } from './escena.ts';
+
+const ruido = (s: GameState) =>
+  s.consequences.filter((c) => c.description.includes('hizo ruido en la Casa')).length;
+
+export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
+  // ══ LA BIBLIOTECA ═════════════════════════════════════════════════════════
+
+  {
+    id: 'diario-turno',
+    prueba: (s) => (s.items['it-diario-bernardo']?.discoveredProperties.length ?? 0) > 0 ? null : ({
+      skill: 'buscar_libros', difficulty: 'regular',
+      reason: 'seguir la letra de Bernardo más allá de la página que el atril deja ver',
+      stakes_success: 'encontrás la lista que sigue después de la página abierta',
+      stakes_failure: 'páginas sueltas, sin orden que se entienda',
+    }),
+    resolver: ({ estado, tirada }) => {
+      if ((estado.items['it-diario-bernardo']?.discoveredProperties.length ?? 0) > 0) {
+        return { texto: ['Volvés a la lista de nombres. El último sigue sin tachar.'] };
+      }
+      if (!tirada?.exito) {
+        return { texto: ['Pasás páginas sin encontrar nada que siga a lo que ya leíste. La letra cambia demasiado entre una hoja y otra.'] };
+      }
+      return [
+        { descubre: { itemId: 'it-diario-bernardo', propertyId: 'p-diario-turno', how: 'siguiendo la letra de Bernardo más allá de la página del atril' } },
+        {
+          texto: [
+            'Más adelante, con la misma mano treinta años más vieja, hay una lista de nombres con una edad al lado de cada uno.\n\nEl último de la lista no tiene tachadura. Los anteriores, todos, sí.',
+          ],
+          exposicion: { amount: 6, source: 'diario:lista', cause: 'una lista de nombres tachados, uno por uno, salvo el último' },
+          pregunta: '¿Por qué el último nombre de la lista de Bernardo todavía no tiene tachadura?',
+        },
+      ];
+    },
+  },
+
+  // ══ EL DORMITORIO DE BERNARDO ═════════════════════════════════════════════
+
+  {
+    id: 'dormitorio-buscar-sigilo',
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'registrar un cuarto que nadie te invitó a registrar sin que se note desde el pasillo',
+      stakes_success: 'nadie se entera de que estuviste acá',
+      stakes_failure: 'un ruido que se escucha más lejos de lo que pensaste',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        const critico = tirada?.grado === 'fumble';
+        const efectos: EfectoEscena[] = [{
+          texto: critico
+            ? ['Golpeás el ropero con la cadera al dar la vuelta, y el ruido no se queda en el cuarto: baja por la escalera, entero.\n\nAlgo, abajo, deja de hacer lo que estaba haciendo.']
+            : ['Un cajón que no cierra parejo hace un ruido chico, seco, que en cualquier otra casa no importaría.'],
+          consecuencia: {
+            description: 'El investigador hizo ruido en la Casa, registrando el dormitorio principal sin permiso.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Alguien, en algún piso de la casa, sabe que hubo un ruido que no tenía que estar.',
+          },
+        }];
+        if (critico) {
+          efectos.push({
+            texto: ['Pasos, abajo, que no son los de Ercilia: más pesados, sin apuro, viniendo hacia la escalera.'],
+            combate: { accion: 'atacar', npcId: 'npc-guardian-sotano', armaId: 'desarmado' },
+            iniciaCombate: { npcIds: ['npc-guardian-sotano'] },
+          });
+        }
+        return efectos;
+      }
+      return {
+        texto: [
+          'Te movés despacio, contra la pared, evitando la tabla que ya viste que cruje.\n\nNo hacía falta tanto cuidado: nadie sube a este piso a esta hora salvo vos.',
+        ],
+      };
+    },
+  },
+
+  // ══ EL GUARDIÁN DEL SÓTANO ════════════════════════════════════════════════
+
+  {
+    id: 'sotano-pasar-sigilo',
+    prueba: (s) => ({
+      skill: 'sigilo',
+      difficulty: ruido(s) > 0 ? 'hard' : 'regular',
+      reason: 'pasar al lado de algo que custodia esa puerta hace más generaciones que las que nadie cuenta',
+      stakes_success: 'llegás a la entrada del laberinto sin que note que pasaste',
+      stakes_failure: 'te ve pasar, y no hace falta que diga nada para que se note',
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: [
+            'Se mueve apenas, orientando la cabeza hacia un sonido que no hiciste vos, y en ese segundo pasás.\n\nLlegás a la puerta del fondo sin que gire a mirarte.',
+          ],
+        };
+      }
+      return {
+        texto: [
+          'Gira la cabeza antes de que termines de dar el primer paso. No hace falta que diga nada: los dos saben que ya te vio.',
+        ],
+      };
+    },
+  },
+
+  {
+    id: 'sotano-enfrentar',
+    resolver: () => ({
+      texto: [
+        'No hay otra manera de pasar por esta puerta que no sea al lado de él, y él ya decidió que no vas a pasar gratis.',
+      ],
+      combate: { accion: 'atacar', npcId: 'npc-guardian-sotano', armaId: 'desarmado' },
+      iniciaCombate: {
+        npcIds: ['npc-guardian-sotano'],
+        salidaPacifica: {
+          npcId: 'npc-guardian-sotano',
+          pistaCalma: {
+            description: 'Se hizo a un lado sin que quede claro si entendió una palabra de lo que le dijiste, o si simplemente ya estaba autorizado y vos no lo sabías.',
+            kind: 'experiential',
+            source: 'el trastero del sótano',
+            reliability: 'reliable',
+          },
+          consecuenciaDisparo: {
+            description: 'En el sótano de la Casa de Díaz, el investigador le disparó a lo que custodiaba la entrada al laberinto.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Usó un arma de fuego contra algo que no llegó a identificar del todo, adentro de la propia casa de Bernardo.',
+          },
+        },
+      },
+      exposicion: { amount: 8, source: 'sotano:guardian', cause: 'pelear cuerpo a cuerpo con algo que ya no tiene nombre para nadie' },
+    }),
+  },
+
+  // ══ BERNARDO ══════════════════════════════════════════════════════════════
+
+  {
+    // El clímax obligatorio. No hay salida de palabra: se entra en combate de
+    // verdad, y lo que se hace DESPUÉS —rematarlo, ponerse el anillo, huir,
+    // salir a denunciar— es lo que abre los cuatro finales. `resolve_flee`
+    // sigue disponible dentro del combate como cualquier otro: no hacía falta
+    // inventar una salida nueva para eso.
+    id: 'bernardo-enfrentar',
+    resolver: () => ({
+      texto: [
+        'Bernardo no se para. Ni siquiera suelta al Ahijado del brazo del sillón.\n\n—Ya lo veía venir —dice, y por primera vez en trescientos años no suena aliviado de que así sea.',
+      ],
+      combate: { accion: 'atacar', npcId: 'npc-bernardo', armaId: 'desarmado' },
+      iniciaCombate: { npcIds: ['npc-bernardo'] },
+      consecuencia: {
+        description: 'El investigador entró en combate real contra Bernardo Díaz, en el laboratorio de la Casa.',
+        scope: 'campaign',
+        permanent: true,
+        worldReminder: 'Hubo pelea de verdad con Bernardo Díaz, con las manos o con lo que tenía encima. Lo que haya pasado después de eso es harina de otro costal.',
+      },
+    }),
+  },
+
+  // ══ DESENLACES ════════════════════════════════════════════════════════════
+
+  {
+    id: 'fin-cortar',
+    resolver: () => ({
+      traslada: { itemId: 'it-anillo-rubi', a: 'perdido', carried: false, cause: 'lo tira al horno del laboratorio antes de arrepentirse' },
+      consecuencia: {
+        description: 'El investigador le sacó el anillo a Bernardo Díaz y lo destruyó en el horno del laboratorio, cortando el ciclo sin saber si hacía falta que siguiera.',
+        scope: 'world',
+        permanent: true,
+        worldReminder: 'El anillo de rubí ya no existe. Nadie sabe todavía qué significa eso para el pueblo, ni si significa algo.',
+      },
+      desenlace: {
+        id: 'cortar', title: 'El vigésimo, vacío',
+        text: [
+          'El anillo pesa en la mano más de lo que un anillo debería pesar, y el horno del laboratorio sigue prendido, como si alguien lo mantuviera encendido justo para esto.',
+          'Lo tirás adentro antes de terminar de pensarlo, porque pensarlo un segundo más era no hacerlo nunca.',
+          'No pasa nada que se pueda describir. No hay grito, no hay luz, no hay temblor. El Ahijado deja de moverse en el brazo del sillón, despacio, como algo que se queda dormido de verdad por primera vez.',
+          'El mausoleo va a tener veinte lugares y diecinueve momias, para siempre. El vigésimo va a seguir vacío.\n\nNo sabés si estaba bien que siguiera. Ahora no va a seguir, y esa es la única certeza que te llevás de la Casa de Díaz.',
+        ],
+      },
+    }),
+  },
+
+  {
+    id: 'fin-heredar',
+    resolver: () => ({
+      traslada: { itemId: 'it-anillo-rubi', a: 'investigador', carried: true, cause: 'se lo saca de la mano a Bernardo y se lo pone antes de que nadie pueda impedirlo' },
+      anillo: {
+        itemId: 'it-anillo-rubi',
+        cause: 'ponerse el anillo de un hombre de trescientos años, en su propio laboratorio, con el cuerpo todavía tibio',
+        removalLethal: true,
+      },
+      cordura: { amount: 8, cause: 'sentir que el anillo lo sostiene a uno igual que sostenía al anterior' },
+      consecuencia: {
+        description: 'El investigador se puso el anillo de rubí de Bernardo Díaz en el laboratorio de la Casa, y quedó vinculado a él.',
+        scope: 'world',
+        permanent: true,
+        worldReminder: 'Hay un vigésimo lugar en el mausoleo, y ahora tiene nombre. La cuenta de Castronegro sigue, con otra mano.',
+      },
+      desenlace: {
+        id: 'heredar', title: 'El vigésimo, ocupado',
+        text: [
+          'Se lo sacás de la mano izquierda mientras todavía respira, porque después de muerto no vas a poder, y te lo ponés vos antes de terminar de decidir si es lo que querés hacer.',
+          'No arde. No aprieta. Se acomoda, como si el dedo hubiera estado esperando ese anillo específico desde antes de que nacieras.',
+          'Y ves, en el mismo segundo, algo que no le habías preguntado a nadie: una forma, del otro lado de algo que no es agua ni es espejo, que te estaba esperando con más paciencia de la que vos tuviste con Bernardo.\n\nNo dice su nombre. Vos tampoco le preguntás el tuyo.',
+          'El Ahijado se acerca, despacio, y se enrosca en tu brazo exactamente como se enroscaba en el de Bernardo.\n\nEl mausoleo tiene veinte lugares. El vigésimo ya no está vacío, y ya no tiene la fecha en blanco: tiene la de hoy.',
+        ],
+      },
+    }),
+  },
+
+  {
+    id: 'fin-denunciar-vigesimo',
+    resolver: () => ({
+      consecuencia: {
+        description: 'El investigador escapó de la Casa de Díaz sin el anillo, para llevar lo que sabe a un juzgado.',
+        scope: 'world',
+        permanent: true,
+        worldReminder: 'Hay una denuncia en algún lado sobre la Casa de Díaz, presentada por alguien que estuvo ahí adentro. Bernardo sigue vivo.',
+      },
+      desenlace: {
+        id: 'denunciar', title: 'Lo que se saca de la casa',
+        text: [
+          'Salís de la Casa sin el anillo y sin mirar atrás, con lo que ya sabés pesando más que cualquier objeto que hubieras podido llevarte.',
+          'Ya lo probaste una vez, con otra denuncia y otro juzgado: un papel bien hecho no es lo mismo que una respuesta. Lo hacés igual, porque la alternativa era no hacer nada, y no hacer nada ya lo hiciste demasiadas veces esta noche.',
+          'Bernardo se va a quedar en su laboratorio, con el Ahijado, esperando la próxima visita que sepa llegar tan lejos.\n\nNo sabés cuánto tiempo va a pasar hasta esa próxima vez. Trescientos años, hasta ahora, no le enseñaron impaciencia.',
+        ],
+      },
+    }),
+  },
+
+  {
+    id: 'fin-irse-vigesimo',
+    resolver: () => ({
+      consecuencia: {
+        description: 'El investigador salió de la Casa de Díaz sin el anillo y sin denunciar nada, la misma noche que se enfrentó a Bernardo.',
+        scope: 'world',
+        permanent: true,
+        worldReminder: 'Estuvo en la Casa, peleó, y se fue sin llevarse ni el anillo ni una decisión. Bernardo sigue exactamente donde estaba.',
+      },
+      desenlace: {
+        id: 'irse-vigesimo', title: 'La quinta vez',
+        text: [
+          'Salís de la Casa por donde entraste, con la luz de la araña del vestíbulo todavía prendida a tus espaldas.',
+          'Es la quinta vez que llegás hasta el punto exacto donde había que decidir algo, y elegís el camino de vuelta. Las cuatro anteriores tuviste una razón buena. Ésta también la tenés, y esta vez la razón es que ya peleaste, ya sangraste un poco o hiciste sangrar, y no te alcanzó para saber qué hacer con lo que quedó parado en el laboratorio.',
+          'Castronegro va a seguir llamándose Castronegro. La Casa va a seguir en la loma. Y en algún momento, no esta noche, alguien va a tener que volver a subir.',
+        ],
+      },
+    }),
+  },
+];
