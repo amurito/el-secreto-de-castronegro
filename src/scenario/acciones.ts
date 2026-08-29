@@ -226,6 +226,9 @@ export function accionesDisponibles(s: GameState, escenario: Scenario): Opcion[]
   for (const destino of loc?.connections ?? []) {
     const d = s.world.locations[destino];
     if (!d) continue;
+    // Una salida que la aventura declaró oculta no genera botón hasta que su
+    // condición se cumpla. Ver `Scenario.conexionOculta`.
+    if (escenario.conexionOculta?.(s, aqui, destino)) continue;
     out.push({
       id: `ir:${destino}`,
       etiqueta: `${d.visited ? 'Volver' : 'Ir'} ${conA(d.name)}`,

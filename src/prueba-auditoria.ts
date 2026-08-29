@@ -120,15 +120,20 @@ function estadosDeBanco(s: GameState, esc: Scenario): GameState[] {
 async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
   const id = await createCampaign(esc, 'AUDIT', semilla.repeat(64).slice(0, 64));
   const veces = new Map<string, number>();
-  // `ir:plaza` es UN SOLO id de acción sin importar desde qué punta del mapa
-  // se vuelva, así que un mapa en estrella con seis puntas (Agua Blanca, con
-  // la fonda y el bazar) gasta ese cupo sólo volviendo, antes de agotar nada
-  // más. Con 4 el andador quedaba varado en la fonda sin poder volver a
-  // buscar el bazar — no era un lugar inalcanzable, era el propio cupo del
-  // andador quedándose corto. 6 le da margen para un mapa más grande sin
-  // dejar de cazar una acción de verdad rota (que sigue fallando siempre,
-  // la tire seis veces o sesenta).
+  // El cupo de reintentos existe para que el andador no se cuelgue insistiendo
+  // en una acción que nunca cede, y vale sólo para eso: para las acciones.
+  //
+  // Los MOVIMIENTOS quedan fuera a propósito. `ir:vestibulo` es un solo id sin
+  // importar desde qué cuarto se vuelva, así que en un mapa con un hub —la
+  // planta baja de la Casa de Díaz, con cinco puertas al vestíbulo— el cupo se
+  // gastaba nada más que yendo y viniendo, y el andador se quedaba sin poder
+  // volver a cruzar el mapa aunque todavía le faltaran cuartos por ver.
+  // Pasó dos veces (Agua Blanca con la fonda y el bazar; El Vigésimo con el
+  // primer piso y el sótano) y las dos veces se parcheó subiendo el número:
+  // el problema no era el número. Caminar no puede agotarse; el techo real de
+  // este recorrido es `turnos`.
   const REINTENTOS = 6;
+  const esMovimiento = (id: string) => id.startsWith('ir:');
 
   let murio = false;
   let atrapado = false;
@@ -146,7 +151,8 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
     if (t.investigator.status !== 'alive') { murio = true; break; }
     const todas = accionesDisponibles(t.state, esc);
     const disp = todas.filter((o) => !o.final);
-    const sinAgotar = (o: { id: string }) => (veces.get(o.id) ?? 0) < REINTENTOS;
+    const sinAgotar = (o: { id: string }) =>
+      esMovimiento(o.id) || (veces.get(o.id) ?? 0) < REINTENTOS;
 
     const aqui = disp.filter((o) => o.grupo !== 'mover' && sinAgotar(o));
     let sig: (typeof disp)[number] | undefined = aqui[0];
@@ -178,7 +184,32 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
     t.narrate(r.narration, r.options);
     await t.commit();
   }
-  return { state: (await loadState(id)).state, murio, atrapado };
+  const state = (await loadState(id)).state;
+
+  // ¿Quedó del otro lado de un pasaje sin retorno?
+  //
+  // El Vigésimo baja al sótano de la Casa de Díaz y ya no se puede volver
+  // —está declarado así a propósito, ver ROADMAP §3.2-duovicies—. El andador
+  // prefiere lo no visitado, así que apenas se destraba la escalera baja, y
+  // desde abajo el resto de la casa deja de existir para él. Eso NO es un
+  // lugar mal conectado: es la aventura haciendo lo que dice que hace, y le
+  // podría pasar igual a cualquier jugador que baje temprano.
+  //
+  // Se calcula sin listas escritas a mano: BFS desde donde terminó, y si
+  // ninguno de los lugares que le faltan se alcanza desde ahí, la cobertura
+  // del mapa deja de ser exigible —mismo criterio que ya se usa con `murio`.
+  const alcanzables = new Set<string>([state.world.currentLocation]);
+  const cola = [state.world.currentLocation];
+  while (cola.length) {
+    const actual = cola.shift()!;
+    for (const v of state.world.locations[actual]?.connections ?? []) {
+      if (!alcanzables.has(v)) { alcanzables.add(v); cola.push(v); }
+    }
+  }
+  const faltan = Object.values(state.world.locations).filter((l) => !l.visited);
+  const sinRetorno = faltan.length > 0 && faltan.every((l) => !alcanzables.has(l.id));
+
+  return { state, murio, atrapado, sinRetorno };
 }
 
 async function auditar(esc: Scenario) {
@@ -197,7 +228,7 @@ async function auditar(esc: Scenario) {
   // No es un lugar inalcanzable ni un accidente: está declarado así porque
   // la aventura decide que ya dejó de ser una investigación en ese punto.
   const IDA_CONOCIDA = new Set(esc.id === 'el-vigesimo'
-    ? ['vestibulo→trastero-sotano', 'trastero-sotano→entrada-laberinto', 'entrada-laberinto→laboratorio']
+    ? ['cocina→trastero-sotano', 'trastero-sotano→entrada-laberinto', 'entrada-laberinto→laboratorio']
     : []);
   const ida = conexionesDeIda(esc).filter((c) => !IDA_CONOCIDA.has(`${c.desde}→${c.hasta}`));
   for (const c of ida) console.log(`   ⚠ ${c.desde} → ${c.hasta} sin vuelta`);
@@ -352,14 +383,17 @@ async function auditar(esc: Scenario) {
 
   // ── 3. Recorrido real ────────────────────────────────────────────────────
   console.log('\nEL RECORRIDO REAL');
-  const { state: final, murio, atrapado } = await recorrerAFondo(esc, 'j');
+  const { state: final, murio, atrapado, sinRetorno } = await recorrerAFondo(esc, 'j');
   if (murio) {
     console.log('  el investigador murió en el intento —recorrido cortado ahí, a propósito—');
   }
   if (atrapado) {
     console.log('  la aventura obligó a decidir un desenlace ahí mismo —recorrido cortado a propósito, no exploró más—');
   }
-  const cortado = murio || atrapado;
+  if (sinRetorno) {
+    console.log('  el recorrido cruzó un pasaje sin retorno y lo que le falta quedó del otro lado —a propósito, no es un lugar mal conectado—');
+  }
+  const cortado = murio || atrapado || sinRetorno;
   const conseguidas = new Set(final.board.clues.map((c) => c.description));
   const docsObtenidos = Object.values(final.documents).filter((d) => d.obtainedAt).length;
   const propsVistas = Object.values(final.items)

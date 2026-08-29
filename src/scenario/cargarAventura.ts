@@ -130,5 +130,14 @@ export function cargarAventura(
     endings: contenido.endings,
     opening: contenido.opening,
     ...(contenido.bloqueoDecision ? { bloqueoDecision: conEstado(contenido.bloqueoDecision) } : {}),
+    ...(contenido.conexionesOcultas?.length
+      ? {
+        conexionOculta: (s: GameState, desde: string, hasta: string) =>
+          contenido.conexionesOcultas!.some(
+            (c) => c.desde === desde && c.hasta === hasta
+              && !evaluarCondicion(c.hastaQue, { estado: s }),
+          ),
+      }
+      : {}),
   };
 }

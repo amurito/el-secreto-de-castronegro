@@ -58,6 +58,12 @@ function rivalesReales(state: GameState): RivalReal[] {
     .filter((n): n is NonNullable<typeof n> => Boolean(n?.combate))
     .map((n) => ({
       id: n.id, name: n.name,
+      // La descripción del NPC, que el resto del juego ya muestra al
+      // encontrarse con alguien, no llegaba a la pantalla de combate: se
+      // entraba a pelear contra un nombre y una barra, sin saber contra qué.
+      // Decidir entre pelear, huir o intimidar sin eso es decidir a ciegas.
+      // Reportado jugando.
+      descripcion: n.description,
       estadoCombate: estadoDeCombate(n.combate!.hp, n.combate!.maxHp),
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
       derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,

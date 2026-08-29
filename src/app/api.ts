@@ -132,6 +132,8 @@ export interface GameApi {
 
 export interface RivalReal {
   id: string; name: string; estadoCombate: EstadoDeCombate;
+  /** La misma descripción que el NPC muestra fuera del combate: contra qué se está peleando. */
+  descripcion: string;
   arma: string; derribado?: boolean; agarrado?: boolean;
 }
 

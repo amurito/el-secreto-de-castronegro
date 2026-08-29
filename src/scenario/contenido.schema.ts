@@ -94,6 +94,12 @@ export interface ContenidoAventura {
   opening: string;
   /** Ver `Scenario.bloqueoDecision`. Opcional: sin esto, nada cambia. */
   bloqueoDecision?: Condicion;
+  /**
+   * Ver `Scenario.conexionOculta`. Cada entrada esconde el botón de «ir» de
+   * `desde` a `hasta` MIENTRAS `hasta_que` sea falsa. Opcional: sin esto,
+   * todas las conexiones se ofrecen desde el principio, como siempre.
+   */
+  conexionesOcultas?: Array<{ desde: string; hasta: string; hastaQue: Condicion }>;
 }
 
 /** Re-exportado para que el companion de lógica no tenga que importar de dos lugares. */

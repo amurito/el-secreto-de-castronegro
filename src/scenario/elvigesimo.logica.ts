@@ -174,6 +174,28 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     }),
   },
 
+  // ══ BERNARDO CAÍDO: EL MOMENTO DEL ANILLO ═════════════════════════════════
+
+  {
+    // Faltaba el beat entre ganar la pelea y elegir qué hacer: se pasaba de
+    // un asalto de combate directo a los cuatro botones de desenlace, sin que
+    // el anillo —que es de lo que trata toda la aventura— llegara a estar en
+    // cuadro. Reportado jugando. No es un desenlace: es la pausa antes.
+    id: 'bernardo-caido',
+    resolver: () => ({
+      texto: [
+        'Está en el piso, contra la pata de la mesa de piedra, y respira. Trescientos años y respira como cualquiera que acaba de perder una pelea.',
+        'La mano izquierda está abierta hacia arriba, con el anillo puesto. No la cierra. No la esconde. Si quisiera dificultarte esto, no lo estaría haciendo así.',
+        '—Sáquemelo —dice—. O póngaselo. Las dos cosas terminan conmigo, y a esta altura las dos me dan igual.\n\n—Lo que no le va a dar igual a usted es cuál de las dos eligió, y eso lo va a saber recién dentro de unos años.',
+        'El Ahijado bajó del sillón. No se acerca a vos ni a él: se queda en el medio, mirando la mano abierta, esperando.',
+        '—Decida rápido —dice Bernardo—. No por mí. Porque el que decide despacio, en esta casa, termina decidiendo lo que la casa quiera.',
+      ],
+      exposicion: { amount: 9, source: 'laboratorio:anillo', cause: 'el anillo ofrecido en una mano abierta' },
+      estabilidad: { amount: -8, cause: 'que el que perdió la pelea te ofrezca las dos salidas con la misma voz' },
+      pregunta: '¿Por qué le da lo mismo a Bernardo cuál de las dos elijas?',
+    }),
+  },
+
   // ══ DESENLACES ════════════════════════════════════════════════════════════
 
   {

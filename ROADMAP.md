@@ -2279,6 +2279,94 @@ de arranque, así que React ahora sí remonta entre uno y otro.
   de Herminio sin pagar nada; no hay ningún sistema de plata o Crédito
   implementado todavía en ningún lado del motor.
 
+### 3.2-septvicies Tercer playtest: el sótano se busca, Bernardo pelea, y el anillo tiene su momento
+
+#### Conexiones ocultas: función nueva del motor
+
+Lo que en §3.2-sexvicies quedó anotado como «pide una función nueva» se
+construyó: **`Scenario.conexionOculta`**. Hasta acá toda conexión declarada
+generaba su botón de «ir» desde el primer turno —el mapa no tenía forma de
+esconder nada— y por eso el sótano de la Casa de Díaz, que la ficción trata
+como secreto, se ofrecía en la lista como cualquier puerta.
+
+Ahora el contenido puede declarar `conexionesOcultas: [{desde, hasta,
+hastaQue}]`, y `accionesDisponibles` no genera el botón hasta que la
+condición se cumpla. La localización sigue conectada para la auditoría de
+alcanzabilidad: lo único que cambia es cuándo aparece.
+
+**En El Vigésimo**: la escalera al sótano se mudó del vestíbulo a la cocina
+—detrás de una puerta angosta sin picaporte, con su propio detalle
+examinable y tirada de Descubrir— y sólo se abre con esa pista MÁS tres
+pistas de la planta baja. El sótano dejó de ser una salida y pasó a ser un
+hallazgo.
+
+#### Bernardo peleaba de mentira
+
+Reportado: «lo derroté muy fácilmente derribándolo y atacando». La causa no
+era el balance sino una regla del motor que no se había mirado al escribirlo:
+`ordenDeAsalto` excluye al NPC objetivo, así que **el rival de un combate
+sólo devuelve el golpe si su `defensaPorDefecto` es `contraataca`**. Bernardo
+estaba en `esquiva` —puesto ahí en §3.2-quatervicies justamente porque en
+`contraataca` mataba a una investigadora en dos asaltos— y en `esquiva` no
+podía tocar a nadie nunca: la pelea era un saco de arena.
+
+Vuelto a `contraataca`, con los números medidos y no adivinados: **veinte
+peleas simuladas por configuración**. Con el original (25 PV, Pelea 65%)
+Elena Sartori moría 19 de 20; con el actual (14 PV, Pelea 30%) gana 3 de 20.
+Ver más abajo lo que esto deja abierto.
+
+#### Lo demás del reporte
+
+- **El Ahijado no se explicaba.** Aparecía en la descripción del laboratorio
+  y en un desenlace, sin que nadie dijera nunca qué es. Ahora la descripción
+  aclara el nombre y hay un tema propio (`b-ahijado`): Bernardo cuenta que
+  apareció el mismo año y en el mismo lugar que el anillo, que no come, que
+  no envejece, y que se compromete a criarlo «porque el que tenía que
+  criarlo ya no puede» —una pregunta abierta más, no una respuesta cerrada—.
+- **«Lo que se saca de la casa» era inalcanzable si ganabas.** `denunciar` e
+  `irse-vigesimo` pedían que Bernardo siguiera en pie, así que vencerlo
+  borraba dos de los cuatro finales. Ahora los cuatro conviven: ganar agrega
+  `cortar` y `heredar`, no reemplaza nada.
+- **No había ningún momento del anillo.** Se pasaba del último asalto a los
+  botones de desenlace, sin que el objeto del que trata la aventura entera
+  llegara a estar en cuadro. Nueva escena `bernardo-caido`: en el piso, con
+  la mano abierta, ofreciéndote las dos salidas con la misma voz.
+- **No se sabía contra qué se peleaba.** La pantalla de combate mostraba
+  nombre, arma y una barra. Ahora muestra también la descripción del NPC, la
+  misma que el juego ya da al encontrárselo fuera del combate.
+
+#### Dos arreglos de la propia auditoría
+
+1. **El cupo de reintentos del andador no puede aplicarse a caminar.**
+   `ir:vestibulo` es un solo id sin importar desde qué cuarto se vuelva, así
+   que en un mapa con hub el cupo se gastaba yendo y viniendo. Ya se había
+   parcheado subiendo el número dos veces (§3.2-unvicies); el problema no era
+   el número. Los movimientos quedan fuera del cupo: el techo del recorrido
+   es la cuenta de turnos.
+2. **Un pasaje sin retorno no es un mapa mal conectado.** El andador prefiere
+   lo no visitado, así que baja al sótano apenas se destraba y desde ahí el
+   resto de la casa deja de existir para él —exactamente lo que le pasaría a
+   un jugador que baje temprano—. La auditoría ahora lo detecta sola, con un
+   BFS desde donde terminó el recorrido, y deja de exigir cobertura total en
+   ese caso, igual que ya hacía cuando el investigador se muere.
+
+#### Lo que esto deja abierto, y es decisión de diseño
+
+**La pelea contra Bernardo no se puede balancear con un solo número.** Los
+datos medidos: Elena Sartori (médica rural, Pelea 25%) gana 3 de 20; un
+investigador de combate con Pelea 70% lo gana casi siempre. No hay valor de
+PV que haga la pelea difícil para el segundo y posible para la primera —eso
+es CoC funcionando como funciona—, y como `cortar` y `heredar` dependen de
+ganarla, **hoy dos de los cuatro finales son prácticamente inalcanzables
+para un investigador que no sea de combate**.
+
+La salida no es tunear: es dar una segunda vía para quitarle el anillo que
+no pase por Pelea, que es además lo que dice el canon (v0.7 §5.3: quitarlo
+mata al portador). Sin escribir todavía.
+
+Sigue pendiente de §3.2-sexvicies: aviso de pérdida de Cordura en el momento,
+y economía para el bazar de Herminio.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

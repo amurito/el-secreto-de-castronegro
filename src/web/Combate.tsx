@@ -163,6 +163,11 @@ export function Combate({
             {estado?.activeCombat?.reason && estado.activeCombat.reason !== 'lo dispuso la escena' && (
               <p className="sim-sub">{estado.activeCombat.reason}</p>
             )}
+            {/* Contra QUÉ se pelea. Sin esto se entraba a decidir entre pelear,
+                huir o intimidar viendo sólo un nombre y una barra. */}
+            {elegido?.descripcion && (
+              <p className="sim-sub"><b>{elegido.name}.</b> {elegido.descripcion}</p>
+            )}
           </div>
         </header>
 

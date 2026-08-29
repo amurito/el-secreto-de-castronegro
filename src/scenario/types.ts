@@ -83,4 +83,19 @@ export interface Scenario {
    * comporta exactamente como antes.
    */
   bloqueoDecision?: (s: GameState) => boolean;
+  /**
+   * Salidas que existen en el mapa pero que todavía no se ofrecen como botón.
+   *
+   * Hasta acá, TODA conexión declarada generaba su botón de «ir» desde el
+   * primer turno: el mapa no tenía forma de esconder nada, y un pasaje que la
+   * ficción trata como secreto —la escalera al sótano de la Casa de Díaz, en
+   * El Vigésimo— se ofrecía en la lista como cualquier otra puerta. Reportado
+   * jugando.
+   *
+   * Devuelve `true` si la conexión `desde → hasta` TODAVÍA está oculta. La
+   * localización sigue existiendo y conectada para la auditoría de
+   * alcanzabilidad —no es un lugar suelto—: lo único que cambia es cuándo
+   * aparece el botón. Sin declararlo, una aventura se comporta como antes.
+   */
+  conexionOculta?: (s: GameState, desde: LocationId, hasta: LocationId) => boolean;
 }
