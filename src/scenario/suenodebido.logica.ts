@@ -53,6 +53,9 @@ const conMaletin = (s: GameState) =>
 /** Lleva su propia cámara —Tomás, o quien haya nacido con `Ocupacion.itemInicial` de fotógrafo/periodista. */
 const conCamara = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-camara-fotografica' }, { estado: s });
+/** Lleva su propio cuaderno de anotaciones ocultas —`Ocupacion.itemInicial` de ocultista. */
+const conCuaderno = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-cuaderno-ocultista' }, { estado: s });
 const consecuencia = (s: GameState, frag: string) =>
   s.consequences.some((c) => c.description.includes(frag));
 const documento = (s: GameState, id: string) => Boolean(s.documents[id]?.obtainedAt);
@@ -552,17 +555,19 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       stakes_success: 'ver que alguien la compone, y con qué criterio',
       stakes_failure: 'un tarro de tierra roja con una brocha adentro',
     }),
-    resolver: ({ tirada }) => ({
+    resolver: ({ estado, tirada }) => {
+      const exito = Boolean(tirada?.exito) || conCuaderno(estado);
+      return {
       texto: [
         'El tarro está abierto y la brocha tiene la cerda apelmazada de este invierno. Nadie lo guardó bien.',
-        tirada?.exito
+        exito
           ? 'Contra la luz de la ventana, el polvo rojo no es un solo polvo. Hay una fracción más clara y más fina, molida aparte y mezclada después, y no está repartida al azar: está en la misma proporción en la costra vieja del fondo que en la cerda de este año.'
           : 'Tierra colorada molida, del color de la sangre vieja. Nada que un tarro de pintura de campo no tenga.',
-        tirada?.exito
+        exito
           ? 'Eso quiere decir que la mezcla no se improvisa. Que alguien la compone, que la compuso siempre igual, y que la receta sobrevivió a las cuatro manos que llevaron el libro y a los nueve apellidos de la primera página. La costumbre no es pintar. La costumbre es preparar esto y después pintar con esto.'
           : '',
       ].filter(Boolean),
-      ...(tirada?.exito ? {
+      ...(exito ? {
         descubre: {
           itemId: 'it-almagre', propertyId: 'p-almagre-molido',
           how: 'mirando el polvo contra la luz en vez de mirar el color',
@@ -573,7 +578,8 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           kind: 'physical' as const, source: 'el tarro de la escribanía', reliability: 'reliable' as const,
         }],
       } : {}),
-    }),
+      };
+    },
   },
 
   // ══ LAS TRES NOCHES ═════════════════════════════════════════════════════════
