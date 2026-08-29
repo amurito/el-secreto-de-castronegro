@@ -22,6 +22,9 @@ const pista = (s: GameState, frag: string) => s.board.clues.some((c) => c.descri
 /** Lleva su propio instrumental —Elena, o quien haya nacido con `Ocupacion.itemInicial` de médico rural. */
 const conMaletin = (s: GameState) =>
   evaluarCondicion({ op: 'lleva', item: 'it-maletin-medico' }, { estado: s });
+/** Lleva su propio sello y protocolo notarial —`Ocupacion.itemInicial` de escribano. */
+const conProtocolo = (s: GameState) =>
+  evaluarCondicion({ op: 'lleva', item: 'it-sello-notarial' }, { estado: s });
 const propiedadVista = (s: GameState, item: string) =>
   (s.items[item]?.discoveredProperties.length ?? 0) > 0;
 const oculta = (s: GameState, item: string) => s.items[item]?.hiddenProperties[0]?.description ?? '';
@@ -435,7 +438,7 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
       if (propiedadVista(estado, 'it-libreta')) {
         return { texto: [`Volvés sobre la jornada del 11 de febrero. ${oculta(estado, 'it-libreta')}`] };
       }
-      if (!tirada?.exito) {
+      if (!tirada?.exito && !conProtocolo(estado)) {
         return { texto: ['Columnas de rumbos y distancias, todo prolijo, todo firmado. Sin saber qué buscás, es sólo trabajo bien hecho.'] };
       }
       return [
