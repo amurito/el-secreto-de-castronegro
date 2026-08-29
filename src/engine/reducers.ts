@@ -147,6 +147,17 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'RING_BONDED': {
+      const p = ev.payload as P.RingBondedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      // `bondedAt` es el id de ESTE evento: el vínculo queda anclado al punto
+      // exacto del log en que se produjo, que es lo único que después permite
+      // reconstruir cuándo empezó a contar.
+      inv.ringBond = { itemId: p.itemId, bondedAt: ev.id, removalLethal: p.removalLethal };
+      break;
+    }
+
     case 'BACKSTORY_REVISED': {
       const p = ev.payload as P.BackstoryRevisedPayload;
       const inv = cloneInvestigator(s, p.investigatorId);

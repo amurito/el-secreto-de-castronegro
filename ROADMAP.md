@@ -1603,7 +1603,8 @@ prueba, y sin contenido nuevo encima.
 #### Orden de trabajo
 
 1. ~~Las tres habilidades, con prueba propia.~~ ✔ HECHO — §3.2-quaterdecies
-2. La herramienta del anillo (`RingBond`), con prueba propia.
+2. ~~La herramienta del anillo (`RingBond`), con prueba propia.~~ ✔ HECHO —
+   §3.2-quindecies
 3. **7a — Agua Blanca.**
 4. **7b — El Vigésimo**, que lee los desenlaces de la 7a igual que la quinta
    lee a la cuarta.
@@ -1625,16 +1626,30 @@ va antes que el contenido que se apoya en ella**, igual que el operador
 
 Las tres son de CoC 7e con sus bases del manual, así que no inventan nada.
 
-**Por qué no tocan las ocupaciones, todavía.** La regla del proyecto es ocho
-habilidades por ocupación, ni más ni menos, así que darle Arqueología al
-anticuario obliga a sacarle otra. Eso es una decisión de balance y va aparte:
-acá se agregó el catálogo y nada más, que es reversible de una línea.
+**Y quién las tiene de oficio.** La regla del proyecto es ocho habilidades por
+ocupación, ni más ni menos, así que cada una entró sacando otra. Los tres
+canjes, con su razón:
 
-No quedan inservibles por eso. La pantalla de creación ofrece como interés
-personal **todo lo que no sea de la ocupación y no sea `mitos`**, y el
-presupuesto personal es grande: verificado en el navegador, 75 puntos llevan
-Arqueología de 1% a 76% y bajan el presupuesto de 130 a 55. Quien quiera un
-investigador que sepa leer una piedra, puede armarlo hoy.
+| Ocupación | Gana | Suelta | Por qué |
+|---|---|---|---|
+| Anticuario | `arqueologia` | `antropologia` | No interpreta las costumbres de un grupo: tasa objetos. «Reconoce una fecha por la técnica» es literalmente fechar una pieza trabajada |
+| Agrimensor | `geologia` | `historia` | Mide y firma terreno, no fecha épocas. De qué está hecho lo que pisa es su oficio; ubicar un mueble en su siglo no |
+| Capataz | `navegacion` | `trepar` | En la llanura no hay a qué subirse, y su trabajo es cruzar campo abierto hasta una aguada sin que haya camino |
+
+El capataz queda con **Orientarse y Navegación a la vez**, y no es redundante:
+una es cruzar sin referencias, la otra reconstruir por dónde se pasó. Es
+exactamente el tipo que «lee el terreno como otros leen un diario».
+
+Ninguna de las tres que se soltaron queda huérfana —Antropología le queda al
+escribano y al ocultista, Historia a otras siete, Trepar al domador—, y eso
+ahora lo comprueba una prueba, porque es la clase de agujero que no se nota:
+sacarle una habilidad a la ÚLTIMA ocupación que la tenía la deja sin dueño
+profesional, y las aventuras que la piden pasan a tirarla siempre en base.
+`nadar` y `mitos` siguen siendo las dos huérfanas a propósito.
+
+Además se pueden comprar con interés personal, como cualquier otra que no sea
+`mitos`: verificado en el navegador, 75 puntos llevan Arqueología de 1% a 76%
+y bajan el presupuesto personal de 130 a 55.
 
 **Qué se actualizó solo, y por qué eso era el punto.** La ficha se arma
 recorriendo `SKILLS` (`pregens.ts`, `rules/creacion.ts`) y la pantalla de
@@ -1645,7 +1660,58 @@ interfaz. Cero archivos de contenido modificados.
 Las pruebas nuevas van en `prueba-creacion.ts` y no en una suite propia,
 porque el lugar donde una habilidad nueva se nota es la creación. Cubren lo
 que se propaga en silencio si se rompe: ids repetidos, bases fuera de rango,
-etiquetas vacías, y que la ficha recién creada las traiga.
+etiquetas vacías, que la ficha recién creada las traiga, las dos mitades de
+cada canje, y que ninguna habilidad quede sin ocupación que la tenga.
+
+### 3.2-quindecies El anillo: `RingBond` deja de ser código muerto ✔ HECHO
+
+Segundo paso del orden de trabajo de la séptima.
+
+`RingBond { itemId, bondedAt, removalLethal }` estaba en `shared/types.ts`
+**desde el principio del proyecto**, con su comentario citando v0.7 §5.3, y no
+lo escribía nadie: los pregenerados nacían con `ringBond: null` y ahí se
+quedaba. Era la pieza más vieja de plomería sin usar del repositorio.
+
+**La cadena entera, que es lo que hacía falta:** payload `RingBondedPayload` +
+evento `RING_BONDED` (`shared/events.ts`) → reducer que escribe el vínculo
+(`engine/reducers.ts`) → herramienta `bind_ring` (`engine/engine.ts`) → campo
+`anillo` en `EfectoEscena` (`scenario/escena.ts`) → traducción a llamada de
+herramienta (`keeper/escenas.ts`). Sin el último eslabón la herramienta existía
+y ninguna aventura podía llamarla, que es exactamente cómo `RingBond` terminó
+sin usarse durante todo el proyecto.
+
+**Evento propio y no `ITEM_TRANSFERRED`**, por la misma razón que
+`apply_mythos_knowledge` emite `MYTHOS_GAINED` y no `SKILL_IMPROVED`: no es
+equipar un objeto —el objeto ya lo llevaba encima—, lo que cambia es el
+investigador. De ahí que el estado viva en `Investigator.ringBond` y no en el
+ítem.
+
+**Qué rechaza, y por qué cada uno:**
+
+| Rechazo | Por qué |
+|---|---|
+| El objeto no existe | Lo de siempre: un id mal escrito no puede pasar en silencio |
+| No lo lleva encima | Ponerse algo es un gesto, no un traslado. Si hay que ir a buscarlo, eso es un `transfer_item` y va antes, en su propia escena |
+| Ya lleva uno | `ringBond` es uno o ninguno. Sobrescribirlo perdería el primero sin dejar rastro |
+| Sin `cause` | Un vínculo permanente sin causa en el log no se puede auditar después |
+
+**Lo que la herramienta NO hace: cobrar.** Cordura, Estabilidad y Exposición
+los aplica la escena que la llama, con los campos que ya existen. El motor
+registra el vínculo; la aventura decide lo que cuesta. Mismo reparto que
+`record_consequence`.
+
+**`removalLethal` lo declara la aventura, no el motor.** El canon dice que
+retirarlo *puede* matar al portador — «puede», no «mata». Por defecto es
+`true`, que es el caso del anillo de rubí, pero el motor no lo supone.
+
+Cruza a la aventura siguiente sin tocar nada: `heredarInvestigador` hace
+`...inv`, así que el vínculo viaja solo. Es lo correcto para algo que no se
+puede sacar sin morir, y ahora hay una prueba que lo fija.
+
+`prueba-anillo.ts` (suite 26) — precedente exacto: `prueba-mitos.ts` también
+es una suite entera para una sola herramienta con evento propio. Cubre las
+cinco cosas que tienen que ser ciertas, incluido que el vínculo se relea
+**desde el log** y no de la memoria del turno.
 
 ### 3.3 La aventura original publicada
 

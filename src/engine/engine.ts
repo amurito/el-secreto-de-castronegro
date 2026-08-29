@@ -738,6 +738,7 @@ export class Turn {
         case 'resolve_intimidate': return this.toolResolveIntimidate(raw);
         case 'apply_sanity_loss': return this.toolApplySanityLoss(raw);
         case 'apply_mythos_knowledge': return this.toolApplyMythos(raw);
+        case 'bind_ring': return this.toolBindRing(raw);
         case 'apply_umbral_exposure': return this.toolApplyExposure(raw);
         case 'apply_stability_shift': return this.toolApplyStability(raw);
         case 'apply_condition': return this.toolApplyCondition(raw);
@@ -1711,6 +1712,53 @@ export class Turn {
       message:
         `Mitos de Cthulhu ${from} → ${to}: ${source}. El techo de Cordura baja de ${maxSanFrom} a ${maxSanTo}, ` +
         `y no vuelve a subir nunca.${recorte}`,
+    };
+  }
+
+  /**
+   * PONERSE EL ANILLO.
+   *
+   * No mueve nada de inventario a propósito: el objeto ya lo lleva encima, y
+   * lo que cambia es el investigador. Por eso exige que lo lleve —ponerse
+   * algo que está en otra habitación no es una acción— y por eso rechaza el
+   * segundo anillo: `Investigator.ringBond` es uno o ninguno, y sobrescribirlo
+   * en silencio perdería el primero sin dejar rastro en el log.
+   *
+   * El costo —Cordura, Estabilidad, Exposición— NO va acá. Lo aplica la
+   * escena que llama a esta herramienta, igual que hace con cualquier otro
+   * efecto: el motor registra el vínculo, la aventura decide lo que cuesta.
+   */
+  private toolBindRing(raw: Record<string, unknown>): ToolOutcome {
+    const itemId = String(raw.item_id ?? '');
+    const cause = String(raw.cause ?? '').trim();
+    const inv = this.investigator;
+
+    const item = this.state.items[itemId];
+    if (!item) return this.reject('bind_ring', raw, `No existe el objeto ${itemId}.`);
+    if (item.owner !== inv.id) {
+      return this.reject('bind_ring', raw,
+        `«${item.name}» no lo lleva ${inv.name}: está en ${item.owner ?? 'ninguna parte'}.`);
+    }
+    if (inv.ringBond) {
+      return this.reject('bind_ring', raw,
+        `${inv.name} ya lleva un anillo (${inv.ringBond.itemId}), y no se lo puede sacar para probarse otro.`);
+    }
+    if (!cause) {
+      return this.reject('bind_ring', raw,
+        'Falta `cause`: por qué se lo puso. Un vínculo permanente sin causa en el log no se puede auditar después.');
+    }
+
+    // Por canon (v0.7 §5.3) retirarlo PUEDE matar al portador. «Puede», no
+    // «mata»: el valor lo declara la aventura, y el motor no supone.
+    const removalLethal = String(raw.removal_lethal ?? 'true') === 'true';
+
+    this.emit('RING_BONDED', { investigatorId: inv.id, itemId, removalLethal, cause });
+
+    return {
+      ok: true,
+      message:
+        `${inv.name} lleva puesto «${item.name}». ${cause}` +
+        (removalLethal ? ' Sacárselo puede matarlo.' : ''),
     };
   }
 

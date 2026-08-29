@@ -86,6 +86,17 @@ function aplicarEfecto(
       item_id: efecto.usa.itemId, times: efecto.usa.times ?? 1, cause: efecto.usa.cause,
     });
   }
+  if (efecto.anillo) {
+    const r = run('bind_ring', {
+      item_id: efecto.anillo.itemId,
+      cause: efecto.anillo.cause,
+      removal_lethal: String(efecto.anillo.removalLethal ?? true),
+    });
+    // Mismo criterio que `descubre`: si el motor lo rechazó, el jugador tiene
+    // que enterarse. Una prosa que da por puesto un anillo que el motor no
+    // dejó poner es el juego contradiciéndose en la misma pantalla.
+    if (!r.ok) out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+  }
   if (efecto.descubre) {
     const r = run('discover_property', {
       item_id: efecto.descubre.itemId,

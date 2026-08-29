@@ -88,6 +88,7 @@ export type GameEventType =
   | 'INVESTIGATOR_INTRODUCED'
   | 'SKILL_IMPROVED'
   | 'MYTHOS_GAINED'
+  | 'RING_BONDED'
   | 'BACKSTORY_REVISED'
   | 'DEVELOPMENT_PHASE_COMPLETED'
   | 'CONSEQUENCE_RECORDED'
@@ -389,6 +390,24 @@ export interface MythosGainedPayload {
   sanTo: number;
   /** Qué se leyó o se vio. Va a la narración y al log. */
   source: string;
+}
+
+/**
+ * El investigador se puso un anillo, y el anillo lo aceptó.
+ *
+ * Evento propio y no `ITEM_TRANSFERRED` porque no es equipar un objeto: el
+ * objeto ya lo llevaba encima. Lo que cambia es el investigador, no el
+ * inventario — de ahí que el estado viva en `Investigator.ringBond` y no en
+ * el ítem. Y queda en el log al lado de su causa porque es, por canon
+ * (v0.7 §5.3), la clase de decisión que puede matar a quien la deshaga.
+ */
+export interface RingBondedPayload {
+  investigatorId: InvestigatorId;
+  itemId: ItemId;
+  /** Retirarlo puede matar al portador (v0.7 §5.3). Lo declara la aventura. */
+  removalLethal: boolean;
+  /** Por qué se lo puso. Va a la narración y al log. */
+  cause: string;
 }
 
 export interface BackstoryRevisedPayload {

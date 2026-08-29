@@ -170,6 +170,18 @@ export interface EfectoEscena {
   };
   /** Registra que se usó un objeto. Destraba las propiedades por uso. */
   usa?: { itemId: string; times?: number; cause: string };
+  /**
+   * El investigador se pone un anillo, y queda vinculado a él.
+   *
+   * Pide que ya lo lleve encima —el motor lo rechaza si no— porque ponerse
+   * algo es un gesto, no un traslado: si hay que conseguirlo primero, eso es
+   * un `transfer_item` y va antes, en su propia escena.
+   *
+   * Lo que cuesta ponérselo no va acá: se declara con `cordura`,
+   * `estabilidad` o `exposicion` en el mismo efecto, como cualquier otra
+   * cosa que duele.
+   */
+  anillo?: { itemId: string; cause: string; removalLethal?: boolean };
   /** Entrega un documento diegético que ya existe en el escenario. */
   documento?: { id: string; how: string };
   contradiccion?: { description: string; between: string };
