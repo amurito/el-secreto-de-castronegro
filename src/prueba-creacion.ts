@@ -314,6 +314,35 @@ function main() {
   check('las tres se ofrecen en el reparto de interés personal',
     ['arqueologia', 'geologia', 'navegacion'].every((id) => personales.some((d) => d.id === id)));
 
+  // Las tres, ya repartidas. Un canje es barato de escribir y silencioso de
+  // romper: sacarle una habilidad a la ÚLTIMA ocupación que la tenía la deja
+  // sin dueño profesional, y las aventuras que la piden pasan a tirarla
+  // siempre en base. Por eso se comprueban las dos mitades del canje.
+  for (const [ocupacionId, gana, pierde] of [
+    ['anticuario', 'arqueologia', 'antropologia'],
+    ['agrimensor', 'geologia', 'historia'],
+    ['capataz', 'navegacion', 'trepar'],
+  ] as const) {
+    const o = OCUPACION_POR_ID[ocupacionId]!;
+    check(`«${o.nombre}» gana ${gana} y suelta ${pierde}`,
+      o.habilidades.includes(gana) && !o.habilidades.includes(pierde),
+      o.habilidades.join(', '));
+    check(`  ...y ${pierde} le queda a alguien más`,
+      OCUPACIONES.some((x) => x.id !== ocupacionId && x.habilidades.includes(pierde)),
+      OCUPACIONES.filter((x) => x.habilidades.includes(pierde)).map((x) => x.id).join(', ') || 'NADIE');
+  }
+
+  // El invariante de arriba, generalizado. `nadar` y `mitos` son huérfanas a
+  // propósito —Mitos no se compra nunca, y Nadar no es el oficio de nadie—;
+  // cualquier otra que aparezca acá es un canje que dejó un agujero.
+  const HUERFANAS_ADREDE = ['nadar', 'mitos'];
+  const huerfanas = SKILLS
+    .map((s) => s.id)
+    .filter((id) => !OCUPACIONES.some((o) => o.habilidades.includes(id)))
+    .filter((id) => !HUERFANAS_ADREDE.includes(id));
+  check('ninguna habilidad quedó sin ocupación que la tenga', huerfanas.length === 0,
+    huerfanas.join(', ') || 'ninguna');
+
   // La ficha se arma recorriendo el catálogo, así que una habilidad nueva
   // aparece sola en todo investigador. Se comprueba sobre la recién creada.
   check('la ficha recién creada las trae en su base',

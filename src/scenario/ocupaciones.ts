@@ -59,7 +59,10 @@ export const OCUPACIONES: Ocupacion[] = [
     descripcion:
       'Mide la tierra y firma lo que midió, y esa firma después la lee un juez. Trabajo de anteojo, cadena y ' +
       'libreta, hecho a la intemperie y discutido en tribunales. Sabe que un número mal puesto dura un siglo.',
-    habilidades: ['orientarse', 'ciencia_naturales', 'buscar_libros', 'historia',
+    // Geología en lugar de Historia: mide y firma terreno, no fecha épocas.
+    // Saber de qué está hecho lo que pisa y de dónde salió una piedra es su
+    // oficio; ubicar un mueble en su siglo no. Historia la tienen otras ocho.
+    habilidades: ['orientarse', 'ciencia_naturales', 'buscar_libros', 'geologia',
       'descubrir', 'mecanica', 'persuasion', 'credito'],
     credito: { min: 20, max: 60 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['DEX', 'INT'], multiplicador: 2 } },
@@ -134,7 +137,11 @@ export const OCUPACIONES: Ocupacion[] = [
     descripcion:
       'Compra y vende lo que sobrevivió. Muebles de estancia, platería, libros de bibliotecas rematadas. ' +
       'Reconoce una fecha por la técnica y una falsificación por la prisa, y colecciona cosas que no vende.',
-    habilidades: ['historia', 'biblioteca', 'ocultismo', 'antropologia',
+    // Arqueología en lugar de Antropología: éste no interpreta las costumbres
+    // de un grupo, tasa objetos. «Reconoce una fecha por la técnica» es
+    // literalmente fechar una pieza trabajada, que es Arqueología. La
+    // Antropología le queda al escribano y al ocultista, que sí leen gente.
+    habilidades: ['historia', 'biblioteca', 'ocultismo', 'arqueologia',
       'descubrir', 'persuasion', 'buscar_libros', 'credito'],
     credito: { min: 30, max: 70 },
     formula: { fijos: { EDU: 4 } },
@@ -150,7 +157,12 @@ export const OCUPACIONES: Ocupacion[] = [
     descripcion:
       'Nació en el campo y no durmió afuera veinte noches en su vida. Conoce cada alambrado, cada aguada y ' +
       'cada peón, y lee el terreno como otros leen un diario.',
-    habilidades: ['orientarse', 'ciencia_naturales', 'descubrir', 'trepar',
+    // Navegación en lugar de Trepar: en la llanura no hay a qué subirse, y su
+    // trabajo es cruzar campo abierto hasta una aguada que sabe dónde está sin
+    // que haya camino. Se queda además con Orientarse, y no es redundante: una
+    // es cruzar sin referencias, la otra reconstruir por dónde se pasó. Trepar
+    // le queda al domador.
+    habilidades: ['orientarse', 'ciencia_naturales', 'descubrir', 'navegacion',
       'intimidar', 'mecanica', 'escuchar', 'credito'],
     credito: { min: 9, max: 40 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
