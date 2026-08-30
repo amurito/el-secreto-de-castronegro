@@ -22,6 +22,8 @@ import { accionesDisponibles } from './scenario/acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import { ELENA } from './scenario/pregens.ts';
+import { EL_VIGESIMO_LOGICA } from './scenario/elvigesimo.logica.ts';
+import type { EfectoEscena, IntencionLeida } from './scenario/escena.ts';
 import type { GameState, Investigator } from './shared/types.ts';
 
 useStore(fileStore);
@@ -292,6 +294,81 @@ async function main() {
     await t.commit();
     const cerrado = (await Turn.open(id)).state;
     check('«cortar» alcanza un desenlace real', cerrado.ending?.id === 'cortar', cerrado.ending?.id);
+  }
+
+  console.log('\nSI SE OLVIDA EL CUCHILLO, EL LABORATORIO TIENE UNA RED DE SEGURIDAD');
+  {
+    // Reportado jugando: hay que asegurarse de que el investigador llegue al
+    // combate con un arma que le permita ganar. `it-cuchillo-cocina` es
+    // opcional —hay que agarrarlo en la cocina, y de ahí en más el descenso
+    // es de ida—, así que quien no lo agarró queda sin filo para siempre SI
+    // no hay una segunda oportunidad. `it-bisturi-laboratorio` es esa
+    // segunda oportunidad: está en el propio laboratorio, a la vista de
+    // Bernardo, sin depender de haber pensado en el cuchillo antes.
+    const { id } = await jugarEn(EL_VIGESIMO, '7b SIN CUCHILLO', 'x',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio',
+        'Agarro instrumental de piedra', 'Enfrento a Bernardo'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 }, PELEADOR);
+
+    const conBisturi = (await Turn.open(id)).state;
+    check('el instrumental del laboratorio se puede agarrar sin haber pasado por la cocina',
+      conBisturi.items['it-bisturi-laboratorio']?.owner === conBisturi.activeInvestigator);
+
+    const t = await Turn.open(id);
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'bisturi', punto_debil: 'true' });
+    await t.commit();
+    check('con el bisturí (tiene filo) el motor SÍ deja ir por la mano del anillo', r.ok, r.message.slice(0, 90));
+  }
+
+  console.log('\nEL CADÁVER DEL GUARDIÁN PUEDE LLEVAR NOMBRE, SI YA SE VIO EL RETRATO');
+  {
+    // Pedido después de jugarlo: examinar el cuerpo del que quedó en la
+    // puerta, con una tirada de Mitos que pueda ponerle nombre SI el
+    // investigador ya reconoció la cara en uno de los retratos del salón.
+    //
+    // La tirada de Mitos es de verdad y depende de los dados —no tiene
+    // sentido ablandarla para la prueba—, así que en vez de jugar hasta que
+    // salga se invoca el `resolver` de la escena directamente, con un
+    // resultado de tirada armado a mano: es la misma lógica que ejecutaría
+    // el motor, sin medir suerte (mismo criterio que «CON BERNARDO VENCIDO…»,
+    // un poco más arriba).
+    const { state: conRetratos } = await jugarEn(EL_VIGESIMO, '7b RETRATOS SI', 'y1',
+      AL_SOTANO, { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const { state: sinRetratos } = await jugarEn(EL_VIGESIMO, '7b RETRATOS NO', 'y2',
+      ['Voy al salón', 'Voy al comedor', 'Examino mesa de cerca', 'Voy a la cocina',
+        'Examino puerta de cerca', 'Examino puerta de cerca', 'Examino puerta de cerca',
+        'Voy al trastero del sótano'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+
+    const escena = EL_VIGESIMO_LOGICA.find((e) => e.id === 'examinar-cadaver-guardian')!;
+    const intencion: IntencionLeida = {
+      raw: 'examino el cuerpo del que quedo en la puerta', norm: 'examino el cuerpo del que quedo en la puerta',
+      verb: 'examinar', verbExplicit: true, sustained: false,
+      objetivo: { kind: 'npc', id: 'npc-guardian-sotano' }, destino: null,
+    };
+    const textoDe = (efecto: EfectoEscena | EfectoEscena[]) =>
+      ([] as EfectoEscena[]).concat(efecto).flatMap((e) => e.texto ?? []).join('\n');
+
+    const conNombre = textoDe(escena.resolver({
+      estado: conRetratos, intencion, variante: (o) => o[0]!,
+      tirada: { exito: true, grado: 'regular', mensaje: '' },
+    }));
+    check('con los retratos ya vistos y Mitos superado, el cadáver revela nombre y apellido',
+      conNombre.includes('Casimiro Díaz'));
+
+    const sinNombre = textoDe(escena.resolver({
+      estado: sinRetratos, intencion, variante: (o) => o[0]!,
+      tirada: { exito: true, grado: 'regular', mensaje: '' },
+    }));
+    check('sin haber visto los retratos, el mismo éxito reconoce el parentesco pero NO pone nombre',
+      !sinNombre.includes('Casimiro Díaz'));
+
+    const fallo = textoDe(escena.resolver({
+      estado: conRetratos, intencion, variante: (o) => o[0]!,
+      tirada: { exito: false, grado: 'regular', mensaje: '' },
+    }));
+    check('si la tirada de Mitos no supera la dificultad, no hay revelación de ningún tipo',
+      !fallo.includes('Casimiro') && !fallo.includes('familia'));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);

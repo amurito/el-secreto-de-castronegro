@@ -14,6 +14,7 @@
 import type { GameState } from '../shared/types.ts';
 import type { LogicaDeEscenas } from './cargarAventura.ts';
 import type { EfectoEscena } from './escena.ts';
+import { evaluarCondicion } from './condiciones.ts';
 
 const ruido = (s: GameState) =>
   s.consequences.filter((c) => c.description.includes('hizo ruido en la Casa')).length;
@@ -145,6 +146,58 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
       },
       exposicion: { amount: 8, source: 'sotano:guardian', cause: 'pelear cuerpo a cuerpo con algo que ya no tiene nombre para nadie' },
     }),
+  },
+
+  {
+    // Pedido después de jugarlo: poder mirar el cuerpo de lo que atacó, con
+    // una tirada de Mitos que —si ya se vieron los retratos del salón—
+    // puede ponerle nombre. El motor no lo renombra en ningún lado: es
+    // prosa, igual que cualquier otra revelación de la aventura.
+    id: 'examinar-cadaver-guardian',
+    prueba: () => ({
+      skill: 'mitos', difficulty: 'regular',
+      reason: 'reconocer, en lo que quedó, qué fue esto antes de dejar de serlo',
+      stakes_success: 'algo en el hueso te dice más de lo que la carne todavía deforme puede decir',
+      stakes_failure: 'un cuerpo, y nada que puedas nombrar además de eso',
+    }),
+    resolver: ({ estado, tirada }) => {
+      const vioRetratos = evaluarCondicion(
+        { op: 'detalleVisto', lugar: 'salon', feature: 'f-retratos' },
+        { estado },
+      );
+      const comun: EfectoEscena = {
+        texto: ['Te arrodillás junto al cuerpo. La espalda encorvada, las muñecas finas, los dientes largos no se acomodan solos cuando ya no hay nadie sosteniéndolos así.'],
+      };
+      if (!tirada?.exito) {
+        return [comun, { texto: ['Es un cuerpo, y no es sólo eso, y no llegás a entender más que eso mirándolo con lo que sabés hasta ahora.'] }];
+      }
+      if (vioRetratos) {
+        return [comun, {
+          texto: [
+            'Bajo la deformidad hay una arquitectura de hueso que reconocés: la frente corrida hacia atrás, la mandíbula demasiado larga para el resto de la cara. Es la misma cara rara del marco más viejo del salón, el que decía «Casimiro Díaz, 1889—1909».\n\nCasimiro no murió a los veinte años. Lo dejaron acá, en la puerta, y dejaron de contar los años.',
+          ],
+          exposicion: { amount: 10, source: 'cadaver:guardian:nombrado', cause: 'reconocer, con nombre y apellido, en qué se convierte el que no llega a ser el vigésimo' },
+          pistas: [{
+            description: 'El cuerpo de lo que custodiaba la puerta del sótano es Casimiro Díaz, retratado en el salón con una muerte falsa en 1909, a los veinte años. No murió: lo dejaron en la puerta.',
+            kind: 'physical',
+            source: 'examen directo del cuerpo, cruzado con el retrato del salón',
+            reliability: 'reliable',
+          }],
+        }];
+      }
+      return [comun, {
+        texto: [
+          'Bajo la deformidad hay una arquitectura de hueso que no es al azar: la misma familia que vive arriba, en otro cuerpo, con otro tiempo encima. No sabrías decir a cuál se parece —no llegaste a mirar bien los retratos del salón— pero el parecido está, y es demasiado exacto para ser casualidad.',
+        ],
+        exposicion: { amount: 8, source: 'cadaver:guardian', cause: 'reconocer el parentesco sin poder ponerle nombre' },
+        pistas: [{
+          description: 'El cuerpo de lo que custodiaba la puerta del sótano comparte arquitectura ósea con la familia Díaz, aunque no hay forma de decir con cuál retrato se corresponde.',
+          kind: 'physical',
+          source: 'examen directo del cuerpo',
+          reliability: 'reliable',
+        }],
+      }];
+    },
   },
 
   // ══ BERNARDO ══════════════════════════════════════════════════════════════

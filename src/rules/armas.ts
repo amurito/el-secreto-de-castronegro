@@ -111,6 +111,12 @@ export const ARMAS: Arma[] = [
     nota: 'De cocina o de campo. En una estancia hay uno en cada cuarto.',
   },
   {
+    id: 'bisturi', nombre: 'Bisturí', habilidad: 'pelea',
+    dano: { cantidad: 1, caras: 4, suma: 0 },
+    aporteBonificacion: 'completa', empala: true, alcance: 0,
+    nota: 'Filo fino, pensado para cortar con precisión, no para pelear.',
+  },
+  {
     id: 'facon', nombre: 'Facón', habilidad: 'pelea',
     dano: { cantidad: 1, caras: 8, suma: 0 },
     aporteBonificacion: 'completa', empala: true, alcance: 0,

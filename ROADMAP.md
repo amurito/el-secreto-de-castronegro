@@ -2524,6 +2524,60 @@ cedido —es confirmación/color, no un gate—, así que no hace falta ablandar
 tirada: es psicología social funcionando como se espera, con una investigadora
 que no es fuerte en esa habilidad.
 
+### 3.2-untricies El bisturí del laboratorio, y el cadáver del guardián con nombre
+
+Dos pedidos después de jugarlo, ninguno tocó el motor: los dos son contenido
+nuevo sobre mecanismos que ya existían.
+
+**El bisturí, como red de seguridad.** `it-cuchillo-cocina` es el arma
+correcta contra la mano del anillo —filo, 1D4+2—, pero es opcional: hay que
+pensar en agarrarlo en la cocina, y de ahí en más el descenso al sótano es de
+ida (`cocina → trastero-sotano → entrada-laberinto → laboratorio`, sin
+conexión de vuelta en ninguno de los tres tramos — ver §3.2-septvicies). Quien
+no lo agarró llegaba al laboratorio sin ningún objeto cortante y sin forma de
+volver por uno: el motor ya rechaza ir por la mano del anillo a mano limpia
+(§3.2-undetricies), así que olvidarse el cuchillo cerraba `cortar`/`heredar`
+para siempre en esa partida, sin aviso.
+
+Arreglo: `it-bisturi-laboratorio`, en la propia mesa de instrumentos del
+laboratorio (que la descripción del cuarto ya mencionaba: «instrumentos que
+no son de ninguna farmacia ni de ningún hospital»), con un arma nueva en el
+catálogo (`bisturi`, 1D4, filo) — más débil que el cuchillo de cocina a
+propósito: sigue siendo mejor haber venido preparado, pero ya no es
+obligatorio. Medido con un investigador de combate y el cuchillo de cocina,
+sobre 30 semillas: ~27% de victorias contra Bernardo+Ahijado peleando juntos.
+No es un empate parejo —CoC 7e no lo es—, pero tampoco es la lotería que
+sugería la nota de §3.2-undetricies: esa nota describía a Elena peleando
+DESARMADA, de antes de que `it-cuchillo-cocina` tuviera `armaId` asignado
+(§3.2, «el hacha sin armaId»). Con el arma bien conectada, ganar es difícil y
+posible — que es lo que tiene que ser.
+
+**El cadáver, con nombre si se lo reconoce.** Nueva acción en el trastero del
+sótano, visible una vez que el guardián cae (`npcFuera`): «Examinar el
+cuerpo», con una tirada de Mitos de Cthulhu. Si se supera Y el investigador ya
+miró de cerca los retratos del salón, reconoce la arquitectura de hueso bajo
+la deformidad como la del marco más viejo de la pared —un dato nuevo que se
+agregó ahí, «Casimiro Díaz, 1889—1909»— y la escena dice, con nombre y
+apellido, que Casimiro no murió a los veinte años como dice la placa: lo
+dejaron en la puerta. Sin haber visto los retratos, el mismo éxito reconoce
+el parentesco familiar pero no puede ponerle nombre. Sin superar la tirada, no
+hay revelación de ningún tipo — a 0% de Mitos de base, sólo un investigador
+que ya acumuló puntos de Mitos en aventuras anteriores tiene una tirada real
+que hacer, que es la lectura correcta del género: esto no se reconoce por
+tener buenos ojos.
+
+No hizo falta tocar el motor para el nombre: la revelación es prosa de la
+propia escena (`resolver` en `elvigesimo.logica.ts`), no un campo que cambie
+el `Npc.name` en ningún lado — para cuando se examina el cuerpo, el combate ya
+terminó, así que no hay pantalla en vivo (ficha, cabecera de Combate.tsx) que
+necesite mostrar el nombre nuevo. Si una revelación de identidad futura
+necesitara cambiar cómo se nombra a alguien MIENTRAS sigue vivo y en pantalla,
+eso sí pediría una función genérica nueva; éste no era ese caso.
+
+Probado con `resolver` invocado directo, con una tirada armada a mano —igual
+criterio que «CON BERNARDO VENCIDO…»: la tirada de Mitos es real y depende de
+los dados, y no tiene sentido escribir una prueba que juegue hasta que salga.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

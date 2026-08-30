@@ -20,6 +20,22 @@
       "usageCount": 0
     },
     {
+      "id": "it-bisturi-laboratorio",
+      "name": "Instrumental de piedra",
+      "aliases": ["bisturi", "bisturí", "instrumental", "instrumentos", "los instrumentos"],
+      "shortDescription": "Entre las mesas de piedra hay un instrumento con filo, gastado por un uso que no fue quirúrgico del todo. Corta.",
+      "owner": "laboratorio",
+      "carried": false,
+      "armaId": "bisturi",
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
       "id": "it-anillo-rubi",
       "name": "Anillo de rubí",
       "aliases": ["anillo", "el anillo", "anillo de rubi", "anillo de rubí"],
@@ -242,11 +258,11 @@
           "id": "f-retratos",
           "names": ["retratos", "los retratos", "la pared de retratos", "fotos"],
           "description": "Una hilera de retratos ovalados, generación tras generación, todos con el mismo par de apellidos al pie del marco.",
-          "closerLook": "Los marcos tienen una placa con nombre y dos fechas. En casi todos, la segunda fecha es entre dieciocho y veintidós años después de la primera. Uno de los marcos, el más nuevo, tiene la cara raspada con una moneda o un cuchillo, prolijo, sin romper el vidrio. La placa dice «Bernardo Díaz, 1580—» y no tiene segunda fecha.",
+          "closerLook": "Los marcos tienen una placa con nombre y dos fechas. En casi todos, la segunda fecha es entre dieciocho y veintidós años después de la primera. Uno de los marcos, el más nuevo, tiene la cara raspada con una moneda o un cuchillo, prolijo, sin romper el vidrio. La placa dice «Bernardo Díaz, 1580—» y no tiene segunda fecha.\n\nUno de los más viejos, cerca del final de la hilera, dice «Casimiro Díaz, 1889—1909»: veinte años clavados, como casi todos los demás. La cara tiene una frente corrida hacia atrás y una mandíbula demasiado larga para el resto de la cara, un rasgo que ningún otro retrato de la pared repite tan marcado.",
           "examineSkill": "descubrir",
           "exposure": 8,
           "clue": {
-            "description": "La pared de retratos del salón repite un patrón: casi todas las segundas fechas caen entre dieciocho y veintidós años después de la primera. El marco más nuevo, sin segunda fecha, tiene la cara raspada a propósito y dice «Bernardo Díaz, 1580—».",
+            "description": "La pared de retratos del salón repite un patrón: casi todas las segundas fechas caen entre dieciocho y veintidós años después de la primera. El marco más nuevo, sin segunda fecha, tiene la cara raspada a propósito y dice «Bernardo Díaz, 1580—». Otro, de los más viejos, dice «Casimiro Díaz, 1889—1909» y tiene una frente y una mandíbula que ningún otro retrato repite igual.",
             "kind": "physical",
             "reliability": "reliable"
           }
@@ -522,7 +538,7 @@
         "—Pase —dice, sin levantarse—. Ya era hora."
       ],
       "connections": [],
-      "itemsPresent": [],
+      "itemsPresent": ["it-bisturi-laboratorio"],
       "npcsPresent": ["npc-bernardo", "npc-ahijado"],
       "visited": false,
       "umbralIntensity": 24,
@@ -860,6 +876,18 @@
       }
     },
     {
+      "id": "examinar-cadaver-guardian",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "examino el cuerpo|miro el cuerpo|reviso el cuerpo|examino el cadaver|examino el cadáver" },
+          { "op": "lugar", "es": ["trastero-sotano"] },
+          { "op": "npcFuera", "npc": "npc-guardian-sotano" }
+        ]
+      }
+    },
+    {
       "id": "bernardo-enfrentar",
       "prioridad": 74,
       "cuando": {
@@ -939,6 +967,16 @@
       "intencion": "Enfrento a lo que quedó en la puerta",
       "etiqueta": "Enfrentarlo",
       "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-guardian-sotano" } }
+    },
+    {
+      "id": "examinar-cadaver-guardian",
+      "grupo": "observar",
+      "lugar": "trastero-sotano",
+      "orden": 22,
+      "intencion": "Examino el cuerpo del que quedó en la puerta",
+      "etiqueta": "Examinar el cuerpo",
+      "visible": { "op": "npcFuera", "npc": "npc-guardian-sotano" },
+      "hecha": { "op": "narrado", "contiene": "Te arrodillás junto al cuerpo" }
     },
     {
       "id": "confrontar-bernardo",
