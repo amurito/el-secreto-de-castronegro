@@ -144,9 +144,14 @@ export function premioDelKeeper(state: GameState): { dados: number; caras: numbe
   const final = state.ending?.id ?? null;
 
   // Los desenlaces que exigen mirar de frente el fenómeno valen más que los
-  // que consisten en no mirarlo.
-  const miroDeFrente = final === 'mirar' || final === 'bajar';
-  const seFue = final === 'llevarse';
+  // que consisten en no mirarlo. `cortar`/`heredar` (El Vigésimo) son la
+  // versión de esta aventura de "mirar de frente": las dos exigen haber
+  // vencido a Bernardo de verdad, no sólo haber sobrevivido a la audiencia.
+  // `irse-vigesimo` es su «se fue» —salir sin pelear—. `denunciar` queda
+  // afuera a propósito: huyó de la pelea pero volvió a hacer algo con lo que
+  // vio, ni una cosa ni la otra.
+  const miroDeFrente = final === 'mirar' || final === 'bajar' || final === 'cortar' || final === 'heredar';
+  const seFue = final === 'llevarse' || final === 'irse-vigesimo';
 
   if (!final) return { dados: 0, caras: 6, razon: 'la aventura no se cerró' };
   if (seFue && pistas < 5) {

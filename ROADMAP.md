@@ -2681,6 +2681,39 @@ un fracaso liso, la insignia ahora aclara qué faltó («ÉXITO REGULAR — no
 alcanza para Difícil») en vez de dejar sólo el color como única pista de la
 contradicción aparente.
 
+### 3.2-quatertricies El cadáver cuesta Cordura, y el premio final distingue vencer de huir
+
+Dos preguntas después de jugar el mausoleo.
+
+**«El examen del cadáver debería costar Cordura, no sólo pedir Mitos.»**
+Cierto: `examinar-cadaver-guardian` (§3.2-untricies) sólo aplicaba
+`exposicion`; la tirada de Mitos decidía QUÉ se aprende (si hay nombre o
+no), pero nunca costaba Cordura real por el simple hecho de arrodillarse
+junto a un cuerpo así. Se agregó `cordura: { amount: 3, ... }` a la parte
+común de la escena —se paga en las dos ramas, se reconozca o no el cuerpo—,
+mismo criterio flat (sin dado propio) que ya usan el resto de las escenas
+con Cordura real de este proyecto (mausoleo: 5, anillo: 8): la escena
+decide el número; el motor no tira un dado aparte para la pérdida.
+
+**«¿Las recompensas por vencer a Bernardo están aplicadas?»** A medias.
+`premioDelKeeper` (`rules/desarrollo.ts`, p. 167) YA existe como mecanismo
+genérico —Cordura al cerrar cualquier aventura, proporcional a cuánto se
+investigó— pero sus dos categorías especiales («miró de frente el
+fenómeno», «se fue temprano») sólo reconocían los desenlaces de Agua Quieta
+(`mirar`/`bajar`/`llevarse`, escritos cuando esa era la única aventura). Los
+cuatro desenlaces de El Vigésimo caían siempre al tramo genérico por
+cantidad de pistas, sin que importara si Bernardo cayó o si el investigador
+huyó sin pelear. Se agregaron `cortar`/`heredar` a «miró de frente» —vencer
+a Bernardo es, si acaso, más de frente que mirar un aljibe— y
+`irse-vigesimo` a «se fue temprano»; `denunciar` queda deliberadamente
+afuera de las dos categorías especiales, como un tercer caso intermedio.
+
+Sigue sin extenderse a las otras cuatro aventuras (Legua, Sueño Debido,
+Invierno Debido, Tercer Umbral): cada una tiene sus propios ids de
+desenlace y ninguno está reconocido todavía, así que las cinco aventuras
+que no son Agua Quieta o El Vigésimo siguen premiándose sólo por cantidad
+de pistas. Queda anotado como hueco conocido, no resuelto esta vez.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

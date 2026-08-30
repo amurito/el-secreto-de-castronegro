@@ -23,7 +23,7 @@ import { accionesDisponibles } from './scenario/acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import { verifyRollChain } from './engine/rng.ts';
-import { mejora, maxCordura, marcasDe } from './rules/desarrollo.ts';
+import { mejora, maxCordura, marcasDe, premioDelKeeper } from './rules/desarrollo.ts';
 import type { GameState } from './shared/types.ts';
 
 useStore(fileStore);
@@ -164,6 +164,24 @@ async function main() {
   } else {
     check('al salir bien, sumó Cordura', (informe.autoayuda?.sanDelta ?? 0) > 0,
       String(informe.autoayuda?.sanDelta));
+  }
+
+  console.log('\nEL PREMIO DEL KEEPER DISTINGUE HABER VENCIDO A BERNARDO DE HABER HUIDO');
+  {
+    // Reportado jugando: preguntaron si las recompensas de Cordura por
+    // derrotar a Bernardo (El Vigésimo) estaban aplicadas. La fórmula
+    // genérica ya premiaba el cierre de CUALQUIER aventura según cuántas
+    // pistas se juntaron, pero sólo distinguía "miró de frente"/"se fue
+    // temprano" para los desenlaces de Agua Quieta (`mirar`/`bajar`/
+    // `llevarse`) — los de El Vigésimo caían siempre al tramo genérico por
+    // pistas, sin importar si Bernardo cayó o si el investigador huyó.
+    const conNueve = { board: { clues: new Array(9).fill(0) } };
+    const cortar = premioDelKeeper({ ...conNueve, ending: { id: 'cortar' } } as unknown as GameState);
+    const irse = premioDelKeeper({ board: { clues: [] }, ending: { id: 'irse-vigesimo' } } as unknown as GameState);
+    const denunciar = premioDelKeeper({ ...conNueve, ending: { id: 'denunciar' } } as unknown as GameState);
+    check('vencer a Bernardo (cortar) puntúa como "miró de frente"', cortar.caras === 10, JSON.stringify(cortar));
+    check('irse sin pelear puntúa como "se fue temprano"', irse.caras === 3, JSON.stringify(irse));
+    check('denunciar sin haber vencido queda en el tramo genérico por pistas', denunciar.caras === 8, JSON.stringify(denunciar));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);

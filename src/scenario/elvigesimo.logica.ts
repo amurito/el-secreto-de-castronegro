@@ -177,6 +177,14 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
       );
       const comun: EfectoEscena = {
         texto: ['Te arrodillás junto al cuerpo. La espalda encorvada, las muñecas finas, los dientes largos no se acomodan solos cuando ya no hay nadie sosteniéndolos así.'],
+        // Pedido después de jugarlo: esto tiene que costar Cordura de
+        // verdad, se reconozca o no de quién es el cuerpo —la tirada de
+        // Mitos decide QUÉ se aprende, no si duele mirarlo—. `amount: 3`
+        // sigue el mismo criterio flat (sin dado) que el resto de la
+        // Cordura real de esta aventura (ver §3.2-duotricies): un cuerpo
+        // cuesta menos que diecinueve juntos (mausoleo: 5) y bastante menos
+        // que ponerse el anillo (8).
+        cordura: { amount: 3, cause: 'arrodillarse junto a lo que quedó, sea o no reconocible' },
       };
       if (!tirada?.exito) {
         return [comun, { texto: ['Es un cuerpo, y no es sólo eso, y no llegás a entender más que eso mirándolo con lo que sabés hasta ahora.'] }];

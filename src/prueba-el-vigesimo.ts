@@ -376,12 +376,15 @@ async function main() {
     check('sin haber visto los retratos, el mismo éxito reconoce el parentesco pero NO pone nombre',
       !sinNombre.includes('Casimiro Díaz'));
 
-    const fallo = textoDe(escena.resolver({
+    const fallo = ([] as EfectoEscena[]).concat(escena.resolver({
       estado: conRetratos, intencion, variante: (o) => o[0]!,
       tirada: { exito: false, grado: 'regular', mensaje: '' },
     }));
+    const textoFallo = fallo.flatMap((e) => e.texto ?? []).join('\n');
     check('si la tirada de Mitos no supera la dificultad, no hay revelación de ningún tipo',
-      !fallo.includes('Casimiro') && !fallo.includes('familia'));
+      !textoFallo.includes('Casimiro') && !textoFallo.includes('familia'));
+    check('y de todos modos cuesta Cordura de verdad, se reconozca o no el cuerpo',
+      fallo.some((e) => e.cordura?.amount === 3));
   }
 
   console.log('\nEL MAUSOLEO: LA CÁMARA EMPIEZA CERRADA Y SE ABRE DE VERDAD');
