@@ -1,6 +1,8 @@
 import React from 'react';
 import { DadosPercentiles, useRevelacionTardia } from './dados.tsx';
 import { pisoDeExposicion } from '../rules/umbral.ts';
+import { meetsDifficulty } from '../rules/dice.ts';
+import type { SuccessDegree, Difficulty } from '../shared/types.ts';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FICHA
@@ -153,7 +155,15 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
     );
   }
 
-  const good = ['critical', 'extreme', 'hard', 'regular'].includes(roll.degree);
+  // NO alcanza con que el grado no sea un fracaso liso: una tirada que dio
+  // «regular» contra una dificultad pedida «hard» sigue siendo un fracaso de
+  // ESE chequeo puntual —CoC 7e real—, y la tarjeta lo mostraba en verde como
+  // si hubiera pasado. `meetsDifficulty` es la misma comparación que ya usa
+  // el motor para decidir «SUPERA la dificultad» en el mensaje. Reportado
+  // jugando: un DES 30% a dificultad Difícil dio 17 —«ÉXITO REGULAR»— y la
+  // tarjeta lo pintaba de éxito mientras la escena, correctamente, narraba
+  // que el candado no cedía.
+  const good = meetsDifficulty(roll.degree as SuccessDegree, roll.difficulty as Difficulty);
   // Sin animación no se toca nada: ni tapado, ni fundido, ni clase de más.
   const tardio = !animar ? '' : revelado ? ' roll-visible' : ' roll-tapado';
   return (
@@ -184,6 +194,13 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
       </div>
       <div className={`roll-degree ${good ? 'deg-ok' : 'deg-bad'}${tardio}`}>
         {DEGREE_LABEL[roll.degree] ?? roll.degree}
+        {/* El grado de la tirada es absoluto (ver rules/dice.ts): un «éxito
+            regular» sigue siendo ese grado aunque se haya pedido «Difícil».
+            Sin esta aclaración, la tarjeta decía «ÉXITO REGULAR» en rojo, que
+            lee como una contradicción — se aclara qué faltó. */}
+        {!good && !['failure', 'fumble'].includes(roll.degree) && (
+          <span className="roll-degree-nota"> — no alcanza para {DIFF_LABEL[roll.difficulty] ?? roll.difficulty}</span>
+        )}
       </div>
     </div>
   );

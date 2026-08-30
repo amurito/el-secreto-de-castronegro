@@ -2650,6 +2650,37 @@ tiradas armadas a mano (mismo criterio que ya usa esta suite contra rolls que
 dependen de dados reales), más un caso que patchea `Turn.state` en memoria
 para comprobar que `toolResolveAttack` aplica de verdad el bono declarado.
 
+### 3.2-tretricies La tarjeta de tirada mentía en verde cuando la dificultad era Difícil o Extrema
+
+Reportado jugando, probando el candado del mausoleo (§3.2-duotricies, DEX a
+dificultad Difícil): un investigador con DES 30% tiró 17 —«ÉXITO REGULAR»,
+tarjeta en verde— y la escena, correctamente, narró que el candado no cedía.
+Confusión razonable: la tarjeta decía éxito, el texto decía fracaso.
+
+Causa real, en `RollCard` (`src/web/components.tsx`): `good` se calculaba
+como `['critical', 'extreme', 'hard', 'regular'].includes(roll.degree)` —o
+sea, «¿el grado de la tirada no fue un fracaso liso?»— sin mirar para nada
+qué dificultad se había pedido. Un grado `regular` contra una dificultad
+`hard` pedida es un FRACASO de ese chequeo puntual (CoC 7e real: hay que
+igualar o superar el grado pedido), pero la tarjeta lo pintaba de éxito
+igual. El motor ya tenía la comparación correcta —`meetsDifficulty(degree,
+difficulty)` en `rules/dice.ts`, la misma que arma el «SUPERA la
+dificultad» del mensaje— pero la tarjeta nunca la usaba: calculaba su
+propio criterio, más simple y equivocado, en paralelo.
+
+No es un bug nuevo de esta sesión ni exclusivo del mausoleo: cualquier
+tirada a dificultad Difícil o Extrema en toda la partida mostraba esta
+misma tarjeta engañosa. El candado sólo lo hizo visible porque es la
+primera tirada de la aventura que pide `hard` contra una característica que
+razonablemente puede rondar el 30-40%, la zona exacta donde un «regular»
+(que no alcanza) es un resultado frecuente.
+
+Arreglo: `RollCard` importa `meetsDifficulty` de `rules/dice.ts` en vez de
+reinventar el criterio. Además, cuando el grado no alcanza pero tampoco es
+un fracaso liso, la insignia ahora aclara qué faltó («ÉXITO REGULAR — no
+alcanza para Difícil») en vez de dejar sólo el color como única pista de la
+contradicción aparente.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
