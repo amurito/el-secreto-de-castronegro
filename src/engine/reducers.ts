@@ -506,7 +506,10 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
 
     case 'COMBAT_STARTED': {
       const p = ev.payload as P.CombatStartedPayload;
-      s.activeCombat = { npcIds: p.npcIds, startedAt: ev.id, reason: p.reason, salidaPacifica: p.salidaPacifica };
+      s.activeCombat = {
+        npcIds: p.npcIds, startedAt: ev.id, reason: p.reason,
+        salidaPacifica: p.salidaPacifica, preparacion: p.preparacion,
+      };
       break;
     }
 

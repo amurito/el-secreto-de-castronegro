@@ -2578,6 +2578,78 @@ Probado con `resolver` invocado directo, con una tirada armada a mano —igual
 criterio que «CON BERNARDO VENCIDO…»: la tirada de Mitos es real y depende de
 los dados, y no tiene sentido escribir una prueba que juegue hasta que salga.
 
+### 3.2-duotricies El mausoleo de los Díaz, y la bonificación de preparación contra Bernardo
+
+Dos pedidos sobre el mismo tramo final de la aventura.
+
+**El mausoleo.** El usuario compartió el mausoleo de la aventura original de
+Chaosium (veinte sarcófagos con nombre y fecha, candado, follaje muerto
+alrededor) y preguntó si valía la pena adaptarlo. La respuesta fue que sí vale
+la pena adaptar la idea, no el texto —y de hecho ya teníamos la pieza central
+sin usar: el "vigésimo lugar" que Bernardo menciona en `b-turno` (diecinueve
+lugares ocupados, uno vacío) es el mismo concepto, escrito con palabras
+propias. Se construyó como contenido nuevo, sin tocar el motor:
+
+- Dos locaciones (`el-mausoleo-puerta`, exterior; `el-mausoleo-camara`,
+  interior), conectadas entre sí y con el vestíbulo **en los dos sentidos** —
+  a diferencia del sótano, esto nunca es de ida: es contenido secundario,
+  explorable en cualquier momento de la aventura.
+- La entrada a la cámara empieza oculta con `conexionesOcultas` (el mismo
+  mecanismo ya construido en §3.2-septvicies para el sótano), destrabada por
+  una pista que deja la escena `mausoleo-forzar-candado` al forzar el
+  candado. **Encontrado escribiendo la prueba, no por el validador**: el
+  validador de contenido no recorre `conexionesOcultas` en absoluto, así que
+  un fragmento de pista mal tipeado (una mayúscula de más o de menos) no da
+  ningún error — sólo deja la conexión sin destrabar nunca, en silencio.
+  Pasó exactamente eso en un primer intento (`"el candado..."` minúscula en
+  la condición contra `"El candado..."` mayúscula en la pista real); lo
+  agarró el primer test de la conexión, no el motor.
+- El candado se abre con `DEX` a dificultad `hard` —pedido explícito del
+  usuario en vez de Mecánica, una habilidad que casi ninguna ficha tiene
+  alta—. `hard` en CoC 7e ya significa "la mitad de la característica", así
+  que `skill:'DEX', difficulty:'hard'` **es** "DES/2" sin escribir ninguna
+  fórmula nueva ni tocar el motor.
+- Adentro, `mausoleo-examinar-nichos` revela con Descubrir una placa
+  específica —«Casimiro Díaz, 1889—1909», con el bronce rayado desde
+  adentro—, el mismo nombre ya usado en el retrato del salón
+  (`f-retratos`, §3.2-septvicies) y en el cadáver del guardián del sótano
+  (`examinar-cadaver-guardian`, §3.2-untricies): tres pistas independientes
+  que apuntan al mismo hecho, ninguna condicionada a haber visto las otras
+  dos. Cuesta Cordura real además de Exposición —pedido explícito del
+  usuario—: `amount: 5`, siguiendo el precedente de este mismo proyecto
+  (`aguablanca.logica.ts`: 1 y 4 en dos escenas; `elvigesimo.logica.ts`: 8 al
+  ponerse el anillo), aplicado en las dos ramas de la tirada de Descubrir —el
+  golpe es haber entrado y visto diecinueve cuerpos, se distinga o no una
+  placa en particular.
+
+**La bonificación de preparación.** El usuario pidió que llegar al combate
+final sin haber investigado nada sea más difícil que llegar con pistas
+juntadas. Extensión genérica de `iniciaCombate`, exactamente el patrón ya
+usado para `salidaPacifica` (cuatro archivos: `ActiveCombat` en
+`shared/types.ts`, `CombatStartedPayload` en `shared/events.ts`, el reducer
+`COMBAT_STARTED`, y `toolStartCombat`) más un quinto punto en
+`toolResolveAttack`, junto al bono ya existente por `derribado`: si
+`activeCombat.preparacion` existe, sus dados se suman al ataque del
+investigador durante TODO el combate —a diferencia del derribo, que se
+consume en el primer golpe: esto es lo que el investigador ya sabe, no una
+ventaja táctica de un asalto—. El motor no sabe qué es Bernardo: sólo lee un
+número opcional que la escena declara, y no hace nada si no está.
+
+`bernardo-enfrentar` cuenta cuántos de siete hechos ya conoce el investigador
+al llegar (retratos del salón, ropero de Bernardo, la lista del diario, el
+anillo y el ciclo revelados en diálogo, el cadáver del guardián, el
+mausoleo) —seis vía pistas de tablero con `evaluarCondicion({op:'pista', ...})`,
+uno vía `discoveredProperties` porque el diario no pasa por el tablero— y
+traduce el conteo a dados: 0-1 hechos → nada, 2-4 → un dado, 5-7 → dos. Los
+umbrales viven como constante local en `elvigesimo.logica.ts`, no en
+`rules/social.config.ts`: es afinación de una sola pelea de una sola
+aventura, no una regla genérica del sistema social.
+
+Probado con los `resolver` de las tres escenas nuevas invocados directo, con
+tiradas armadas a mano (mismo criterio que ya usa esta suite contra rolls que
+dependen de dados reales), más un caso que patchea `Turn.state` en memoria
+para comprobar que `toolResolveAttack` aplica de verdad el bono declarado.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

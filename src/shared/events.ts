@@ -253,6 +253,7 @@ export interface CombatStartedPayload {
   npcIds: NpcId[];
   reason: string;
   salidaPacifica?: ActiveCombat['salidaPacifica'];
+  preparacion?: ActiveCombat['preparacion'];
 }
 
 /** Cierra el combate real en curso, cualquiera sea el motivo. */

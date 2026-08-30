@@ -1109,7 +1109,8 @@ export class Turn {
       return { ok: true, message: 'El combate ya estaba en curso.' };
     }
     const salidaPacifica = raw.salida_pacifica as ActiveCombat['salidaPacifica'] | undefined;
-    this.emit('COMBAT_STARTED', { npcIds, reason, salidaPacifica });
+    const preparacion = raw.preparacion as ActiveCombat['preparacion'] | undefined;
+    this.emit('COMBAT_STARTED', { npcIds, reason, salidaPacifica, preparacion });
     return { ok: true, message: `Empieza el combate contra ${npcIds.join(', ')}.` };
   }
 
@@ -1296,6 +1297,15 @@ export class Turn {
       bonusFuego++; // mismo contador: bonus y penalty ya se netean en request_roll
       notasFuego.push(`${npc.name} está en el piso`);
       this.emit('NPC_COMBATE_CHANGED', { npcId: npc.id, changes: { derribado: false }, cause: 'se levanta o se defiende como puede' });
+    }
+
+    // Lo que el investigador ya sabía al entrar a este combate, declarado
+    // por la escena que lo abrió. A diferencia del derribo, no se consume:
+    // es conocimiento, no una ventaja táctica de un asalto.
+    const preparacion = this.state.activeCombat?.preparacion;
+    if (preparacion && preparacion.dice > 0) {
+      bonusFuego += preparacion.dice;
+      notasFuego.push(preparacion.motivo);
     }
 
     // ── 1. El investigador ataca ──

@@ -184,6 +184,7 @@ function aplicarEfecto(
       npc_ids: efecto.iniciaCombate.npcIds.join(','),
       reason: efecto.iniciaCombate.reason ?? 'lo dispuso la escena',
       salida_pacifica: efecto.iniciaCombate.salidaPacifica,
+      preparacion: efecto.iniciaCombate.preparacion,
     });
   }
   if (efecto.combate) {

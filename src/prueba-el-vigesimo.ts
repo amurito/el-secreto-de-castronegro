@@ -24,7 +24,7 @@ import { fileStore } from './engine/store.node.ts';
 import { ELENA } from './scenario/pregens.ts';
 import { EL_VIGESIMO_LOGICA } from './scenario/elvigesimo.logica.ts';
 import type { EfectoEscena, IntencionLeida } from './scenario/escena.ts';
-import type { GameState, Investigator } from './shared/types.ts';
+import type { Clue, GameState, Investigator } from './shared/types.ts';
 
 useStore(fileStore);
 
@@ -34,6 +34,19 @@ const check = (n: string, ok: boolean, d = '') => {
   console.log(`  ${ok ? '✓' : '✗'} ${n}${d ? ' — ' + d : ''}`);
   if (!ok) fallos++;
 };
+
+/** Una pista de tablero armada a mano, para probar umbrales sin jugar hasta que salga. */
+const pistaFalsa = (description: string): Clue => ({
+  id: `clue-test-${Math.random()}`,
+  description,
+  kind: 'physical',
+  discoveredBy: 'inv-elena',
+  discoveredAt: 'inicio',
+  source: 'prueba',
+  reliability: 'reliable',
+  reliabilityKnown: false,
+  disclosure: 'PUBLIC',
+});
 
 /**
  * Un investigador de combate, para las pruebas que tienen que llegar al
@@ -369,6 +382,156 @@ async function main() {
     }));
     check('si la tirada de Mitos no supera la dificultad, no hay revelación de ningún tipo',
       !fallo.includes('Casimiro') && !fallo.includes('familia'));
+  }
+
+  console.log('\nEL MAUSOLEO: LA CÁMARA EMPIEZA CERRADA Y SE ABRE DE VERDAD');
+  {
+    const { state: enLaPuerta } = await jugarEn(EL_VIGESIMO, '7b MAUSOLEO', 'z1',
+      ['Voy al mausoleo'], { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const antes = accionesDisponibles(enLaPuerta, EL_VIGESIMO).map((o) => o.id);
+    check('antes de forzar el candado, no se puede ir a la cámara',
+      !antes.includes('ir:el-mausoleo-camara'), antes.join(', '));
+
+    // La tirada del candado es real (DEX a dificultad hard) y depende de los
+    // dados — mismo criterio que el resto de la suite: se invoca el
+    // `resolver` directo con una tirada armada a mano para probar la lógica,
+    // no la suerte.
+    const candado = EL_VIGESIMO_LOGICA.find((e) => e.id === 'mausoleo-forzar-candado')!;
+    const intencionCandado: IntencionLeida = {
+      raw: 'fuerzo el candado', norm: 'fuerzo el candado', verb: 'forzar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'feature', id: null }, destino: null,
+    };
+    const cede = ([] as EfectoEscena[]).concat(candado.resolver({
+      estado: enLaPuerta, intencion: intencionCandado, variante: (o) => o[0]!,
+      tirada: { exito: true, grado: 'regular', mensaje: '' },
+    }));
+    const pistaCandado = cede.flatMap((e) => e.pistas ?? []).find((p) => p.description.includes('El candado del mausoleo cede'));
+    check('al ceder, el candado deja la pista que destraba la cámara', Boolean(pistaCandado));
+
+    const conCandadoAbierto: GameState = {
+      ...enLaPuerta,
+      board: { ...enLaPuerta.board, clues: [...enLaPuerta.board.clues, pistaFalsa(pistaCandado!.description)] },
+    };
+    const despues = accionesDisponibles(conCandadoAbierto, EL_VIGESIMO).map((o) => o.id);
+    check('con el candado cedido, la cámara ya se puede visitar',
+      despues.includes('ir:el-mausoleo-camara'), despues.join(', '));
+
+    const noCede = ([] as EfectoEscena[]).concat(candado.resolver({
+      estado: enLaPuerta, intencion: intencionCandado, variante: (o) => o[0]!,
+      tirada: { exito: false, grado: 'regular', mensaje: '' },
+    }));
+    check('si no cede, no hay pista ni penalización: se puede reintentar',
+      noCede.every((e) => !e.pistas?.length && !e.consecuencia));
+  }
+
+  console.log('\nEL MAUSOLEO: LA PLACA DE CASIMIRO SÓLO SE DISTINGUE SI SE SUPERA DESCUBRIR');
+  {
+    const { state: enLaPuerta } = await jugarEn(EL_VIGESIMO, '7b NICHOS', 'z2',
+      ['Voy al mausoleo'], { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const nichos = EL_VIGESIMO_LOGICA.find((e) => e.id === 'mausoleo-examinar-nichos')!;
+    const intencionNichos: IntencionLeida = {
+      raw: 'examino los nichos', norm: 'examino los nichos', verb: 'examinar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'feature', id: null }, destino: null,
+    };
+    const conExito = ([] as EfectoEscena[]).concat(nichos.resolver({
+      estado: enLaPuerta, intencion: intencionNichos, variante: (o) => o[0]!,
+      tirada: { exito: true, grado: 'regular', mensaje: '' },
+    }));
+    const textoExito = conExito.flatMap((e) => e.texto ?? []).join('\n');
+    check('con Descubrir superado, se distingue la placa de Casimiro', textoExito.includes('Casimiro Díaz, 1889—1909'));
+    check('y cuesta Cordura de verdad, no sólo Exposición',
+      conExito.some((e) => e.cordura?.amount === 5) && conExito.some((e) => e.exposicion?.amount === 8));
+
+    const sinExito = ([] as EfectoEscena[]).concat(nichos.resolver({
+      estado: enLaPuerta, intencion: intencionNichos, variante: (o) => o[0]!,
+      tirada: { exito: false, grado: 'regular', mensaje: '' },
+    }));
+    const textoSinExito = sinExito.flatMap((e) => e.texto ?? []).join('\n');
+    check('sin superar Descubrir, ninguna placa se distingue', !textoSinExito.includes('Casimiro'));
+    check('pero el costo de Cordura se paga igual: ver los nichos ya alcanza',
+      sinExito.some((e) => e.cordura?.amount === 5));
+  }
+
+  console.log('\nPREPARACIÓN CONTRA BERNARDO: LAS PISTAS SUMAN DADOS, NO SUERTE');
+  {
+    // Llegar al laboratorio SIN examinar los retratos (a diferencia de
+    // AL_SOTANO, que sí los examina) para poder probar el escalón de cero
+    // hechos conocidos.
+    const SIN_NADA = [
+      'Voy al salón', 'Voy al comedor', 'Examino mesa de cerca', 'Voy a la cocina',
+      'Examino puerta de cerca', 'Examino puerta de cerca', 'Examino puerta de cerca',
+      'Voy al trastero del sótano', 'Trato de pasar sin que me vea',
+      'Voy a la entrada al laberinto', 'Voy al laboratorio',
+    ];
+    const { state: sinNada } = await jugarEn(EL_VIGESIMO, '7b PREP 0', 'z3', SIN_NADA,
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+
+    const bernardoEnfrentar = EL_VIGESIMO_LOGICA.find((e) => e.id === 'bernardo-enfrentar')!;
+    const intencionCombate: IntencionLeida = {
+      raw: 'enfrento a bernardo', norm: 'enfrento a bernardo', verb: 'atacar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'npc', id: 'npc-bernardo' }, destino: null,
+    };
+    const efectoCero = ([] as EfectoEscena[]).concat(bernardoEnfrentar.resolver({
+      estado: sinNada, intencion: intencionCombate, variante: (o) => o[0]!, tirada: null,
+    }));
+    check('con cero hechos conocidos, no hay bonificación',
+      !efectoCero.some((e) => (e.iniciaCombate?.preparacion?.dice ?? 0) > 0),
+      JSON.stringify(efectoCero.find((e) => e.iniciaCombate)?.iniciaCombate?.preparacion));
+
+    const conTres: GameState = {
+      ...sinNada,
+      board: { ...sinNada.board, clues: [
+        ...sinNada.board.clues,
+        pistaFalsa('La pared de retratos del salón repite un patrón: ...'),
+        pistaFalsa('El ropero forzado del dormitorio principal guarda nueve recortes de diario ...'),
+        pistaFalsa('Bernardo no fabricó el anillo: lo encontró ya hecho ...'),
+      ] },
+    };
+    const efectoTres = ([] as EfectoEscena[]).concat(bernardoEnfrentar.resolver({
+      estado: conTres, intencion: intencionCombate, variante: (o) => o[0]!, tirada: null,
+    }));
+    check('con tres hechos conocidos (2-4), un dado de bonificación',
+      efectoTres.some((e) => e.iniciaCombate?.preparacion?.dice === 1),
+      JSON.stringify(efectoTres.find((e) => e.iniciaCombate)?.iniciaCombate?.preparacion));
+
+    const conSeis: GameState = {
+      ...sinNada,
+      board: { ...sinNada.board, clues: [
+        ...sinNada.board.clues,
+        pistaFalsa('La pared de retratos del salón repite un patrón: ...'),
+        pistaFalsa('El ropero forzado del dormitorio principal guarda nueve recortes de diario ...'),
+        pistaFalsa('Bernardo no fabricó el anillo: lo encontró ya hecho ...'),
+        pistaFalsa('Bernardo no sabe si el ciclo de nacimientos cada treinta años ...'),
+        pistaFalsa('El cuerpo de lo que custodiaba la puerta del sótano es Casimiro Díaz ...'),
+        pistaFalsa('En el mausoleo de los Díaz, la placa ... tiene el bronce rayado desde adentro.'),
+      ] },
+    };
+    const efectoSeis = ([] as EfectoEscena[]).concat(bernardoEnfrentar.resolver({
+      estado: conSeis, intencion: intencionCombate, variante: (o) => o[0]!, tirada: null,
+    }));
+    check('con seis hechos conocidos (5-7), dos dados de bonificación',
+      efectoSeis.some((e) => e.iniciaCombate?.preparacion?.dice === 2),
+      JSON.stringify(efectoSeis.find((e) => e.iniciaCombate)?.iniciaCombate?.preparacion));
+
+    // Y que el motor de verdad la aplique: con `activeCombat.preparacion`
+    // seteado a mano, el asalto contra Bernardo tiene que mostrar el motivo
+    // en la tirada — mismo criterio que ya se usa para comprobar «derribado».
+    const { id } = await jugarEn(EL_VIGESIMO, '7b PREP MOTOR', 'z4',
+      [...SIN_NADA, 'Enfrento a Bernardo'], { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const t = await Turn.open(id);
+    // Se patchea `t.state` en memoria, sin persistir nada: alcanza para
+    // comprobar que `toolResolveAttack` lee `activeCombat.preparacion`,
+    // sin depender de que la escena real haya juntado seis pistas.
+    t.state = {
+      ...t.state,
+      activeCombat: { ...t.state.activeCombat!, preparacion: { dice: 2, motivo: 'llegó sabiendo con qué se enfrentaba' } },
+    };
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'desarmado' });
+    await t.commit();
+    const sTirada = (await Turn.open(id)).state;
+    check('el asalto contra Bernardo muestra el motivo de la preparación',
+      r.message.includes('llegó sabiendo con qué se enfrentaba') || sTirada.rolls.some((x) =>
+        x.commitment.modifiers.some((m) => /llegó sabiendo/.test(m.reason))));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);

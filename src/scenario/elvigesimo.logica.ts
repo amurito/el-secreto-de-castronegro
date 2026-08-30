@@ -19,6 +19,16 @@ import { evaluarCondicion } from './condiciones.ts';
 const ruido = (s: GameState) =>
   s.consequences.filter((c) => c.description.includes('hizo ruido en la Casa')).length;
 
+/**
+ * Umbrales de la bonificación de preparación contra Bernardo (ver
+ * `bernardo-enfrentar`, más abajo). Afinación de esta única pelea de esta
+ * única aventura, no una regla genérica —por eso vive acá y no en
+ * `rules/social.config.ts`—: de siete hechos posibles que el investigador
+ * puede haber juntado antes de confrontarlo, 0-1 no da nada, 2-4 da un
+ * dado, 5-7 da dos.
+ */
+const PREPARACION_BERNARDO = { dosDados: 5, unDado: 2 } as const;
+
 export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
   // ══ LA BIBLIOTECA ═════════════════════════════════════════════════════════
 
@@ -200,6 +210,78 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     },
   },
 
+  // ══ EL MAUSOLEO ═══════════════════════════════════════════════════════════
+  // Contenido secundario, explorable en cualquier momento: nunca es de ida,
+  // a diferencia del sótano. Adapta la IDEA del mausoleo de la aventura
+  // original (una cripta familiar con lugares numerados, uno vacío) sin
+  // tocar su texto: los nombres, fechas y números de acá son propios.
+
+  {
+    id: 'mausoleo-forzar-candado',
+    prueba: () => ({
+      // Pedido del usuario: Mecánica es una habilidad rara en las fichas
+      // (Elena 15%), así que exigirla hacía el candado casi imposible para
+      // casi cualquier investigador. `DEX` a dificultad `hard` es, tal cual
+      // la interpreta el motor, la mitad de la característica —lo mismo que
+      // pedir «DES/2»— sin necesidad de ninguna fórmula nueva.
+      skill: 'DEX', difficulty: 'hard',
+      reason: 'forzar un candado viejo sin herramienta pensada para eso',
+      stakes_success: 'cede',
+      stakes_failure: 'no cede todavía',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return { texto: ['Forcejeás con el candado. Está viejo, pero no lo suficiente. Podés volver a intentarlo.'] };
+      }
+      return {
+        texto: ['El candado cede de golpe, con un chasquido seco que no esperabas después de tanto forcejear. Adentro, la oscuridad no es la misma que la de afuera.'],
+        pistas: [{
+          description: 'El candado del mausoleo cede: adentro hay una cámara con nichos.',
+          kind: 'physical',
+          source: 'la puerta del mausoleo de los Díaz',
+          reliability: 'reliable',
+        }],
+      };
+    },
+  },
+
+  {
+    id: 'mausoleo-examinar-nichos',
+    prueba: () => ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'distinguir una placa en particular entre diecinueve iguales',
+      stakes_success: 'un nombre se separa del resto',
+      stakes_failure: 'diecinueve nichos, y ninguno se distingue del resto',
+    }),
+    resolver: ({ tirada }) => {
+      // Ver diecinueve cuerpos conservados en fila cuesta Cordura de
+      // verdad, no sólo Exposición —pedido del usuario—: es perturbador se
+      // distinga o no una placa en particular, así que el costo va acá,
+      // antes de la rama de éxito/fracaso de la tirada de Descubrir.
+      const comun: EfectoEscena = {
+        texto: [
+          'Cada nicho sellado tiene, además del nombre y las fechas, una figurita tallada apoyada contra la placa —siempre la misma figura, hecha por manos distintas en épocas distintas—. El nicho abierto no tiene ninguna.',
+        ],
+        cordura: { amount: 5, cause: 'ver diecinueve cuerpos de la misma familia guardados como quien guarda algo, no como quien entierra a alguien' },
+        exposicion: { amount: 8, source: 'mausoleo:nichos', cause: 'entender de un vistazo lo que Bernardo tardó trescientos años en decir con palabras' },
+      };
+      if (!tirada?.exito) {
+        return [comun, { texto: ['Todas las placas dicen más o menos lo mismo a esta distancia: un nombre, dos fechas, veinte años entre una y otra. Ninguna se separa del resto.'] }];
+      }
+      return [comun, {
+        texto: [
+          'Una placa sí se separa del resto, cerca del nicho vacío: «Casimiro Díaz, 1889—1909». El bronce alrededor del sello está rayado, como si algo hubiera intentado abrirlo desde ADENTRO y después se hubiera dado por vencido, o hubiera encontrado otra salida.',
+        ],
+        pistas: [{
+          description: 'En el mausoleo de los Díaz, la placa de «Casimiro Díaz, 1889—1909» tiene el bronce rayado desde adentro. Diecinueve nichos sellados, veinte años entre las dos fechas de cada uno, y uno —el más cercano a la puerta— abierto y vacío.',
+          kind: 'physical',
+          source: 'la cámara del mausoleo de los Díaz',
+          reliability: 'reliable',
+        }],
+      }];
+    },
+  },
+
   // ══ BERNARDO ══════════════════════════════════════════════════════════════
 
   {
@@ -208,23 +290,52 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     // salir a denunciar— es lo que abre los cuatro finales. `resolve_flee`
     // sigue disponible dentro del combate como cualquier otro: no hacía falta
     // inventar una salida nueva para eso.
+    //
+    // Pedido del usuario: que llegar sin haber investigado nada sea más
+    // difícil que llegar con pistas juntadas. Se cuenta cuántos de estos
+    // siete hechos ya conoce el investigador —tablero de pistas para seis,
+    // `discoveredProperties` para el diario, que no pasa por el tablero— y
+    // el conteo se traduce en dados de bonificación para toda la pelea
+    // (`ActiveCombat.preparacion`, motor genérico: no sabe qué es Bernardo,
+    // sólo aplica el número que declara la escena).
     id: 'bernardo-enfrentar',
-    resolver: () => ({
-      texto: [
-        'Bernardo no se para. Ni siquiera suelta al Ahijado del brazo del sillón.\n\n—Ya lo veía venir —dice, y por primera vez en trescientos años no suena aliviado de que así sea.',
-      ],
-      combate: { accion: 'atacar', npcId: 'npc-bernardo', armaId: 'desarmado' },
-      iniciaCombate: {
-        npcIds: ['npc-bernardo'],
-        reason: 'Bernardo no se para. Ya lo veía venir, y esta vez no va a bastar con hablar.',
-      },
-      consecuencia: {
-        description: 'El investigador entró en combate real contra Bernardo Díaz, en el laboratorio de la Casa.',
-        scope: 'campaign',
-        permanent: true,
-        worldReminder: 'Hubo pelea de verdad con Bernardo Díaz, con las manos o con lo que tenía encima. Lo que haya pasado después de eso es harina de otro costal.',
-      },
-    }),
+    resolver: ({ estado }) => {
+      const pista = (contiene: string) => evaluarCondicion({ op: 'pista', contiene }, { estado });
+      const hechos = [
+        pista('retratos del salón repite un patrón'),
+        pista('nueve recortes de diario'),
+        (estado.items['it-diario-bernardo']?.discoveredProperties ?? []).some((d) => d.propertyId === 'p-diario-turno'),
+        pista('no fabricó el anillo'),
+        pista('no sabe si el ciclo de nacimientos'),
+        pista('custodiaba la puerta del sótano'),
+        pista('el bronce rayado desde adentro'),
+      ].filter(Boolean).length;
+
+      const dice = hechos >= PREPARACION_BERNARDO.dosDados ? 2 : hechos >= PREPARACION_BERNARDO.unDado ? 1 : 0;
+      const previo = dice === 2
+        ? 'Sabés bien con qué estás por meterte, y eso no te hace sentir mejor.'
+        : dice === 1
+          ? 'Algo sabés de con qué estás por meterte. No todo.'
+          : 'No tenés ni idea de con qué estás por meterte.';
+
+      return {
+        texto: [
+          `Bernardo no se para. Ni siquiera suelta al Ahijado del brazo del sillón.\n\n—Ya lo veía venir —dice, y por primera vez en trescientos años no suena aliviado de que así sea.\n\n${previo}`,
+        ],
+        combate: { accion: 'atacar', npcId: 'npc-bernardo', armaId: 'desarmado' },
+        iniciaCombate: {
+          npcIds: ['npc-bernardo'],
+          reason: 'Bernardo no se para. Ya lo veía venir, y esta vez no va a bastar con hablar.',
+          ...(dice > 0 ? { preparacion: { dice, motivo: 'llegó sabiendo con qué se enfrentaba' } } : {}),
+        },
+        consecuencia: {
+          description: 'El investigador entró en combate real contra Bernardo Díaz, en el laboratorio de la Casa.',
+          scope: 'campaign',
+          permanent: true,
+          worldReminder: 'Hubo pelea de verdad con Bernardo Díaz, con las manos o con lo que tenía encima. Lo que haya pasado después de eso es harina de otro costal.',
+        },
+      };
+    },
   },
 
   // ══ BERNARDO CAÍDO: EL MOMENTO DEL ANILLO ═════════════════════════════════

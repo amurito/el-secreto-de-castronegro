@@ -158,6 +158,12 @@ export interface EfectoEscena {
       pistaCalma: { description: string; kind: Clue['kind']; source: string; reliability: Clue['reliability'] };
       consecuenciaDisparo: { description: string; scope: Consequence['scope']; permanent: boolean; worldReminder: string };
     };
+    /**
+     * Bono de dados para el investigador durante todo este combate, según lo
+     * que ya sabía al llegar. La escena decide cuánto y por qué; el motor
+     * sólo lo aplica —ver `ActiveCombat.preparacion`—. Sin esto, ningún bono.
+     */
+    preparacion?: { dice: number; motivo: string };
   };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };

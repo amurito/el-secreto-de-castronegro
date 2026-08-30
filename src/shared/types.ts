@@ -759,6 +759,14 @@ export interface ActiveCombat {
     pistaCalma: { description: string; kind: Clue['kind']; source: string; reliability: Clue['reliability'] };
     consecuenciaDisparo: { description: string; scope: Consequence['scope']; permanent: boolean; worldReminder: string };
   };
+  /**
+   * Configurado por la escena que abrió el combate, según lo que el
+   * investigador ya sabía al llegar. Sin esto, ningún bono — así queda el
+   * simulador, que nunca lo setea. Se lee en cada asalto (no se consume
+   * como el bono por derribo): es lo que el investigador ya sabe, no un
+   * recurso de un solo uso.
+   */
+  preparacion?: { dice: number; motivo: string };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
