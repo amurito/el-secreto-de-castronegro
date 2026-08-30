@@ -2745,6 +2745,57 @@ contenido: es la segunda vez que un `conexionOculta` nuevo pasa por acá
 (la primera, el mausoleo, no lo disparó porque no cambiaba la conectividad
 cruda de ningún cuarto ya sin salida).
 
+### 3.2-sextricies Cordura de verdad, dos bugs de navegación, y compresión de combate
+
+Cinco pedidos del sexto playtest.
+
+**Tirada de Cordura real, `skill: 'COR'`.** `toolRequestRoll` (`engine.ts`)
+ahora acepta `'COR'` como pseudo-habilidad, leyendo `inv.derived.san`
+directo —primera vez que este proyecto tira contra la Cordura actual en vez
+de aplicarla como número fijo—. `examinar-cadaver-guardian` y
+`mausoleo-examinar-nichos` la usan como su única tirada (el motor no admite
+dos por intención): la identidad de Casimiro ya no depende de acertar un
+chequeo, depende de haber visto el retrato del salón —una pista cruzada,
+como cualquier otra de esta aventura—; lo que decide la tirada de Cordura es
+CUÁNTO cuesta mirar (2 si se pasa, 5 si no). El cadáver además deja Mitos de
+Cthulhu ganado (`EfectoEscena.mitos`, ya existía en el motor y nadie lo
+usaba): sin pedir una segunda tirada, el "1D3" sale de acotar a 1-3 el mismo
+d100 que ya tiró para la Cordura (`ContextoEscena.tirada.numero`, campo
+nuevo, expuesto desde `keeper/escenas.ts`).
+
+**La pérdida ahora tiene peso mecánico, no sólo narrativo.** Los 5 puntos
+del mausoleo y los 5 del cadáver (en la rama que falla) ya cruzaban el piso
+de crisis automática de CoC 7e (p.166), pero salían con el nombre genérico
+porque ninguna escena declaraba `cordura.crisis`. Ahora las dos tienen fobia
+o manía propia con efecto real en tiradas futuras ("Manía de contar",
+"Horror a los cadáveres") — pedido explícito: que se sienta, no que baje un
+número en silencio.
+
+**Dos bugs de navegación reales, en las salas nuevas del laberinto.** El
+nombre de una locación se parte en palabras ≥4 letras para reconocerla en
+una frase (`keeper/intent.ts`, `nombresDe`), y gana la palabra más larga que
+coincida. "El ala este del laberinto" y "el resto del laberinto" (alias de
+`entrada-laberinto`) empatan en la palabra "laberinto" (9 letras), y por
+orden de inserción ganaba SIEMPRE `entrada-laberinto` — cualquier intento de
+ir a un ala terminaba de vuelta en la entrada. Peor: "Más allá del
+laboratorio" empataba con "laboratorio" contra la sala del propio
+laboratorio, así que ni siquiera se podía LLEGAR al laberinto nuevo. Las dos
+salas se renombraron ("El ala este"/"El ala oeste"/"Más allá") para sacarse
+la palabra colisionante de encima — mismo tipo de bug ya visto tres veces
+este proyecto con nombres de NPC, ahora con nombres de lugar.
+
+**Compresión de combate.** Nuevo botón "Resolver el combate" en
+`Combate.tsx`: repite el mismo `combateAtacar` que un click manual, uno
+atrás de otro (apuntando al punto débil en cuanto se descubre), hasta que el
+combate termina, el rival elegido cae, el investigador cae, o a los 30
+asaltos. No hay atajo de reglas —los mismos dados de siempre, en el mismo
+orden—, sólo de clicks.
+
+**La línea de "decida rápido"** de Bernardo se reescribió (pedido: la
+anterior "no convencía"), y la primera línea de `bernardo-caido` ahora
+describe la herida cerrándose, para que el golpe que le ganó la mano quede
+en cuadro antes del resto de la escena.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

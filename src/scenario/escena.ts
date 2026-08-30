@@ -249,8 +249,13 @@ export interface ContextoEscena {
    * pasa además de ganar o perder, y una escena que declara contenido para
    * `grado === 'critical'` o `'fumble'` es exactamente eso: la decisión del
    * Keeper, escrita de antemano porque acá no hay un Keeper en vivo.
+   *
+   * `numero` es el resultado crudo del d100 (1-100), cuando el motor lo
+   * expone (`ClientRoll.result`). Sirve para derivar una variación chica
+   * —un «1D3» de Mitos ganado según lo que YA se tiró— sin pedir una
+   * segunda tirada: el motor sólo admite una por intención.
    */
-  tirada: { exito: boolean; grado: SuccessDegree; mensaje: string } | null;
+  tirada: { exito: boolean; grado: SuccessDegree; mensaje: string; numero?: number } | null;
   /** Elige una variante que no se haya usado todavía en esta partida. */
   variante: (opciones: string[]) => string;
 }

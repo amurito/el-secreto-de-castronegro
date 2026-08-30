@@ -106,6 +106,36 @@ export function Combate({
     }
   }
 
+  /**
+   * Pedido después de jugarlo: pelear asalto por asalto contra alguien que
+   * ya se sabe cómo se gana (el punto débil ya descubierto, o un rival que
+   * ya no da pelea real) es repetir el mismo click hasta el cansancio. Esto
+   * hace exactamente los mismos llamados que un click manual, uno atrás de
+   * otro, así que los dados siguen siendo los de siempre —no hay atajo en
+   * las reglas, sólo en la cantidad de clicks—. Se corta solo si termina el
+   * combate, si el rival elegido cae, si el investigador cae, o a los 30
+   * asaltos por si algo quedó mal declarado y esto nunca termina.
+   */
+  async function resolverTodo() {
+    setOcupado(true);
+    setError(null);
+    try {
+      for (let n = 0; n < 30; n++) {
+        const alPuntoDebil = Boolean(rivales.find((r) => r.id === rivalId)?.puntoDebil?.descubierto);
+        const r = await api.combateAtacar(campaignId, rivalId, arma, { apuntando, puntoBlanco, cubierto, blancoMovil, alPuntoDebil });
+        agregarAlRegistro(r);
+        if (!r.combateActivo) break;
+        const rivalAhora = r.rivales.find((x) => x.id === rivalId);
+        const invAhora = (r.state as any)?.investigator?.derived?.hp ?? 1;
+        if (!rivalAhora || rivalAhora.estadoCombate === 'fuera_de_combate' || invAhora <= 0) break;
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
   async function huir() {
     setOcupado(true);
     setError(null);
@@ -257,6 +287,9 @@ export function Combate({
               Ir por {elegido.puntoDebil.nombre}
             </button>
           )}
+          <button className="ghost" onClick={resolverTodo} disabled={ocupado || !enPie || !investigadorEnPie}>
+            Resolver el combate
+          </button>
           <button className="ghost" onClick={huir} disabled={ocupado || !investigadorEnPie}>
             Huir
           </button>

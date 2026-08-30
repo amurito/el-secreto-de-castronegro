@@ -159,36 +159,45 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
   },
 
   {
-    // Pedido después de jugarlo: poder mirar el cuerpo de lo que atacó, con
-    // una tirada de Mitos que —si ya se vieron los retratos del salón—
-    // puede ponerle nombre. El motor no lo renombra en ningún lado: es
-    // prosa, igual que cualquier otra revelación de la aventura.
+    // Pedido después de jugarlo: (1) una tirada de Cordura DE VERDAD —no un
+    // descuento fijo sin dados— y (2) que examinar algo así deje Mitos de
+    // Cthulhu ganado, no sólo Cordura perdida. La identidad de Casimiro ya
+    // NO depende de una tirada: depende de haber visto el retrato del
+    // salón, como cualquier otra pista cruzada de esta aventura —así la
+    // única tirada de la escena puede ser, de verdad, la de Cordura.
     id: 'examinar-cadaver-guardian',
     prueba: () => ({
-      skill: 'mitos', difficulty: 'regular',
-      reason: 'reconocer, en lo que quedó, qué fue esto antes de dejar de serlo',
-      stakes_success: 'algo en el hueso te dice más de lo que la carne todavía deforme puede decir',
-      stakes_failure: 'un cuerpo, y nada que puedas nombrar además de eso',
+      skill: 'COR', difficulty: 'regular',
+      reason: 'sostener la mirada sobre lo que quedó, sin que se te vaya la cabeza',
+      stakes_success: 'te cuesta menos de lo que podría',
+      stakes_failure: 'te cuesta más de lo que esperabas',
     }),
     resolver: ({ estado, tirada }) => {
       const vioRetratos = evaluarCondicion(
         { op: 'detalleVisto', lugar: 'salon', feature: 'f-retratos' },
         { estado },
       );
+      // Sin segunda tirada (el motor sólo admite una por intención): el
+      // Mitos ganado sale del mismo d100 que ya salió para la Cordura,
+      // acotado a 1-3 —el «1D3» pedido, sin inventar una fórmula de dados
+      // nueva en el contenido.
+      const mitosGanado = 1 + ((tirada?.numero ?? 1) % 3);
       const comun: EfectoEscena = {
         texto: ['Te arrodillás junto al cuerpo. La espalda encorvada, las muñecas finas, los dientes largos no se acomodan solos cuando ya no hay nadie sosteniéndolos así.'],
-        // Pedido después de jugarlo: esto tiene que costar Cordura de
-        // verdad, se reconozca o no de quién es el cuerpo —la tirada de
-        // Mitos decide QUÉ se aprende, no si duele mirarlo—. `amount: 3`
-        // sigue el mismo criterio flat (sin dado) que el resto de la
-        // Cordura real de esta aventura (ver §3.2-duotricies): un cuerpo
-        // cuesta menos que diecinueve juntos (mausoleo: 5) y bastante menos
-        // que ponerse el anillo (8).
-        cordura: { amount: 3, cause: 'arrodillarse junto a lo que quedó, sea o no reconocible' },
+        cordura: {
+          amount: tirada?.exito ? 2 : 5,
+          cause: 'arrodillarse junto a lo que quedó, sea o no reconocible',
+          ...(tirada?.exito ? {} : {
+            crisis: {
+              nombre: 'Horror a los cadáveres',
+              descripcion: 'No puede acercarse a un cuerpo sin que le tiemblen las manos, ni siquiera uno que ya conocía bien de antes. La crisis dura hasta el final de la escena.',
+              tipo: 'phobia' as const,
+              afecta: [{ skill: 'medicina', dados: 1 }],
+            },
+          }),
+        },
+        mitos: { amount: mitosGanado, source: 'cadaver:guardian' },
       };
-      if (!tirada?.exito) {
-        return [comun, { texto: ['Es un cuerpo, y no es sólo eso, y no llegás a entender más que eso mirándolo con lo que sabés hasta ahora.'] }];
-      }
       if (vioRetratos) {
         return [comun, {
           texto: [
@@ -270,7 +279,23 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
         texto: [
           'Cada nicho sellado tiene, además del nombre y las fechas, una figurita tallada apoyada contra la placa —siempre la misma figura, hecha por manos distintas en épocas distintas—. El nicho abierto no tiene ninguna.',
         ],
-        cordura: { amount: 5, cause: 'ver diecinueve cuerpos de la misma familia guardados como quien guarda algo, no como quien entierra a alguien' },
+        // Pedido después de jugarlo: que la pérdida se sienta, no que sea un
+        // número que baja en silencio. 5 puntos de golpe ya cruza el piso
+        // que el motor usa para una crisis de locura temporal automática
+        // (CoC 7e p. 166); sin `crisis` acá salía con el nombre genérico.
+        // Con nombre y efecto propios, contar los nichos dos veces en esta
+        // aventura (acá y en cualquier fila repetida después) deja una marca
+        // real en la ficha, no sólo una frase.
+        cordura: {
+          amount: 5,
+          cause: 'ver diecinueve cuerpos de la misma familia guardados como quien guarda algo, no como quien entierra a alguien',
+          crisis: {
+            nombre: 'Manía de contar',
+            descripcion: 'Necesita contar cualquier fila de cosas repetidas antes de poder pensar en otra cosa —nichos, escalones, latidos—. Si alguien la interrumpe a mitad de la cuenta, hay que volver a empezar.',
+            tipo: 'mania',
+            afecta: [{ skill: 'escuchar', dados: 1 }],
+          },
+        },
         exposicion: { amount: 8, source: 'mausoleo:nichos', cause: 'entender de un vistazo lo que Bernardo tardó trescientos años en decir con palabras' },
       };
       if (!tirada?.exito) {
@@ -356,11 +381,11 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     id: 'bernardo-caido',
     resolver: () => ({
       texto: [
-        'Está en el piso, contra la pata de la mesa de piedra, y respira. Trescientos años y respira como cualquiera que acaba de perder una pelea.',
+        'Está en el piso, contra la pata de la mesa de piedra, y respira. Trescientos años y respira como cualquiera que acaba de perder una pelea. La herida de la mano ya dejó de sangrar: se cerró sola, una vez más, la última vez que le hace falta cerrarse.',
         'La mano izquierda está abierta hacia arriba, con el anillo puesto. No la cierra. No la esconde. Si quisiera dificultarte esto, no lo estaría haciendo así.',
         '—Sáquemelo —dice—. O póngaselo. Las dos cosas terminan conmigo, y a esta altura las dos me dan igual.\n\n—Lo que no le va a dar igual a usted es cuál de las dos eligió, y eso lo va a saber recién dentro de unos años.',
         'El Ahijado bajó del sillón. No se acerca a vos ni a él: se queda en el medio, mirando la mano abierta, esperando.',
-        '—Decida rápido —dice Bernardo—. No por mí. Porque el que decide despacio, en esta casa, termina decidiendo lo que la casa quiera.',
+        '—Decida rápido —dice Bernardo—. No por mí: hace trescientos años que espero. Es que acá, quedarse pensando ya es una respuesta, y no la que usted quiere dar.',
         'Detrás del sillón, el laberinto sigue. Ya no suena a nada que responda a nadie.',
       ],
       exposicion: { amount: 9, source: 'laboratorio:anillo', cause: 'el anillo ofrecido en una mano abierta' },

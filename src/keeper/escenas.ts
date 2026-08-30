@@ -269,7 +269,8 @@ export function ejecutarEscena(
       penalty_dice: prueba.penalty_dice ?? 0,
       modifier_reason: prueba.modifier_reason ?? '',
     });
-    tirada = { exito: huboExito(r), grado: gradoDeLaTirada(r), mensaje: r.message };
+    const numero = r.emit?.kind === 'roll' ? (r.emit.data as { result?: number }).result : undefined;
+    tirada = { exito: huboExito(r), grado: gradoDeLaTirada(r), mensaje: r.message, numero };
   }
 
   const ctx: ContextoEscena = {

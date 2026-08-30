@@ -336,15 +336,17 @@ async function main() {
   console.log('\nEL CADÁVER DEL GUARDIÁN PUEDE LLEVAR NOMBRE, SI YA SE VIO EL RETRATO');
   {
     // Pedido después de jugarlo: examinar el cuerpo del que quedó en la
-    // puerta, con una tirada de Mitos que pueda ponerle nombre SI el
-    // investigador ya reconoció la cara en uno de los retratos del salón.
+    // puerta le pone nombre SI el investigador ya reconoció la cara en uno
+    // de los retratos del salón —ya no depende de una tirada, es una pista
+    // cruzada como cualquier otra—. La única tirada de la escena es de
+    // Cordura de verdad (skill: 'COR'), y decide cuánto cuesta mirar, no si
+    // hay nombre.
     //
-    // La tirada de Mitos es de verdad y depende de los dados —no tiene
-    // sentido ablandarla para la prueba—, así que en vez de jugar hasta que
-    // salga se invoca el `resolver` de la escena directamente, con un
-    // resultado de tirada armado a mano: es la misma lógica que ejecutaría
-    // el motor, sin medir suerte (mismo criterio que «CON BERNARDO VENCIDO…»,
-    // un poco más arriba).
+    // La tirada es real y depende de los dados —no tiene sentido ablandarla
+    // para la prueba—, así que en vez de jugar hasta que salga se invoca el
+    // `resolver` de la escena directamente, con un resultado armado a mano:
+    // es la misma lógica que ejecutaría el motor, sin medir suerte (mismo
+    // criterio que «CON BERNARDO VENCIDO…», un poco más arriba).
     const { state: conRetratos } = await jugarEn(EL_VIGESIMO, '7b RETRATOS SI', 'y1',
       AL_SOTANO, { estadoAnterior: subida, mesesTranscurridos: 0 });
     const { state: sinRetratos } = await jugarEn(EL_VIGESIMO, '7b RETRATOS NO', 'y2',
@@ -366,25 +368,32 @@ async function main() {
       estado: conRetratos, intencion, variante: (o) => o[0]!,
       tirada: { exito: true, grado: 'regular', mensaje: '' },
     }));
-    check('con los retratos ya vistos y Mitos superado, el cadáver revela nombre y apellido',
+    check('con los retratos ya vistos, el cadáver revela nombre y apellido',
       conNombre.includes('Casimiro Díaz'));
 
     const sinNombre = textoDe(escena.resolver({
       estado: sinRetratos, intencion, variante: (o) => o[0]!,
-      tirada: { exito: true, grado: 'regular', mensaje: '' },
+      tirada: { exito: true, grado: 'regular', mensaje: '', numero: 12 },
     }));
-    check('sin haber visto los retratos, el mismo éxito reconoce el parentesco pero NO pone nombre',
+    check('sin haber visto los retratos, reconoce el parentesco pero NO pone nombre',
       !sinNombre.includes('Casimiro Díaz'));
 
+    // Pedido después de jugarlo: la identidad ya no depende de una tirada
+    // —depende de haber visto el retrato, como cualquier otra pista
+    // cruzada—, así que la ÚNICA tirada de la escena pasa a ser una de
+    // Cordura de verdad. Superarla no cambia SI se reconoce el cuerpo, sólo
+    // cuánto cuesta reconocerlo.
     const fallo = ([] as EfectoEscena[]).concat(escena.resolver({
       estado: conRetratos, intencion, variante: (o) => o[0]!,
-      tirada: { exito: false, grado: 'regular', mensaje: '' },
+      tirada: { exito: false, grado: 'regular', mensaje: '', numero: 47 },
     }));
     const textoFallo = fallo.flatMap((e) => e.texto ?? []).join('\n');
-    check('si la tirada de Mitos no supera la dificultad, no hay revelación de ningún tipo',
-      !textoFallo.includes('Casimiro') && !textoFallo.includes('familia'));
-    check('y de todos modos cuesta Cordura de verdad, se reconozca o no el cuerpo',
-      fallo.some((e) => e.cordura?.amount === 3));
+    check('la tirada ahora es de Cordura, no de Mitos: fallarla no le saca el nombre a Casimiro',
+      textoFallo.includes('Casimiro Díaz'));
+    check('...pero SÍ cuesta más Cordura que si se hubiera pasado la tirada',
+      fallo.some((e) => e.cordura?.amount === 5));
+    check('y de todos modos deja Mitos de Cthulhu ganado (el «1D3» pedido)',
+      fallo.some((e) => (e.mitos?.amount ?? 0) >= 1 && (e.mitos?.amount ?? 0) <= 3));
   }
 
   console.log('\nEL MAUSOLEO: LA CÁMARA EMPIEZA CERRADA Y SE ABRE DE VERDAD');

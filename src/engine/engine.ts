@@ -796,7 +796,13 @@ export class Turn {
     }
 
     let baseValue: number;
-    if (isCharacteristic(skill)) {
+    if (skill === 'COR') {
+      // Tirada de Cordura de verdad (CoC 7e): el porcentaje ES la Cordura
+      // actual del investigador, no una habilidad de la ficha. Existe para
+      // que una escena pueda pedir "pasar la mirada" en vez de aplicar una
+      // pérdida fija sin tirada — reportado jugando, ver ROADMAP.
+      baseValue = inv.derived.san;
+    } else if (isCharacteristic(skill)) {
       baseValue = inv.characteristics[skill];
     } else if (inv.skills[skill]) {
       baseValue = inv.skills[skill]!.base;
@@ -805,7 +811,7 @@ export class Turn {
     } else {
       const available = Object.keys(inv.skills).join(', ');
       return this.reject('request_roll', raw,
-        `"${skill}" no existe en la ficha. Habilidades disponibles: ${available}. Características: STR, CON, SIZ, DEX, APP, INT, POW, EDU.`);
+        `"${skill}" no existe en la ficha. Habilidades disponibles: ${available}. Características: STR, CON, SIZ, DEX, APP, INT, POW, EDU. También «COR» (Cordura actual).`);
     }
 
     // Modificadores propuestos por el Keeper.

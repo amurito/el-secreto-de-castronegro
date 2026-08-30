@@ -647,7 +647,7 @@
     },
     "laberinto-mas-alla": {
       "id": "laberinto-mas-alla",
-      "name": "Más allá del laboratorio",
+      "name": "Más allá",
       "aliases": ["mas alla", "más allá", "el resto del laberinto", "los tuneles de mas alla"],
       "description": "El laberinto sigue del otro lado del sillón de Bernardo, más ancho de lo que un sótano debería permitir. Dos pasajes se abren, uno a cada lado, y de los dos viene el mismo silencio raro: no el de un lugar vacío, el de un lugar que dejó de tener quien lo dirija.",
       "atmosphere": [
@@ -668,7 +668,7 @@
     },
     "laberinto-ala-este": {
       "id": "laberinto-ala-este",
-      "name": "El ala este del laberinto",
+      "name": "El ala este",
       "aliases": ["ala este", "el ala este"],
       "description": "El pasaje de la derecha baja apenas y se ensancha en una especie de cuarto sin forma clara, con paja vieja amontonada contra una de las paredes.",
       "atmosphere": [
@@ -689,7 +689,7 @@
     },
     "laberinto-ala-oeste": {
       "id": "laberinto-ala-oeste",
-      "name": "El ala oeste del laberinto",
+      "name": "El ala oeste",
       "aliases": ["ala oeste", "el ala oeste"],
       "description": "El pasaje de la izquierda termina en un cuarto más chico, con marcas de uñas —muchas, superpuestas, de distintos tamaños— bajando por una de las paredes de tierra.",
       "atmosphere": [

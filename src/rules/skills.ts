@@ -92,6 +92,7 @@ export function isCharacteristic(id: string): id is CharacteristicId {
 }
 
 export function labelFor(id: SkillId | CharacteristicId): string {
+  if (id === 'COR') return 'Cordura';
   if (isCharacteristic(id)) return CHARACTERISTIC_LABEL[id];
   return SKILL_BY_ID[id]?.label ?? id;
 }
