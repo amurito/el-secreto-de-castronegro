@@ -164,6 +164,15 @@ export interface CombateResult {
   /** Las acciones normales, listas para cuando se vuelve a la narración. */
   options: Opcion[];
   intimidar: IntimidarDisponible;
+  /**
+   * Rivales al día después de ESTA acción. `Combate.tsx` sólo pedía esto una
+   * vez, al montarse: contra un rival con punto débil, el botón para ir por
+   * ahí depende de haber VISTO durante la pelea que una herida común se
+   * cerró sola, y sin refrescar esto ese momento nunca llegaba —el combate
+   * quedaba trabado, porque a golpes normales no se lo puede ganar—.
+   * Reportado jugando.
+   */
+  rivales: RivalReal[];
 }
 
 export interface Rival {

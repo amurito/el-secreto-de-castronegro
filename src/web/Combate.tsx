@@ -79,6 +79,7 @@ export function Combate({
   function aplicar(r: CombateResult) {
     setEstado(r.state);
     setIntimidar(r.intimidar);
+    setRivales(r.rivales);
     const nuevas: Entrada[] = (r.state.narrative as Entrada[]).slice(desde);
     setDesde(r.state.narrative.length);
     setEntradas((prev) => [...prev, ...nuevas]);

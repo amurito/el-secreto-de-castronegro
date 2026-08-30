@@ -135,6 +135,24 @@ async function main() {
     const opciones = accionesDisponibles(state, EL_VIGESIMO).filter((o) => o.id.startsWith('tema:b-'));
     check('no todos los temas de Bernardo siguen ofrecidos al final de la lista',
       opciones.length < 6, `quedan: ${opciones.map((o) => o.id).join(', ')}`);
+
+    // Bug reportado jugando: `temaPorFrase` elige, entre TODOS los temas del
+    // NPC, el que tenga la clave que más caracteres matchea en la frase —no
+    // el del botón que se tocó—. La clave «bernardo» (8 letras) en
+    // `b-quien-sos` le ganaba a «onesimo» (7 letras) de
+    // `b-tres-desaparecidos`, así que esa pregunta contestaba con la
+    // presentación en vez de con lo que se preguntó.
+    //
+    // El tema tiene `prueba` (psicología, regular): con la semilla fija puede
+    // ceder o ser esquivado, y las dos son ruteo correcto —lo único que
+    // demuestra el bug real es que NO vuelva a salir la presentación de
+    // `b-quien-sos`. Afirmar sólo el `cede` hacía flaky este chequeo contra
+    // la tirada, no contra el ruteo.
+    check('preguntar por Ferrari/Prewitt/Onésimo contesta ESO, no la presentación',
+      state.narrative.some((n) => n.kind === 'keeper' && (
+        n.text.includes('El profesor y el americano llegaron preguntando')
+        || n.text.includes('Ya le dije lo que le iba a decir de ésos')
+      )));
   }
 
   console.log('\nBERNARDO NO PELEA DESDE OTRO CUARTO');
@@ -159,7 +177,7 @@ async function main() {
   console.log('\nEL COMBATE CONTRA BERNARDO ES OBLIGATORIO Y REAL');
   {
     const { id, state } = await jugarEn(EL_VIGESIMO, '7b COMBATE', 'u',
-      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Voy por el anillo y ataco a Bernardo'],
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
       { estadoAnterior: subida, mesesTranscurridos: 0 });
     check('entrar en combate deja la consecuencia que abre denunciar/irse si se huye',
       state.consequences.some((c) => c.description.includes('entró en combate real contra Bernardo Díaz')));
@@ -173,7 +191,7 @@ async function main() {
     let idHuido = '';
     for (const s2 of ['w1', 'w2', 'w3', 'w4', 'w5']) {
       const { id: idIntento } = await jugarEn(EL_VIGESIMO, `7b HUIR ${s2}`, s2,
-        [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Voy por el anillo y ataco a Bernardo'],
+        [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
         { estadoAnterior: subida, mesesTranscurridos: 0 });
       for (let n = 0; n < 10 && !huido; n++) {
         const t = await Turn.open(idIntento);
@@ -201,7 +219,7 @@ async function main() {
   console.log('\nA BERNARDO NO SE LE GANA A GOLPES');
   {
     const { id } = await jugarEn(EL_VIGESIMO, '7b INVULNERABLE', 'k',
-      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Voy por el anillo y ataco a Bernardo'],
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
       { estadoAnterior: subida, mesesTranscurridos: 0 }, PELEADOR);
 
     // Treinta golpes comunes, sin apuntar: ninguno le puede bajar los PV.
@@ -249,7 +267,7 @@ async function main() {
     // herramienta del motor que usaría un golpe afortunado y comprueba lo
     // que sí es determinístico, que son los gates y el desenlace.
     const { id } = await jugarEn(EL_VIGESIMO, '7b VENCIDO', 'v',
-      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Voy por el anillo y ataco a Bernardo'],
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
       { estadoAnterior: subida, mesesTranscurridos: 0 });
 
     // Bernardo en el piso, sin depender de los dados: mismo recurso que usa

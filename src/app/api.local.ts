@@ -441,6 +441,7 @@ export function createLocalApi(): GameApi {
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
           intimidar: intimidarDisponible(state),
+          rivales: rivalesReales(state),
         };
       } finally {
         enCurso.delete(id);
@@ -464,6 +465,7 @@ export function createLocalApi(): GameApi {
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
           intimidar: intimidarDisponible(state),
+          rivales: rivalesReales(state),
         };
       } finally {
         enCurso.delete(id);
@@ -487,6 +489,7 @@ export function createLocalApi(): GameApi {
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
           intimidar: intimidarDisponible(state),
+          rivales: rivalesReales(state),
         };
       } finally {
         enCurso.delete(id);
@@ -510,6 +513,7 @@ export function createLocalApi(): GameApi {
           combateActivo: Boolean(state.activeCombat),
           options: scenario ? accionesDisponibles(state, scenario) : [],
           intimidar: intimidarDisponible(state),
+          rivales: rivalesReales(state),
         };
       } finally {
         enCurso.delete(id);

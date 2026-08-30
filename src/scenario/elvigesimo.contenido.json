@@ -649,7 +649,7 @@
       "npc": "npc-bernardo",
       "etiqueta": "Preguntarle a Bernardo quién es",
       "intencion": "Le pregunto a Bernardo quién es",
-      "claves": ["quien es", "quién es", "bernardo", "quien sos"],
+      "claves": ["quien es", "quién es", "quien sos"],
       "orden": 1,
       "cede": {
         "texto": [
@@ -945,8 +945,8 @@
       "grupo": "usar",
       "lugar": "laboratorio",
       "orden": 30,
-      "intencion": "Voy por el anillo y ataco a Bernardo",
-      "etiqueta": "Ir por el anillo",
+      "intencion": "Enfrento a Bernardo",
+      "etiqueta": "Enfrentar a Bernardo",
       "hecha": { "op": "o", "de": [{ "op": "npcFuera", "npc": "npc-bernardo" }, { "op": "consecuencia", "contiene": "entró en combate real contra Bernardo Díaz" }] }
     },
     {

@@ -2492,6 +2492,38 @@ golpe—, que es la misma tensión de diseño ya anotada en §3.2-septvicies y q
 esta mecánica **no** resuelve: sigue habiendo que decidir qué hace un
 investigador que no sabe pelear cuando llega al laboratorio.
 
+### 3.2-tricies Quinto playtest: la respuesta de Ferrari/Prewitt/Onésimo «seguía fallando» — no era un bug
+
+Reportado jugando, otra vez sobre la audiencia con Bernardo: «sigue el bug de
+la respuesta a la pregunta por Ferrari, Prewitt y Onésimo». El arreglo de
+§3.2-septvicies (sacar la clave «bernardo» de `b-quien-sos`) ya estaba
+aplicado, y el ruteo de `temaPorFrase` es correcto: se comprobó armando un
+guion que sí navega hasta el laboratorio (el primer intento de depurar no lo
+hacía, y por eso mostraba a Ercilia contestando cualquier cosa desde el
+vestíbulo — un error del script de prueba, no del juego).
+
+Con navegación real, las cuatro preguntas de la audiencia rutean cada una a
+su propio tema (`b-quien-sos`, `b-anillo`, `b-turno`, `b-tres-desaparecidos`).
+Lo que pasaba con la semilla fija de la prueba es que `b-anillo`, `b-turno` y
+`b-tres-desaparecidos` tienen `prueba: {skill: psicologia, difficulty:
+regular}` — y Elena Sartori tiene psicología 35%. Fallar tres tiradas
+regulares seguidas con esa semilla es mala suerte (≈27% de chance), no un
+bug: cuando la tirada no supera la dificultad, `resolverTema` cede el texto
+de `esquiva` del tema correcto («Ya le dije lo que le iba a decir de
+ésos…»), que es exactamente el diseño descrito en `keeper/social.ts`.
+
+El chequeo de regresión en `prueba-el-vigesimo.ts` (agregado en
+§3.2-septvicies) estaba escrito para aceptar sólo el texto de `cede`, así que
+con esa semilla salía en falso pese a que el ruteo era correcto. Se corrigió
+para aceptar `cede` **o** `esquiva` de `b-tres-desaparecidos` — lo único que
+demuestra el bug original es que NO vuelva a salir la presentación de
+`b-quien-sos`, y las dos ramas prueban eso igual de bien.
+
+Ningún desenlace ni condición depende de que este tema en particular haya
+cedido —es confirmación/color, no un gate—, así que no hace falta ablandar la
+tirada: es psicología social funcionando como se espera, con una investigadora
+que no es fuerte en esa habilidad.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
