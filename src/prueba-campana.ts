@@ -145,6 +145,18 @@ async function main() {
   check('el trasfondo cruza, con las revisiones que haya sufrido',
     JSON.stringify(invDos.backstory.aspects) === JSON.stringify(invUno.backstory.aspects));
 
+  // Bug real, reportado jugando: `lastDevelopmentSeq` es un índice en la
+  // cadena de tiradas de LA CAMPAÑA ANTERIOR — acá tiene que ser mayor a 0,
+  // o esta prueba no demuestra nada—, y cada campaña nueva arranca su propia
+  // cadena desde cero. Heredarlo tal cual dejaba a la fase de desarrollo de
+  // la SEGUNDA aventura sin ninguna tirada que contar por encima de esa
+  // frontera importada: nunca reconocía nada, sin importar cuánto se
+  // jugara. La frontera tiene que resetearse a 0 en cada campaña nueva.
+  check('la campaña anterior cerró con una frontera de desarrollo real (>0)',
+    invUno.experience.lastDevelopmentSeq > 0, `${invUno.experience.lastDevelopmentSeq}`);
+  check('...pero esa frontera NO cruza tal cual: arranca en 0 en la campaña nueva',
+    invDos.experience.lastDevelopmentSeq === 0, `${invDos.experience.lastDevelopmentSeq}`);
+
   // Esto es la tesis del proyecto: que una aventura pueda afectar a la
   // siguiente de una manera que el CONTENIDO pueda consultar, no sólo que el
   // Keeper lea de refilón. Sin las dos mitades —que la consecuencia cruce Y

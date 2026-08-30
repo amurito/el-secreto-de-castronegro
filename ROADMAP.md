@@ -2902,6 +2902,39 @@ volvía imposible de leer de un vistazo. Ahora sólo el asalto más reciente
 queda siempre visible; el resto se colapsa detrás de un botón ("Ver los N
 asaltos anteriores").
 
+### 3.2-novicies La fase de desarrollo nunca reconocía nada, en la segunda aventura en adelante
+
+Reportado jugando: "siempre que termino no me reconoce que haya pasado
+ninguna tirada de habilidad con éxito para mejorar" — con tiradas exitosas
+y sin modificadores bien visibles en la pestaña de Tiradas, la fase de
+desarrollo cerraba diciendo "Nada se aprendió esta vez" de todos modos.
+
+Causa: `marcasDe` (`rules/desarrollo.ts`) cuenta como marcable toda tirada
+con `seq` por ENCIMA de `investigator.experience.lastDevelopmentSeq` —la
+frontera que se mueve al cerrar la fase, para no volver a contar lo mismo—.
+Esa frontera se fija como `atRollSeq: this.state.rolls.length` al cerrar
+(`engine.ts`), un número que sólo tiene sentido DENTRO de la cadena de
+tiradas de ESA campaña. El problema es que `heredarInvestigador` —la
+función que lleva a un investigador de una aventura a la siguiente—
+copiaba `experience` completo sin tocarlo, así que esa frontera vieja
+cruzaba tal cual a la campaña nueva. Cada campaña arranca su propia cadena
+de tiradas desde cero (`headSeq: 0`), así que la frontera heredada —casi
+siempre un número más alto que cualquier tirada de la aventura nueva—
+dejaba a `marcasDe` sin nada por encima que contar: la fase de desarrollo
+de la SEGUNDA aventura en adelante nunca reconocía una sola tirada, sin
+importar cuánto se jugara. La primera aventura de una campaña nunca lo
+sufría —arranca con la frontera en 0, recién creada—, lo que explica por
+qué costó encontrarlo: hacía falta encadenar dos aventuras para verlo.
+
+Arreglado reseteando `lastDevelopmentSeq` a 0 en `heredarInvestigador`,
+la misma función que ya resetea PV al máximo y cierra heridas temporales al
+cruzar de campaña. `sessionsSurvived` (el otro campo de `experience`) sigue
+cruzando intacto: ese sí es un conteo legítimo entre campañas, no un índice
+de una cadena que ya no existe. Nueva prueba de regresión en
+`prueba-campana.ts`: confirma que la campaña anterior cierra con una
+frontera real (mayor a 0) y que la campaña nueva arranca en 0 de todos
+modos.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

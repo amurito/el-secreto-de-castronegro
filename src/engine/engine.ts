@@ -296,6 +296,17 @@ function heredarInvestigador(inv: Investigator, meses: number): Investigator {
       withheld: [...inv.knowledge.withheld],
       playerObserved: [...inv.knowledge.playerObserved],
     },
+    // Bug real, reportado jugando: `lastDevelopmentSeq` es un índice en la
+    // cadena de tiradas de LA CAMPAÑA ANTERIOR (`atRollSeq: rolls.length`
+    // al cerrar esa fase, en `toolCompleteDevelopment` más abajo). Cada
+    // campaña nueva arranca su propia cadena desde cero (`headSeq: 0` en
+    // `createCampaign`), así que ese número heredado no significaba nada acá
+    // —y casi siempre era MÁS ALTO que cualquier tirada de la campaña
+    // nueva—, dejando a `marcasDe` sin ninguna tirada que contar por
+    // encima de la frontera: la fase de desarrollo nunca reconocía nada.
+    // La frontera tiene que arrancar en 0 en cada campaña nueva; lo que se
+    // preserva entre campañas es `sessionsSurvived`, no esto.
+    experience: { ...inv.experience, lastDevelopmentSeq: 0 },
   };
 }
 
