@@ -2714,6 +2714,37 @@ desenlace y ninguno está reconocido todavía, así que las cinco aventuras
 que no son Agua Quieta o El Vigésimo siguen premiándose sólo por cantidad
 de pistas. Queda anotado como hueco conocido, no resuelto esta vez.
 
+### 3.2-quinquatricies El laberinto, epílogo opcional tras Bernardo
+
+Pedido: que la aventura no termine en el mismo golpe que derriba a Bernardo.
+Dos parientes degenerados propios (Abelardo y Felisa Díaz, sin
+`invulnerabilidad` —esa firma es sólo de Bernardo—) en dos alas nuevas
+colgando de un vestíbulo (`laberinto-mas-alla`), destrabado con
+`conexionesOcultas` apenas Bernardo cae (`{op:'npcFuera', npc:'npc-bernardo'}`,
+sin pista intermedia). "Cortar"/"Ponerse el anillo" siguen disponibles desde
+el primer momento, sin depender de esto —confirmado con el usuario:
+`toolReachEnding` es definitivo, no hay forma de ofrecer nada después de un
+final, así que el laberinto es contenido opcional, no un gate—.
+
+"Cada tanto aparece algo" se resolvió con una tirada de Escuchar por ala
+(éxito: cruza y deja una pista propia; fracaso: `iniciaCombate` contra el
+pariente de esa ala, con `salidaPacifica` como en el guardián del sótano) —
+mismo vocabulario ya usado dos veces esta sesión, sin subsistema nuevo.
+
+**Encontrado por la propia auditoría, no por el validador**: agregar
+`laberinto-mas-alla` como conexión real (aunque oculta) de `laboratorio`
+—antes `connections: []`— rompía la excepción de `sinRetorno` en
+`prueba-auditoria.ts`: esa función hace BFS sobre `connections` crudo, sin
+filtrar `conexionOculta`, así que un cuarto sin salida FUNCIONAL (el
+laboratorio, con Bernardo vivo y el andador sin forma de progresar la pelea
+por el sistema de texto) dejaba de contar como "sin retorno" apenas tenía
+CUALQUIER conexión declarada, aunque estuviera bloqueada. Arreglado
+filtrando `esc.conexionOculta?.(state, actual, v)` en el BFS —mismo criterio
+que ya usa `acciones.ts` para esconder el botón real—. No es un bug de
+contenido: es la segunda vez que un `conexionOculta` nuevo pasa por acá
+(la primera, el mausoleo, no lo disparó porque no cambiaba la conectividad
+cruda de ningún cuarto ya sin salida).
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

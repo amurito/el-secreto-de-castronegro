@@ -198,11 +198,20 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
   // Se calcula sin listas escritas a mano: BFS desde donde terminó, y si
   // ninguno de los lugares que le faltan se alcanza desde ahí, la cobertura
   // del mapa deja de ser exigible —mismo criterio que ya se usa con `murio`.
+  // Una conexión oculta (`Scenario.conexionOculta`, ver `el-mausoleo`/
+  // `laberinto-mas-alla`) sigue en `connections` para el motor, pero el
+  // jugador no la puede cruzar todavía. Sin filtrarla acá, un cuarto sin
+  // salida real (como el laboratorio antes de que Bernardo caiga) se veía
+  // "conectado" al tramo que se destraba DESPUÉS de derrotarlo, y la
+  // excepción de `sinRetorno` dejaba de aplicar aunque el jugador siguiera
+  // tan encerrado como siempre. Reportado por esta misma auditoría al
+  // agregar el laberinto post-Bernardo.
   const alcanzables = new Set<string>([state.world.currentLocation]);
   const cola = [state.world.currentLocation];
   while (cola.length) {
     const actual = cola.shift()!;
     for (const v of state.world.locations[actual]?.connections ?? []) {
+      if (esc.conexionOculta?.(state, actual, v)) continue;
       if (!alcanzables.has(v)) { alcanzables.add(v); cola.push(v); }
     }
   }

@@ -165,6 +165,60 @@
       "isCompanion": false
     },
     {
+      "id": "npc-pariente-abelardo",
+      "name": "Abelardo Díaz",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Camina en cuatro patas casi todo el tiempo, y cuando se para en dos no es porque lo decida: es porque algo, más atrás en la cabeza, todavía se acuerda de que puede. No hay con quién hablar acá adentro: los ojos lo siguen, pero no hay pregunta que le llegue entera.",
+      "motivation": "Nada que se pueda nombrar como motivación. Reacciona a lo que se mueve cerca.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": { "inv-elena": -20, "inv-tomas": -20 },
+      "combate": {
+        "hp": 9,
+        "maxHp": 9,
+        "pelea": 45,
+        "esquivar": 25,
+        "armaId": "desarmado",
+        "bonificacionDano": "1d4",
+        "defensaPorDefecto": "esquiva",
+        "dex": 55,
+        "build": 0
+      },
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-pariente-felisa",
+      "name": "Felisa Díaz",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Tiene puesto lo que alguna vez fue un vestido de fiesta, tan viejo que ya es del color de la piedra. No parpadea al mismo ritmo que respira, y las dos cosas le llevan más tiempo del que deberían.",
+      "motivation": "Nada que se pueda nombrar como motivación. Reacciona a lo que se mueve cerca.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": { "inv-elena": -20, "inv-tomas": -20 },
+      "combate": {
+        "hp": 9,
+        "maxHp": 9,
+        "pelea": 45,
+        "esquivar": 25,
+        "armaId": "desarmado",
+        "bonificacionDano": "1d4",
+        "defensaPorDefecto": "esquiva",
+        "dex": 55,
+        "build": 0
+      },
+      "present": true,
+      "isCompanion": false
+    },
+    {
       "id": "npc-bernardo",
       "name": "Bernardo Díaz",
       "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "v0.7" },
@@ -537,7 +591,7 @@
         "Bernardo no se sobresalta con la llegada. Hace trescientos años que espera visita.",
         "—Pase —dice, sin levantarse—. Ya era hora."
       ],
-      "connections": [],
+      "connections": ["laberinto-mas-alla"],
       "itemsPresent": ["it-bisturi-laboratorio"],
       "npcsPresent": ["npc-bernardo", "npc-ahijado"],
       "visited": false,
@@ -588,6 +642,69 @@
         "sight": "Veinte nichos en la roca: diecinueve con placa, uno abierto y vacío.",
         "sound": "Nada. Ni siquiera el goteo que debería haber en una cámara excavada en roca húmeda.",
         "smell": "Piedra fría y algo dulce, apenas, como cera vieja."
+      },
+      "features": []
+    },
+    "laberinto-mas-alla": {
+      "id": "laberinto-mas-alla",
+      "name": "Más allá del laboratorio",
+      "aliases": ["mas alla", "más allá", "el resto del laberinto", "los tuneles de mas alla"],
+      "description": "El laberinto sigue del otro lado del sillón de Bernardo, más ancho de lo que un sótano debería permitir. Dos pasajes se abren, uno a cada lado, y de los dos viene el mismo silencio raro: no el de un lugar vacío, el de un lugar que dejó de tener quien lo dirija.",
+      "atmosphere": [
+        "Sin Bernardo, esto ya no suena a nada organizado. Suena a algo que se está apagando solo.",
+        "En algún lado, lejos, algo se arrastra y después se detiene, como si se hubiera olvidado de terminar el movimiento."
+      ],
+      "connections": ["laboratorio", "laberinto-ala-este", "laberinto-ala-oeste"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 20,
+      "senses": {
+        "sight": "Dos pasajes, uno a cada lado, más anchos de lo que un sótano debería permitir.",
+        "sound": "Silencio, y de tanto en tanto algo que se arrastra sin terminar el movimiento.",
+        "smell": "El mismo que la despensa, pero mucho peor, en las dos direcciones."
+      },
+      "features": []
+    },
+    "laberinto-ala-este": {
+      "id": "laberinto-ala-este",
+      "name": "El ala este del laberinto",
+      "aliases": ["ala este", "el ala este"],
+      "description": "El pasaje de la derecha baja apenas y se ensancha en una especie de cuarto sin forma clara, con paja vieja amontonada contra una de las paredes.",
+      "atmosphere": [
+        "La paja se mueve, despacio, con algo que respira debajo.",
+        "Hace más frío acá que en el resto del laberinto, sin que haya ninguna corriente de aire que lo explique."
+      ],
+      "connections": ["laberinto-mas-alla"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-pariente-abelardo"],
+      "visited": false,
+      "umbralIntensity": 22,
+      "senses": {
+        "sight": "Paja vieja amontonada contra una pared, y algo debajo que la mueve.",
+        "sound": "Una respiración despareja, más animal que humana.",
+        "smell": "Encierro. Años de encierro."
+      },
+      "features": []
+    },
+    "laberinto-ala-oeste": {
+      "id": "laberinto-ala-oeste",
+      "name": "El ala oeste del laberinto",
+      "aliases": ["ala oeste", "el ala oeste"],
+      "description": "El pasaje de la izquierda termina en un cuarto más chico, con marcas de uñas —muchas, superpuestas, de distintos tamaños— bajando por una de las paredes de tierra.",
+      "atmosphere": [
+        "Las marcas de uñas más nuevas todavía tienen tierra fresca en el fondo del surco.",
+        "Algo, en algún momento, contó las marcas de la pared. Vos también vas a terminar contándolas."
+      ],
+      "connections": ["laberinto-mas-alla"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-pariente-felisa"],
+      "visited": false,
+      "umbralIntensity": 22,
+      "senses": {
+        "sight": "Marcas de uñas superpuestas bajando por una pared de tierra.",
+        "sound": "Un canturreo sin palabras, entrecortado, que no reconoce ninguna melodía real.",
+        "smell": "Tierra húmeda y algo más viejo que la tierra."
       },
       "features": []
     }
@@ -963,6 +1080,28 @@
       }
     },
     {
+      "id": "laberinto-avanzar-este",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "avanzo por el ala este|sigo por el ala este|avanzar por el ala este" },
+          { "op": "lugar", "es": ["laberinto-ala-este"] }
+        ]
+      }
+    },
+    {
+      "id": "laberinto-avanzar-oeste",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "avanzo por el ala oeste|sigo por el ala oeste|avanzar por el ala oeste" },
+          { "op": "lugar", "es": ["laberinto-ala-oeste"] }
+        ]
+      }
+    },
+    {
       "id": "bernardo-caido",
       "prioridad": 80,
       "cuando": {
@@ -1049,7 +1188,7 @@
       "orden": 23,
       "intencion": "Fuerzo el candado del mausoleo",
       "etiqueta": "Forzar el candado",
-      "visible": { "op": "no", "de": { "op": "pista", "contiene": "el candado del mausoleo cede" } }
+      "visible": { "op": "no", "de": { "op": "pista", "contiene": "El candado del mausoleo cede" } }
     },
     {
       "id": "mausoleo-examinar-nichos",
@@ -1078,6 +1217,32 @@
       "etiqueta": "Mirar el anillo en la mano de Bernardo",
       "visible": { "op": "npcFuera", "npc": "npc-bernardo" },
       "hecha": { "op": "narrado", "contiene": "Decida rápido" }
+    },
+    {
+      "id": "laberinto-avanzar-este",
+      "grupo": "usar",
+      "lugar": "laberinto-ala-este",
+      "orden": 40,
+      "intencion": "Avanzo por el ala este",
+      "etiqueta": "Avanzar por el ala este",
+      "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-abelardo" } },
+      "hecha": { "op": "o", "de": [
+        { "op": "narrado", "contiene": "cruzás sin que la paja" },
+        { "op": "npcFuera", "npc": "npc-pariente-abelardo" }
+      ]}
+    },
+    {
+      "id": "laberinto-avanzar-oeste",
+      "grupo": "usar",
+      "lugar": "laberinto-ala-oeste",
+      "orden": 41,
+      "intencion": "Avanzo por el ala oeste",
+      "etiqueta": "Avanzar por el ala oeste",
+      "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-felisa" } },
+      "hecha": { "op": "o", "de": [
+        { "op": "narrado", "contiene": "cruzás sin que el canturreo" },
+        { "op": "npcFuera", "npc": "npc-pariente-felisa" }
+      ]}
     },
     {
       "id": "cortar",
@@ -1154,6 +1319,11 @@
       "desde": "el-mausoleo-puerta",
       "hasta": "el-mausoleo-camara",
       "hastaQue": { "op": "pista", "contiene": "El candado del mausoleo cede" }
+    },
+    {
+      "desde": "laboratorio",
+      "hasta": "laberinto-mas-alla",
+      "hastaQue": { "op": "npcFuera", "npc": "npc-bernardo" }
     }
   ],
   "opening": "La puerta de la Casa de Díaz se abre antes de que la golpees dos veces.\n\nNo importa cómo llegaste esta noche: caminando desde el pueblo con lo puesto, volviendo con un sargento que va a llegar recién mañana, con una carta ya en camino hacia Villa Requena, o dando la vuelta a tres leguas y sintiendo que la vuelta no cuenta. La casa te esperaba igual.\n\n—Pase —dice la mujer que abre—. Lo estaban esperando desde la mañana.\n\nAdentro hay más luz de la que se ve desde afuera, y más silencio del que esa luz debería permitir."

@@ -361,11 +361,112 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
         '—Sáquemelo —dice—. O póngaselo. Las dos cosas terminan conmigo, y a esta altura las dos me dan igual.\n\n—Lo que no le va a dar igual a usted es cuál de las dos eligió, y eso lo va a saber recién dentro de unos años.',
         'El Ahijado bajó del sillón. No se acerca a vos ni a él: se queda en el medio, mirando la mano abierta, esperando.',
         '—Decida rápido —dice Bernardo—. No por mí. Porque el que decide despacio, en esta casa, termina decidiendo lo que la casa quiera.',
+        'Detrás del sillón, el laberinto sigue. Ya no suena a nada que responda a nadie.',
       ],
       exposicion: { amount: 9, source: 'laboratorio:anillo', cause: 'el anillo ofrecido en una mano abierta' },
       estabilidad: { amount: -8, cause: 'que el que perdió la pelea te ofrezca las dos salidas con la misma voz' },
       pregunta: '¿Por qué le da lo mismo a Bernardo cuál de las dos elijas?',
     }),
+  },
+
+  // ══ EL LABERINTO, DESPUÉS DE BERNARDO ═════════════════════════════════════
+  // Contenido opcional: los botones de desenlace (cortar/heredar) quedan
+  // disponibles apenas cae Bernardo, sin depender de esto —`reach_ending` es
+  // definitivo y no hay forma de ofrecer nada DESPUÉS de un final (ver
+  // ROADMAP)—. Esto es lo que hay para quien decide no apurarse: dos
+  // parientes propios, ninguno con quien se pueda hablar, y una tirada de
+  // Escuchar por ala en vez de un encuentro garantizado.
+
+  {
+    id: 'laberinto-avanzar-este',
+    prueba: () => ({
+      skill: 'escuchar', difficulty: 'regular',
+      reason: 'notar a lo que vive acá antes de que te note a vos',
+      stakes_success: 'cruzás sin que note que pasaste',
+      stakes_failure: 'te escucha antes de que termines de decidir si seguir',
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: ['La paja se mueve una vez, hacia el ruido que no hiciste, y cruzás sin que la paja vuelva a moverse.'],
+          pistas: [{
+            description: 'En el ala este del laberinto, bajo la paja amontonada, hay un fragmento de hueso tallado con la misma figura que se repite en las placas del mausoleo —más viejo que cualquiera de los veinte nichos.',
+            kind: 'physical',
+            source: 'el ala este del laberinto',
+            reliability: 'reliable',
+          }],
+        };
+      }
+      return {
+        texto: ['Se levanta de la paja de un solo movimiento, sin la torpeza que el resto del cuerpo prometía.'],
+        combate: { accion: 'atacar', npcId: 'npc-pariente-abelardo', armaId: 'desarmado' },
+        iniciaCombate: {
+          npcIds: ['npc-pariente-abelardo'],
+          reason: 'Se levanta de la paja de un solo movimiento, y no hay con quién hablar para evitar esto.',
+          salidaPacifica: {
+            npcId: 'npc-pariente-abelardo',
+            pistaCalma: {
+              description: 'Retrocedió hacia la paja sin que quede claro si entendió la amenaza o si simplemente perdió interés.',
+              kind: 'experiential',
+              source: 'el ala este del laberinto',
+              reliability: 'reliable',
+            },
+            consecuenciaDisparo: {
+              description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
+              scope: 'campaign',
+              permanent: true,
+              worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+            },
+          },
+        },
+      };
+    },
+  },
+
+  {
+    id: 'laberinto-avanzar-oeste',
+    prueba: () => ({
+      skill: 'escuchar', difficulty: 'regular',
+      reason: 'notar a lo que vive acá antes de que te note a vos',
+      stakes_success: 'cruzás sin que note que pasaste',
+      stakes_failure: 'te escucha antes de que termines de decidir si seguir',
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: ['El canturreo no cambia de ritmo cuando pasás al lado: cruzás sin que el canturreo se corte ni una vez.'],
+          pistas: [{
+            description: 'En el ala oeste del laberinto, entre las marcas de uñas de la pared, hay una fecha rayada con algo filoso: el mismo año que el nicho vacío del mausoleo, escrito mucho antes de que ese nicho existiera.',
+            kind: 'physical',
+            source: 'el ala oeste del laberinto',
+            reliability: 'reliable',
+          }],
+        };
+      }
+      return {
+        texto: ['El canturreo se corta a la mitad de una nota, y lo que sigue no es silencio.'],
+        combate: { accion: 'atacar', npcId: 'npc-pariente-felisa', armaId: 'desarmado' },
+        iniciaCombate: {
+          npcIds: ['npc-pariente-felisa'],
+          reason: 'El canturreo se corta a la mitad de una nota, y no hay con quién hablar para evitar esto.',
+          salidaPacifica: {
+            npcId: 'npc-pariente-felisa',
+            pistaCalma: {
+              description: 'Volvió al rincón y retomó el canturreo exactamente donde lo había dejado, como si nada hubiera pasado.',
+              kind: 'experiential',
+              source: 'el ala oeste del laberinto',
+              reliability: 'reliable',
+            },
+            consecuenciaDisparo: {
+              description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
+              scope: 'campaign',
+              permanent: true,
+              worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+            },
+          },
+        },
+      };
+    },
   },
 
   // ══ DESENLACES ════════════════════════════════════════════════════════════

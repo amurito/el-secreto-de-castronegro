@@ -537,6 +537,62 @@ async function main() {
         x.commitment.modifiers.some((m) => /llegó sabiendo/.test(m.reason))));
   }
 
+  console.log('\nEL LABERINTO NUEVO ESTÁ OCULTO HASTA QUE BERNARDO CAE, Y NO BLOQUEA LOS FINALES');
+  {
+    const { state: bernardoVivo } = await jugarEn(EL_VIGESIMO, '7b LABERINTO ANTES', 'l1',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const antes = accionesDisponibles(bernardoVivo, EL_VIGESIMO).map((o) => o.id);
+    check('con Bernardo vivo, el laberinto nuevo no aparece', !antes.includes('ir:laberinto-mas-alla'), antes.join(', '));
+
+    const bern = bernardoVivo.npcs['npc-bernardo']!;
+    const bernardoCaido: GameState = {
+      ...bernardoVivo,
+      npcs: { ...bernardoVivo.npcs, 'npc-bernardo': { ...bern, combate: { ...bern.combate!, hp: 0 } } },
+    };
+    const despues = accionesDisponibles(bernardoCaido, EL_VIGESIMO).map((o) => o.id);
+    check('con Bernardo caído, el laberinto nuevo ya se puede visitar', despues.includes('ir:laberinto-mas-alla'), despues.join(', '));
+    check('y "cortar"/"heredar" siguen ahí SIN haber pisado el laberinto —no quedó gateado por accidente—',
+      despues.includes('cortar') && despues.includes('heredar'));
+  }
+
+  console.log('\nCADA ALA DEL LABERINTO: ESCUCHAR DECIDE ENTRE PASE LIMPIO Y ENCUENTRO');
+  {
+    // Mismo criterio que el resto de la suite: la tirada de Escuchar es real
+    // y depende de los dados, así que se invoca el `resolver` de cada ala
+    // directo, con el resultado armado a mano.
+    const { state: cualquiera } = await jugarEn(EL_VIGESIMO, '7b LABERINTO ALAS', 'l2',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const intencion: IntencionLeida = {
+      raw: 'avanzo por el ala', norm: 'avanzo por el ala', verb: 'avanzar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'none', id: null }, destino: null,
+    };
+
+    for (const [id, npcId, fragmentoPase] of [
+      ['laberinto-avanzar-este', 'npc-pariente-abelardo', 'cruzás sin que la paja'],
+      ['laberinto-avanzar-oeste', 'npc-pariente-felisa', 'cruzás sin que el canturreo'],
+    ] as const) {
+      const escena = EL_VIGESIMO_LOGICA.find((e) => e.id === id)!;
+      const pase = ([] as EfectoEscena[]).concat(escena.resolver({
+        estado: cualquiera, intencion, variante: (o) => o[0]!,
+        tirada: { exito: true, grado: 'regular', mensaje: '' },
+      }));
+      check(`${id}: con Escuchar superado, cruza sin encuentro`,
+        pase.flatMap((e) => e.texto ?? []).join('\n').includes(fragmentoPase) && !pase.some((e) => e.iniciaCombate));
+      check(`${id}: y deja una pista propia del ala`, pase.some((e) => e.pistas?.length));
+
+      const encuentro = ([] as EfectoEscena[]).concat(escena.resolver({
+        estado: cualquiera, intencion, variante: (o) => o[0]!,
+        tirada: { exito: false, grado: 'regular', mensaje: '' },
+      }));
+      check(`${id}: si falla, dispara combate contra el pariente de esa ala`,
+        encuentro.some((e) => e.iniciaCombate?.npcIds.includes(npcId)));
+      check(`${id}: y ese combate admite salida de palabra`,
+        encuentro.some((e) => e.iniciaCombate?.salidaPacifica?.npcId === npcId));
+    }
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }
