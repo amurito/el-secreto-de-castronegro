@@ -159,10 +159,17 @@ function aplicarEfecto(
     });
   }
   if (efecto.cordura) {
-    run('apply_sanity_loss', {
+    // Pedido después de jugarlo: que la pérdida se VEA, no que baje un
+    // número en silencio mientras la prosa sigue de largo. El mensaje del
+    // motor ya trae "Cordura X → Y" y, si corresponde, el aviso de crisis
+    // (`toolApplySanityLoss`); antes se pedía y se tiraba, pero nunca se
+    // mostraba — mismo criterio que ya usa `efecto.combate` con el mensaje
+    // del asalto.
+    const r = run('apply_sanity_loss', {
       amount: efecto.cordura.amount, cause: efecto.cordura.cause,
       ...argsDeCrisis(efecto.cordura.crisis),
     });
+    out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
   }
   if (efecto.jugadorNota) {
     run('note_player_knowledge', {

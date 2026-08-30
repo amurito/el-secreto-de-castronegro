@@ -2796,6 +2796,53 @@ anterior "no convencía"), y la primera línea de `bernardo-caido` ahora
 describe la herida cerrándose, para que el golpe que le ganó la mano quede
 en cuadro antes del resto de la escena.
 
+### 3.2-septricies Formato real "1/1DX" en la Cordura, el pasadizo se busca, y loot permanente
+
+Tres pedidos del séptimo playtest.
+
+**"1/1DX", no dos números fijos.** El rework anterior (§3.2-sextricies) ya
+tiraba contra Cordura, pero pasar costaba 2 (cadáver) o 5 (nichos) fijos, y
+fallar costaba otro número fijo (5) — ni el formato real de CoC 7e ("pasar
+cuesta un mínimo fijo, fallar tira un dado") ni visible en la narración:
+`efecto.cordura` llamaba `apply_sanity_loss` pero nunca mostraba su mensaje
+(`keeper/escenas.ts`), así que la pérdida bajaba en silencio salvo por el
+número en la ficha. Arreglado: pasar cuesta 1 punto fijo; fallar tira un
+dado derivado del mismo d100 ya usado para la Cordura (`tirada.numero`,
+sin pedir una segunda tirada) — 1D4 para el cadáver, 1D6 para los nichos,
+acorde a que diecinueve cuerpos pesan más que uno—, y el mensaje del motor
+("Cordura X → Y", con el aviso de crisis si corresponde) ahora se narra,
+no se aplica en silencio. De paso, la placa de Casimiro en el mausoleo ya
+no depende de una tirada de Descubrir separada —se ve siempre—, mismo
+criterio que ya tenía el cadáver: la única tirada de cada escena es la de
+Cordura.
+
+**El pasadizo hay que encontrarlo.** "Ir a más allá" era un botón ambiguo
+que aparecía solo, apenas caía Bernardo. Ahora hay que buscarlo
+(`buscar-pasadizo`, Descubrir regular, reintentable) antes de que el botón
+de ir aparezca — la locación se renombró "El pasadizo" para que el botón
+diga, literalmente, "Ir al pasadizo". La `conexionOculta` que lo destraba
+pasó de depender sólo de `npcFuera(bernardo)` a depender ADEMÁS de la pista
+que deja encontrarlo.
+
+**Sigilo antes que Escuchar, en dos botones separados.** Cada ala pasó de
+una sola acción con tirada automática (Escuchar) a repetir el patrón EXACTO
+del guardián del sótano: "Tratar de cruzar sin que me vea" (Sigilo) y
+"Enfrentarlo" (combate directo, sin tirada), como dos botones separados en
+vez de uno solo. Antes, fallar la tirada disparaba combate en el mismo
+click; ahora fallar Sigilo sólo avisa que lo despertaste —el jugador decide
+si pelea o insiste con el sigilo—, igual que ya funcionaba en el sótano
+desde el principio. Debería haberse escrito así desde el principio de
+laberinto-avanzar-este/oeste; no se hizo, y esta vez sí.
+
+**Recompensa permanente por ganar la pelea, no sólo pista.** Nuevo par de
+acciones "Revisar el cuerpo" (visibles sólo si el pariente cayó de verdad
+en combate — `npcFuera`, que sigilo exitoso nunca deja en true), que
+trasladan un ítem nuevo y propio al investigador: una figurita de piedra
+—la misma forma repetida en cada nicho del mausoleo, otro hilo más que
+conecta las tres piezas nuevas de esta sesión— y un alfiler de plata.
+Esquivar con sigilo sigue dejando su pista de todos modos; sólo el combate
+ganado deja loot.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

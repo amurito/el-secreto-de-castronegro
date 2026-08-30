@@ -177,15 +177,18 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
         { op: 'detalleVisto', lugar: 'salon', feature: 'f-retratos' },
         { estado },
       );
-      // Sin segunda tirada (el motor sólo admite una por intención): el
-      // Mitos ganado sale del mismo d100 que ya salió para la Cordura,
-      // acotado a 1-3 —el «1D3» pedido, sin inventar una fórmula de dados
-      // nueva en el contenido.
-      const mitosGanado = 1 + ((tirada?.numero ?? 1) % 3);
+      // Sin segunda tirada (el motor sólo admite una por intención): tanto
+      // el Mitos ganado como el «1D4» de Cordura perdida en el fracaso salen
+      // del mismo d100 que ya tiró para el chequeo de Cordura, cada uno
+      // acotado a su rango —es el formato real de CoC 7e, "1/1D4": pasar
+      // cuesta 1 punto fijo, fallar tira el dado.
+      const numero = tirada?.numero ?? 1;
+      const mitosGanado = 1 + (numero % 3);
+      const perdidaSiFalla = 1 + (numero % 4);
       const comun: EfectoEscena = {
         texto: ['Te arrodillás junto al cuerpo. La espalda encorvada, las muñecas finas, los dientes largos no se acomodan solos cuando ya no hay nadie sosteniéndolos así.'],
         cordura: {
-          amount: tirada?.exito ? 2 : 5,
+          amount: tirada?.exito ? 1 : perdidaSiFalla,
           cause: 'arrodillarse junto a lo que quedó, sea o no reconocible',
           ...(tirada?.exito ? {} : {
             crisis: {
@@ -264,54 +267,50 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'mausoleo-examinar-nichos',
+    // Mismo rework que el cadáver del guardián: la tirada deja de decidir SI
+    // se distingue la placa —eso ya lo cuenta el propio hecho de haber
+    // llegado hasta acá— y pasa a ser, de verdad, la tirada de Cordura de
+    // toda la escena (una sola por intención). Formato real de CoC 7e,
+    // "1/1D6": pasar cuesta 1 punto fijo, fallar tira el dado —acá más alto
+    // que el del cadáver (1D4) porque son diecinueve cuerpos, no uno—.
     prueba: () => ({
-      skill: 'descubrir', difficulty: 'regular',
-      reason: 'distinguir una placa en particular entre diecinueve iguales',
-      stakes_success: 'un nombre se separa del resto',
-      stakes_failure: 'diecinueve nichos, y ninguno se distingue del resto',
+      skill: 'COR', difficulty: 'regular',
+      reason: 'sostener la mirada sobre diecinueve cuerpos guardados en fila',
+      stakes_success: 'te cuesta menos de lo que podría',
+      stakes_failure: 'te cuesta más de lo que esperabas',
     }),
     resolver: ({ tirada }) => {
-      // Ver diecinueve cuerpos conservados en fila cuesta Cordura de
-      // verdad, no sólo Exposición —pedido del usuario—: es perturbador se
-      // distinga o no una placa en particular, así que el costo va acá,
-      // antes de la rama de éxito/fracaso de la tirada de Descubrir.
+      const numero = tirada?.numero ?? 1;
+      const perdidaSiFalla = 1 + (numero % 6);
       const comun: EfectoEscena = {
         texto: [
           'Cada nicho sellado tiene, además del nombre y las fechas, una figurita tallada apoyada contra la placa —siempre la misma figura, hecha por manos distintas en épocas distintas—. El nicho abierto no tiene ninguna.',
-        ],
-        // Pedido después de jugarlo: que la pérdida se sienta, no que sea un
-        // número que baja en silencio. 5 puntos de golpe ya cruza el piso
-        // que el motor usa para una crisis de locura temporal automática
-        // (CoC 7e p. 166); sin `crisis` acá salía con el nombre genérico.
-        // Con nombre y efecto propios, contar los nichos dos veces en esta
-        // aventura (acá y en cualquier fila repetida después) deja una marca
-        // real en la ficha, no sólo una frase.
-        cordura: {
-          amount: 5,
-          cause: 'ver diecinueve cuerpos de la misma familia guardados como quien guarda algo, no como quien entierra a alguien',
-          crisis: {
-            nombre: 'Manía de contar',
-            descripcion: 'Necesita contar cualquier fila de cosas repetidas antes de poder pensar en otra cosa —nichos, escalones, latidos—. Si alguien la interrumpe a mitad de la cuenta, hay que volver a empezar.',
-            tipo: 'mania',
-            afecta: [{ skill: 'escuchar', dados: 1 }],
-          },
-        },
-        exposicion: { amount: 8, source: 'mausoleo:nichos', cause: 'entender de un vistazo lo que Bernardo tardó trescientos años en decir con palabras' },
-      };
-      if (!tirada?.exito) {
-        return [comun, { texto: ['Todas las placas dicen más o menos lo mismo a esta distancia: un nombre, dos fechas, veinte años entre una y otra. Ninguna se separa del resto.'] }];
-      }
-      return [comun, {
-        texto: [
           'Una placa sí se separa del resto, cerca del nicho vacío: «Casimiro Díaz, 1889—1909». El bronce alrededor del sello está rayado, como si algo hubiera intentado abrirlo desde ADENTRO y después se hubiera dado por vencido, o hubiera encontrado otra salida.',
         ],
+        // Pedido después de jugarlo: que la pérdida se sienta, no que sea un
+        // número que baja en silencio. Con `crisis` propia en vez de la
+        // genérica, y con el «1D6» real en vez de un número fijo.
+        cordura: {
+          amount: tirada?.exito ? 1 : perdidaSiFalla,
+          cause: 'ver diecinueve cuerpos de la misma familia guardados como quien guarda algo, no como quien entierra a alguien',
+          ...(tirada?.exito ? {} : {
+            crisis: {
+              nombre: 'Manía de contar',
+              descripcion: 'Necesita contar cualquier fila de cosas repetidas antes de poder pensar en otra cosa —nichos, escalones, latidos—. Si alguien la interrumpe a mitad de la cuenta, hay que volver a empezar.',
+              tipo: 'mania' as const,
+              afecta: [{ skill: 'escuchar', dados: 1 }],
+            },
+          }),
+        },
+        exposicion: { amount: 8, source: 'mausoleo:nichos', cause: 'entender de un vistazo lo que Bernardo tardó trescientos años en decir con palabras' },
         pistas: [{
           description: 'En el mausoleo de los Díaz, la placa de «Casimiro Díaz, 1889—1909» tiene el bronce rayado desde adentro. Diecinueve nichos sellados, veinte años entre las dos fechas de cada uno, y uno —el más cercano a la puerta— abierto y vacío.',
           kind: 'physical',
           source: 'la cámara del mausoleo de los Díaz',
           reliability: 'reliable',
         }],
-      }];
+      };
+      return comun;
     },
   },
 
@@ -398,22 +397,47 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
   // Contenido opcional: los botones de desenlace (cortar/heredar) quedan
   // disponibles apenas cae Bernardo, sin depender de esto —`reach_ending` es
   // definitivo y no hay forma de ofrecer nada DESPUÉS de un final (ver
-  // ROADMAP)—. Esto es lo que hay para quien decide no apurarse: dos
-  // parientes propios, ninguno con quien se pueda hablar, y una tirada de
-  // Escuchar por ala en vez de un encuentro garantizado.
+  // ROADMAP)—. Esto es lo que hay para quien decide no apurarse: un
+  // pasadizo que hay que encontrar (no aparece solo), dos parientes propios
+  // —ninguno con quien se pueda hablar—, cada uno con su propia tirada de
+  // Sigilo para cruzar sin pelear (mismo patrón que el guardián del
+  // sótano: sigilo o enfrentar, dos botones separados, no una sola tirada
+  // automática), y un cuerpo que revisar si la pelea se ganó de verdad.
 
   {
-    id: 'laberinto-avanzar-este',
+    id: 'buscar-pasadizo',
     prueba: () => ({
-      skill: 'escuchar', difficulty: 'regular',
-      reason: 'notar a lo que vive acá antes de que te note a vos',
-      stakes_success: 'cruzás sin que note que pasaste',
-      stakes_failure: 'te escucha antes de que termines de decidir si seguir',
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'encontrar por dónde sigue el laberinto detrás del sillón',
+      stakes_success: 'el hueco está, y es más ancho de lo que parece desde acá',
+      stakes_failure: 'nada que se distinga de la piedra alrededor',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return { texto: ['Revisás la pared detrás del sillón. Piedra, y más piedra. Si hay algo, no se nota todavía.'] };
+      }
+      return {
+        texto: ['Detrás del sillón, donde la piedra debería seguir siendo pared, hay un hueco: el laberinto sigue por ahí, más allá de donde Bernardo dejó de necesitar que nadie más pasara.'],
+        pistas: [{
+          description: 'Detrás del sillón de Bernardo hay un hueco: el laberinto sigue por ahí.',
+          kind: 'physical', source: 'el laboratorio de la Casa', reliability: 'reliable',
+        }],
+      };
+    },
+  },
+
+  {
+    id: 'laberinto-sigilo-este',
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'cruzar sin que note que hay alguien más acá',
+      stakes_success: 'cruzás sin que se mueva de la paja',
+      stakes_failure: 'se mueve hacia el ruido que hiciste',
     }),
     resolver: ({ tirada }) => {
       if (tirada?.exito) {
         return {
-          texto: ['La paja se mueve una vez, hacia el ruido que no hiciste, y cruzás sin que la paja vuelva a moverse.'],
+          texto: ['La paja se mueve una vez, hacia un ruido que no hiciste, y cruzás sin que vuelva a moverse.'],
           pistas: [{
             description: 'En el ala este del laberinto, bajo la paja amontonada, hay un fragmento de hueso tallado con la misma figura que se repite en las placas del mausoleo —más viejo que cualquiera de los veinte nichos.',
             kind: 'physical',
@@ -422,44 +446,49 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
           }],
         };
       }
-      return {
-        texto: ['Se levanta de la paja de un solo movimiento, sin la torpeza que el resto del cuerpo prometía.'],
-        combate: { accion: 'atacar', npcId: 'npc-pariente-abelardo', armaId: 'desarmado' },
-        iniciaCombate: {
-          npcIds: ['npc-pariente-abelardo'],
-          reason: 'Se levanta de la paja de un solo movimiento, y no hay con quién hablar para evitar esto.',
-          salidaPacifica: {
-            npcId: 'npc-pariente-abelardo',
-            pistaCalma: {
-              description: 'Retrocedió hacia la paja sin que quede claro si entendió la amenaza o si simplemente perdió interés.',
-              kind: 'experiential',
-              source: 'el ala este del laberinto',
-              reliability: 'reliable',
-            },
-            consecuenciaDisparo: {
-              description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
-              scope: 'campaign',
-              permanent: true,
-              worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
-            },
-          },
-        },
-      };
+      return { texto: ['Se mueve hacia el ruido que hiciste, no hacia vos todavía —pero ya no está durmiendo—.'] };
     },
   },
 
   {
-    id: 'laberinto-avanzar-oeste',
+    id: 'laberinto-combate-este',
+    resolver: () => ({
+      texto: ['Se levanta de la paja de un solo movimiento, sin la torpeza que el resto del cuerpo prometía.'],
+      combate: { accion: 'atacar', npcId: 'npc-pariente-abelardo', armaId: 'desarmado' },
+      iniciaCombate: {
+        npcIds: ['npc-pariente-abelardo'],
+        reason: 'Se levanta de la paja de un solo movimiento, y no hay con quién hablar para evitar esto.',
+        salidaPacifica: {
+          npcId: 'npc-pariente-abelardo',
+          pistaCalma: {
+            description: 'Retrocedió hacia la paja sin que quede claro si entendió la amenaza o si simplemente perdió interés.',
+            kind: 'experiential',
+            source: 'el ala este del laberinto',
+            reliability: 'reliable',
+          },
+          consecuenciaDisparo: {
+            description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+          },
+        },
+      },
+    }),
+  },
+
+  {
+    id: 'laberinto-sigilo-oeste',
     prueba: () => ({
-      skill: 'escuchar', difficulty: 'regular',
-      reason: 'notar a lo que vive acá antes de que te note a vos',
-      stakes_success: 'cruzás sin que note que pasaste',
-      stakes_failure: 'te escucha antes de que termines de decidir si seguir',
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'cruzar sin que note que hay alguien más acá',
+      stakes_success: 'cruzás sin que el canturreo se corte',
+      stakes_failure: 'el canturreo se corta',
     }),
     resolver: ({ tirada }) => {
       if (tirada?.exito) {
         return {
-          texto: ['El canturreo no cambia de ritmo cuando pasás al lado: cruzás sin que el canturreo se corte ni una vez.'],
+          texto: ['El canturreo no cambia de ritmo cuando pasás al lado: cruzás sin que se corte ni una vez.'],
           pistas: [{
             description: 'En el ala oeste del laberinto, entre las marcas de uñas de la pared, hay una fecha rayada con algo filoso: el mismo año que el nicho vacío del mausoleo, escrito mucho antes de que ese nicho existiera.',
             kind: 'physical',
@@ -468,30 +497,54 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
           }],
         };
       }
-      return {
-        texto: ['El canturreo se corta a la mitad de una nota, y lo que sigue no es silencio.'],
-        combate: { accion: 'atacar', npcId: 'npc-pariente-felisa', armaId: 'desarmado' },
-        iniciaCombate: {
-          npcIds: ['npc-pariente-felisa'],
-          reason: 'El canturreo se corta a la mitad de una nota, y no hay con quién hablar para evitar esto.',
-          salidaPacifica: {
-            npcId: 'npc-pariente-felisa',
-            pistaCalma: {
-              description: 'Volvió al rincón y retomó el canturreo exactamente donde lo había dejado, como si nada hubiera pasado.',
-              kind: 'experiential',
-              source: 'el ala oeste del laberinto',
-              reliability: 'reliable',
-            },
-            consecuenciaDisparo: {
-              description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
-              scope: 'campaign',
-              permanent: true,
-              worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
-            },
+      return { texto: ['El canturreo se corta a la mitad de una nota. No sigue, pero tampoco vuelve a empezar.'] };
+    },
+  },
+
+  {
+    id: 'laberinto-combate-oeste',
+    resolver: () => ({
+      texto: ['El canturreo se corta del todo, y lo que sigue no es silencio.'],
+      combate: { accion: 'atacar', npcId: 'npc-pariente-felisa', armaId: 'desarmado' },
+      iniciaCombate: {
+        npcIds: ['npc-pariente-felisa'],
+        reason: 'El canturreo se corta del todo, y no hay con quién hablar para evitar esto.',
+        salidaPacifica: {
+          npcId: 'npc-pariente-felisa',
+          pistaCalma: {
+            description: 'Volvió al rincón y retomó el canturreo exactamente donde lo había dejado, como si nada hubiera pasado.',
+            kind: 'experiential',
+            source: 'el ala oeste del laberinto',
+            reliability: 'reliable',
+          },
+          consecuenciaDisparo: {
+            description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
           },
         },
-      };
-    },
+      },
+    }),
+  },
+
+  {
+    // Pedido después de jugarlo: que ganar la pelea deje algo permanente,
+    // no sólo una pista. Sólo aparece si el pariente cayó de verdad en
+    // combate —esquivarlo con sigilo no deja nada que revisar—.
+    id: 'revisar-abelardo',
+    resolver: ({ estado }) => ({
+      texto: ['Entre la paja, cerca de donde cayó, hay una figurita de piedra —la misma forma que se repite en cada nicho del mausoleo, gastada de años de manosearla—.'],
+      traslada: { itemId: 'it-figura-abelardo', a: estado.activeInvestigator, carried: true, cause: 'lo encuentra al revisar el cuerpo' },
+    }),
+  },
+
+  {
+    id: 'revisar-felisa',
+    resolver: ({ estado }) => ({
+      texto: ['Entre los pliegues del vestido hay un alfiler de plata, negro de deslustre, con una inicial que ya no se distingue del todo.'],
+      traslada: { itemId: 'it-alfiler-felisa', a: estado.activeInvestigator, carried: true, cause: 'lo encuentra al revisar el cuerpo' },
+    }),
   },
 
   // ══ DESENLACES ════════════════════════════════════════════════════════════

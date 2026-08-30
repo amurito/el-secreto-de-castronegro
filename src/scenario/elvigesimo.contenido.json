@@ -36,6 +36,36 @@
       "usageCount": 0
     },
     {
+      "id": "it-figura-abelardo",
+      "name": "Figurita de piedra",
+      "aliases": ["figurita", "la figurita", "figura de piedra"],
+      "shortDescription": "Una figurita tallada en piedra, gastada de años de manosearla. Es la misma forma que se repite, una por nicho, en el mausoleo de los Díaz.",
+      "owner": "npc-pariente-abelardo",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-alfiler-felisa",
+      "name": "Alfiler de plata deslustrada",
+      "aliases": ["alfiler", "el alfiler", "alfiler de plata"],
+      "shortDescription": "Un alfiler de plata, negro de deslustre, con una inicial grabada que ya no se distingue del todo. Es lo único en ella que todavía parece de alguien.",
+      "owner": "npc-pariente-felisa",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
       "id": "it-anillo-rubi",
       "name": "Anillo de rubí",
       "aliases": ["anillo", "el anillo", "anillo de rubi", "anillo de rubí"],
@@ -647,8 +677,8 @@
     },
     "laberinto-mas-alla": {
       "id": "laberinto-mas-alla",
-      "name": "Más allá",
-      "aliases": ["mas alla", "más allá", "el resto del laberinto", "los tuneles de mas alla"],
+      "name": "El pasadizo",
+      "aliases": ["pasadizo", "el pasadizo", "el resto del laberinto", "los tuneles de mas alla"],
       "description": "El laberinto sigue del otro lado del sillón de Bernardo, más ancho de lo que un sótano debería permitir. Dos pasajes se abren, uno a cada lado, y de los dos viene el mismo silencio raro: no el de un lugar vacío, el de un lugar que dejó de tener quien lo dirija.",
       "atmosphere": [
         "Sin Bernardo, esto ya no suena a nada organizado. Suena a algo que se está apagando solo.",
@@ -1080,23 +1110,78 @@
       }
     },
     {
-      "id": "laberinto-avanzar-este",
+      "id": "buscar-pasadizo",
       "prioridad": 74,
       "cuando": {
         "op": "y",
         "de": [
-          { "op": "texto", "patron": "avanzo por el ala este|sigo por el ala este|avanzar por el ala este" },
+          { "op": "texto", "patron": "busco un pasadizo|buscar pasadizo|busco pasadizo" },
+          { "op": "lugar", "es": ["laboratorio"] }
+        ]
+      }
+    },
+    {
+      "id": "laberinto-sigilo-este",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "trato de cruzar el ala este|cruzar sin que me vea.*este|paso sin que me vea.*este" },
           { "op": "lugar", "es": ["laberinto-ala-este"] }
         ]
       }
     },
     {
-      "id": "laberinto-avanzar-oeste",
+      "id": "laberinto-combate-este",
       "prioridad": 74,
       "cuando": {
         "op": "y",
         "de": [
-          { "op": "texto", "patron": "avanzo por el ala oeste|sigo por el ala oeste|avanzar por el ala oeste" },
+          { "op": "texto", "patron": "enfrento a lo que hay en el ala este|lo enfrento" },
+          { "op": "lugar", "es": ["laberinto-ala-este"] }
+        ]
+      }
+    },
+    {
+      "id": "laberinto-sigilo-oeste",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "trato de cruzar el ala oeste|cruzar sin que me vea.*oeste|paso sin que me vea.*oeste" },
+          { "op": "lugar", "es": ["laberinto-ala-oeste"] }
+        ]
+      }
+    },
+    {
+      "id": "laberinto-combate-oeste",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "enfrento a lo que hay en el ala oeste|lo enfrento" },
+          { "op": "lugar", "es": ["laberinto-ala-oeste"] }
+        ]
+      }
+    },
+    {
+      "id": "revisar-abelardo",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "reviso el cuerpo de abelardo|reviso el cuerpo" },
+          { "op": "lugar", "es": ["laberinto-ala-este"] }
+        ]
+      }
+    },
+    {
+      "id": "revisar-felisa",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "reviso el cuerpo de felisa|reviso el cuerpo" },
           { "op": "lugar", "es": ["laberinto-ala-oeste"] }
         ]
       }
@@ -1219,12 +1304,24 @@
       "hecha": { "op": "narrado", "contiene": "Decida rápido" }
     },
     {
-      "id": "laberinto-avanzar-este",
+      "id": "buscar-pasadizo",
+      "grupo": "usar",
+      "lugar": "laboratorio",
+      "orden": 32,
+      "intencion": "Busco un pasadizo detrás del sillón",
+      "etiqueta": "Buscar un pasadizo detrás del sillón",
+      "visible": { "op": "y", "de": [
+        { "op": "npcFuera", "npc": "npc-bernardo" },
+        { "op": "no", "de": { "op": "pista", "contiene": "el laberinto sigue por ahí" } }
+      ]}
+    },
+    {
+      "id": "laberinto-sigilo-este",
       "grupo": "usar",
       "lugar": "laberinto-ala-este",
       "orden": 40,
-      "intencion": "Avanzo por el ala este",
-      "etiqueta": "Avanzar por el ala este",
+      "intencion": "Trato de cruzar el ala este sin que me vea",
+      "etiqueta": "Tratar de cruzar sin que me vea",
       "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-abelardo" } },
       "hecha": { "op": "o", "de": [
         { "op": "narrado", "contiene": "cruzás sin que la paja" },
@@ -1232,17 +1329,55 @@
       ]}
     },
     {
-      "id": "laberinto-avanzar-oeste",
+      "id": "laberinto-combate-este",
+      "grupo": "usar",
+      "lugar": "laberinto-ala-este",
+      "orden": 41,
+      "intencion": "Enfrento a lo que hay en el ala este",
+      "etiqueta": "Enfrentarlo",
+      "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-abelardo" } }
+    },
+    {
+      "id": "laberinto-sigilo-oeste",
       "grupo": "usar",
       "lugar": "laberinto-ala-oeste",
-      "orden": 41,
-      "intencion": "Avanzo por el ala oeste",
-      "etiqueta": "Avanzar por el ala oeste",
+      "orden": 42,
+      "intencion": "Trato de cruzar el ala oeste sin que me vea",
+      "etiqueta": "Tratar de cruzar sin que me vea",
       "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-felisa" } },
       "hecha": { "op": "o", "de": [
         { "op": "narrado", "contiene": "cruzás sin que el canturreo" },
         { "op": "npcFuera", "npc": "npc-pariente-felisa" }
       ]}
+    },
+    {
+      "id": "laberinto-combate-oeste",
+      "grupo": "usar",
+      "lugar": "laberinto-ala-oeste",
+      "orden": 43,
+      "intencion": "Enfrento a lo que hay en el ala oeste",
+      "etiqueta": "Enfrentarlo",
+      "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-felisa" } }
+    },
+    {
+      "id": "revisar-abelardo",
+      "grupo": "observar",
+      "lugar": "laberinto-ala-este",
+      "orden": 44,
+      "intencion": "Reviso el cuerpo de Abelardo",
+      "etiqueta": "Revisar el cuerpo",
+      "visible": { "op": "npcFuera", "npc": "npc-pariente-abelardo" },
+      "hecha": { "op": "narrado", "contiene": "Entre la paja, cerca de donde cayó" }
+    },
+    {
+      "id": "revisar-felisa",
+      "grupo": "observar",
+      "lugar": "laberinto-ala-oeste",
+      "orden": 45,
+      "intencion": "Reviso el cuerpo de Felisa",
+      "etiqueta": "Revisar el cuerpo",
+      "visible": { "op": "npcFuera", "npc": "npc-pariente-felisa" },
+      "hecha": { "op": "narrado", "contiene": "Entre los pliegues del vestido" }
     },
     {
       "id": "cortar",
@@ -1323,7 +1458,10 @@
     {
       "desde": "laboratorio",
       "hasta": "laberinto-mas-alla",
-      "hastaQue": { "op": "npcFuera", "npc": "npc-bernardo" }
+      "hastaQue": { "op": "y", "de": [
+        { "op": "npcFuera", "npc": "npc-bernardo" },
+        { "op": "pista", "contiene": "el laberinto sigue por ahí" }
+      ]}
     }
   ],
   "opening": "La puerta de la Casa de Díaz se abre antes de que la golpees dos veces.\n\nNo importa cómo llegaste esta noche: caminando desde el pueblo con lo puesto, volviendo con un sargento que va a llegar recién mañana, con una carta ya en camino hacia Villa Requena, o dando la vuelta a tres leguas y sintiendo que la vuelta no cuenta. La casa te esperaba igual.\n\n—Pase —dice la mujer que abre—. Lo estaban esperando desde la mañana.\n\nAdentro hay más luz de la que se ve desde afuera, y más silencio del que esa luz debería permitir."

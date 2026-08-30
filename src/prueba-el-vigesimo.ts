@@ -390,8 +390,8 @@ async function main() {
     const textoFallo = fallo.flatMap((e) => e.texto ?? []).join('\n');
     check('la tirada ahora es de Cordura, no de Mitos: fallarla no le saca el nombre a Casimiro',
       textoFallo.includes('Casimiro Díaz'));
-    check('...pero SÍ cuesta más Cordura que si se hubiera pasado la tirada',
-      fallo.some((e) => e.cordura?.amount === 5));
+    check('...pero SÍ cuesta más Cordura que si se hubiera pasado la tirada (formato real "1/1D4")',
+      fallo.some((e) => (e.cordura?.amount ?? 0) > 1 && (e.cordura?.amount ?? 0) <= 4));
     check('y de todos modos deja Mitos de Cthulhu ganado (el «1D3» pedido)',
       fallo.some((e) => (e.mitos?.amount ?? 0) >= 1 && (e.mitos?.amount ?? 0) <= 3));
   }
@@ -436,8 +436,11 @@ async function main() {
       noCede.every((e) => !e.pistas?.length && !e.consecuencia));
   }
 
-  console.log('\nEL MAUSOLEO: LA PLACA DE CASIMIRO SÓLO SE DISTINGUE SI SE SUPERA DESCUBRIR');
+  console.log('\nEL MAUSOLEO: LA PLACA DE CASIMIRO SIEMPRE SE VE, LA TIRADA ES DE CORDURA');
   {
+    // Mismo rework que el cadáver del guardián: la placa ya no depende de
+    // una tirada de Descubrir —se ve apenas se entra—; la única tirada de
+    // la escena es de Cordura de verdad, formato real "1/1D6".
     const { state: enLaPuerta } = await jugarEn(EL_VIGESIMO, '7b NICHOS', 'z2',
       ['Voy al mausoleo'], { estadoAnterior: subida, mesesTranscurridos: 0 });
     const nichos = EL_VIGESIMO_LOGICA.find((e) => e.id === 'mausoleo-examinar-nichos')!;
@@ -447,21 +450,21 @@ async function main() {
     };
     const conExito = ([] as EfectoEscena[]).concat(nichos.resolver({
       estado: enLaPuerta, intencion: intencionNichos, variante: (o) => o[0]!,
-      tirada: { exito: true, grado: 'regular', mensaje: '' },
+      tirada: { exito: true, grado: 'regular', mensaje: '', numero: 1 },
     }));
     const textoExito = conExito.flatMap((e) => e.texto ?? []).join('\n');
-    check('con Descubrir superado, se distingue la placa de Casimiro', textoExito.includes('Casimiro Díaz, 1889—1909'));
-    check('y cuesta Cordura de verdad, no sólo Exposición',
-      conExito.some((e) => e.cordura?.amount === 5) && conExito.some((e) => e.exposicion?.amount === 8));
+    check('con la tirada de Cordura superada, la placa de Casimiro se ve igual', textoExito.includes('Casimiro Díaz, 1889—1909'));
+    check('y el costo de Cordura es el mínimo fijo (1) más Exposición',
+      conExito.some((e) => e.cordura?.amount === 1) && conExito.some((e) => e.exposicion?.amount === 8));
 
     const sinExito = ([] as EfectoEscena[]).concat(nichos.resolver({
       estado: enLaPuerta, intencion: intencionNichos, variante: (o) => o[0]!,
-      tirada: { exito: false, grado: 'regular', mensaje: '' },
+      tirada: { exito: false, grado: 'regular', mensaje: '', numero: 41 },
     }));
     const textoSinExito = sinExito.flatMap((e) => e.texto ?? []).join('\n');
-    check('sin superar Descubrir, ninguna placa se distingue', !textoSinExito.includes('Casimiro'));
-    check('pero el costo de Cordura se paga igual: ver los nichos ya alcanza',
-      sinExito.some((e) => e.cordura?.amount === 5));
+    check('sin superar la tirada, la placa se ve de todos modos', textoSinExito.includes('Casimiro Díaz, 1889—1909'));
+    check('pero el costo de Cordura es mayor —el "1D6" real— y deja crisis propia',
+      sinExito.some((e) => (e.cordura?.amount ?? 0) > 1 && e.cordura?.crisis?.nombre === 'Manía de contar'));
   }
 
   console.log('\nPREPARACIÓN CONTRA BERNARDO: LAS PISTAS SUMAN DADOS, NO SUERTE');
@@ -546,59 +549,98 @@ async function main() {
         x.commitment.modifiers.some((m) => /llegó sabiendo/.test(m.reason))));
   }
 
-  console.log('\nEL LABERINTO NUEVO ESTÁ OCULTO HASTA QUE BERNARDO CAE, Y NO BLOQUEA LOS FINALES');
+  console.log('\nEL PASADIZO ESTÁ OCULTO HASTA ENCONTRARLO, DESPUÉS DE BERNARDO, Y NO BLOQUEA LOS FINALES');
   {
     const { state: bernardoVivo } = await jugarEn(EL_VIGESIMO, '7b LABERINTO ANTES', 'l1',
       [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
       { estadoAnterior: subida, mesesTranscurridos: 0 });
     const antes = accionesDisponibles(bernardoVivo, EL_VIGESIMO).map((o) => o.id);
-    check('con Bernardo vivo, el laberinto nuevo no aparece', !antes.includes('ir:laberinto-mas-alla'), antes.join(', '));
+    check('con Bernardo vivo, ni buscar el pasadizo ni ir a él aparecen',
+      !antes.includes('buscar-pasadizo') && !antes.includes('ir:laberinto-mas-alla'), antes.join(', '));
 
     const bern = bernardoVivo.npcs['npc-bernardo']!;
     const bernardoCaido: GameState = {
       ...bernardoVivo,
       npcs: { ...bernardoVivo.npcs, 'npc-bernardo': { ...bern, combate: { ...bern.combate!, hp: 0 } } },
     };
-    const despues = accionesDisponibles(bernardoCaido, EL_VIGESIMO).map((o) => o.id);
-    check('con Bernardo caído, el laberinto nuevo ya se puede visitar', despues.includes('ir:laberinto-mas-alla'), despues.join(', '));
-    check('y "cortar"/"heredar" siguen ahí SIN haber pisado el laberinto —no quedó gateado por accidente—',
-      despues.includes('cortar') && despues.includes('heredar'));
+    const conBernardoCaido = accionesDisponibles(bernardoCaido, EL_VIGESIMO).map((o) => o.id);
+    check('con Bernardo caído, se puede buscar el pasadizo, pero todavía no ir',
+      conBernardoCaido.includes('buscar-pasadizo') && !conBernardoCaido.includes('ir:laberinto-mas-alla'),
+      conBernardoCaido.join(', '));
+    check('y "cortar"/"heredar" ya están, sin depender de nada del laberinto',
+      conBernardoCaido.includes('cortar') && conBernardoCaido.includes('heredar'));
+
+    const conPasadizoEncontrado: GameState = {
+      ...bernardoCaido,
+      board: { ...bernardoCaido.board, clues: [...bernardoCaido.board.clues, pistaFalsa('Detrás del sillón de Bernardo hay un hueco: el laberinto sigue por ahí.')] },
+    };
+    const despues = accionesDisponibles(conPasadizoEncontrado, EL_VIGESIMO).map((o) => o.id);
+    check('con el pasadizo encontrado, ya se puede ir', despues.includes('ir:laberinto-mas-alla'), despues.join(', '));
   }
 
-  console.log('\nCADA ALA DEL LABERINTO: ESCUCHAR DECIDE ENTRE PASE LIMPIO Y ENCUENTRO');
+  console.log('\nCADA ALA: SIGILO O ENFRENTAR, DOS BOTONES SEPARADOS COMO EN EL SÓTANO');
   {
-    // Mismo criterio que el resto de la suite: la tirada de Escuchar es real
+    // Mismo criterio que el resto de la suite: la tirada de Sigilo es real
     // y depende de los dados, así que se invoca el `resolver` de cada ala
     // directo, con el resultado armado a mano.
     const { state: cualquiera } = await jugarEn(EL_VIGESIMO, '7b LABERINTO ALAS', 'l2',
       [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
       { estadoAnterior: subida, mesesTranscurridos: 0 });
     const intencion: IntencionLeida = {
-      raw: 'avanzo por el ala', norm: 'avanzo por el ala', verb: 'avanzar', verbExplicit: true,
+      raw: 'trato de cruzar', norm: 'trato de cruzar', verb: 'sigilo', verbExplicit: true,
       sustained: false, objetivo: { kind: 'none', id: null }, destino: null,
     };
 
-    for (const [id, npcId, fragmentoPase] of [
-      ['laberinto-avanzar-este', 'npc-pariente-abelardo', 'cruzás sin que la paja'],
-      ['laberinto-avanzar-oeste', 'npc-pariente-felisa', 'cruzás sin que el canturreo'],
+    for (const [idSigilo, idCombate, npcId, fragmentoPase] of [
+      ['laberinto-sigilo-este', 'laberinto-combate-este', 'npc-pariente-abelardo', 'cruzás sin que'],
+      ['laberinto-sigilo-oeste', 'laberinto-combate-oeste', 'npc-pariente-felisa', 'cruzás sin que'],
     ] as const) {
-      const escena = EL_VIGESIMO_LOGICA.find((e) => e.id === id)!;
-      const pase = ([] as EfectoEscena[]).concat(escena.resolver({
+      const sigilo = EL_VIGESIMO_LOGICA.find((e) => e.id === idSigilo)!;
+      const pase = ([] as EfectoEscena[]).concat(sigilo.resolver({
         estado: cualquiera, intencion, variante: (o) => o[0]!,
         tirada: { exito: true, grado: 'regular', mensaje: '' },
       }));
-      check(`${id}: con Escuchar superado, cruza sin encuentro`,
+      check(`${idSigilo}: con Sigilo superado, cruza sin encuentro y sin combate`,
         pase.flatMap((e) => e.texto ?? []).join('\n').includes(fragmentoPase) && !pase.some((e) => e.iniciaCombate));
-      check(`${id}: y deja una pista propia del ala`, pase.some((e) => e.pistas?.length));
+      check(`${idSigilo}: y deja una pista propia del ala`, pase.some((e) => e.pistas?.length));
 
-      const encuentro = ([] as EfectoEscena[]).concat(escena.resolver({
+      const fallo = ([] as EfectoEscena[]).concat(sigilo.resolver({
         estado: cualquiera, intencion, variante: (o) => o[0]!,
         tirada: { exito: false, grado: 'regular', mensaje: '' },
       }));
-      check(`${id}: si falla, dispara combate contra el pariente de esa ala`,
-        encuentro.some((e) => e.iniciaCombate?.npcIds.includes(npcId)));
-      check(`${id}: y ese combate admite salida de palabra`,
-        encuentro.some((e) => e.iniciaCombate?.salidaPacifica?.npcId === npcId));
+      check(`${idSigilo}: si falla, NO arranca combate solo —hace falta el botón de enfrentar—`,
+        !fallo.some((e) => e.iniciaCombate));
+
+      const combate = EL_VIGESIMO_LOGICA.find((e) => e.id === idCombate)!;
+      const efectoCombate = ([] as EfectoEscena[]).concat(combate.resolver({
+        estado: cualquiera, intencion, variante: (o) => o[0]!, tirada: null,
+      }));
+      check(`${idCombate}: el botón de enfrentar sí dispara combate contra el pariente de esa ala`,
+        efectoCombate.some((e) => e.iniciaCombate?.npcIds.includes(npcId)));
+      check(`${idCombate}: y ese combate admite salida de palabra`,
+        efectoCombate.some((e) => e.iniciaCombate?.salidaPacifica?.npcId === npcId));
+    }
+  }
+
+  console.log('\nGANAR LA PELEA EN EL LABERINTO DEJA UN ÍTEM PERMANENTE');
+  {
+    const { state: base } = await jugarEn(EL_VIGESIMO, '7b LABERINTO LOOT', 'l3',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const intencion: IntencionLeida = {
+      raw: 'reviso el cuerpo', norm: 'reviso el cuerpo', verb: 'examinar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'none', id: null }, destino: null,
+    };
+    for (const [id, itemId] of [
+      ['revisar-abelardo', 'it-figura-abelardo'],
+      ['revisar-felisa', 'it-alfiler-felisa'],
+    ] as const) {
+      const escena = EL_VIGESIMO_LOGICA.find((e) => e.id === id)!;
+      const efecto = ([] as EfectoEscena[]).concat(escena.resolver({
+        estado: base, intencion, variante: (o) => o[0]!, tirada: null,
+      }));
+      check(`${id}: traslada el ítem al investigador activo`,
+        efecto.some((e) => e.traslada?.itemId === itemId && e.traslada.a === base.activeInvestigator));
     }
   }
 
