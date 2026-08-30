@@ -671,6 +671,31 @@ export interface CombateNpc {
    */
   derribado?: boolean;
   agarrado?: boolean;
+  /**
+   * Este rival NO se gana a golpes: las heridas normales se le cierran solas
+   * y hay que atacar un punto concreto, declarándolo antes.
+   *
+   * Existe porque el clímax de El Vigésimo lo pedía y el motor sólo sabía
+   * restar PV: contra alguien que lleva trescientos años sostenido por un
+   * objeto, bajarle una barra de vida a puñetazos convierte la escena en
+   * cualquier otra pelea. Es genérico —el motor no sabe qué es un anillo—:
+   * el escenario declara qué hay que atacar, cuánto aguanta y qué se ve
+   * cuando una herida normal se cierra.
+   *
+   * Mientras `hpPuntoDebil > 0`, el daño común no baja `hp`: se narra
+   * `seCierra` y no pasa nada más. El ataque dirigido al punto débil tira
+   * con un dado de penalización —hay que apuntar—, y sólo cuenta con un arma
+   * que corte o empale si `requiereCortante`.
+   */
+  invulnerabilidad?: {
+    /** Qué hay que atacar, dicho como lo diría un jugador: «la mano del anillo». */
+    puntoDebil: string;
+    hpPuntoDebil: number;
+    maxHpPuntoDebil: number;
+    /** Qué se ve cuando una herida común se cierra sola. Es la pista. */
+    seCierra: string;
+    requiereCortante?: boolean;
+  };
 }
 
 export type NpcSeed =

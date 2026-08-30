@@ -2431,6 +2431,67 @@ Sigue abierto, sin cambios: la pelea contra Bernardo no se puede balancear
 para un investigador de combate y uno que no lo es a la vez (§3.2-septvicies),
 el aviso de Cordura en el momento, y la economía del bazar.
 
+### 3.2-undetricies El clímax: invulnerabilidad con punto débil
+
+Pedido después de jugarlo: «el combate con Bernardo debería ser épico», «a
+los puñetazos no debería poder ganársele», «debería haber pistas para saber
+que el punto débil es el anillo», «el Ahijado no hace nada».
+
+Lo que se adapta del módulo original es la **mecánica**, que es funcional y
+no prosa: un enemigo al que el daño común no le hace nada, y un objetivo
+concreto que hay que declarar antes de golpear, que pide un arma que corte,
+que tira con penalización y que acumula daño propio. Los números, el texto y
+el nombre del punto débil son de esta campaña.
+
+#### La función nueva: `CombateNpc.invulnerabilidad`
+
+Genérica —el motor no sabe qué es un anillo—. El escenario declara qué hay
+que atacar, cuánto aguanta, si hace falta filo, y **qué se ve cuando una
+herida común se cierra sola**, que es la pista:
+
+- Mientras el punto débil aguante, el daño normal no baja los PV: `danarNpc`
+  devuelve el texto de `seCierra` y no pasa nada más.
+- `resolve_attack` acepta `punto_debil: 'true'`: un dado de penalización,
+  rechazo si el arma no empala y `requiereCortante`, y el daño se acumula en
+  el punto débil.
+- Cuando el punto débil llega a cero, el NPC cae en el acto.
+
+**Bernardo**: 17 PV que no sirven de nada, la mano del anillo con 12 de daño
+acumulable, filo obligatorio. Y cuando una herida se le cierra, el rubí se
+enciende por dentro y se apaga cuando la piel termina de juntarse.
+
+#### Que el jugador se entere, por dos caminos
+
+1. **Antes**, preguntándole: el tema `b-anillo` ahora es explícito —«a mí no
+   me mata un cuchillo, ni un tiro, ni una caída… si alguna vez le hace falta
+   terminar conmigo, es la mano»—. Se lo dice él, porque su motivación es que
+   alguien le confirme si valió la pena, no ganar.
+2. **Durante**, peleando: el botón «Ir por la mano del anillo» **no existe
+   hasta que el jugador ve con sus propios dados que una herida se cerró**.
+   Enterarse es parte de la pelea; la interfaz no lo regala de entrada.
+
+#### El Ahijado ahora pelea
+
+Tenía `combate: null`, así que estaba de adorno. Ahora tiene ficha: 6 PV,
+Pelea 35%, Esquivar 90%, DES 90, corpulencia −2. No es un rival: es una
+molestia rápida que esquiva casi todo y ataca mientras uno trata de apuntarle
+a la mano. Entra solo al asalto por el arreglo de §3.2-duodetricies —está en
+`npcsPresent` del laboratorio— sin que haga falta nada más.
+
+#### Lo que además muestra la interfaz
+
+La pantalla de combate dice, una vez descubierto, que a este rival no se le
+gana a golpes, qué hay que atacar, que hace falta filo y que apuntar cuesta
+un dado.
+
+Fijado en `prueba-el-vigesimo.ts`: treinta golpes comunes con facón no le
+bajan un PV y el jugador ve por qué; a mano limpia el motor rechaza ir por la
+mano; con filo y apuntando, cae. Esa prueba usa un investigador de combate
+explícito —Elena Sartori, médica rural, muere antes de conectar el primer
+golpe—, que es la misma tensión de diseño ya anotada en §3.2-septvicies y que
+esta mecánica **no** resuelve: sigue habiendo que decidir qué hace un
+investigador que no sabe pelear cuando llega al laboratorio.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

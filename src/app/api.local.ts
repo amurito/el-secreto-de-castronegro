@@ -67,6 +67,17 @@ function rivalesReales(state: GameState): RivalReal[] {
       estadoCombate: estadoDeCombate(n.combate!.hp, n.combate!.maxHp),
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
       derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
+      ...(n.combate!.invulnerabilidad ? {
+        puntoDebil: {
+          nombre: n.combate!.invulnerabilidad!.puntoDebil,
+          // Se descubre peleando: el botón aparece recién cuando el jugador
+          // ya vio con sus propios dados que una herida se cerró sola.
+          descubierto: state.narrative.some(
+            (e) => e.kind === 'keeper' && e.text.includes(n.combate!.invulnerabilidad!.seCierra.slice(0, 40)),
+          ),
+          requiereCortante: Boolean(n.combate!.invulnerabilidad!.requiereCortante),
+        },
+      } : {}),
     }));
 }
 
@@ -419,6 +430,7 @@ export function createLocalApi(): GameApi {
           punto_blanco: String(Boolean(mods?.puntoBlanco)),
           cubierto: String(Boolean(mods?.cubierto)),
           blanco_movil: String(Boolean(mods?.blancoMovil)),
+          punto_debil: String(Boolean(mods?.alPuntoDebil)),
         });
         turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
         await turn.commit();

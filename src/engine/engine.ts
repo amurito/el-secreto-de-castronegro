@@ -1002,8 +1002,36 @@ export class Turn {
   /** Aplica el daño a un NPC y arma el cierre del mensaje. Lo usan el ataque
    * principal y los intercambios extra del mismo asalto: es la misma
    * consecuencia, sea quien sea el que la produjo. */
-  private danarNpc(npc: Npc, total: number, cause: string): string {
+  private danarNpc(npc: Npc, total: number, cause: string, alPuntoDebil = false): string {
     const c = npc.combate!;
+
+    // Rival con punto débil declarado: mientras ese punto aguante, el daño
+    // común no le baja los PV —se cierra— y sólo el golpe dirigido cuenta.
+    const inv = c.invulnerabilidad;
+    if (inv && inv.hpPuntoDebil > 0) {
+      if (!alPuntoDebil) {
+        this.emit('NPC_COMBATE_CHANGED', {
+          npcId: npc.id, changes: {}, cause: `herida que se cierra sola (${cause})`,
+        });
+        return `${inv.seCierra}`;
+      }
+      const quedan = Math.max(0, inv.hpPuntoDebil - total);
+      this.emit('NPC_COMBATE_CHANGED', {
+        npcId: npc.id,
+        changes: { invulnerabilidad: { ...inv, hpPuntoDebil: quedan } },
+        cause: `daño en ${inv.puntoDebil} (${cause})`,
+      });
+      if (quedan > 0) {
+        return `El golpe entra en ${inv.puntoDebil}, y esta vez no se cierra. Todavía aguanta.`;
+      }
+      // El punto débil cedió: se acabó lo que lo sostenía.
+      this.emit('NPC_DAMAGED', {
+        npcId: npc.id, from: c.hp, to: 0, heridaGrave: true,
+        cause: `cedió ${inv.puntoDebil}`,
+      });
+      return `${inv.puntoDebil} cede. ${npc.name} deja de pelear en el acto: lo que lo sostenía dejó de sostenerlo.`;
+    }
+
     const desde = c.hp;
     const hasta = clamp(desde - total, 0, c.maxHp);
     const heridaGrave = total >= Math.floor(c.maxHp / 2);
@@ -1244,6 +1272,23 @@ export class Turn {
       if (String(raw.blanco_movil ?? 'false') === 'true') { penaltyFuego++; notasFuego.push('el blanco se mueve'); }
     }
 
+    // ── Golpe dirigido al punto débil ──
+    // Hay que declararlo antes de tirar —es lo que lo hace una apuesta y no
+    // un golpe de suerte—, cuesta un dado de penalización, y contra un punto
+    // que pide filo no sirve pegar con los puños.
+    const alPuntoDebil = String(raw.punto_debil ?? 'false') === 'true';
+    const invul = npc.combate.invulnerabilidad;
+    if (alPuntoDebil) {
+      if (!invul) {
+        return this.reject('resolve_attack', raw,
+          `${npc.name} no tiene un punto débil declarado: pegarle donde sea es lo mismo.`);
+      }
+      if (invul.requiereCortante && !arma.empala) {
+        return this.reject('resolve_attack', raw,
+          `Contra ${invul.puntoDebil} hace falta algo que corte. ${arma.nombre} no corta.`);
+      }
+    }
+
     // Un derribo previo (de una maniobra) da un dado de bonificación a quien
     // ataque después, y se gasta con este golpe.
     const derribado = Boolean(npc.combate.derribado);
@@ -1261,8 +1306,8 @@ export class Turn {
       stakes_success: 'el golpe llega',
       stakes_failure: 'el golpe no llega',
       bonus_dice: bonusFuego,
-      penalty_dice: penaltyFuego,
-      modifier_reason: notasFuego.join(', '),
+      penalty_dice: penaltyFuego + (alPuntoDebil ? 1 : 0),
+      modifier_reason: [...notasFuego, ...(alPuntoDebil ? [`apuntando a ${invul!.puntoDebil}`] : [])].join(', '),
     });
     if (!ataque.ok) return ataque;
     const gradoAtacante = this.ctx.lastRollDegree as SuccessDegree;
@@ -1302,7 +1347,7 @@ export class Turn {
       const dano = this.tirarDano(arma, inv.derived.damageBonus, indiceAtaque, fallo.extremo);
       bloques.push(
         `${encabezado}\n${fallo.extremo ? (arma.empala ? 'ENTRÓ DE LLENO: ' : 'GOLPE CERTERO: ') : ''}` +
-        `${dano.total} de daño (${dano.detalle}). ${this.danarNpc(npc, dano.total, `${arma.nombre} de ${inv.name}`)}`,
+        `${dano.total} de daño (${dano.detalle}). ${this.danarNpc(npc, dano.total, `${arma.nombre} de ${inv.name}`, alPuntoDebil)}`,
       );
     } else {
       // El contraataque: le pega a quien empezó, con el arma del NPC.

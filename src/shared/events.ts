@@ -244,7 +244,7 @@ export interface NpcDamagedPayload {
 /** Cambios directos a las estadísticas de combate: desarmar, derribar, sujetar. */
 export interface NpcCombateChangedPayload {
   npcId: NpcId;
-  changes: Partial<Pick<import('./types.ts').CombateNpc, 'armaId' | 'derribado' | 'agarrado'>>;
+  changes: Partial<Pick<import('./types.ts').CombateNpc, 'armaId' | 'derribado' | 'agarrado' | 'invulnerabilidad'>>;
   cause: string;
 }
 

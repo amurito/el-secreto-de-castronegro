@@ -21,7 +21,8 @@ import { runOfflineTurn } from './keeper/offline.ts';
 import { accionesDisponibles } from './scenario/acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
-import type { GameState } from './shared/types.ts';
+import { ELENA } from './scenario/pregens.ts';
+import type { GameState, Investigator } from './shared/types.ts';
 
 useStore(fileStore);
 
@@ -32,8 +33,22 @@ const check = (n: string, ok: boolean, d = '') => {
   if (!ok) fallos++;
 };
 
-async function jugarEn(esc: typeof AGUA_BLANCA, titulo: string, semilla: string, guion: string[], herencia?: { estadoAnterior: GameState; mesesTranscurridos: number }) {
-  const id = await createCampaign(esc, titulo, semilla.repeat(64).slice(0, 64), herencia);
+/**
+ * Un investigador de combate, para las pruebas que tienen que llegar al
+ * final de una pelea. Elena Sartori es médica rural (Pelea 25%) y muere en
+ * tres asaltos contra Bernardo: con ella no se puede comprobar qué pasa
+ * DESPUÉS del primer golpe que conecta. Esto no ablanda la pelea real —el
+ * contenido no cambia—, es el equivalente de sentar a la mesa a alguien que
+ * sí sabe pelear, que es exactamente quien la va a jugar.
+ */
+const PELEADOR: Investigator = {
+  ...ELENA,
+  skills: { ...ELENA.skills, pelea: { base: 85, origin: 'occupation' } },
+  derived: { ...ELENA.derived, hp: 60, maxHp: 60 },
+};
+
+async function jugarEn(esc: typeof AGUA_BLANCA, titulo: string, semilla: string, guion: string[], herencia?: { estadoAnterior: GameState; mesesTranscurridos: number }, propio?: Investigator) {
+  const id = await createCampaign(esc, titulo, semilla.repeat(64).slice(0, 64), herencia, propio);
   for (const intencion of guion) {
     const t = await Turn.open(id);
     if (t.state.ending) break;
@@ -137,7 +152,7 @@ async function main() {
     check('peleando en el trastero, Bernardo no aparece en el asalto',
       !r.message.includes('Bernardo'), r.message.slice(0, 120));
     const s = (await Turn.open(id)).state;
-    check('...y Bernardo sigue intacto', (s.npcs['npc-bernardo']?.combate?.hp ?? 0) === 14,
+    check('...y Bernardo sigue intacto', (s.npcs['npc-bernardo']?.combate?.hp ?? 0) === 17,
       `hp ${s.npcs['npc-bernardo']?.combate?.hp}`);
   }
 
@@ -181,6 +196,47 @@ async function main() {
     } else {
       check('huir del combate lleva a denunciar/irse, en alguna de varias semillas probadas', false);
     }
+  }
+
+  console.log('\nA BERNARDO NO SE LE GANA A GOLPES');
+  {
+    const { id } = await jugarEn(EL_VIGESIMO, '7b INVULNERABLE', 'k',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Voy por el anillo y ataco a Bernardo'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 }, PELEADOR);
+
+    // Treinta golpes comunes, sin apuntar: ninguno le puede bajar los PV.
+    let vioCerrarse = false;
+    for (let n = 0; n < 30; n++) {
+      const t = await Turn.open(id);
+      const r = t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'facon' });
+      if (r.message.includes('se detiene sola')) vioCerrarse = true;
+      await t.commit();
+    }
+    const s = (await Turn.open(id)).state;
+    check('treinta golpes comunes no le bajan un solo PV',
+      (s.npcs['npc-bernardo']?.combate?.hp ?? 0) === 17, `hp ${s.npcs['npc-bernardo']?.combate?.hp}`);
+    check('y el jugador VE por qué: la herida se cierra y el anillo se enciende', vioCerrarse);
+    check('el punto débil sigue entero', (s.npcs['npc-bernardo']?.combate?.invulnerabilidad?.hpPuntoDebil ?? 0) === 12);
+
+    // Con los puños no se puede ir por la mano: hace falta filo.
+    {
+      const t = await Turn.open(id);
+      const r = t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'desarmado', punto_debil: 'true' });
+      check('a mano limpia el motor rechaza ir por la mano', !r.ok, r.message.slice(0, 90));
+    }
+
+    // Con filo, apuntando, el daño se acumula en la mano hasta que cede.
+    for (let n = 0; n < 40; n++) {
+      const t = await Turn.open(id);
+      const b = t.state.npcs['npc-bernardo'];
+      if ((b?.combate?.hp ?? 0) <= 0) break;
+      t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'facon', punto_debil: 'true' });
+      await t.commit();
+    }
+    const fin = (await Turn.open(id)).state;
+    check('yendo por la mano, con filo, Bernardo cae',
+      (fin.npcs['npc-bernardo']?.combate?.hp ?? 1) <= 0,
+      `hp ${fin.npcs['npc-bernardo']?.combate?.hp} · mano ${fin.npcs['npc-bernardo']?.combate?.invulnerabilidad?.hpPuntoDebil}`);
   }
 
   console.log('\nCON BERNARDO VENCIDO SE ABREN CORTAR Y HEREDAR');

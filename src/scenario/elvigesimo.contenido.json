@@ -134,7 +134,17 @@
       "secrets": [],
       "relationships": [],
       "attitude": { "inv-elena": -10, "inv-tomas": -10 },
-      "combate": null,
+      "combate": {
+        "hp": 6,
+        "maxHp": 6,
+        "pelea": 35,
+        "esquivar": 90,
+        "armaId": "desarmado",
+        "bonificacionDano": "0",
+        "defensaPorDefecto": "esquiva",
+        "dex": 90,
+        "build": -2
+      },
       "present": true,
       "isCompanion": false
     },
@@ -163,15 +173,22 @@
         "Bernardo levanta una mano, apenas, y con eso alcanza.\n\n—Ya contesté lo que iba a contestar. Lo que sigue no se pregunta: se hace.\n\nEl Ahijado deja de fingir que duerme."
       ],
       "combate": {
-        "hp": 14,
-        "maxHp": 14,
-        "pelea": 30,
+        "hp": 17,
+        "maxHp": 17,
+        "pelea": 55,
         "esquivar": 40,
         "armaId": "facon",
-        "bonificacionDano": "0",
+        "bonificacionDano": "1d4",
         "defensaPorDefecto": "contraataca",
         "dex": 50,
-        "build": 1
+        "build": 1,
+        "invulnerabilidad": {
+          "puntoDebil": "la mano del anillo",
+          "hpPuntoDebil": 12,
+          "maxHpPuntoDebil": 12,
+          "requiereCortante": true,
+          "seCierra": "El tajo entra donde tenía que entrar y no pasa nada. La sangre asoma un segundo y se detiene sola, y el borde de la herida se junta como se junta el agua cuando sacás el dedo.\n\nY mientras se cierra, el rubí de la mano izquierda está encendido por dentro. Cuando la piel termina de juntarse, se apaga."
+        }
       },
       "present": true,
       "isCompanion": false
@@ -660,11 +677,11 @@
       "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": -30, "razon": "que siga dispuesto a esta altura de la charla" },
       "cede": {
         "texto": [
-          "Levanta la mano izquierda, despacio, como si mostrarlo fuera parte de la respuesta.\n\n—No lo hice yo. Lo encontré, ya hecho, en el mismo lugar donde encontré todo lo demás. Me sostiene. Si me lo saca alguien, o me lo saco yo, no queda mucho de mí en los segundos siguientes.\n\n—No controla el tiempo, si es lo que va a preguntar después. Muestra cosas. Yo elegí creer que esas cosas eran promesas, y llevo trescientos años sin poder probar que estaba equivocado ni que tenía razón."
+          "Levanta la mano izquierda, despacio, como si mostrarlo fuera parte de la respuesta.\n\n—No lo hice yo. Lo encontré, ya hecho, en el mismo lugar donde encontré todo lo demás. Me sostiene. Y le voy a decir exactamente hasta dónde, porque no me sirve de nada que usted no lo sepa: a mí no me mata un cuchillo, ni un tiro, ni una caída. Lo que me abre se me cierra mientras esto siga en el dedo.\n\n—Si alguna vez le hace falta terminar conmigo, no pierda el tiempo con el resto. Es la mano. Ésta.\n\n—No controla el tiempo, si es lo que va a preguntar después. Muestra cosas. Yo elegí creer que esas cosas eran promesas, y llevo trescientos años sin poder probar que estaba equivocado ni que tenía razón."
         ],
         "actitud": -10,
         "pista": {
-          "description": "Bernardo no fabricó el anillo: lo encontró ya hecho. Lo sostiene con vida, y sacárselo —a él, o él mismo— lo mata en segundos. No controla el tiempo: muestra cosas, y él decidió leerlas como promesas.",
+          "description": "Bernardo no fabricó el anillo: lo encontró ya hecho. Mientras lo lleve puesto, lo que le abren se le cierra —ni un cuchillo ni un tiro lo matan—, y él mismo dice cuál es la excepción: la mano donde lo lleva. No controla el tiempo: muestra cosas, y él decidió leerlas como promesas.",
           "kind": "testimonial",
           "reliability": "reliable"
         }

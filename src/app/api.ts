@@ -135,6 +135,13 @@ export interface RivalReal {
   /** La misma descripción que el NPC muestra fuera del combate: contra qué se está peleando. */
   descripcion: string;
   arma: string; derribado?: boolean; agarrado?: boolean;
+  /**
+   * Si este rival no se gana a golpes: qué hay que atacar, y si ya se
+   * descubrió que las heridas comunes se le cierran. `descubierto` es false
+   * hasta que el jugador lo vea pasar en la mesa —el botón no se ofrece
+   * antes: enterarse es parte de la pelea—.
+   */
+  puntoDebil?: { nombre: string; descubierto: boolean; requiereCortante: boolean };
 }
 
 /** Un arma que el investigador realmente puede usar en este combate. */
@@ -170,6 +177,8 @@ export interface ModsDeFuego {
   puntoBlanco?: boolean;
   cubierto?: boolean;
   blancoMovil?: boolean;
+  /** Apuntar al punto débil declarado del rival: un dado de penalización. */
+  alPuntoDebil?: boolean;
 }
 
 export interface AttackResult {

@@ -93,11 +93,11 @@ export function Combate({
     aplicar(r);
   }
 
-  async function atacar() {
+  async function atacar(alPuntoDebil = false) {
     setOcupado(true);
     setError(null);
     try {
-      agregarAlRegistro(await api.combateAtacar(campaignId, rivalId, arma, { apuntando, puntoBlanco, cubierto, blancoMovil }));
+      agregarAlRegistro(await api.combateAtacar(campaignId, rivalId, arma, { apuntando, puntoBlanco, cubierto, blancoMovil, alPuntoDebil }));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -168,6 +168,14 @@ export function Combate({
             {elegido?.descripcion && (
               <p className="sim-sub"><b>{elegido.name}.</b> {elegido.descripcion}</p>
             )}
+            {elegido?.puntoDebil?.descubierto && (
+              <p className="sim-sub">
+                A {elegido.name} no se le gana a golpes: las heridas se le cierran solas.
+                Hay que ir por {elegido.puntoDebil.nombre}
+                {elegido.puntoDebil.requiereCortante ? ', y con algo que corte' : ''}.
+                Apuntar cuesta un dado de penalización.
+              </p>
+            )}
           </div>
         </header>
 
@@ -231,11 +239,23 @@ export function Combate({
         <div className="sim-acciones">
           <button
             className="primary"
-            onClick={atacar}
+            onClick={() => atacar(false)}
             disabled={ocupado || !enPie || !investigadorEnPie}
           >
             {ocupado ? 'Tirando…' : 'Atacar'}
           </button>
+          {/* Aparece recién cuando el jugador vio con sus propios dados que
+              las heridas comunes se cierran solas: enterarse es parte de la
+              pelea, no un dato que la interfaz regala de entrada. */}
+          {elegido?.puntoDebil?.descubierto && (
+            <button
+              className="primary"
+              onClick={() => atacar(true)}
+              disabled={ocupado || !enPie || !investigadorEnPie}
+            >
+              Ir por {elegido.puntoDebil.nombre}
+            </button>
+          )}
           <button className="ghost" onClick={huir} disabled={ocupado || !investigadorEnPie}>
             Huir
           </button>
