@@ -176,7 +176,7 @@ export function Combate({
             <label>Con qué peleás</label>
             <select value={arma} onChange={(e) => setArma(e.target.value)} disabled={ocupado}>
               {armas.map((a) => (
-                <option key={a.id} value={a.id}>{a.nombre}</option>
+                <option key={a.id} value={a.id}>{a.nombre} — {a.dano}</option>
               ))}
             </select>
             {armaActual?.nota && <div className="sim-ayuda">{armaActual.nota}</div>}

@@ -122,6 +122,25 @@ async function main() {
       opciones.length < 6, `quedan: ${opciones.map((o) => o.id).join(', ')}`);
   }
 
+  console.log('\nBERNARDO NO PELEA DESDE OTRO CUARTO');
+  {
+    // Bug reportado jugando dos veces: `ordenDeAsalto` metía en cada asalto a
+    // TODO NPC con estadísticas de combate y `present: true` —que quiere decir
+    // «sigue en la historia», no «está en este cuarto»—, así que Bernardo
+    // repartía facazos desde el laboratorio durante la pelea del trastero.
+    const { id } = await jugarEn(EL_VIGESIMO, '7b GUARDIAN SOLO', 'g',
+      [...AL_SOTANO, 'Lo enfrento'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const t = await Turn.open(id);
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-guardian-sotano', weapon_id: 'desarmado' });
+    await t.commit();
+    check('peleando en el trastero, Bernardo no aparece en el asalto',
+      !r.message.includes('Bernardo'), r.message.slice(0, 120));
+    const s = (await Turn.open(id)).state;
+    check('...y Bernardo sigue intacto', (s.npcs['npc-bernardo']?.combate?.hp ?? 0) === 14,
+      `hp ${s.npcs['npc-bernardo']?.combate?.hp}`);
+  }
+
   console.log('\nEL COMBATE CONTRA BERNARDO ES OBLIGATORIO Y REAL');
   {
     const { id, state } = await jugarEn(EL_VIGESIMO, '7b COMBATE', 'u',

@@ -99,7 +99,7 @@
       "name": "El que quedó en la puerta",
       "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
       "status": "alive",
-      "description": "Más grande que el que salió de la grieta del granero, y más viejo. Custodia la entrada al laberinto sin que nadie se lo tenga que pedir dos veces por generación. Ojos verdes, como todos los que ya no tienen nombre para nadie.",
+      "description": "Es de la altura de un hombre y no termina de estarlo: la espalda encorvada de una manera que no se corrige, las muñecas demasiado finas para las manos que sostienen, los dientes largos asomando aunque tenga la boca cerrada. La ropa es de trabajo, vieja, y le queda como si se la hubieran puesto otros. Los ojos son del mismo verde que los de Sixto en la plaza, y eso es lo peor: que se le parece.",
       "motivation": "Que nadie pase de acá para abajo sin que Bernardo lo autorice.",
       "fears": [],
       "refusals": [],
@@ -108,15 +108,15 @@
       "relationships": [],
       "attitude": { "inv-elena": -15, "inv-tomas": -15 },
       "combate": {
-        "hp": 16,
-        "maxHp": 16,
+        "hp": 13,
+        "maxHp": 13,
         "pelea": 55,
-        "esquivar": 30,
+        "esquivar": 25,
         "armaId": "desarmado",
-        "bonificacionDano": "1d6",
+        "bonificacionDano": "1d4",
         "defensaPorDefecto": "contraataca",
-        "dex": 55,
-        "build": 1
+        "dex": 45,
+        "build": 0
       },
       "present": true,
       "isCompanion": false
@@ -442,12 +442,12 @@
           "id": "f-ropero-candado",
           "names": ["ropero", "el ropero", "candado", "armario"],
           "description": "Un ropero de madera vieja con un candado de latón, nuevo, que no tiene sentido en una puerta que nadie más abriría.",
-          "closerLook": "Adentro no hay ropa: hay una sola percha con un traje de otra época, y en el piso del ropero, una caja de zapatos sin zapatos, con recortes de diario atados con hilo.",
-          "examineSkill": "mecanica",
+          "closerLook": "La madera es vieja y el candado es nuevo: cede la madera, no el latón. Se abre de un tirón, con las dos manos y el pie contra el zócalo.\n\nAdentro no hay ropa. Hay una sola percha con un traje de otra época, y en el piso del ropero, una caja de zapatos sin zapatos con recortes de diario atados con hilo: nueve recortes, de nueve diarios distintos, todos sobre desapariciones de chicos. El más viejo es de 1874. El más nuevo es de julio de este año, y es el del profesor Ferrari.\n\nNo son trofeos. Están ordenados por fecha, con una anotación al margen en la misma letra del cuaderno del atril: la cuenta de alguien que lleva el registro de lo que no pudo evitar.",
+          "examineSkill": "STR",
           "exposure": 6,
           "clue": {
-            "description": "El ropero cerrado del dormitorio principal no guarda ropa: guarda un traje de otra época y una caja con recortes de diario atados con hilo, aparte de todo lo demás de la casa.",
-            "kind": "physical",
+            "description": "El ropero forzado del dormitorio principal guarda nueve recortes de diario sobre desapariciones de chicos, de 1874 a julio de este año —el último es el de Ferrari—, ordenados por fecha y anotados al margen con la letra del cuaderno del atril.",
+            "kind": "documentary",
             "reliability": "reliable"
           }
         }

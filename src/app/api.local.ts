@@ -81,7 +81,17 @@ function armasDelInvestigador(state: GameState): ArmaDisponible[] {
     .map((i) => ARMA_POR_ID[i.armaId!])
     .filter((a): a is NonNullable<typeof a> => Boolean(a));
   const armas = [ARMA_POR_ID['desarmado']!, ...propias];
-  return armas.map((a) => ({ id: a.id, nombre: a.nombre, nota: a.nota }));
+  // El daño va con el arma: elegir entre «puños y patadas» y «cuchillo de
+  // carnear» sin saber que uno hace 1D3 y el otro 1D4+2 es elegir a ciegas,
+  // y es un dato que en la mesa está a la vista en la hoja de personaje.
+  // Reportado jugando.
+  return armas.map((a) => ({
+    id: a.id,
+    nombre: a.nombre,
+    nota: a.nota,
+    dano: `${a.dano.cantidad}D${a.dano.caras}${a.dano.suma ? `+${a.dano.suma}` : ''}`
+      + (a.aporteBonificacion === 'completa' ? ' + corpulencia' : ''),
+  }));
 }
 
 /**

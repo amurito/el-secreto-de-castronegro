@@ -1113,8 +1113,28 @@ export class Turn {
 
   private ordenDeAsalto(excluirId: string): { masRapidos: Npc[]; masLentos: Npc[] } {
     const dexInv = this.investigator.characteristics.DEX;
+    // `n.present` es «sigue en la historia» —no se murió, no se fue para
+    // siempre— y NO es «está en este cuarto». Sin filtrar además por
+    // `loc.npcsPresent`, cualquier NPC con estadísticas de combate que exista
+    // en otra parte del mapa entraba a pelear en TODOS los asaltos: en El
+    // Vigésimo, Bernardo Díaz —que está en el laboratorio, dos cuartos más
+    // abajo— repartía facazos durante la pelea contra el que custodia la
+    // puerta del sótano, y el jugador veía los dos combates encimados.
+    // Reportado jugando. Es el mismo error que ya estaba documentado en
+    // `keeper/intent.ts` para el objetivo de una conversación, en otro lugar
+    // del motor y por la misma confusión entre las dos clases de «presente».
+    //
+    // Los NPC creados durante la partida (`create_npc`) no figuran en la lista
+    // de ninguna localización —los rivales sintéticos del simulador son todos
+    // así— y ésos sí cuentan: aparecieron donde está el investigador. Misma
+    // excepción, y por el mismo motivo, que la de `narrator.ts`.
+    const aqui = this.state.world.locations[this.state.world.currentLocation];
+    const conLugarPropio = new Set(
+      Object.values(this.state.world.locations).flatMap((l) => l.npcsPresent),
+    );
     const otros = Object.values(this.state.npcs).filter((n) =>
-      n.id !== excluirId && n.combate && n.combate.hp > 0 && n.present && n.status !== 'dead');
+      n.id !== excluirId && n.combate && n.combate.hp > 0 && n.present && n.status !== 'dead'
+      && ((aqui?.npcsPresent.includes(n.id) ?? false) || !conLugarPropio.has(n.id)));
     const porDex = (a: Npc, b: Npc) => (b.combate!.dex ?? 0) - (a.combate!.dex ?? 0);
     return {
       masRapidos: otros.filter((n) => (n.combate!.dex ?? 0) > dexInv).sort(porDex),

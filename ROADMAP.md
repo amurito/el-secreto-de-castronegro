@@ -2367,6 +2367,70 @@ mata al portador). Sin escribir todavía.
 Sigue pendiente de §3.2-sexvicies: aviso de pérdida de Cordura en el momento,
 y economía para el bazar de Herminio.
 
+### 3.2-duodetricies Cuarto playtest: Bernardo peleaba desde otro cuarto
+
+#### El bug de motor, que era el mismo de siempre en otro lugar
+
+Reportado: «otra vez está junto el enfrentamiento de la cosa con Bernardo».
+No era el arreglo de la `key` de React de §3.2-sexvicies, que funcionó: era
+un segundo bug, independiente y más profundo.
+
+`ordenDeAsalto` —lo que decide quién más pelea en cada asalto— filtraba por
+`npc.present`, que en este motor significa **«sigue en la historia»**, no
+«está en este cuarto». Bernardo Díaz, esperando en el laboratorio dos cuartos
+más abajo, cumplía la condición: repartía facazos durante toda la pelea del
+trastero contra el que custodia la puerta. Por eso la pelea era imposible y
+por eso Bernardo llegaba ya herido al enfrentamiento que debía ser el primero.
+
+Es **exactamente la misma confusión** que ya estaba documentada en
+`keeper/intent.ts` —el bug de «Le pregunto a Delfina qué le pasa a Aurelio»,
+que resolvía el objetivo contra un Aurelio dormido en otro edificio— y en
+`keeper/narrator.ts`, que ponía a los cuatro NPC de una aventura en los cinco
+lugares a la vez. Tres lugares distintos del motor, la misma trampa. Ahora
+`ordenDeAsalto` filtra además por `loc.npcsPresent`, con la misma excepción
+que ya usaba el narrador: los NPC creados en partida (`create_npc`, que es
+como nacen los rivales del simulador) no figuran en ninguna localización y
+siguen contando, porque aparecen donde está el investigador.
+
+Fijado en `prueba-el-vigesimo.ts` con un asalto real en el trastero que
+comprueba que Bernardo no aparece en el mensaje y sigue con los PV intactos.
+
+#### Lo demás del reporte
+
+- **La frase de ambiente se repetía en cada botón.** `umbralFlavour` usa
+  `pickVariant`, que cuando se le agotan las variantes devuelve siempre la
+  última —lo correcto para una respuesta, que siempre tiene que decir algo, y
+  lo peor posible para una nota de ambiente—. Con la Exposición en 100 el
+  pool se agota en cuatro turnos y a partir de ahí «Te acordás con nitidez de
+  algo que no puede haber pasado todavía» salía en todos. Ahora, agotado el
+  pool, se calla: el silencio es una salida válida para el ambiente.
+- **No se veía contra qué se peleaba.** El narrador anunciaba «El que quedó
+  en la puerta está acá.» y nada más: el nombre spoileaba que había algo y no
+  decía qué se estaba viendo. Ahora la primera vez que se cruza a un NPC se
+  narra su descripción, que ya estaba escrita y no la leía nadie. Y la del
+  guardián se reescribió para que sea lo que se ve —la espalda, las muñecas,
+  los dientes, y los ojos del mismo verde que los de Sixto en la plaza— y no
+  una etiqueta.
+- **Las armas no decían cuánto pegan.** Elegir entre «puños y patadas» y
+  «cuchillo de carnear» sin saber que uno hace 1D3 y el otro 1D4+2 es elegir
+  a ciegas, y es un dato que en la mesa está a la vista. El selector ahora
+  muestra el daño y si el arma suma corpulencia.
+- **El ropero pedía Mecánica.** Un candado de latón nuevo sobre madera vieja
+  no se estudia: se revienta. Pasado a **FUE** —el motor ya aceptaba tiradas
+  de característica y ninguna aventura las usaba— y, sobre todo, ahora
+  **revela algo que importa**: nueve recortes de diario sobre desapariciones
+  de chicos, de 1874 a julio de este año, el último el de Ferrari, ordenados
+  y anotados al margen con la letra del cuaderno del atril. Antes la tirada
+  daba un traje viejo y una caja, que era exactamente la queja.
+- **El guardián se recalibró** contra las magnitudes de los degenerados del
+  módulo original convertidas de 6ª a 7ª edición (características ×5): 13 PV,
+  Pelea 55%, 1D3+1D4 de daño, corpulencia 0. Antes tenía 16 PV y una
+  bonificación de daño de 1D6 puesta a ojo.
+
+Sigue abierto, sin cambios: la pelea contra Bernardo no se puede balancear
+para un investigador de combate y uno que no lo es a la vez (§3.2-septvicies),
+el aviso de Cordura en el momento, y la economía del bazar.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

@@ -138,7 +138,11 @@ export interface RivalReal {
 }
 
 /** Un arma que el investigador realmente puede usar en este combate. */
-export interface ArmaDisponible { id: string; nombre: string; nota?: string }
+export interface ArmaDisponible {
+  id: string; nombre: string; nota?: string;
+  /** Cuánto pega, escrito como en la ficha: «1D4+2 + corpulencia». */
+  dano: string;
+}
 
 /** Contra quién se puede intentar Intimidar ahora mismo. `null` = no hay salida de palabra (no se configuró, o ya se cerró por un disparo). */
 export type IntimidarDisponible = { npcId: string } | null;

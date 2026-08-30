@@ -85,7 +85,17 @@ export function umbralFlavour(state: GameState): string {
   if (s <= 35) pool.push('Por un instante el orden de las cosas que acabás de hacer se te desarma, como una baraja mal cortada.');
 
   if (pool.length === 0) return '';
-  return pickVariant(state, pool) === pool[pool.length - 1] && pool.length === 1 ? pool[0]! : pickVariant(state, pool);
+
+  // A diferencia de `pickVariant`, que cuando se le agotan las variantes
+  // devuelve siempre la última —lo correcto para una respuesta que SIEMPRE
+  // tiene que decir algo—, acá el silencio es una salida válida: son notas de
+  // ambiente, no respuestas. Con la Exposición al máximo el pool se agota
+  // rápido y `pickVariant` empezaba a repetir la misma frase en todos los
+  // turnos, en cada botón, hasta volverla ruido. Reportado jugando.
+  const dichas = state.narrative.filter((n) => n.kind === 'keeper').map((n) => n.text);
+  const nuevas = pool.filter((v) => !dichas.some((d) => d.includes(v.slice(0, Math.min(60, v.length)))));
+  if (nuevas.length === 0) return '';
+  return pickVariant(state, nuevas);
 }
 
 /**
@@ -143,6 +153,17 @@ export function describeScene(state: GameState, detailed: boolean): string {
   );
   if (npcs.length) {
     parts.push(`${npcs.map((n) => n.name).join(' y ')} ${npcs.length > 1 ? 'están' : 'está'} acá.`);
+    // La primera vez que se lo cruza, se lo describe. Antes el narrador sólo
+    // decía el nombre —«El que quedó en la puerta está acá.»— y con eso había
+    // que decidir si pelear, hablar o irse: el nombre spoileaba que había algo
+    // y no decía qué se estaba viendo. La descripción ya estaba escrita en el
+    // NPC y no la leía nadie. Reportado jugando.
+    for (const n of npcs) {
+      const yaDescripto = state.narrative.some(
+        (e) => e.kind === 'keeper' && e.text.includes(n.description.slice(0, 40)),
+      );
+      if (!yaDescripto && n.description) parts.push(n.description);
+    }
     const reaccion = reaccionANPCsPresentes(state, npcs[0]!.name.split(' ')[0]!);
     if (reaccion) parts.push(reaccion);
   }
