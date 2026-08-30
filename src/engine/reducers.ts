@@ -397,7 +397,16 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       // una resta no debería poder matar a nadie sola. Lo único que el motor
       // fija es que ya no puede seguir peleando.
       s.npcs[p.npcId] = { ...npc, combate: { ...npc.combate, hp: p.to } };
-      if (p.to <= 0) {
+      // En combate real, el propio mensaje del asalto ya narra la caída
+      // ("Ahijado: 3 → 0 PV. Ahijado deja de pelear.") — y ese mensaje se
+      // agrega DESPUÉS, con `turn.narrate()`, una vez que la herramienta ya
+      // terminó de resolver el asalto entero. Este aviso, en cambio, se
+      // emite ACÁ, a mitad de esa resolución: sin esta excepción quedaba
+      // primero en `state.narrative` y se leía "queda fuera de combate"
+      // antes que el daño que lo dejó así. Reportado jugando. Fuera de
+      // combate (daño aplicado por una escena, no por un asalto) sigue
+      // narrándose acá, porque ahí no hay otro mensaje que lo cuente.
+      if (p.to <= 0 && !s.activeCombat) {
         s.narrative.push(entry(ev, 'system', `${npc.name} queda fuera de combate.`));
       }
       break;

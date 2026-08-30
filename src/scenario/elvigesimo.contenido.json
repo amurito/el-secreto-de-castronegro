@@ -42,6 +42,7 @@
       "shortDescription": "Una figurita tallada en piedra, gastada de años de manosearla. Es la misma forma que se repite, una por nicho, en el mausoleo de los Díaz.",
       "owner": "npc-pariente-abelardo",
       "carried": false,
+      "value": 5,
       "publicProperties": [],
       "hiddenProperties": [],
       "discoveredProperties": [],
@@ -57,6 +58,7 @@
       "shortDescription": "Un alfiler de plata, negro de deslustre, con una inicial grabada que ya no se distingue del todo. Es lo único en ella que todavía parece de alguien.",
       "owner": "npc-pariente-felisa",
       "carried": false,
+      "value": 15,
       "publicProperties": [],
       "hiddenProperties": [],
       "discoveredProperties": [],
@@ -1187,6 +1189,17 @@
       }
     },
     {
+      "id": "examinar-figurita",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "examino la figurita|miro la figurita" },
+          { "op": "lleva", "item": "it-figura-abelardo" }
+        ]
+      }
+    },
+    {
       "id": "bernardo-caido",
       "prioridad": 80,
       "cuando": {
@@ -1301,7 +1314,7 @@
       "intencion": "Me acerco a Bernardo y miro el anillo en la mano",
       "etiqueta": "Mirar el anillo en la mano de Bernardo",
       "visible": { "op": "npcFuera", "npc": "npc-bernardo" },
-      "hecha": { "op": "narrado", "contiene": "Decida rápido" }
+      "hecha": { "op": "narrado", "contiene": "no tiene a quién sostener" }
     },
     {
       "id": "buscar-pasadizo",
@@ -1324,7 +1337,7 @@
       "etiqueta": "Tratar de cruzar sin que me vea",
       "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-abelardo" } },
       "hecha": { "op": "o", "de": [
-        { "op": "narrado", "contiene": "cruzás sin que la paja" },
+        { "op": "pista", "contiene": "Sorprendiste a Abelardo" },
         { "op": "npcFuera", "npc": "npc-pariente-abelardo" }
       ]}
     },
@@ -1346,7 +1359,7 @@
       "etiqueta": "Tratar de cruzar sin que me vea",
       "visible": { "op": "no", "de": { "op": "npcFuera", "npc": "npc-pariente-felisa" } },
       "hecha": { "op": "o", "de": [
-        { "op": "narrado", "contiene": "cruzás sin que el canturreo" },
+        { "op": "pista", "contiene": "Sorprendiste a Felisa" },
         { "op": "npcFuera", "npc": "npc-pariente-felisa" }
       ]}
     },
@@ -1378,6 +1391,15 @@
       "etiqueta": "Revisar el cuerpo",
       "visible": { "op": "npcFuera", "npc": "npc-pariente-felisa" },
       "hecha": { "op": "narrado", "contiene": "Entre los pliegues del vestido" }
+    },
+    {
+      "id": "examinar-figurita",
+      "grupo": "observar",
+      "orden": 46,
+      "intencion": "Examino la figurita",
+      "etiqueta": "Examinar la figurita de piedra",
+      "visible": { "op": "lleva", "item": "it-figura-abelardo" },
+      "hecha": { "op": "narrado", "contiene": "no es un ídolo cualquiera" }
     },
     {
       "id": "cortar",

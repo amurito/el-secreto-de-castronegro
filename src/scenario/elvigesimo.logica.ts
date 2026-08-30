@@ -377,19 +377,25 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     // un asalto de combate directo a los cuatro botones de desenlace, sin que
     // el anillo —que es de lo que trata toda la aventura— llegara a estar en
     // cuadro. Reportado jugando. No es un desenlace: es la pausa antes.
+    // Pedido después de jugarlo, dos veces: que cortarle la mano lo mate de
+    // verdad, y que quede explícito. Antes seguía "vivo, y respira",
+    // ofreciendo la elección con su propia voz —lo cambié, pero no hacía
+    // falta perder la elección en el cambio: ya había dicho, en `b-anillo`,
+    // antes de la pelea, exactamente lo mismo que iba a decir acá ("es la
+    // mano... las dos cosas terminan conmigo"), así que la escena puede
+    // referirlo sin que Bernardo tenga que estar vivo para repetirlo.
     id: 'bernardo-caido',
     resolver: () => ({
       texto: [
-        'Está en el piso, contra la pata de la mesa de piedra, y respira. Trescientos años y respira como cualquiera que acaba de perder una pelea. La herida de la mano ya dejó de sangrar: se cerró sola, una vez más, la última vez que le hace falta cerrarse.',
-        'La mano izquierda está abierta hacia arriba, con el anillo puesto. No la cierra. No la esconde. Si quisiera dificultarte esto, no lo estaría haciendo así.',
-        '—Sáquemelo —dice—. O póngaselo. Las dos cosas terminan conmigo, y a esta altura las dos me dan igual.\n\n—Lo que no le va a dar igual a usted es cuál de las dos eligió, y eso lo va a saber recién dentro de unos años.',
-        'El Ahijado bajó del sillón. No se acerca a vos ni a él: se queda en el medio, mirando la mano abierta, esperando.',
-        '—Decida rápido —dice Bernardo—. No por mí: hace trescientos años que espero. Es que acá, quedarse pensando ya es una respuesta, y no la que usted quiere dar.',
+        'Está en el piso, contra la pata de la mesa de piedra. No respira, y no va a volver a hacerlo: trescientos años terminaron en el tiempo que tarda una herida en dejar de sangrar por última vez.',
+        'La mano izquierda sigue abierta, con el anillo puesto. El rubí todavía brilla, apenas, como si no se hubiera enterado de que ya no tiene a quién sostener.',
+        'Ya lo dijo él mismo, antes de la pelea, con esa voz que no dejaba lugar para preguntar de nuevo: sacarle el anillo, o ponérselo. Las dos cosas terminan con lo que empezó hace trescientos años. Lo único que no llegó a decir es qué pasa si nadie elige nada.',
+        'El Ahijado bajó del sillón. No se acerca al cuerpo: se queda en el medio del cuarto, mirando la mano abierta, esperando algo que ya no va a llegar de la manera en que llegaba antes.',
         'Detrás del sillón, el laberinto sigue. Ya no suena a nada que responda a nadie.',
       ],
-      exposicion: { amount: 9, source: 'laboratorio:anillo', cause: 'el anillo ofrecido en una mano abierta' },
-      estabilidad: { amount: -8, cause: 'que el que perdió la pelea te ofrezca las dos salidas con la misma voz' },
-      pregunta: '¿Por qué le da lo mismo a Bernardo cuál de las dos elijas?',
+      exposicion: { amount: 9, source: 'laboratorio:anillo', cause: 'el anillo, todavía puesto, en la mano de un muerto' },
+      estabilidad: { amount: -8, cause: 'que la decisión que él ya había anticipado te la deje a vos, entero, sin él' },
+      pregunta: '¿Bernardo sabía, antes de la pelea, que iba a morir en ella?',
     }),
   },
 
@@ -436,14 +442,26 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     }),
     resolver: ({ tirada }) => {
       if (tirada?.exito) {
+        // Pedido después de jugarlo: pasar Sigilo tenía que servir para algo
+        // más que evitar la pelea entera —también para pelearla mejor, si
+        // se elige "Enfrentarlo" después—. La pista de acá abajo es la que
+        // lee `laberinto-combate-este` para saber si corresponde el bono de
+        // sorpresa; la del hueso tallado es la recompensa de haber cruzado
+        // limpio, independiente de si después se pelea o no.
         return {
-          texto: ['La paja se mueve una vez, hacia un ruido que no hiciste, y cruzás sin que vuelva a moverse.'],
-          pistas: [{
-            description: 'En el ala este del laberinto, bajo la paja amontonada, hay un fragmento de hueso tallado con la misma figura que se repite en las placas del mausoleo —más viejo que cualquiera de los veinte nichos.',
-            kind: 'physical',
-            source: 'el ala este del laberinto',
-            reliability: 'reliable',
-          }],
+          texto: ['La paja se mueve una vez, hacia un ruido que no hiciste, y cruzás sin que vuelva a moverse. Todavía no te vio.'],
+          pistas: [
+            {
+              description: 'Sorprendiste a Abelardo en el ala este: todavía no te vio.',
+              kind: 'experiential', source: 'el ala este del laberinto', reliability: 'reliable',
+            },
+            {
+              description: 'En el ala este del laberinto, bajo la paja amontonada, hay un fragmento de hueso tallado con la misma figura que se repite en las placas del mausoleo —más viejo que cualquiera de los veinte nichos.',
+              kind: 'physical',
+              source: 'el ala este del laberinto',
+              reliability: 'reliable',
+            },
+          ],
         };
       }
       return { texto: ['Se mueve hacia el ruido que hiciste, no hacia vos todavía —pero ya no está durmiendo—.'] };
@@ -452,29 +470,37 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'laberinto-combate-este',
-    resolver: () => ({
-      texto: ['Se levanta de la paja de un solo movimiento, sin la torpeza que el resto del cuerpo prometía.'],
-      combate: { accion: 'atacar', npcId: 'npc-pariente-abelardo', armaId: 'desarmado' },
-      iniciaCombate: {
-        npcIds: ['npc-pariente-abelardo'],
-        reason: 'Se levanta de la paja de un solo movimiento, y no hay con quién hablar para evitar esto.',
-        salidaPacifica: {
-          npcId: 'npc-pariente-abelardo',
-          pistaCalma: {
-            description: 'Retrocedió hacia la paja sin que quede claro si entendió la amenaza o si simplemente perdió interés.',
-            kind: 'experiential',
-            source: 'el ala este del laberinto',
-            reliability: 'reliable',
-          },
-          consecuenciaDisparo: {
-            description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
-            scope: 'campaign',
-            permanent: true,
-            worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+    resolver: ({ estado }) => {
+      const sorprendido = evaluarCondicion({ op: 'pista', contiene: 'Sorprendiste a Abelardo' }, { estado });
+      return {
+        texto: [sorprendido
+          ? 'Todavía no te vio: le llegás encima antes de que la paja termine de moverse.'
+          : 'Se levanta de la paja de un solo movimiento, sin la torpeza que el resto del cuerpo prometía.'],
+        combate: { accion: 'atacar', npcId: 'npc-pariente-abelardo', armaId: 'desarmado' },
+        iniciaCombate: {
+          npcIds: ['npc-pariente-abelardo'],
+          reason: sorprendido
+            ? 'Le llegaste encima antes de que te viera venir.'
+            : 'Se levanta de la paja de un solo movimiento, y no hay con quién hablar para evitar esto.',
+          ...(sorprendido ? { preparacion: { dice: 1, motivo: 'lo sorprendió: todavía no lo había visto venir' } } : {}),
+          salidaPacifica: {
+            npcId: 'npc-pariente-abelardo',
+            pistaCalma: {
+              description: 'Retrocedió hacia la paja sin que quede claro si entendió la amenaza o si simplemente perdió interés.',
+              kind: 'experiential',
+              source: 'el ala este del laberinto',
+              reliability: 'reliable',
+            },
+            consecuenciaDisparo: {
+              description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
+              scope: 'campaign',
+              permanent: true,
+              worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+            },
           },
         },
-      },
-    }),
+      };
+    },
   },
 
   {
@@ -488,13 +514,19 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     resolver: ({ tirada }) => {
       if (tirada?.exito) {
         return {
-          texto: ['El canturreo no cambia de ritmo cuando pasás al lado: cruzás sin que se corte ni una vez.'],
-          pistas: [{
-            description: 'En el ala oeste del laberinto, entre las marcas de uñas de la pared, hay una fecha rayada con algo filoso: el mismo año que el nicho vacío del mausoleo, escrito mucho antes de que ese nicho existiera.',
-            kind: 'physical',
-            source: 'el ala oeste del laberinto',
-            reliability: 'reliable',
-          }],
+          texto: ['El canturreo no cambia de ritmo cuando pasás al lado: cruzás sin que se corte ni una vez. Todavía no te vio.'],
+          pistas: [
+            {
+              description: 'Sorprendiste a Felisa en el ala oeste: todavía no te vio.',
+              kind: 'experiential', source: 'el ala oeste del laberinto', reliability: 'reliable',
+            },
+            {
+              description: 'En el ala oeste del laberinto, entre las marcas de uñas de la pared, hay una fecha rayada con algo filoso: el mismo año que el nicho vacío del mausoleo, escrito mucho antes de que ese nicho existiera.',
+              kind: 'physical',
+              source: 'el ala oeste del laberinto',
+              reliability: 'reliable',
+            },
+          ],
         };
       }
       return { texto: ['El canturreo se corta a la mitad de una nota. No sigue, pero tampoco vuelve a empezar.'] };
@@ -503,29 +535,37 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'laberinto-combate-oeste',
-    resolver: () => ({
-      texto: ['El canturreo se corta del todo, y lo que sigue no es silencio.'],
-      combate: { accion: 'atacar', npcId: 'npc-pariente-felisa', armaId: 'desarmado' },
-      iniciaCombate: {
-        npcIds: ['npc-pariente-felisa'],
-        reason: 'El canturreo se corta del todo, y no hay con quién hablar para evitar esto.',
-        salidaPacifica: {
-          npcId: 'npc-pariente-felisa',
-          pistaCalma: {
-            description: 'Volvió al rincón y retomó el canturreo exactamente donde lo había dejado, como si nada hubiera pasado.',
-            kind: 'experiential',
-            source: 'el ala oeste del laberinto',
-            reliability: 'reliable',
-          },
-          consecuenciaDisparo: {
-            description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
-            scope: 'campaign',
-            permanent: true,
-            worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+    resolver: ({ estado }) => {
+      const sorprendido = evaluarCondicion({ op: 'pista', contiene: 'Sorprendiste a Felisa' }, { estado });
+      return {
+        texto: [sorprendido
+          ? 'Todavía no te vio: le llegás encima mientras sigue canturreando.'
+          : 'El canturreo se corta del todo, y lo que sigue no es silencio.'],
+        combate: { accion: 'atacar', npcId: 'npc-pariente-felisa', armaId: 'desarmado' },
+        iniciaCombate: {
+          npcIds: ['npc-pariente-felisa'],
+          reason: sorprendido
+            ? 'Le llegaste encima antes de que te viera venir.'
+            : 'El canturreo se corta del todo, y no hay con quién hablar para evitar esto.',
+          ...(sorprendido ? { preparacion: { dice: 1, motivo: 'lo sorprendió: todavía no lo había visto venir' } } : {}),
+          salidaPacifica: {
+            npcId: 'npc-pariente-felisa',
+            pistaCalma: {
+              description: 'Volvió al rincón y retomó el canturreo exactamente donde lo había dejado, como si nada hubiera pasado.',
+              kind: 'experiential',
+              source: 'el ala oeste del laberinto',
+              reliability: 'reliable',
+            },
+            consecuenciaDisparo: {
+              description: 'En el laberinto bajo la Casa de Díaz, el investigador le disparó a un pariente degenerado de la familia.',
+              scope: 'campaign',
+              permanent: true,
+              worldReminder: 'Usó un arma de fuego contra algo que ya no podía defenderse con palabras, adentro de los túneles de la propia familia.',
+            },
           },
         },
-      },
-    }),
+      };
+    },
   },
 
   {
@@ -545,6 +585,39 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
       texto: ['Entre los pliegues del vestido hay un alfiler de plata, negro de deslustre, con una inicial que ya no se distingue del todo.'],
       traslada: { itemId: 'it-alfiler-felisa', a: estado.activeInvestigator, carried: true, cause: 'lo encuentra al revisar el cuerpo' },
     }),
+  },
+
+  {
+    // Pedido después de jugarlo: que la figurita dé algo, no que sea sólo
+    // un objeto decorativo. Mismo formato "1/1DX" y misma lógica de una
+    // sola tirada por intención que el resto de la Cordura real de esta
+    // aventura: acá la tirada es de Mitos (no de Cordura) porque lo que
+    // está en juego es reconocer o no la forma, no el impacto de mirarla.
+    id: 'examinar-figurita',
+    prueba: () => ({
+      skill: 'mitos', difficulty: 'regular',
+      reason: 'reconocer qué es lo que la piedra representa, si es que representa algo',
+      stakes_success: 'la forma deja de ser sólo una forma',
+      stakes_failure: 'una figura gastada, y nada más que eso',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return { texto: ['Una figura sin rasgos, gastada de manoseo. Podría ser cualquier cosa. Podría no ser nada.'] };
+      }
+      const mitosGanado = 1 + ((tirada.numero ?? 1) % 2);
+      return {
+        texto: [
+          'No es un ídolo cualquiera: es la misma figura sin cara que aparece en los libros que nadie deja a la vista, en cualquier biblioteca que sepa lo que guarda. No representa a nadie con nombre. Es la forma que toma lo que mira desde otro momento, no desde otro lugar, cuando necesita una forma cualquiera para que la mano que la talla no se vuelva loca tallando la de verdad.',
+        ],
+        mitos: { amount: mitosGanado, source: 'figurita:abelardo' },
+        pistas: [{
+          description: 'La figurita encontrada en el ala este del laberinto no representa a nadie con nombre: es la misma forma sin cara que Bernardo describió como "lo que mira desde otro momento" —el mismo Primer Rostro del que no quiso decir más.',
+          kind: 'physical',
+          source: 'examen directo de la figurita',
+          reliability: 'reliable',
+        }],
+      };
+    },
   },
 
   // ══ DESENLACES ════════════════════════════════════════════════════════════
@@ -590,7 +663,7 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
       desenlace: {
         id: 'heredar', title: 'El vigésimo, ocupado',
         text: [
-          'Se lo sacás de la mano izquierda mientras todavía respira, porque después de muerto no vas a poder, y te lo ponés vos antes de terminar de decidir si es lo que querés hacer.',
+          'Se lo sacás de la mano izquierda, todavía floja, y te lo ponés vos antes de terminar de decidir si es lo que querés hacer.',
           'No arde. No aprieta. Se acomoda, como si el dedo hubiera estado esperando ese anillo específico desde antes de que nacieras.',
           'Y ves, en el mismo segundo, algo que no le habías preguntado a nadie: una forma, del otro lado de algo que no es agua ni es espejo, que te estaba esperando con más paciencia de la que vos tuviste con Bernardo.\n\nNo dice su nombre. Vos tampoco le preguntás el tuyo.',
           'El Ahijado se acerca, despacio, y se enrosca en tu brazo exactamente como se enroscaba en el de Bernardo.\n\nEl mausoleo tiene veinte lugares. El vigésimo ya no está vacío, y ya no tiene la fecha en blanco: tiene la de hoy.',

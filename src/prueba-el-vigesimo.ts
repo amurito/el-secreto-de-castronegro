@@ -644,6 +644,61 @@ async function main() {
     }
   }
 
+  console.log('\nSORPRENDER CON SIGILO DA BONO AL PELEAR DESPUÉS');
+  {
+    const { state: base } = await jugarEn(EL_VIGESIMO, '7b LABERINTO SORPRESA', 'l4',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const conSorpresa: GameState = {
+      ...base,
+      board: { ...base.board, clues: [...base.board.clues, pistaFalsa('Sorprendiste a Abelardo en el ala este: todavía no te vio.')] },
+    };
+    const intencion: IntencionLeida = {
+      raw: 'lo enfrento', norm: 'lo enfrento', verb: 'atacar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'npc', id: 'npc-pariente-abelardo' }, destino: null,
+    };
+    const combate = EL_VIGESIMO_LOGICA.find((e) => e.id === 'laberinto-combate-este')!;
+    const efectoSinSorpresa = ([] as EfectoEscena[]).concat(combate.resolver({
+      estado: base, intencion, variante: (o) => o[0]!, tirada: null,
+    }));
+    check('sin haber sorprendido, no hay bono de preparación',
+      !efectoSinSorpresa.some((e) => (e.iniciaCombate?.preparacion?.dice ?? 0) > 0));
+
+    const efectoConSorpresa = ([] as EfectoEscena[]).concat(combate.resolver({
+      estado: conSorpresa, intencion, variante: (o) => o[0]!, tirada: null,
+    }));
+    check('habiendo sorprendido con Sigilo, el combate arranca con bono de preparación',
+      efectoConSorpresa.some((e) => e.iniciaCombate?.preparacion?.dice === 1));
+  }
+
+  console.log('\nLA FIGURITA DE PIEDRA DEJA MITOS DE CTHULHU GANADO');
+  {
+    const figurita = EL_VIGESIMO_LOGICA.find((e) => e.id === 'examinar-figurita')!;
+    const intencion: IntencionLeida = {
+      raw: 'examino la figurita', norm: 'examino la figurita', verb: 'examinar', verbExplicit: true,
+      sustained: false, objetivo: { kind: 'item', id: 'it-figura-abelardo' }, destino: null,
+    };
+    const base = (await jugarEn(EL_VIGESIMO, '7b FIGURITA', 'l5',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 })).state;
+
+    const exito = ([] as EfectoEscena[]).concat(figurita.resolver({
+      estado: base, intencion, variante: (o) => o[0]!,
+      tirada: { exito: true, grado: 'regular', mensaje: '', numero: 5 },
+    }));
+    check('con la tirada de Mitos superada, revela la referencia al Primer Rostro',
+      exito.flatMap((e) => e.texto ?? []).join('\n').includes('mira desde otro momento'));
+    check('y deja Mitos de Cthulhu ganado',
+      exito.some((e) => (e.mitos?.amount ?? 0) >= 1 && (e.mitos?.amount ?? 0) <= 2));
+
+    const fallo = ([] as EfectoEscena[]).concat(figurita.resolver({
+      estado: base, intencion, variante: (o) => o[0]!,
+      tirada: { exito: false, grado: 'regular', mensaje: '' },
+    }));
+    check('sin superar la tirada, no hay revelación ni Mitos ganado',
+      !fallo.some((e) => e.mitos));
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

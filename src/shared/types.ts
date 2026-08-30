@@ -410,6 +410,14 @@ export interface Item {
   armaId?: string;
   /** Si es true, este ítem ya no sirve como arma —se rompió, típicamente por una pifia con arma de fuego—. `armaId` se conserva a propósito: sigue siendo, narrativamente, esa arma, sólo que inútil. */
   roto?: boolean;
+  /**
+   * Valor de referencia, en la moneda del momento (pesos de 1928 o el que
+   * corresponda). No hay economía todavía —nadie compra ni vende nada—, así
+   * que hoy es sólo un dato declarado en el contenido, sin ningún tool que
+   * lo lea. Existe para no tener que volver a cada ítem cuando esa economía
+   * se construya.
+   */
+  value?: number;
 
   publicProperties: ItemProperty[];
   hiddenProperties: ItemProperty[];

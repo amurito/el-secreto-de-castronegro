@@ -2843,6 +2843,65 @@ conecta las tres piezas nuevas de esta sesión— y un alfiler de plata.
 Esquivar con sigilo sigue dejando su pista de todos modos; sólo el combate
 ganado deja loot.
 
+### 3.2-octricies Bernardo muere de verdad, sigilo con bono de sorpresa, y dos bugs de orden
+
+Cinco pedidos del octavo playtest.
+
+**Bernardo muere, explícito, al cortarle la mano.** Pedido dos veces
+seguidas: antes seguía "vivo, y respira", ofreciendo la elección de
+cortar/heredar con su propia voz. Ahora el mensaje genérico de
+invulnerabilidad (`engine.ts`, reusable para cualquier NPC futuro con punto
+débil) dice que cae y no se levanta, y `bernardo-caido` describe un cuerpo,
+no una conversación: "no respira, y no va a volver a hacerlo". No hizo
+falta perder la elección en el cambio —Bernardo ya había dicho, en
+`b-anillo`, antes de la pelea, exactamente lo que iba a decir acá ("es la
+mano... las dos cosas terminan conmigo")—, así que la escena lo cita en vez
+de hacerlo hablar desde el piso. `fin-heredar` tenía una frase que asumía
+que todavía respiraba ("se lo sacás mientras todavía respira"); corregida.
+
+**Dos bugs de orden, los dos por el mismo motivo:** un mensaje se agregaba
+a `state.narrative` en un punto de la ejecución distinto del texto que lo
+explicaba.
+- `NPC_DAMAGED` (`reducers.ts`) empujaba "X queda fuera de combate" a mitad
+  de la resolución del asalto, mientras que el mensaje completo del asalto
+  ("Ahijado: 3 → 0 PV. Ahijado deja de pelear.") se agrega DESPUÉS, con
+  `turn.narrate()`, una vez que la herramienta ya terminó. El resultado:
+  el aviso salía ANTES que el daño que lo causaba. Arreglado excluyendo
+  el aviso cuando hay un combate real en curso —ahí el propio mensaje del
+  asalto ya lo cuenta—; fuera de combate sigue narrándose igual, porque ahí
+  no hay otro mensaje que lo haga.
+- El `hecha` de las dos acciones de Sigilo del laberinto (§3.2-septricies)
+  comparaba contra un fragmento de texto que el `resolver` real nunca
+  escribió (`"cruzás sin que la paja"` contra el texto real, `"cruzás sin
+  que vuelva a moverse"`) — la tirada de éxito no se registraba nunca como
+  hecha, así que el botón quedaba disponible para siempre y se podía repetir
+  sin límite. Arreglado con una pista dedicada en vez de un fragmento de
+  prosa (más robusto: sobrevive a que se retoque el texto después).
+
+**El sigilo ahora sirve para pelear mejor, no sólo para evitar pelear.**
+Pasar la tirada de Sigilo ya no es sólo "cruzás sin que te vea": deja una
+pista de sorpresa que, si después se elige "Enfrentarlo" en vez de seguir
+de largo, entra como `iniciaCombate.preparacion` (mismo campo genérico de
+§3.2-quatertricies) — un dado de bonificación en todo el combate, por
+haberle llegado encima antes de que te viera venir.
+
+**La figurita de piedra ahora da algo.** Nueva escena "Examinar la
+figurita" (tirada de Mitos de Cthulhu, formato de una sola tirada por
+intención): si se supera, conecta la figura sin rostro con lo que Bernardo
+ya dijo sobre el Primer Rostro en `b-primer-rostro` ("lo que mira desde
+otro momento, no desde otro lugar") y deja Mitos de Cthulhu ganado.
+
+**Ítems con valor de referencia.** Nuevo campo `Item.value` (opcional, sin
+ningún tool que lo lea todavía: es sólo el dato, declarado ahora para no
+volver a cada ítem cuando exista una economía). Puesto en la figurita (5) y
+el alfiler de Felisa (15).
+
+**Log de combate colapsable.** El registro de `Combate.tsx` mostraba cada
+asalto entero, uno debajo del otro, y una pelea larga con maniobras se
+volvía imposible de leer de un vistazo. Ahora sólo el asalto más reciente
+queda siempre visible; el resto se colapsa detrás de un botón ("Ver los N
+asaltos anteriores").
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

@@ -1035,7 +1035,7 @@ export class Turn {
         npcId: npc.id, from: c.hp, to: 0, heridaGrave: true,
         cause: `cedió ${inv.puntoDebil}`,
       });
-      return `${inv.puntoDebil} cede. ${npc.name} deja de pelear en el acto: lo que lo sostenía dejó de sostenerlo.`;
+      return `${inv.puntoDebil} cede de un tajo entero. ${npc.name} cae en el acto: lo que lo sostenía dejó de sostenerlo, y no se levanta.`;
     }
 
     const desde = c.hp;

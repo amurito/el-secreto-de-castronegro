@@ -49,6 +49,11 @@ export function Combate({
   const [rivalId, setRivalId] = useState('');
   const [arma, setArma] = useState('desarmado');
   const [registro, setRegistro] = useState<Array<{ mensaje: string; tiradas: any[]; ok: boolean }>>([]);
+  // Pedido después de jugarlo: una pelea larga —maniobras, ataques, dos o
+  // tres rivales— deja el registro imposible de leer de un vistazo.
+  // `registro` está en orden del más nuevo al más viejo (ver `agregarAlRegistro`):
+  // el más nuevo queda siempre visible, y el resto se puede colapsar.
+  const [verAnteriores, setVerAnteriores] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [apuntando, setApuntando] = useState(false);
@@ -325,7 +330,18 @@ export function Combate({
           {registro.length === 0 && (
             <p className="sim-vacio">Elegí qué hacer.</p>
           )}
-          {registro.map((linea, i) => (
+          {registro.length > 0 && (
+            <article className={`sim-asalto ${registro[0]!.ok ? '' : 'sim-asalto-rechazado'}`}>
+              <pre className="sim-texto">{registro[0]!.mensaje}</pre>
+              {registro[0]!.tiradas.map((t: any, n: number) => <RollCard key={n} roll={t} />)}
+            </article>
+          )}
+          {registro.length > 1 && (
+            <button className="ghost sim-registro-toggle" onClick={() => setVerAnteriores((v) => !v)}>
+              {verAnteriores ? 'Ocultar asaltos anteriores' : `Ver los ${registro.length - 1} asaltos anteriores`}
+            </button>
+          )}
+          {verAnteriores && registro.slice(1).map((linea, i) => (
             <article key={i} className={`sim-asalto ${linea.ok ? '' : 'sim-asalto-rechazado'}`}>
               <pre className="sim-texto">{linea.mensaje}</pre>
               {linea.tiradas.map((t: any, n: number) => <RollCard key={n} roll={t} />)}
