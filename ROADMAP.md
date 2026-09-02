@@ -157,11 +157,20 @@ en vivo que la note. Los otros tres umbrales (Primer Contacto, Reciprocidad,
 Contaminación) siguen sin efecto mecánico propio — son irreversibles y
 cambian lo que se narra, pero no tocan dados. Verificado por `prueba-umbral.ts`.
 
-### 2.3 Consentimiento de meta-horror
+### 2.3 Consentimiento de meta-horror ✔ HECHO
 
-Hueco L del análisis. `knowledge.playerObserved` existe en el estado y no se usa
-todavía: el motor puede detectar cuándo el jugador sabe algo que su investigador
-no. Está listo para cuando decidas si querés esa capa y con qué aviso previo.
+Hueco L del análisis. `knowledge.playerObserved` deja de ser un campo sin uso:
+lo llena `toolNotePlayerKnowledge` (`engine.ts`) vía el efecto `jugadorNota` de
+una escena, y ya lo usan cinco aventuras (Agua Blanca, El Invierno Debido, El
+Sueño Debido, El Orden Debido, Tercer Umbral) — se muestra aparte de la ficha
+del investigador, en la sección "Aparte" de `styles.css`, con tipografía propia
+para que se lea como lo que nota quien juega y no como lo que sabe su
+personaje. Esta entrada quedó sin tachar por un tiempo después de construirse
+el mecanismo; verificado el 2026-09-02.
+
+Lo único que quedaba —"con qué aviso previo"— se decidió el 2026-09-02: SÍ va
+aviso, una sola vez al arrancar la primera campaña de cada navegador. Ver
+entrada de esa fecha más abajo con la implementación.
 
 ---
 
@@ -2934,6 +2943,50 @@ de una cadena que ya no existe. Nueva prueba de regresión en
 `prueba-campana.ts`: confirma que la campaña anterior cierra con una
 frontera real (mayor a 0) y que la campaña nueva arranca en 0 de todos
 modos.
+
+### 3.2-trigies El gasto de Suerte, y el aviso de meta-horror antes de arrancar
+
+Dos piezas de diseño que quedaban pendientes de una sesión anterior (ver
+§2.3 y el punto "sistema" de §4), resueltas juntas el 2026-09-02.
+
+**Suerte deja de ser decorativa.** `derived.luck` se tiraba en la creación,
+se mostraba en la ficha, y nada del motor la tocaba. Ahora hay un botón
+siempre disponible, generado desde el estado igual que "salidas" u
+"objetos" en `accionesDisponibles` (`scenario/acciones.ts`) — no del
+catálogo de ninguna aventura, porque es un recurso del investigador, no del
+lugar—: "Apelar a mi suerte" gasta 10 puntos y deja un dado de
+bonificación pendiente para la PRÓXIMA tirada propia (`toolSpendLuck` +
+`Investigator.pendingLuckBonus`, tope 2 dados acumulados).
+
+No es la regla del manual (p. 44: gastar Suerte para bajar el resultado YA
+tirado). Se descartó esa versión a propósito: `toolRequestRoll` compromete
+y ejecuta la tirada en la misma llamada, sin ninguna pausa entre tirar y
+narrar donde el jugador pueda reaccionar al número — implementarla tal
+cual exigía meter una pantalla intermedia nueva en medio de cualquier
+turno, parecida a cómo el combate abre la suya. La variante elegida gastar
+ANTES, por un dado de bonificación reutiliza el sistema de `modifiers` que
+`request_roll` ya tenía (el mismo camino que usan Estabilidad baja y las
+fobias), y no toca el flujo de turno para nada.
+
+El clasificador de intención (`keeper/intent.ts`) suma el verbo `suerte`
+con una frase propia ("apelo a mi suerte") para no chocar con nada que
+mencione la palabra de pasada. Se prueba de punta a punta en
+`prueba-suerte.ts` (suite nueva, `npm run prueba:suerte`): que gastarla
+baje la Suerte y deje el dado pendiente, que ese dado se aplique a la
+tirada siguiente y se consuma (no sobrevive a una segunda tirada), que
+rechace sin Suerte suficiente y pasado el tope, y que el botón sólo se
+ofrezca cuando corresponde.
+
+**El aviso de meta-horror, resuelto: sí va, una vez, antes de arrancar.**
+§2.3 dejaba pendiente "con qué aviso previo". Se decidió que el juego
+avise, no que sea sorpresa pura: un cuadro en la pantalla de inicio
+(`App.tsx`, antes de las tarjetas de aventura), visible una sola vez por
+navegador —mismo patrón de preferencia que `CLAVE_ALTO_PIE`, una clave
+`castronegro:*` en `localStorage` con try/catch—, que explica que el juego
+a veces hace notar al JUGADOR algo que su investigador todavía no tiene
+registrado, aparte del resto de la ficha. Se pone ANTES de elegir aventura
+y no dentro de una partida en curso: adentro ya sería tarde para decidir
+con eso en la cabeza.
 
 ### 3.3 La aventura original publicada
 

@@ -342,6 +342,15 @@ export interface Investigator {
    */
   backstory: { aspects: BackstoryAspect[]; keyConnection: string | null };
 
+  /**
+   * Dados de bonificación comprados gastando Suerte (`toolSpendLuck`),
+   * pendientes de aplicarse a la PRÓXIMA tirada propia. Vive acá y no en el
+   * `ctx` efímero de `Turn` porque gastar Suerte y tirar son casi siempre dos
+   * turnos separados —dos clicks del jugador—, y `ctx` se resetea cada vez
+   * que se abre un turno nuevo. `toolRequestRoll` lo consume y lo vuelve a 0.
+   */
+  pendingLuckBonus: number;
+
   experience: {
     sessionsSurvived: number;
     /**

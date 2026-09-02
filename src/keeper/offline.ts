@@ -168,6 +168,7 @@ function resolve(turn: Turn, i: Intent, out: string[], run: Runner, scenario: Sc
     case 'dormir':   return sleep(turn, out, run);
     case 'subir':    return climb(turn, i, out, run);
     case 'usar':     return useItem(turn, i, out, run);
+    case 'suerte':   return spendLuck(turn, out, run);
     case 'meta':     return nudge(turn, out);
     default:
       // Verbo desconocido PERO objetivo reconocido: el jugador señaló algo
@@ -529,6 +530,22 @@ function think(turn: Turn, out: string[]): void {
     parts.push('Nada se contradice todavía. Eso es lo que más te inquieta: que todo pueda ser cierto al mismo tiempo.');
   }
   out.push(parts.join('\n\n'));
+}
+
+function spendLuck(turn: Turn, out: string[], run: Runner): void {
+  const r = run('spend_luck', {});
+  // `toolSpendLuck` ya deja el número armado en su propio mensaje —Suerte
+  // antes/después, dados pendientes—; acá sólo se le pone prosa alrededor,
+  // mismo criterio que el resto de este archivo con los mensajes del motor.
+  if (!r.ok) {
+    out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+    return;
+  }
+  out.push(pickVariant(turn.state, [
+    'Te tomás un segundo para confiar en tu suerte, aunque no sabrías explicar en qué consiste eso.',
+    'Apelás a algo que no es cálculo. A veces alcanza.',
+  ]));
+  out.push(r.message);
 }
 
 function takeNotes(turn: Turn, out: string[], run: Runner): void {

@@ -740,6 +740,7 @@ export class Turn {
     try {
       switch (name) {
         case 'request_roll': return this.toolRequestRoll(raw);
+        case 'spend_luck': return this.toolSpendLuck(raw);
         case 'apply_damage': return this.toolApplyDamage(raw);
         case 'resolve_attack': return this.toolResolveAttack(raw);
         case 'resolve_flee': return this.toolResolveFlee(raw);
@@ -775,6 +776,47 @@ export class Turn {
     } catch (err) {
       return this.reject(name, raw, `Error al ejecutar: ${(err as Error).message}`);
     }
+  }
+
+  // ── SUERTE ─────────────────────────────────────────────────────────────────
+
+  /**
+   * 10 puntos de Suerte por dado de bonificación, tope 2 —el mismo tope que
+   * ya usa cualquier otro modificador de `request_roll` (`clamp(bonus, 0, 2)`
+   * más abajo)—. No es un número del manual: es una variante simplificada de
+   * la regla real (p. 44, gastar Suerte para bajar el resultado YA tirado),
+   * elegida porque el motor compromete y ejecuta la tirada en la misma
+   * llamada, sin pausa donde reaccionar al número. Ver ROADMAP §2.3.
+   */
+  private toolSpendLuck(raw: Record<string, unknown>): ToolOutcome {
+    const COSTO = 10;
+    const TOPE_DADOS = 2;
+    const inv = this.investigator;
+
+    if (inv.pendingLuckBonus >= TOPE_DADOS) {
+      return this.reject('spend_luck', raw,
+        `Ya tenés ${inv.pendingLuckBonus} dado(s) de bonificación comprados con Suerte, esperando tu próxima tirada. No se puede acumular más de ${TOPE_DADOS}.`);
+    }
+    if (inv.derived.luck < COSTO) {
+      return this.reject('spend_luck', raw,
+        `Suerte insuficiente: tenés ${inv.derived.luck}, hacen falta ${COSTO}.`);
+    }
+
+    const luckFrom = inv.derived.luck;
+    const luckTo = luckFrom - COSTO;
+    const bonusDiceFrom = inv.pendingLuckBonus;
+    const bonusDiceTo = bonusDiceFrom + 1;
+
+    this.emit('LUCK_SPENT', {
+      investigatorId: inv.id, cost: COSTO, luckFrom, luckTo, bonusDiceFrom, bonusDiceTo,
+    });
+
+    return {
+      ok: true,
+      message:
+        `Suerte ${luckFrom} → ${luckTo}. La próxima tirada de ${inv.name} tiene ` +
+        `${bonusDiceTo} dado(s) de bonificación por Suerte.`,
+    };
   }
 
   // ── TIRADA ─────────────────────────────────────────────────────────────────
@@ -855,6 +897,16 @@ export class Turn {
       });
     }
 
+    // ★ Dado(s) de bonificación comprados de antemano gastando Suerte
+    //   (`toolSpendLuck`). Se consumen acá, los haya usado esta tirada o no
+    //   el modificador termine importando (p. ej. si ya había otro dado de
+    //   bonificación): comprarlos fue la decisión del jugador, y gastarse en
+    //   la próxima tirada —cualquiera sea— es la regla, no una opción aparte.
+    const dadosDeSuerte = inv.pendingLuckBonus;
+    if (dadosDeSuerte > 0) {
+      modifiers.push({ kind: 'bonus_die', count: clamp(dadosDeSuerte, 0, 2), reason: 'dado comprado con Suerte' });
+    }
+
     const stakes = {
       onSuccess: String(raw.stakes_success ?? ''),
       onFailure: String(raw.stakes_failure ?? ''),
@@ -913,6 +965,9 @@ export class Turn {
     };
 
     this.emit('ROLL_EXECUTED', { roll: record });
+    if (dadosDeSuerte > 0) {
+      this.emit('LUCK_BONUS_CONSUMED', { investigatorId: inv.id, bonusDice: dadosDeSuerte, rollId });
+    }
     this.ctx.rollsThisIntent += 1;
     this.ctx.lastRollSucceeded = success;
     this.ctx.lastRollSkill = skill;

@@ -22,7 +22,7 @@ export type Verb =
   | 'romper' | 'forzar' | 'cavar' | 'tapar'
   | 'gritar' | 'llamar' | 'esperar' | 'dormir'
   | 'anotar' | 'pensar' | 'irse'
-  | 'atacar' | 'meta' | 'desconocido';
+  | 'atacar' | 'meta' | 'suerte' | 'desconocido';
 
 export interface Intent {
   raw: string;
@@ -81,6 +81,9 @@ const anyStem = (t: string, stems: string[]) => stems.some((s) => hasStem(t, s))
 
 const VERBS: Array<[Verb, string[]]> = [
   ['meta', ['segui', 'seguir', 'continua', 'continuar', 'y despues', 'que pasa', 'dale', 'ok', 'listo']],
+  // Frase propia y distintiva, no la palabra suelta «suerte»: así no choca
+  // con nada que la mencione de pasada en un diálogo o una descripción.
+  ['suerte', ['apelo a mi suerte', 'apelo a la suerte', 'gasto mi suerte', 'confio en mi suerte']],
   // 'con atención', 'detenidamente' y 'de cerca' NO van acá: son marcadores de
   // intensidad (ver SUSTAINED), no verbos. Tenerlos como verbo hacía que
   // "escucho con atención" se resolviera como examinar el lugar.

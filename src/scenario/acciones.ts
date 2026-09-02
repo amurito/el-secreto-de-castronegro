@@ -183,6 +183,29 @@ export function accionesDisponibles(s: GameState, escenario: Scenario): Opcion[]
     });
   }
 
+  // ── Apelar a la Suerte — siempre disponible, no del catálogo de la
+  // aventura: es un recurso del investigador, no del lugar. Mismo criterio
+  // que el resto de esta función —se genera desde el estado, no se escribe
+  // a mano por aventura—. Cuesta 10 de Suerte y compra un dado de
+  // bonificación para la PRÓXIMA tirada (`toolSpendLuck`, tope 2 dados).
+  // Ver ROADMAP §2.3.
+  const inv = s.investigators[s.activeInvestigator];
+  if (inv) {
+    const COSTO_SUERTE = 10;
+    const TOPE_DADOS_SUERTE = 2;
+    if (inv.derived.luck >= COSTO_SUERTE && inv.pendingLuckBonus < TOPE_DADOS_SUERTE) {
+      out.push({
+        id: 'suerte:gastar',
+        etiqueta: inv.pendingLuckBonus > 0
+          ? `Apelar de nuevo a mi suerte (Suerte ${inv.derived.luck}, un segundo dado extra)`
+          : `Apelar a mi suerte (Suerte ${inv.derived.luck}, dado extra en la próxima tirada)`,
+        intencion: 'Apelo a mi suerte',
+        grupo: 'usar',
+        orden: 55,
+      });
+    }
+  }
+
   const loc = s.world.locations[aqui];
 
   let n = 0;

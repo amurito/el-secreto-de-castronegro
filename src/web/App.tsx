@@ -54,6 +54,27 @@ function guardarPreferenciaAltoPie(pct: number): void {
   try { localStorage.setItem(CLAVE_ALTO_PIE, String(Math.round(pct))); } catch { /* sin storage, se juega igual */ }
 }
 
+/**
+ * Aviso de consentimiento de meta-horror (ROADMAP §2.3), una sola vez por
+ * navegador y ANTES de arrancar cualquier campaña — no dentro de una, donde
+ * ya sería tarde para elegir con esto en la cabeza. `knowledge.playerObserved`
+ * (ver engine.ts) hace que el juego, alguna vez, te haga notar A VOS algo que
+ * tu investigador todavía no tiene registrado en su ficha; se muestra aparte,
+ * en la sección "Aparte" de la ficha. Mismo patrón de preferencia que
+ * `CLAVE_ALTO_PIE`: una clave `castronegro:*`, try/catch, se juega igual sin
+ * storage —sólo que el aviso reaparecería cada vez, lo cual es un peor default
+ * que mostrarlo de más, no un bug—.
+ */
+const CLAVE_AVISO_METAHORROR = 'castronegro:aviso-metahorror-visto';
+
+function leerAvisoMetahorrorVisto(): boolean {
+  try { return localStorage.getItem(CLAVE_AVISO_METAHORROR) === '1'; } catch { return false; }
+}
+
+function guardarAvisoMetahorrorVisto(): void {
+  try { localStorage.setItem(CLAVE_AVISO_METAHORROR, '1'); } catch { /* sin storage, se juega igual */ }
+}
+
 /** Qué opciones vio el jugador y cuáles todavía no tocó. Ver `aplicarOpciones`. */
 interface Marcas { vistas: Set<string>; pendientes: Set<string> }
 
@@ -133,6 +154,8 @@ export function App() {
   const [panel, setPanel] = useState<'historia' | 'ficha' | 'tablero'>('historia');
   /** Animar los dados al tirar. Preferencia del jugador, no de la partida. */
   const [animarDados, setAnimarDados] = useState(leerPreferenciaDados);
+  /** Aviso de meta-horror ya visto y descartado, en este navegador. */
+  const [avisoMetahorrorVisto, setAvisoMetahorrorVisto] = useState(leerAvisoMetahorrorVisto);
   /** Alto de «el mundo recuerda» + «usted lo nota», en % del panel derecho. Arrastrable. */
   const [altoPie, setAltoPie] = useState(leerPreferenciaAltoPie);
   const colRightRef = useRef<HTMLDivElement>(null);
@@ -437,6 +460,22 @@ export function App() {
               Todo corre en esta pestaña. Sin servidor, sin cuentas y sin costo.
               Los dados, el estado y el guardado son reales, y tu partida queda
               en este navegador.
+            </div>
+          )}
+          {status && !avisoMetahorrorVisto && (
+            <div className="aviso-metahorror">
+              <p>
+                Este juego a veces te hace notar a VOS, jugador, algo que tu
+                investigador todavía no tiene registrado en su ficha. Cuando
+                pasa, aparece aparte del resto —nunca mezclado con lo que tu
+                personaje sabe— y es intencional: es parte de cómo se juega acá.
+              </p>
+              <button
+                className="ghost"
+                onClick={() => { guardarAvisoMetahorrorVisto(); setAvisoMetahorrorVisto(true); }}
+              >
+                Entendido
+              </button>
             </div>
           )}
           {/* Una tarjeta por aventura, en el orden cronológico del universo y

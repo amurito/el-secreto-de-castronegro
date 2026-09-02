@@ -88,6 +88,8 @@ export type GameEventType =
   | 'INVESTIGATOR_INTRODUCED'
   | 'SKILL_IMPROVED'
   | 'MYTHOS_GAINED'
+  | 'LUCK_SPENT'
+  | 'LUCK_BONUS_CONSUMED'
   | 'RING_BONDED'
   | 'BACKSTORY_REVISED'
   | 'DEVELOPMENT_PHASE_COMPLETED'
@@ -402,6 +404,30 @@ export interface MythosGainedPayload {
  * el ítem. Y queda en el log al lado de su causa porque es, por canon
  * (v0.7 §5.3), la clase de decisión que puede matar a quien la deshaga.
  */
+/**
+ * El jugador apeló a la Suerte de su investigador ANTES de tirar, a cambio
+ * de un dado de bonificación en la tirada siguiente — variante simplificada
+ * de la regla del manual (p. 44: gastarla para bajar el resultado YA
+ * tirado), elegida porque `toolRequestRoll` compromete y ejecuta la tirada
+ * en la misma llamada y no hay, hoy, una pausa entre tirar y narrar donde
+ * el jugador pueda reaccionar al número. Ver ROADMAP §2.3.
+ */
+export interface LuckSpentPayload {
+  investigatorId: InvestigatorId;
+  cost: number;
+  luckFrom: number;
+  luckTo: number;
+  bonusDiceFrom: number;
+  bonusDiceTo: number;
+}
+
+/** El dado comprado con Suerte se aplicó a una tirada y se consume. */
+export interface LuckBonusConsumedPayload {
+  investigatorId: InvestigatorId;
+  bonusDice: number;
+  rollId: string;
+}
+
 export interface RingBondedPayload {
   investigatorId: InvestigatorId;
   itemId: ItemId;

@@ -34,6 +34,13 @@ export function Sheet({ inv }: { inv: any }) {
         <Stat label="PM" value={d.mp} max={d.maxMp} tone="mp" />
         <Stat label="Suerte" value={d.luck} max={99} tone="luck" />
       </div>
+      {inv.pendingLuckBonus > 0 && (
+        <div className="luck-pending">
+          {inv.pendingLuckBonus === 1
+            ? 'Un dado de bonificación comprado con Suerte, listo para tu próxima tirada.'
+            : `${inv.pendingLuckBonus} dados de bonificación comprados con Suerte, listos para tu próxima tirada.`}
+        </div>
+      )}
 
       <h3 className="sub-title">Umbral</h3>
       <Bar label="Exposición" value={inv.umbral.exposure} max={100} tone="exposure" invert />

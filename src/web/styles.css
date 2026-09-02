@@ -54,6 +54,14 @@ button { font-family: inherit; cursor: pointer; }
 .mode-ia { border-color: var(--accent-dim); color: #c9a08e; }
 .mode-motor { color: var(--text-dim); }
 
+.aviso-metahorror {
+  font-family: var(--mono); font-size: 0.78rem; line-height: 1.5;
+  padding: 0.8rem 1rem; border-radius: 3px; margin-bottom: 2rem;
+  border: 1px dashed var(--exposure); color: var(--text-dim);
+  display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-start;
+}
+.aviso-metahorror p { margin: 0; }
+
 .scenario-card {
   background: var(--bg-panel); border: 1px solid var(--line);
   padding: 1.8rem; border-radius: 4px;
@@ -240,6 +248,11 @@ button { font-family: inherit; cursor: pointer; }
 
 .umbral-peak {
   font-size: 0.65rem; color: var(--exposure); opacity: 0.75;
+  margin: -0.25rem 0 0.5rem;
+}
+
+.luck-pending {
+  font-size: 0.65rem; color: var(--accent); opacity: 0.85;
   margin: -0.25rem 0 0.5rem;
 }
 

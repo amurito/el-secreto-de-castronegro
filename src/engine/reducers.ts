@@ -101,6 +101,23 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'LUCK_SPENT': {
+      const p = ev.payload as P.LuckSpentPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      inv.derived = { ...inv.derived, luck: p.luckTo };
+      inv.pendingLuckBonus = p.bonusDiceTo;
+      break;
+    }
+
+    case 'LUCK_BONUS_CONSUMED': {
+      const p = ev.payload as P.LuckBonusConsumedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      inv.pendingLuckBonus = 0;
+      break;
+    }
+
     case 'UMBRAL_EXPOSURE': {
       const p = ev.payload as P.UmbralExposurePayload;
       const inv = cloneInvestigator(s, p.investigatorId);
