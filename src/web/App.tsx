@@ -10,8 +10,9 @@ import { Combate } from './Combate.tsx';
 import { listarPlantillas, guardarPlantilla, borrarPlantilla, type Plantilla } from '../app/plantillas.ts';
 import type { Investigator } from '../shared/types.ts';
 import { leerPreferenciaDados, guardarPreferenciaDados, prefiereMenosMovimiento } from './dados.tsx';
+import { HECHIZO_POR_ID } from '../rules/hechizos.ts';
 
-type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas';
+type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas' | 'hechizos';
 
 interface Line { id: string; kind: string; text: string }
 
@@ -388,6 +389,28 @@ export function App() {
     }]);
   }
 
+  // ── HECHIZOS ────────────────────────────────────────────────────────────
+  // Mismo camino que el combate real: llama al motor directo (bypasea el
+  // clasificador de intención) y narra el resultado al historial permanente,
+  // pero sin pantalla exclusiva —lanzar no bloquea el resto del juego como sí
+  // lo hace entrar en combate—, así que es una pestaña más, no un modo aparte.
+  async function lanzarHechizo(spellId: string) {
+    if (!api || !campaignId) return;
+    setBusy(true); setError(null);
+    try {
+      const r = await api.castSpell(campaignId, spellId);
+      setState(r.state);
+      setLines((l) => [...l, {
+        id: `hechizo-${Date.now()}`, kind: 'keeper',
+        text: r.mensaje.replace('RECHAZADO POR EL MOTOR: ', ''),
+      }]);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   // ── COMBATE REAL ────────────────────────────────────────────────────────
   // Antes que el simulador y que todo lo demás: si `GameState.activeCombat`
   // está puesto (viene del motor, no de un estado local), la pantalla entera
@@ -724,7 +747,14 @@ export function App() {
 
       <aside className="col col-right" ref={colRightRef}>
         <div className="tabs">
-          {(['tablero', 'inventario', 'documentos', 'tiradas'] as Tab[]).map((t) => (
+          {(
+            [
+              'tablero', 'inventario', 'documentos', 'tiradas',
+              // Sólo aparece si el investigador sabe al menos un hechizo —
+              // no hay nada que mostrar ahí para quien nunca aprendió magia.
+              ...(state?.investigator?.spellsKnown?.length ? ['hechizos'] : []),
+            ] as Tab[]
+          ).map((t) => (
             <button key={t} className={`tab ${tab === t ? 'tab-on' : ''}`} onClick={() => setTab(t)}>{t}</button>
           ))}
         </div>
@@ -732,6 +762,31 @@ export function App() {
           {tab === 'tablero' && <Board board={state?.board} />}
           {tab === 'inventario' && <Inventory items={state?.items ?? []} />}
           {tab === 'documentos' && <Documents docs={state?.documents ?? []} />}
+          {tab === 'hechizos' && (
+            <div className="hechizos">
+              {(state?.investigator?.spellsKnown ?? []).map((h: { id: string; proven: boolean }) => {
+                const def = HECHIZO_POR_ID[h.id];
+                if (!def) return null;
+                const pm = state?.investigator?.derived?.mp ?? 0;
+                return (
+                  <div className="hechizo" key={h.id}>
+                    <div className="hechizo-titulo">
+                      {def.nombre}
+                      {!h.proven && <span className="hechizo-sin-probar">sin probar — pide Poder difícil</span>}
+                    </div>
+                    <p className="hechizo-desc">{def.descripcion}</p>
+                    <div className="hechizo-costo">
+                      {def.costoPM} PM{def.costoCordura ? ` · ${def.costoCordura} de Cordura` : ''}
+                      {pm < def.costoPM && ' · sin PM suficientes: el resto sale de tus Puntos de Vida'}
+                    </div>
+                    <button className="primary" disabled={busy} onClick={() => lanzarHechizo(h.id)}>
+                      Lanzar
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           {tab === 'tiradas' && (
             <>
               {/* El interruptor vive acá porque acá es donde el jugador viene a

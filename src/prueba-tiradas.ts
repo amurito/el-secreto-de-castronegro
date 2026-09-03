@@ -152,7 +152,13 @@ async function main() {
       // puesto encima de algo—, así que esto es lo que se hace DESPUÉS de
       // haber notado. Pedir un segundo dado sería decir que a veces la cal no
       // sale si uno tuvo mala suerte.
-      && !/rasc/i.test(f.etiqueta),
+      && !/rasc/i.test(f.etiqueta)
+      // "Revisar lo que Bernardo dejó", en "Lo que Bernardo sabía": no es
+      // percepción, es leer de vuelta una decisión que el jugador YA tomó en
+      // El Vigésimo (ponerse el anillo, destruirlo, o ninguna de las dos).
+      // La escena rama por `consecuencia`, no por dado — pedir una tirada acá
+      // sería decir que a veces el investigador no se acuerda de qué hizo.
+      && !/bernardo dej/i.test(f.etiqueta),
   );
   for (const f of examinarSinDado) console.log(`   ⚠ ${f.aventura}: «${f.etiqueta}» sin tirada`);
   check('examinar algo siempre pide un dado, salvo procedimientos de resultado determinado',

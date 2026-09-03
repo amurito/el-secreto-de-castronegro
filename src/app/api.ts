@@ -128,6 +128,20 @@ export interface GameApi {
    * la escena que abrió este combate lo configuró — ver `CombateResult.intimidar`.
    */
   combateIntimidar(id: string, npcId: string): Promise<CombateResult>;
+
+  /**
+   * Lanzar un hechizo ya aprendido, desde la pestaña "Hechizos". Igual que
+   * el combate real: llama al motor DIRECTO, sin pasar por el clasificador
+   * de intención, y narra el resultado al historial permanente.
+   */
+  castSpell(id: string, spellId: string): Promise<HechizoResult>;
+}
+
+export interface HechizoResult {
+  ok: boolean;
+  mensaje: string;
+  state: ClientState;
+  tiradas: unknown[];
 }
 
 export interface RivalReal {

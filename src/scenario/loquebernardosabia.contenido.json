@@ -1,0 +1,119 @@
+{
+  "id": "lo-que-bernardo-sabia",
+  "title": "Lo que Bernardo sabía",
+  "surfacePremise": "Pasaron tres semanas desde la Casa de Díaz, y lo que quedó de esa noche no se quedó adentro cuando el investigador salió. Hay algo más para aprender ahí, si se anima a volver a buscarlo.",
+  "items": [],
+  "npcs": [],
+  "documents": [],
+  "locations": {
+    "laboratorio": {
+      "id": "laboratorio",
+      "name": "El laboratorio, otra vez",
+      "aliases": ["laboratorio", "el laboratorio", "la casa de diaz"],
+      "description": "Tres semanas después, el laboratorio de Bernardo Díaz sigue exactamente como lo dejaste: las mesas de piedra, los frascos sin etiqueta, el horno apagado desde esa noche. Nadie más vino. Nadie más sabe que este cuarto existe.",
+      "atmosphere": [
+        "El polvo se acomodó distinto de lo que se acomoda un cuarto que alguien usa.",
+        "Afuera, Castronegro sigue siendo el mismo pueblo que era antes de que supieras lo que hay debajo."
+      ],
+      "connections": [],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 6,
+      "features": [
+        {
+          "id": "horno",
+          "names": ["horno", "el horno", "horno del laboratorio"],
+          "description": "El horno de piedra donde terminó el anillo, o donde no terminó nada, según cómo se haya ido esa noche. Está frío.",
+          "closerLook": "En la ceniza fría no queda nada reconocible. Lo que sea que ardió ahí, ardió entero.",
+          "examineSkill": "descubrir",
+          "exposure": 1
+        }
+      ]
+    }
+  },
+  "startLocation": "laboratorio",
+  "startTime": {
+    "iso": "1928-10-22T16:00:00",
+    "precision": "minute",
+    "display": "una tarde de octubre de 1928"
+  },
+  "startUmbralPermeability": 35,
+  "timeline": [],
+  "conversations": [],
+  "scenes": [
+    {
+      "id": "revelacion-ahijado",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "reviso lo que bernardo dejo|busco lo que bernardo dejo" },
+          { "op": "consecuencia", "contiene": "quedó vinculado a él" }
+        ]
+      }
+    },
+    {
+      "id": "revelacion-libro",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "reviso lo que bernardo dejo|busco lo que bernardo dejo" },
+          { "op": "consecuencia", "contiene": "cortando el ciclo sin saber si hacía falta" }
+        ]
+      }
+    },
+    {
+      "id": "revelacion-nada",
+      "prioridad": 90,
+      "cuando": { "op": "texto", "patron": "reviso lo que bernardo dejo|busco lo que bernardo dejo" }
+    },
+    {
+      "id": "revelacion-segundo",
+      "prioridad": 95,
+      "cuando": { "op": "texto", "patron": "aprendo el segundo hechizo|busco el segundo hechizo" }
+    },
+    {
+      "id": "cerrar",
+      "prioridad": 95,
+      "cuando": { "op": "texto", "patron": "cierro este capitulo|termino aca" }
+    }
+  ],
+  "actions": [
+    {
+      "id": "revisar",
+      "grupo": "observar",
+      "orden": 10,
+      "intencion": "Reviso lo que Bernardo dejó",
+      "etiqueta": "Revisar lo que Bernardo dejó",
+      "hecha": { "op": "narrado", "contiene": "No hay más que buscar en este laboratorio, no por ahora" }
+    },
+    {
+      "id": "segundo-hechizo",
+      "grupo": "usar",
+      "orden": 20,
+      "intencion": "Aprendo el segundo hechizo",
+      "etiqueta": "Aprender lo que falta",
+      "visible": { "op": "narrado", "contiene": "El primer hechizo ya es tuyo" },
+      "hecha": { "op": "narrado", "contiene": "El segundo también es tuyo" }
+    },
+    {
+      "id": "cerrar",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Cierro este capítulo",
+      "etiqueta": "Cerrar este capítulo",
+      "visible": { "op": "narrado", "contiene": "No hay más que buscar en este laboratorio, no por ahora" }
+    }
+  ],
+  "endings": [
+    {
+      "id": "cerrar",
+      "title": "Lo que Bernardo sabía",
+      "condition": "El investigador vuelve a la Casa de Díaz y cierra, para bien o para mal, lo que quedó abierto esa noche."
+    }
+  ],
+  "opening": "Pasaron tres semanas desde la Casa de Díaz. La carta —o el sueño, o simplemente la certeza, según a quién le preguntes— dice lo mismo: falta algo por terminar ahí adentro."
+}

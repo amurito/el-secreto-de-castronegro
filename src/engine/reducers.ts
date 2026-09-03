@@ -118,6 +118,26 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'SPELL_LEARNED': {
+      const p = ev.payload as P.SpellLearnedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      if (inv.spellsKnown.some((h) => h.id === p.spellId)) break;
+      inv.spellsKnown = [...inv.spellsKnown, { id: p.spellId, proven: false }];
+      break;
+    }
+
+    case 'SPELL_CAST': {
+      const p = ev.payload as P.SpellCastPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      if (p.provenNow) {
+        inv.spellsKnown = inv.spellsKnown.map((h) => (h.id === p.spellId ? { ...h, proven: true } : h));
+      }
+      if (p.bonusDiceTo !== undefined) inv.pendingLuckBonus = p.bonusDiceTo;
+      break;
+    }
+
     case 'UMBRAL_EXPOSURE': {
       const p = ev.payload as P.UmbralExposurePayload;
       const inv = cloneInvestigator(s, p.investigatorId);

@@ -2988,6 +2988,68 @@ registrado, aparte del resto de la ficha. Se pone ANTES de elegir aventura
 y no dentro de una partida en curso: adentro ya sería tarde para decidir
 con eso en la cabeza.
 
+### 3.2-untrigies Magia: Puntos de Magia dejan de ser decorativos, y una novena aventura
+
+Puntos de Magia (`derived.mp` = POD/5) estaba en la ficha desde el
+principio del proyecto sin que ninguna aventura lo usara. Se cierra con
+**dos piezas nuevas**, planificadas en modo plan y verificadas contra las
+reglas reales de CoC 7e (Core Rulebook p.170-178, no de memoria) antes de
+escribir nada: la primera vez que se lanza un hechizo pide una tirada de
+PODER difícil; si sale bien, queda "probado" y nunca más la vuelve a
+pedir; cuesta PM, y lo que falte se descuenta de PV uno a uno; un
+lanzamiento fallido no cobra nada.
+
+**El motor: `toolLearnSpell`/`toolCastSpell` (engine.ts), catálogo en
+`rules/hechizos.ts`.** `toolCastSpell` es autocontenido, mismo patrón que
+`toolResolveAttack`: llama a `this.toolRequestRoll(...)` DIRECTO cuando
+hace falta la tirada de la primera vez, en la misma llamada — no hay, hoy,
+una pantalla intermedia donde pausar entre tirar y cobrar (mismo motivo
+por el que se descartó la regla canónica de Suerte, §3.2-trigies). Por
+eso Push (`ROLL_PUSHED`/`canPushLast`, resto sin terminar de la época del
+Keeper IA, nunca usado por ningún tool) sigue sin implementarse: un
+hechizo fallido simplemente no pasa nada, sin reintento.
+
+Los dos hechizos (`adivinar-la-forma`, `sostener-el-aire`) son
+**originales**, no los del manual con nombre — esos son propiedad de
+Chaosium, mismo motivo por el que `castronegro.md`/`adaptacion.md` nunca
+se subieron a git. Cada uno reusa un mecanismo GENÉRICO que ya existía en
+vez de inventar uno: "adivinar la forma" compra un dado de bonificación
+—literalmente el mismo `pendingLuckBonus` que ya usa Suerte, un hechizo y
+Suerte son mecánicamente la misma cosa—, y "sostener el aire" llama a
+`toolApplyStability`, ya genérico. `Investigator.spellsKnown` es
+permanente como Mitos: sobrevive a `heredarInvestigador` por el mismo
+spread que ya hacía permanentes al anillo y a Mitos.
+
+**El contenido: "Lo que Bernardo sabía", novena entrada del catálogo,
+epílogo corto (20-30 minutos) tras El Vigésimo.** Dos ramas según cómo
+terminó esa aventura, leídas por fragmento de `consecuencia` —mismo
+patrón que ya usaba El Vigésimo para los cuatro finales de Agua Blanca—:
+`fin-heredar` (se puso el anillo) lleva a que el Ahijado enseñe —la
+tercera vía del manual para aprender un hechizo, de una entidad de los
+Mitos, y acá es literal—; `fin-cortar` (lo destruyó) lleva al libro sin
+título que Bernardo dejó en el laboratorio, que además sube Mitos al
+leerlo entero (reusa `apply_mythos_knowledge`). `fin-denunciar-vigesimo`
+y `fin-irse-vigesimo` no llevan a nada de esto —esos dos investigadores
+escaparon sin quedarse a buscar— y tienen su propia rama de cierre sin
+magia, para que la campaña no quede en un callejón.
+
+Se prueba de punta a punta en `prueba-hechizos.ts` (suite nueva): el
+motor genérico primero (aprender, la tirada de la primera vez y sólo esa,
+el costo con desborde a PV, los dos efectos), después las tres ramas del
+contenido nuevo completas —incluida la de "sin magia"— usando
+`record_consequence`+`reach_ending` para fabricar el final anterior sin
+tener que jugar El Vigésimo entero.
+
+**Interfaz: pestaña "Hechizos" nueva** (`App.tsx`), visible sólo si el
+investigador sabe al menos un hechizo — no una pantalla exclusiva como
+Combate, porque lanzar no bloquea el resto del juego como sí lo hace
+entrar en combate. `castSpell` en `api.local.ts` llama al motor DIRECTO,
+mismo camino que ya usa el combate real (bypasea el clasificador de
+intención). De paso, el aviso de "dado de bonificación pendiente" en la
+ficha —agregado con Suerte, §3.2-trigies— decía siempre "comprado con
+Suerte"; ahora que un hechizo también lo deja pendiente, el aviso pasó a
+ser genérico.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
@@ -3398,9 +3460,12 @@ Después del paso a contenido en datos, el camino es:
    escena declarada, casado por `id` con el JSON.
 3. Escribir `src/scenario/<nombre>.ts` — tres líneas: `cargarAventura(json,
    logica, pregens)`.
-4. Escribir `src/scenario/<nombre>.keeper.ts` — el briefing, que sólo importa
-   el servidor y por eso no entra al bundle público.
-5. Sumar una línea a `src/scenario/catalogo.ts` con su fecha diegética.
+4. Sumar una línea a `src/scenario/catalogo.ts` con su fecha diegética.
+
+(Esta lista tenía un cuarto paso, `<nombre>.keeper.ts` con el briefing del
+Keeper IA — arrastre de antes de que ese modo se sacara del todo, ver
+cabecera de CLAUDE.md. Ninguna aventura real tiene ese archivo desde
+entonces; corregido acá el 2026-09-02, al escribir la novena.)
 
 Si el JSON tiene una referencia rota —un objeto que no existe, un secreto que
 el NPC no tiene, una escena declarada sin `resolver`— el juego lo dice al

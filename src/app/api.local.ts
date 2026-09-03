@@ -519,5 +519,24 @@ export function createLocalApi(): GameApi {
         enCurso.delete(id);
       }
     },
+
+    async castSpell(id, spellId) {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('cast_spell', { spell_id: spellId });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
   };
 }

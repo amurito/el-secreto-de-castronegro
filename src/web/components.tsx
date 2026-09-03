@@ -36,9 +36,13 @@ export function Sheet({ inv }: { inv: any }) {
       </div>
       {inv.pendingLuckBonus > 0 && (
         <div className="luck-pending">
+          {/* Mismo campo tanto si viene de gastar Suerte como de lanzar
+              "Adivinar la forma" (rules/hechizos.ts): es, mecánicamente, la
+              misma cosa —un dado comprado de antemano—, así que el aviso no
+              le atribuye un origen que puede no ser el que fue. */}
           {inv.pendingLuckBonus === 1
-            ? 'Un dado de bonificación comprado con Suerte, listo para tu próxima tirada.'
-            : `${inv.pendingLuckBonus} dados de bonificación comprados con Suerte, listos para tu próxima tirada.`}
+            ? 'Un dado de bonificación listo para tu próxima tirada.'
+            : `${inv.pendingLuckBonus} dados de bonificación listos para tu próxima tirada.`}
         </div>
       )}
 

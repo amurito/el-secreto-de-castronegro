@@ -207,6 +207,7 @@ export function crearInvestigador(
     experience: { sessionsSurvived: 0, lastDevelopmentSeq: 0 },
     ringBond: null,
     pendingLuckBonus: 0,
+    spellsKnown: [],
   };
 
   return { ok: true, investigador, problemas: [], chequeosEdu: chequeos, armaInicialId };

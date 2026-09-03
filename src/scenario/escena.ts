@@ -228,6 +228,13 @@ export interface EfectoEscena {
    * todavía no puede aceptar — ver `toolNotePlayerKnowledge` en `engine.ts`.
    */
   jugadorNota?: { statement: string; source: string; reliability?: 'reliable' | 'unreliable' | 'false' | 'unknown' };
+  /**
+   * Enseña un hechizo (`toolLearnSpell` en engine.ts, catálogo en
+   * `rules/hechizos.ts`). El COSTO de aprenderlo —típicamente Cordura— lo
+   * declara la escena con el `cordura` de acá arriba, en el mismo efecto:
+   * el tool no cobra nada por sí solo, igual que `jugadorNota` tampoco.
+   */
+  aprenderHechizo?: { id: string; source: string };
 }
 
 export interface ContextoEscena {

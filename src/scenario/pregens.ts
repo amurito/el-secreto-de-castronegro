@@ -64,6 +64,7 @@ function make(
     experience: { sessionsSurvived: 0, lastDevelopmentSeq: 0 },
     ringBond: null,
     pendingLuckBonus: 0,
+    spellsKnown: [],
   };
 }
 

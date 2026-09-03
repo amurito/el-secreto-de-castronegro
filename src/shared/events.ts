@@ -90,6 +90,8 @@ export type GameEventType =
   | 'MYTHOS_GAINED'
   | 'LUCK_SPENT'
   | 'LUCK_BONUS_CONSUMED'
+  | 'SPELL_LEARNED'
+  | 'SPELL_CAST'
   | 'RING_BONDED'
   | 'BACKSTORY_REVISED'
   | 'DEVELOPMENT_PHASE_COMPLETED'
@@ -426,6 +428,32 @@ export interface LuckBonusConsumedPayload {
   investigatorId: InvestigatorId;
   bonusDice: number;
   rollId: string;
+}
+
+/** Un hechizo nuevo entra a `Investigator.spellsKnown`, sin probar todavía. */
+export interface SpellLearnedPayload {
+  investigatorId: InvestigatorId;
+  spellId: string;
+  source: string;
+}
+
+/**
+ * Se lanzó un hechizo ya conocido. `provenNow` es `true` sólo la vuelta en
+ * que la tirada de PODER difícil (la primera vez, p. 174) salió bien —de ahí
+ * en más `proven` ya estaba en `true` y no hace falta volver a tirar.
+ *
+ * El costo en PM/PV (desborde uno a uno si no alcanzan los PM) y en Cordura
+ * NO va acá: `toolCastSpell` lo aplica con los mismos tools genéricos que ya
+ * existían (`STAT_CHANGED` para PM/PV, `toolApplySanityLoss` para Cordura),
+ * cada uno con su propio evento — este evento es sólo el marcador de que el
+ * hechizo se probó y, si su efecto es `'bono_dado'`, el dado resultante.
+ */
+export interface SpellCastPayload {
+  investigatorId: InvestigatorId;
+  spellId: string;
+  provenNow: boolean;
+  /** Sólo si el efecto del hechizo es `'bono_dado'`. */
+  bonusDiceTo?: number;
 }
 
 export interface RingBondedPayload {

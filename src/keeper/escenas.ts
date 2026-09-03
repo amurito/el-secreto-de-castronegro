@@ -178,6 +178,9 @@ function aplicarEfecto(
       reliability: efecto.jugadorNota.reliability ?? 'unknown',
     });
   }
+  if (efecto.aprenderHechizo) {
+    run('learn_spell', { spell_id: efecto.aprenderHechizo.id, source: efecto.aprenderHechizo.source });
+  }
   if (efecto.mitos) {
     run('apply_mythos_knowledge', {
       amount: efecto.mitos.amount, source: efecto.mitos.source,

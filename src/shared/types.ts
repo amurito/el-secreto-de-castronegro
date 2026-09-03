@@ -351,6 +351,16 @@ export interface Investigator {
    */
   pendingLuckBonus: number;
 
+  /**
+   * Hechizos aprendidos (`toolLearnSpell`), permanentes como Mitos —
+   * sobreviven a `heredarInvestigador` por el mismo spread que ya hace
+   * permanente al anillo—. `proven` es la regla real del manual (p. 174):
+   * la PRIMERA vez que se lanza un hechizo pide una tirada de PODER difícil;
+   * si sale bien, nunca más vuelve a pedirla. `toolCastSpell` la consulta y
+   * la actualiza.
+   */
+  spellsKnown: Array<{ id: string; proven: boolean }>;
+
   experience: {
     sessionsSurvived: number;
     /**

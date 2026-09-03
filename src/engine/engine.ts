@@ -21,6 +21,7 @@ import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
 import { dieValues, damageDice, generateSeed, commitmentOf } from './rng.ts';
 import { ARMAS, ARMA_POR_ID, dadosQuePide, type Arma } from '../rules/armas.ts';
+import { HECHIZO_POR_ID } from '../rules/hechizos.ts';
 import { OCUPACION_POR_ID } from '../scenario/ocupaciones.ts';
 import { resolverEnfrentamiento, danoDeAtaque, type Defensa } from '../rules/combate.ts';
 import {
@@ -741,6 +742,8 @@ export class Turn {
       switch (name) {
         case 'request_roll': return this.toolRequestRoll(raw);
         case 'spend_luck': return this.toolSpendLuck(raw);
+        case 'learn_spell': return this.toolLearnSpell(raw);
+        case 'cast_spell': return this.toolCastSpell(raw);
         case 'apply_damage': return this.toolApplyDamage(raw);
         case 'resolve_attack': return this.toolResolveAttack(raw);
         case 'resolve_flee': return this.toolResolveFlee(raw);
@@ -991,6 +994,128 @@ export class Turn {
         `Grado: ${DEGREE_LABEL[degree]} — ${success ? 'SUPERA' : 'NO SUPERA'} la dificultad exigida.\n` +
         `Apuesta declarada: ${success ? stakes.onSuccess : stakes.onFailure}\n` +
         `Narrá esta consecuencia. No cambies el número, no lo suavices, no lo contradigas.`,
+    };
+  }
+
+  // ── HECHIZOS ───────────────────────────────────────────────────────────────
+
+  /**
+   * Sólo agrega a `spellsKnown`, sin probar. El COSTO de aprenderlo (Cordura,
+   * típicamente) lo declara la escena que lo enseña con el efecto `cordura`
+   * que ya existía — este tool no cobra nada por sí mismo, igual que
+   * `toolNotePlayerKnowledge` tampoco decide su propio costo.
+   */
+  private toolLearnSpell(raw: Record<string, unknown>): ToolOutcome {
+    const spellId = String(raw.spell_id ?? '');
+    const hechizo = HECHIZO_POR_ID[spellId];
+    if (!hechizo) {
+      return this.reject('learn_spell', raw, `"${spellId}" no es un hechizo que el motor reconozca.`);
+    }
+    const source = String(raw.source ?? '').trim();
+    if (!source) return this.reject('learn_spell', raw, 'Falta `source`: de dónde lo aprendió.');
+
+    const inv = this.investigator;
+    if (inv.spellsKnown.some((h) => h.id === spellId)) {
+      return { ok: true, message: `${inv.name} ya sabía «${hechizo.nombre}».` };
+    }
+
+    this.emit('SPELL_LEARNED', { investigatorId: inv.id, spellId, source });
+
+    return {
+      ok: true,
+      message: `${inv.name} aprende «${hechizo.nombre}» (${source}). Todavía no lo probó: la primera vez ` +
+        `que lo lance va a pedir una tirada de Poder difícil (p. 174).`,
+    };
+  }
+
+  /**
+   * Autocontenido, mismo patrón que `toolResolveAttack`/`toolResolveManeuver`:
+   * llama a `this.toolRequestRoll` DIRECTO cuando hace falta la tirada de la
+   * primera vez, en la misma llamada — no hay, hoy, una pantalla intermedia
+   * donde pausar entre tirar y cobrar (mismo motivo por el que Suerte se
+   * simplificó, ver `toolSpendLuck`). Se invoca desde la pestaña de Hechizos
+   * (`castSpell` en api.local.ts), NO desde el resolvedor de ninguna escena:
+   * por eso el efecto de cada hechizo tiene que ser uno de los dos tipos
+   * genéricos de `rules/hechizos.ts`, nunca contenido de una aventura.
+   */
+  private toolCastSpell(raw: Record<string, unknown>): ToolOutcome {
+    const spellId = String(raw.spell_id ?? '');
+    const hechizo = HECHIZO_POR_ID[spellId];
+    if (!hechizo) {
+      return this.reject('cast_spell', raw, `"${spellId}" no es un hechizo que el motor reconozca.`);
+    }
+    const inv = this.investigator;
+    const conocido = inv.spellsKnown.find((h) => h.id === spellId);
+    if (!conocido) {
+      return this.reject('cast_spell', raw, `${inv.name} no sabe lanzar «${hechizo.nombre}».`);
+    }
+    if (inv.derived.hp <= 0 || inv.status !== 'alive') {
+      return this.reject('cast_spell', raw, 'El investigador está inconsciente o peor: no puede lanzar nada.');
+    }
+
+    // ── La tirada de la primera vez (p. 174). Después de probado, nunca más. ──
+    let provenNow = false;
+    if (!conocido.proven) {
+      const tirada = this.toolRequestRoll({
+        skill: 'POW', difficulty: 'hard',
+        reason: `lanzar «${hechizo.nombre}» por primera vez`,
+        stakes_success: 'el hechizo responde',
+        stakes_failure: 'el hechizo no responde',
+      });
+      if (!tirada.ok) return tirada;
+      if (!this.ctx.lastRollSucceeded) {
+        return {
+          ok: true,
+          message: `${inv.name} intenta «${hechizo.nombre}» por primera vez y no consigue que responda. ` +
+            `No se cobra nada: un lanzamiento fallido no tiene costo (p. 174) — se puede volver a intentar ` +
+            `otro turno.`,
+        };
+      }
+      provenNow = true;
+    }
+
+    // ── Costo: Puntos de Magia, y lo que falte sale de los Puntos de Vida ──
+    // uno a uno (regla del manual, p. 172: sin PM, el hechizo igual sale).
+    const mpFrom = inv.derived.mp;
+    const pagadoConMp = Math.min(hechizo.costoPM, mpFrom);
+    const mpTo = mpFrom - pagadoConMp;
+    this.emit('STAT_CHANGED', {
+      investigatorId: inv.id, stat: 'mp', from: mpFrom, to: mpTo, delta: mpTo - mpFrom,
+      cause: `lanzar «${hechizo.nombre}»`,
+    });
+
+    const resto = hechizo.costoPM - pagadoConMp;
+    if (resto > 0) {
+      const hpFrom = inv.derived.hp;
+      const hpTo = Math.max(0, hpFrom - resto);
+      this.emit('STAT_CHANGED', {
+        investigatorId: inv.id, stat: 'hp', from: hpFrom, to: hpTo, delta: hpTo - hpFrom,
+        cause: `«${hechizo.nombre}» sin Magia suficiente: el resto sale del cuerpo`,
+      });
+    }
+
+    if (hechizo.costoCordura) {
+      this.toolApplySanityLoss({ amount: hechizo.costoCordura, cause: `lanzar «${hechizo.nombre}»` });
+    }
+
+    // ── El efecto: uno de dos tipos genéricos, nunca algo que sepa de una
+    // aventura en particular. Ver la cabecera de rules/hechizos.ts. ──
+    let bonusDiceTo: number | undefined;
+    if (hechizo.efecto === 'bono_dado') {
+      bonusDiceTo = clamp(inv.pendingLuckBonus + hechizo.magnitud, 0, 2);
+    } else if (hechizo.efecto === 'estabilidad') {
+      this.toolApplyStability({ amount: hechizo.magnitud, cause: `lanzar «${hechizo.nombre}»` });
+    }
+
+    this.emit('SPELL_CAST', { investigatorId: inv.id, spellId, provenNow, bonusDiceTo });
+
+    return {
+      ok: true,
+      message:
+        `${inv.name} lanza «${hechizo.nombre}». PM ${mpFrom} → ${mpTo}` +
+        (resto > 0 ? ` (y ${resto} de Puntos de Vida)` : '') + '.' +
+        (provenNow ? ' Queda probado: no vuelve a pedir tirada.' : '') +
+        ` ${hechizo.descripcion}`,
     };
   }
 

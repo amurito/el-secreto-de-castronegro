@@ -256,6 +256,22 @@ button { font-family: inherit; cursor: pointer; }
   margin: -0.25rem 0 0.5rem;
 }
 
+.hechizos { display: flex; flex-direction: column; gap: 0.9rem; }
+.hechizo {
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 3px;
+  padding: 0.8rem 1rem;
+}
+.hechizo-titulo {
+  font-family: var(--serif); font-style: italic; font-size: 0.95rem;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;
+}
+.hechizo-sin-probar {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em;
+  color: var(--exposure); text-transform: uppercase; white-space: nowrap;
+}
+.hechizo-desc { font-size: 0.8rem; color: var(--text-dim); margin: 0.5rem 0; line-height: 1.5; }
+.hechizo-costo { font-family: var(--mono); font-size: 0.65rem; color: var(--text-faint); margin-bottom: 0.6rem; }
+
 .thresholds { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
 .threshold-chip {
   font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em;

@@ -24,6 +24,7 @@ import { SUENO_DEBIDO } from './suenodebido.ts';
 import { ORDEN_DEBIDO } from './ordendebido.ts';
 import { AGUA_BLANCA } from './aguablanca.ts';
 import { EL_VIGESIMO } from './elvigesimo.ts';
+import { LO_QUE_BERNARDO_SABIA } from './loquebernardosabia.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -142,6 +143,18 @@ const ENTRADAS: EntradaCatalogo[] = [
     // Agua Blanca. Los cuatro finales de la 7a llevan acá, cada uno con su
     // propio puente de apertura.
     requiere: ['agua-blanca'],
+    continuacion: true,
+  },
+  {
+    scenario: LO_QUE_BERNARDO_SABIA,
+    cuando: '1928-10-22',
+    epoca: 'Octubre de 1928 · tres semanas después · la Casa de Díaz',
+    duracion: 'Veinte a treinta minutos',
+    // Epílogo corto: cierra el hueco de Magia del ROADMAP (§4) leyendo el
+    // desenlace de El Vigésimo, no encadena nada de contenido nuevo más allá
+    // de eso. `continuacion: true` porque literalmente retoma dónde quedó,
+    // no es una historia que se lea suelta.
+    requiere: ['el-vigesimo'],
     continuacion: true,
   },
 ];

@@ -93,6 +93,8 @@ export function sanitizeForClient(state: GameState): ClientState {
       // Dados de bonificación ya comprados con Suerte, pendientes de tirada.
       // Ver `toolSpendLuck`/`toolRequestRoll` en engine.ts.
       pendingLuckBonus: inv.pendingLuckBonus,
+      // Hechizos aprendidos. Ver `toolLearnSpell`/`toolCastSpell` en engine.ts.
+      spellsKnown: inv.spellsKnown,
       skills: Object.fromEntries(
         Object.entries(inv.skills).filter(([, v]) => v.base > 0).map(([k, v]) => [k, v.base]),
       ),
