@@ -181,10 +181,13 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
       // el Mitos ganado como el «1D4» de Cordura perdida en el fracaso salen
       // del mismo d100 que ya tiró para el chequeo de Cordura, cada uno
       // acotado a su rango —es el formato real de CoC 7e, "1/1D4": pasar
-      // cuesta 1 punto fijo, fallar tira el dado.
+      // cuesta 1 punto fijo, fallar tira el dado. Pifiar da el máximo del
+      // dado (p. 156: "a fumbled Sanity roll results in the character
+      // losing the maximum Sanity points"), no un número derivado del mismo
+      // d100 como cualquier otro fracaso.
       const numero = tirada?.numero ?? 1;
       const mitosGanado = 1 + (numero % 3);
-      const perdidaSiFalla = 1 + (numero % 4);
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 4 : 1 + (numero % 4);
       const comun: EfectoEscena = {
         texto: ['Te arrodillás junto al cuerpo. La espalda encorvada, las muñecas finas, los dientes largos no se acomodan solos cuando ya no hay nadie sosteniéndolos así.'],
         cordura: {
@@ -281,7 +284,8 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     }),
     resolver: ({ tirada }) => {
       const numero = tirada?.numero ?? 1;
-      const perdidaSiFalla = 1 + (numero % 6);
+      // Pifiar da el máximo del dado (p. 156), no el número derivado del d100.
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 6 : 1 + (numero % 6);
       const comun: EfectoEscena = {
         texto: [
           'Cada nicho sellado tiene, además del nombre y las fechas, una figurita tallada apoyada contra la placa —siempre la misma figura, hecha por manos distintas en épocas distintas—. El nicho abierto no tiene ninguna.',

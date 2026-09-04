@@ -25,11 +25,22 @@
  * devuelven son el catálogo de lo que esa escena puede entregar.
  *
  * Es más honesto que leer el código y más barato que jugar mil partidas.
+ *
+ * ─────────────────────────────────────────────────────────────────────────
+ * POR QUÉ VIVE ACÁ Y NO EN `rules/`
+ *
+ * Hasta el 2026-09-03 este archivo vivía en `src/rules/auditoria.ts`. `rules/`
+ * es mecánica pura de CoC 7e y no importa nada del proyecto salvo
+ * `shared/types.ts` (regla de dependencias de CLAUDE.md: rules → engine →
+ * keeper, nunca al revés) — pero este módulo audita ESCENARIOS, así que
+ * necesitaba `Scenario`/`EfectoEscena`/`EscenaAutoral`/`IntencionLeida` de
+ * `scenario/`, un salto que ni siquiera está en esa cadena. Se movió acá,
+ * que es donde conceptualmente vivía siempre.
  */
 
 import type { GameState, Item, Npc, SuccessDegree } from '../shared/types.ts';
-import type { Scenario } from '../scenario/types.ts';
-import type { EfectoEscena, EscenaAutoral, IntencionLeida } from '../scenario/escena.ts';
+import type { Scenario } from './types.ts';
+import type { EfectoEscena, EscenaAutoral, IntencionLeida } from './escena.ts';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // QUÉ DECLARA UN ESCENARIO

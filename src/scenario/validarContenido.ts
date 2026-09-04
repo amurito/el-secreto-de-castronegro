@@ -7,7 +7,7 @@
  * o corriendo la auditoría completa, o nunca. Acá se nota al abrir el juego,
  * con el campo y el id inválido en el mensaje.
  *
- * Es una capa DISTINTA de `rules/auditoria.ts`, y las dos hacen falta:
+ * Es una capa DISTINTA de `auditoria.ts`, y las dos hacen falta:
  *   · esto pregunta «¿esto tiene la forma correcta y sus referencias existen?»
  *   · la auditoría pregunta «¿todo lo declarado tiene camino real en el juego?»
  * Un escenario puede pasar ésta y fallar aquélla (un final bien escrito que

@@ -30,7 +30,7 @@ import { fileStore } from './engine/store.node.ts';
 import {
   loQueDeclara, loQuePuedeEntregar, lugaresInalcanzables,
   conexionesDeIda, objetosPerdidos,
-} from './rules/auditoria.ts';
+} from './scenario/auditoria.ts';
 import type { Scenario } from './scenario/types.ts';
 import type { GameState } from './shared/types.ts';
 

@@ -568,7 +568,20 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
     // texto de esa propiedad ya avisa que conviene no seguir mirando. El
     // jugador elige girarla igual.
     id: 'girar-talla',
-    resolver: () => ({
+    // Tirada de Cordura real (p. 155-156, formato "1/1D4"): esta escena era
+    // flat de antes del rework de Cordura real y no tiene ningún comentario
+    // de "a propósito sin tirada" —a diferencia de `mano` (El Orden Debido)
+    // o `escuchar-cilindro`, más abajo en Agua Blanca—, así que se convierte.
+    prueba: () => ({
+      skill: 'COR', difficulty: 'regular',
+      reason: 'sostener la mirada sobre una instrucción que no debería poder leerse',
+      stakes_success: 'te cuesta menos de lo que podría',
+      stakes_failure: 'te cuesta más de lo que esperabas',
+    }),
+    resolver: ({ tirada }) => {
+      const numero = tirada?.numero ?? 1;
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 4 : 1 + (numero % 4);
+      return {
       texto: [
         'Ya la viste una vez y ya sentiste las ganas de no seguir mirando. La das vuelta igual.',
         'El dibujo no es un dibujo: es una manera de tallar líneas que se juntan en un punto sin perspectiva, como si quien lo hizo hubiera visto ese punto desde un lugar donde las líneas se juntan de verdad.\n\nEntendés, mirándolo, que no es una representación de nada. Es una instrucción. Y entendés, sin querer entenderlo, para qué sirve esa instrucción y por qué el monolito está clavado exactamente donde está.',
@@ -576,7 +589,7 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
       ],
       mitos: { amount: 1, source: 'el reverso de la talla verde del bazar de Herminio, después de que la cara de adelante ya avisara que no valía la pena seguir mirando' },
       cordura: {
-        amount: 3,
+        amount: tirada?.exito ? 1 : perdidaSiFalla,
         cause: 'entender que el dibujo del reverso es una instrucción, no un adorno',
       },
       pista: {
@@ -585,7 +598,8 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
         source: 'el reverso de la talla verde',
         reliability: 'reliable',
       },
-    }),
+      };
+    },
   },
 
   {
@@ -664,7 +678,19 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
       texto: ['Apagás la vela y te quedás mirando un techo de junco, que en la fonda no es de teja y por eso se oye distinto el viento.'],
       tiempo: { minutes: 180, reason: 'tratar de dormir en la fonda' },
     }),
-    resolver: () => ({
+    // Tirada de Cordura real (formato "1/1D6"), mismo criterio que
+    // `girar-talla` más arriba: era flat, sin ninguna nota de "a propósito
+    // sin tirada", así que se convierte.
+    prueba: () => ({
+      skill: 'COR', difficulty: 'regular',
+      reason: 'sostener la mirada en lo que devuelve el saludo',
+      stakes_success: 'te cuesta menos de lo que podría',
+      stakes_failure: 'te cuesta más de lo que esperabas',
+    }),
+    resolver: ({ tirada }) => {
+      const numero = tirada?.numero ?? 1;
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 6 : 1 + (numero % 6);
+      return {
       texto: [
         'No te dormís. A eso de la medianoche un sonido de agua te hace abrir los ojos: no es lluvia, es algo que cae adentro del aljibe una sola vez, como una piedra.',
         'Te asomás a la ventana. El patio está igual que a la tarde: tierra, el brocal de piedra, los caballos quietos.\n\nMenos el aljibe. La superficie está perfectamente inmóvil —sin una onda, y hace un minuto cayó algo ahí adentro— y refleja un cielo con más estrellas de las que hay esta noche sobre Castronegro.',
@@ -678,13 +704,17 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
         reliability: 'unknown',
       }],
       exposicion: { amount: 7, source: 'posada:aljibe', cause: 'un reflejo que no era ni el cielo de esta noche ni el de quien estaba mirando' },
-      cordura: { amount: 4, cause: 'ver que algo, del otro lado del agua, devolvía un saludo que nadie de este lado hizo' },
+      cordura: {
+        amount: tirada?.exito ? 1 : perdidaSiFalla,
+        cause: 'ver que algo, del otro lado del agua, devolvía un saludo que nadie de este lado hizo',
+      },
       contradiccion: {
         description: 'El aljibe de la fonda quedó perfectamente inmóvil justo después de que algo cayera adentro, y reflejó un cielo distinto del real. Ningún aljibe hace ninguna de las dos cosas, y éste hizo las dos juntas.',
         between: 'lo que tendría que hacer un pozo de agua / lo que hizo éste',
       },
       pregunta: '¿Del otro lado de qué está mirando esa forma, si del lado de acá no hay nadie?',
-    }),
+      };
+    },
   },
 
   // ══ DESENLACES ════════════════════════════════════════════════════════════

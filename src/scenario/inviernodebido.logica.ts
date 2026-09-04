@@ -343,7 +343,20 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
 
   {
     id: 'leer-procedimiento',
-    resolver: ({ estado }) => {
+    // Tirada de Cordura real (formato "2/1D6"): era flat, sin ninguna nota
+    // de "a propósito sin tirada", así que se convierte —mismo criterio que
+    // `girar-talla`/`noche-posada` en Agua Blanca—. El éxito paga más (2, no
+    // 1) que en esas dos porque el peso de la escena no cambia con la
+    // tirada: el `mitos`/recorte de techo y la `crisis` siguen igual.
+    // `null` en la segunda lectura: no hace falta volver a tirar por algo
+    // que ya se leyó.
+    prueba: (s) => (pista(s, 'leyó la cuarta hoja') ? null : ({
+      skill: 'COR', difficulty: 'regular',
+      reason: 'entender para qué sirve, con Aurelio mirando',
+      stakes_success: 'te cuesta menos de lo que podría',
+      stakes_failure: 'te cuesta más de lo que esperabas',
+    })),
+    resolver: ({ estado, tirada }) => {
       if (pista(estado, 'leyó la cuarta hoja')) {
         return {
           texto: [
@@ -351,6 +364,8 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
           ],
         };
       }
+      const numero = tirada?.numero ?? 1;
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 6 : 1 + (numero % 6);
       return {
         texto: [
           'Las tres primeras hojas son instrucciones y las leés de corrido, casi con alivio: cuándo, con qué, dónde, cuánto, quién. La única línea que se sale del tono es la última, y es una línea de manual: «No se dice nada mientras se pinta. Lo que se diga se anota igual».',
@@ -370,7 +385,7 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
         // siempre y para todas las aventuras que vengan después.
         mitos: { amount: 4, source: 'la cuarta hoja del procedimiento, que Aurelio le pidió que no diera vuelta' },
         cordura: {
-          amount: 4,
+          amount: tirada?.exito ? 2 : perdidaSiFalla,
           cause: 'entender para qué sirve',
           crisis: {
             nombre: 'Lo que se lee una sola vez',

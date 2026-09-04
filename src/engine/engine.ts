@@ -1896,10 +1896,14 @@ export class Turn {
       : '';
     let note = '';
 
-    // CoC 7e p. 166: cinco o más puntos de Cordura en un solo golpe es una
-    // crisis de locura temporal, automática. En modo IA el Keeper podía
-    // narrarla y olvidarse de aplicarla; en modo motor no hay nadie que la
-    // note si el motor no la aplica. Se aplica sola, igual que ★ arriba.
+    // CoC 7e p. 166: cinco o más puntos de Cordura en un solo golpe obliga a
+    // tirar INT — no es automático, es el Keeper pidiendo esa tirada. Si sale
+    // bien, el investigador aguanta el golpe sin perder el control ahí mismo
+    // (puede seguir arrastrando locura indefinida más adelante, pero eso es
+    // otro mecanismo — acá sólo decide si la crisis se manifiesta YA). Se
+    // tira con `tiradaInterna`, el mismo camino que ya usa la CON de Herida
+    // Grave: fuerza el dado sin contar contra el límite de una tirada por
+    // intención, porque el Keeper la pide, no el jugador.
     if (to === 0 && from > 0) {
       this.emit('INVESTIGATOR_WENT_INSANE', {
         investigatorId: inv.id,
@@ -1908,31 +1912,42 @@ export class Turn {
       note = ' CORDURA EN 0: LOCURA INDEFINIDA. El investigador queda fuera de juego como personaje jugable — ' +
         'es el mismo cierre que la muerte, aunque no lo sea. No lo deshagas, no lo suavices.';
     } else if (from - to >= 5) {
-      // Si quien pidió la pérdida declaró una fobia o manía concreta, se
-      // lleva esa en vez de la genérica. El motor decide SI cruza el piso
-      // —la Exposición alta suma de más y quien pide la pérdida no puede
-      // saber cuánto de antemano— pero QUÉ se lleva puede venir declarado.
-      const nombre = String(raw.crisis_name ?? '').trim() || 'Crisis de locura temporal';
-      const descripcion = String(raw.crisis_description ?? '').trim()
-        || `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final de la ` +
-           'escena, y lo que haga durante ella no es enteramente decisión suya.';
-      const tipo = String(raw.crisis_kind ?? 'mental') as Condition['kind'];
-      const skillModifiers: NonNullable<MechanicalEffect['skillModifiers']> = [];
-      for (const n of [1, 2] as const) {
-        const skill = String(raw[`crisis_skill_${n}`] ?? '').trim();
-        const dice = Number(raw[`crisis_dice_${n}`] ?? 0);
-        if (skill && dice !== 0) skillModifiers.push({ skill: skill as SkillId, dice });
+      const int = this.tiradaInterna(
+        inv.id, inv.name, 'INT (crisis)', inv.characteristics.INT,
+        'no perder el control de golpe, aunque el golpe haya sido fuerte',
+      );
+      if (meetsDifficulty(int.degree, 'regular')) {
+        note = ` Perdió ${from - to} de golpe y el manual pide tirar INT para ver si la crisis se manifiesta ` +
+          'ahora mismo: la INT aguanta. No hay crisis inmediata.';
+      } else {
+        // Si quien pidió la pérdida declaró una fobia o manía concreta, se
+        // lleva esa en vez de la genérica. El motor decide SI cruza el piso
+        // —la Exposición alta suma de más y quien pide la pérdida no puede
+        // saber cuánto de antemano— pero QUÉ se lleva puede venir declarado.
+        const nombre = String(raw.crisis_name ?? '').trim() || 'Crisis de locura temporal';
+        const descripcion = String(raw.crisis_description ?? '').trim()
+          || `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final de la ` +
+             'escena, y lo que haga durante ella no es enteramente decisión suya.';
+        const tipo = String(raw.crisis_kind ?? 'mental') as Condition['kind'];
+        const skillModifiers: NonNullable<MechanicalEffect['skillModifiers']> = [];
+        for (const n of [1, 2] as const) {
+          const skill = String(raw[`crisis_skill_${n}`] ?? '').trim();
+          const dice = Number(raw[`crisis_dice_${n}`] ?? 0);
+          if (skill && dice !== 0) skillModifiers.push({ skill: skill as SkillId, dice });
+        }
+        this.aplicarCondicion({
+          name: nombre,
+          description: descripcion,
+          kind: tipo,
+          temporary: true,
+          ...(skillModifiers.length ? { mechanicalEffect: { skillModifiers } } : {}),
+        });
+        note = skillModifiers.length
+          ? ` Pérdida de 5 o más en un golpe, y la INT no aguantó: se lleva «${nombre}», con efecto real en ` +
+            'tiradas futuras — ver la ficha.'
+          : ' Pérdida de 5 o más en un golpe, y la INT no aguantó: crisis de locura temporal aplicada — ver la ' +
+            'condición en la ficha.';
       }
-      this.aplicarCondicion({
-        name: nombre,
-        description: descripcion,
-        kind: tipo,
-        temporary: true,
-        ...(skillModifiers.length ? { mechanicalEffect: { skillModifiers } } : {}),
-      });
-      note = skillModifiers.length
-        ? ` Pérdida de 5 o más en un golpe: se lleva «${nombre}», con efecto real en tiradas futuras — ver la ficha.`
-        : ' Pérdida de 5 o más en un golpe: crisis de locura temporal aplicada — ver la condición en la ficha.';
     }
 
     return { ok: true, message: `Cordura ${from} → ${to} de ${inv.derived.maxSan}${extraNote}.${note}` };

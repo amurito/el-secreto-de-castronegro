@@ -3050,6 +3050,114 @@ ficha —agregado con Suerte, §3.2-trigies— decía siempre "comprado con
 Suerte"; ahora que un hechizo también lo deja pendiente, el aviso pasó a
 ser genérico.
 
+**Hueco encontrado el mismo día, jugándolo: los PM no se restauran en
+ningún lado.** El manual dice 1 PM por hora sin pasar de POD/5
+(`derived.maxMp`); acá `advanceTimeBy` no toca `mp`, `sleep()` (el verbo
+"dormir", casi vestigial: ningún botón de ninguna aventura lo dispara)
+tampoco, y `heredarInvestigador` resetea PV al máximo al pasar de aventura
+pero deja los PM tal cual quedaron. Hoy es un recurso de una sola
+dirección: sólo baja. No se anotó como simplificación consciente en el
+plan original —se pasó—; queda pendiente para cuando se retome Magia.
+
+### 3.2-duotrigies `rules/auditoria.ts` se muda, y la Cordura se acerca más al manual
+
+Tres arreglos puntuales, el mismo día que Magia, a partir de repasar el
+mecanismo de Cordura contra el texto real del manual (p. 155-156).
+
+**`auditoria.ts` se muda de `rules/` a `scenario/`.** Vivía en `rules/`
+desde siempre, pero auditaba ESCENARIOS —necesitaba `Scenario`,
+`EfectoEscena`, `EscenaAutoral`, `IntencionLeida`, todos de `scenario/`—,
+un salto (`rules → scenario`) que ni siquiera está en la cadena de
+dependencias del proyecto (`rules → engine → keeper`). Eran `import type`,
+así que no armaba un ciclo real en tiempo de ejecución, pero conceptualmente
+"mecánica pura de CoC 7e" no debería depender de la capa de contenido.
+Un solo importador (`prueba-auditoria.ts`), migración sin riesgo.
+
+**Pifiar una tirada de Cordura ahora da la pérdida MÁXIMA del dado, no un
+número derivado del mismo d100.** El manual (p. 156) es explícito: "a
+fumbled Sanity roll results in the character losing the maximum Sanity
+points". Las dos escenas que ya usaban el formato real "1/1DX" (el cadáver
+del guardián y los nichos del mausoleo, ambas en El Vigésimo) calculaban
+la pérdida del fallo con `numero % 4`/`% 6` —una forma de evitar una
+segunda tirada, ya que el motor sólo admite una por intención— pero eso
+trataba una pifia igual que cualquier fallo mediocre. Ahora, si
+`tirada.grado === 'fumble'`, la pérdida es directamente el máximo (4 o 6).
+
+**La crisis de 5+ deja de ser automática: pide una tirada de INT real,
+como dice el manual (p. 166).** Antes, perder 5 o más de un golpe aplicaba
+la crisis de locura temporal sola —documentado a propósito como
+simplificación, "no hay Keeper en vivo que la note si el motor no la
+aplica"—. Ahora `toolApplySanityLoss` tira INT con `tiradaInterna` (mismo
+camino que ya usa la CON de Herida Grave: la tirada la fuerza el motor,
+no cuenta contra el límite de una tirada por intención). Si la INT
+aguanta, no hay crisis inmediata —el golpe igual bajó la Cordura—; si no
+aguanta, se aplica la crisis como antes, con la fobia/manía que la escena
+haya declarado. **Deliberadamente no se tocó nada más de la página**: la
+"pérdida de control" genérica en CUALQUIER tirada fallida (saltar, gritar,
+soltar algo) se dejó afuera a pedido explícito —la prosa de cada escena ya
+cubre su propio fallo, y una línea de sabor automática sonaría repetida
+sin un Keeper narrando en vivo.
+
+Esto rompió tres suites que asumían la crisis de 5+ como incondicional con
+semilla fija (`prueba-cordura.ts`, `prueba-fobias.ts` dos veces): se
+arreglaron probando varias semillas hasta encontrar una de cada resultado
+—INT aguanta / INT no aguanta—, mismo criterio que ya usaba
+`prueba-suerte.ts` para no depender de qué toca en un d100 concreto.
+
+**Sigue pendiente, y es más grande:** de las ~17 pérdidas de Cordura de
+todo el juego, sólo estas dos usan una tirada de Cordura real —el resto
+son automáticas o escaladas por el grado de otra tirada—. Convertir más
+de esas a tiradas reales fue pedido explícitamente y queda para una
+sesión de plan mode dedicada: toca contenido ya publicado de ocho
+aventuras, escena por escena, con criterio propio en cada una.
+
+### 3.2-tretrigies Cinco pérdidas de Cordura más pasan a tirada real
+
+Continúa §3.2-duotrigies, mismo día: de las ~17 pérdidas de Cordura de
+todo el juego, sólo 2 (El Vigésimo) usaban una tirada de Cordura real.
+Se convirtieron cinco más, con criterio explícito por caso —confirmado
+con el usuario antes de tocar contenido ya publicado de tres aventuras—:
+
+**Se convirtieron (formato real "X/YDZ", con la pifia = máximo del dado
+ya arreglada en §3.2-duotrigies):**
+- `girar-talla` (Agua Blanca): 3 fijo → 1/1D4. El `mitos: {amount: 1}` de
+  la misma escena sigue automático, sin tocar.
+- `noche-posada` (Agua Blanca): 4 fijo → 1/1D6.
+- `leer-procedimiento` (El Invierno Debido): 4 fijo → 2/1D6 —el éxito
+  paga más que en las otras dos porque el peso de la escena no cambia
+  con la tirada: el `mitos: {amount: 4}` con recorte PERMANENTE del techo
+  de Cordura (99 − Mitos, para toda campaña futura) y la `crisis` ya
+  declarada siguen exactamente igual.
+- `hoja-agarrar` y `hoja-preguntar` (El Sueño Debido): estas dos YA tiraban
+  un dado propio (Ocultismo y Psicología) pero cobraban 3 de Cordura fijos
+  pasara lo que pasara. El motor sólo admite una tirada por intención, así
+  que no se les podía sumar una tirada de Cordura aparte: se reusó la
+  MISMA tirada para escalar el monto (éxito 1 / fallo 1D4), mismo patrón
+  que ya usaban `fin-preguntar` (Tercer Umbral) y `cruzar` (El Orden
+  Debido) desde antes. En `hoja-preguntar` la escala usa `tirada?.exito`
+  crudo, no el `exito` combinado con el breviario que la escena ya usaba
+  para las pistas: el breviario ayuda a ENTENDER, no cambia cuánto golpea
+  psicológicamente la escena.
+
+**Se dejaron como están, a propósito:**
+- `mano` (El Orden Debido) y `escuchar-cilindro` (Agua Blanca): las dos
+  tienen un comentario EXPLÍCITO de una sesión anterior diciendo que la
+  falta de tirada es deliberada ("a propósito NO tiene tirada" / "el
+  costo no depende de entender bien, sólo de escuchar"). Pisar esa
+  decisión sin motivo nuevo no correspondía.
+- `granero-craneos` (Agua Blanca): la Cordura sólo se cobra si la tirada
+  de Descubrir YA declarada tiene éxito —fallarla no expone al
+  investigador a los cráneos en absoluto, así que no es el mismo caso que
+  una pérdida flat—. Convertirla exigiría partir la escena en dos
+  acciones (buscar, después mirar), fuera de alcance de esta pasada.
+- El costo del anillo (El Vigésimo, 8 fijo) y los tres costos de aprender
+  hechizos (Lo que Bernardo sabía, §3.2-untrigies): precio de una
+  decisión ya tomada, no percepción de horror — mismo criterio que
+  Mitos, que tampoco tira dados.
+
+Probado en `prueba:agua-blanca`, `prueba:invierno`, `prueba:sueno` y
+`prueba:auditoria`; ninguna de las tres suites necesitó tocarse.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

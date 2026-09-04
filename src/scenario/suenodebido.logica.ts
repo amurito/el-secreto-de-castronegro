@@ -786,7 +786,15 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           : {}),
       };
     },
-    resolver: ({ tirada, estado }) => ({
+    resolver: ({ tirada, estado }) => {
+      const numero = tirada?.numero ?? 1;
+      // Reusa la MISMA tirada de Ocultismo de arriba para escalar la
+      // Cordura —el motor sólo admite una tirada por intención, así que no
+      // se le puede sumar una tirada de Cordura aparte—, mismo patrón que
+      // ya usan `fin-preguntar` (Tercer Umbral) y `cruzar` (El Orden
+      // Debido). Antes era 3 fijo pasara lo que pasara.
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 4 : 1 + (numero % 4);
+      return {
       texto: [
         'La levantás.',
         tirada?.exito
@@ -806,7 +814,7 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       exposicion: { amount: 8, source: 'sueno:quinta-hoja', cause: 'una hoja que no está cosida a las otras' },
       estabilidad: { amount: -5, cause: 'que alguien de 1878 pregunte si uno ya está anotado' },
       cordura: {
-        amount: 3,
+        amount: tirada?.exito ? 1 : perdidaSiFalla,
         cause: 'la quinta hoja, y la pregunta del que la estaba escribiendo',
       },
       pistas: [{
@@ -826,7 +834,8 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
           },
         }
         : {}),
-    }),
+      };
+    },
   },
 
   {
@@ -844,6 +853,12 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
     }),
     resolver: ({ tirada, estado }) => {
       const exito = Boolean(tirada?.exito) || conBreviario(estado);
+      const numero = tirada?.numero ?? 1;
+      // Escala sobre la tirada REAL de Psicología, no sobre `exito`
+      // combinado con el breviario: el breviario ayuda a ENTENDER, no
+      // cambia cuánto golpea psicológicamente la escena. Mismo criterio
+      // que `hoja-agarrar`, más arriba.
+      const perdidaSiFalla = tirada?.grado === 'fumble' ? 4 : 1 + (numero % 4);
       return {
       texto: [
         'Le preguntás quién es, antes de tocar nada. La pluma no se detiene.',
@@ -855,7 +870,7 @@ export const SUENO_DEBIDO_LOGICA: LogicaDeEscenas = [
       exposicion: { amount: 8, source: 'sueno:quinta-hoja', cause: 'una hoja que no está cosida a las otras' },
       estabilidad: { amount: -5, cause: 'que alguien de 1878 pregunte si uno ya está anotado' },
       cordura: {
-        amount: 3,
+        amount: tirada?.exito ? 1 : perdidaSiFalla,
         cause: 'la quinta hoja, y la pregunta del que la estaba escribiendo',
       },
       pistas: [
