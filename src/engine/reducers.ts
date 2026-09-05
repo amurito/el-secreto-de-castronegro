@@ -635,7 +635,19 @@ function renderDocument(d: DiegeticDocument): string {
 function initFromCreation(ev: GameEvent): GameState {
   const p = ev.payload as P.CampaignCreatedPayload;
   const investigators: Record<string, Investigator> = {};
-  for (const inv of p.investigators) investigators[inv.id] = inv;
+  // Retrocompatibilidad: campañas guardadas antes de Suerte/Magia tienen un
+  // CAMPAIGN_CREATED persistido sin estos dos campos — el fold es del log
+  // crudo, no del tipo actual, así que sin este backfill revientan acá
+  // (reportado jugando, 2026-09-14: "Cannot read properties of undefined
+  // (reading 'length')" en `inv.spellsKnown.length`, en una campaña vieja
+  // que llegó a la décima aventura).
+  for (const inv of p.investigators) {
+    investigators[inv.id] = {
+      ...inv,
+      spellsKnown: inv.spellsKnown ?? [],
+      pendingLuckBonus: inv.pendingLuckBonus ?? 0,
+    };
+  }
   const items: Record<string, Item> = {};
   for (const it of p.items) items[it.id] = it;
   const npcs: Record<string, Npc> = {};
