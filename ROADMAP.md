@@ -3188,6 +3188,79 @@ aprendió de alguien que a su vez lo aprendió de otro. No resuelve nada
 de Bernardo, siguiendo la regla de oro del canon (v0.7 §15: más cerca de
 la verdad, más información y menos certeza).
 
+### 3.2-quinquatrigies El Hombre que Miraba el Agua — la décima, y la primera hacia atrás
+
+Nueve aventuras llegaron hasta 1928 y el canon no deja continuación hacia
+adelante: la biblia proponía una y §3.2-octodecies la descartó por superada.
+Lo que sí queda abierto es hacia ATRÁS. Ésta es la primera aventura del
+proyecto ambientada antes de 1924: una tarde de noviembre de 1679, en la
+orilla de la laguna donde al año siguiente se funda el pueblo.
+
+**No es viaje en el tiempo.** El Umbral **no** es una puerta física
+(invariante dura de CANON.md). Es una VISIÓN EXTENDIDA recibida en 1928 —
+lo que el canon sí dice que el anillo y el agua hacen: «recibir fragmentos
+de otros puntos temporales» (v0.7 §5.2), «reflejar otros momentos» (§1.3).
+Por eso la entrada del catálogo está **fechada en 1928 y no en 1679**: el
+catálogo ordena por fecha diegética y una entrada de 1679 aparecería antes
+que Agua Quieta en la pantalla de inicio (spoiler estructural), además de
+romper `mesesEntre`, que da 0 con fechas hacia atrás.
+
+**Se juega con el propio investigador**, con su ficha y su inventario
+adentro de la visión — no en el cuerpo de Bernardo. Además de ser la
+decisión narrativa (sos testigo, no protagonista de su error), evita tocar
+el motor: `investigadoresDe` hace que al continuar campaña gane el
+investigador anterior, así que una aventura encadenada no puede imponer
+protagonista propio sin un campo nuevo. Cero cambios de motor.
+
+**Lo que entrega, y que ninguna otra aventura entregaba:**
+- **Bernardo antes de ser Bernardo.** El canon nunca lo llamó brujo: lo
+  llama un intérprete con textos (§7). Acá llega como un letrado con plata
+  y papeles ajenos, a verificar un documento, con un socio Villeira-Pereira
+  (la otra familia fundadora, ya canon en Agua Blanca). El brujo de
+  trescientos años es el RESULTADO: dos siglos y medio de un hombre que no
+  se muere, leyendo y leyendo mal.
+- **Su primer error, en vivo.** El agua le muestra una mano tomando un
+  anillo; él lo lee como una indicación dirigida a él y entra a sacarlo del
+  fondo. Encuentra el anillo ya hecho —invariante dura, y ya publicado en
+  El Vigésimo— y nunca se resuelve si el agua lo llamó o si leyó mal un
+  reflejo. Es exactamente el error que va a repetir 300 años.
+- **El origen del Círculo Rojo.** Éste es un cambio de canon deliberado
+  sobre lo que §3.2-octodecies había dejado separado a propósito: ahora la
+  obligación administrativa del siglo XIX-XX SÍ desciende de algo del
+  XVII — grabar el límite y anotar lo que no se puede anotar en otro lado.
+  El puente ya estaba publicado y sin explicar: el círculo grabado bajo la
+  pintura del mojón de El Invierno Debido, «más viejo, más chico y más
+  profundo de lo que se puede rayar con un cuchillo». **No se gatea por
+  estado** —las pistas no cruzan entre aventuras, sólo las consecuencias
+  permanentes—, así que la conexión la ata el jugador y no el motor: va por
+  `jugadorNota`, la sección «Aparte» de la ficha.
+- **Reciprocidad literal** (§2, «quien mira puede ser mirado»): Bernardo
+  levanta la vista del anillo recién sacado del agua y **te ve**, y mira
+  alrededor tuyo como si vieras un grupo entero — que es el bucle canónico
+  §6 desde el otro lado. Le servís de prueba. Es el golpe de Cordura más
+  caro de la aventura.
+- Tercer hechizo original, «Contar lo que no se puede anotar», aprendido de
+  los papeles del baúl — literalmente el gesto del que baja el Círculo Rojo.
+  Más Mitos, más pistas, y consecuencias permanentes por cada desenlace.
+
+**Lo sellado sigue sellado**, y `prueba-hombre-agua.ts` lo verifica sobre
+el texto real de la aventura: los papeles dicen «recuperado», nunca «hecho
+por»; la cadena de copias no tiene principio anotado; no se nombra al
+Primer Rostro ni al Archivista.
+
+**Dos bugs encontrados de paso, los dos de la familia «declarado y no
+entregado»:**
+- `girar-talla` y `escuchar-cilindro`, en Agua Blanca, declaraban su pista
+  con **`pista` en singular**, que el motor de ESCENAS ignora — sólo lo lee
+  el de conversaciones (`social.ts:64`). Las dos pistas estaban declaradas
+  y sin entregar desde que se escribió la aventura, y la auditoría no las
+  vio porque la declaración vivía en el código de la escena y no en el
+  JSON. Corregidas a `pistas`.
+- Las `claves` de un tema se comparan **crudas** contra el texto ya
+  normalizado (`temaPorFrase`), así que cualquier clave con tilde no
+  matchea nunca. Las cinco de esta aventura nacieron con tilde; la
+  auditoría las cazó antes de publicar.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

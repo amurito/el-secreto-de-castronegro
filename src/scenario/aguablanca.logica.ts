@@ -592,12 +592,18 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
         amount: tirada?.exito ? 1 : perdidaSiFalla,
         cause: 'entender que el dibujo del reverso es una instrucción, no un adorno',
       },
-      pista: {
+      // `pistas`, en plural. En singular el motor de ESCENAS la ignora
+      // —`efecto.pista` sólo lo lee el de conversaciones, social.ts:64— así
+      // que esta pista estuvo declarada y sin entregar desde que se escribió
+      // la aventura. Misma familia de bug que persigue `scenario/auditoria.ts`,
+      // que no la vio porque la declaración vivía en el código de la escena y
+      // no en el JSON.
+      pistas: [{
         description: 'El reverso de la talla verde no es decorativo: es una instrucción de tallado que explica por qué el monolito está clavado exactamente donde está, no en otro punto del campo.',
         kind: 'physical',
         source: 'el reverso de la talla verde',
         reliability: 'reliable',
-      },
+      }],
       };
     },
   },
@@ -654,12 +660,13 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
         'Dura menos de un minuto. Cuando termina, Herminio levanta la aguja sin que se lo pidas, y durante un segundo los dos se quedan mirando el cilindro en silencio, como si acabaran de hacer algo que no se puede deshacer poniendo la aguja al principio otra vez.',
       ],
       cordura: { amount: 1, cause: 'un canto que no lo canta nada con pulmones' },
-      pista: {
+      // `pistas`, en plural: ver el comentario de `girar-talla` más arriba.
+      pistas: [{
         description: 'El cilindro de cera del bazar de Herminio contiene un canto en una lengua irreconocible, cantado por algo que no respira como algo que canta debería respirar.',
         kind: 'experiential',
         source: 'el fonógrafo del bazar',
         reliability: 'reliable',
-      },
+      }],
     }),
   },
 

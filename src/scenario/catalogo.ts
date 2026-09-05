@@ -25,6 +25,7 @@ import { ORDEN_DEBIDO } from './ordendebido.ts';
 import { AGUA_BLANCA } from './aguablanca.ts';
 import { EL_VIGESIMO } from './elvigesimo.ts';
 import { LO_QUE_BERNARDO_SABIA } from './loquebernardosabia.ts';
+import { EL_HOMBRE_QUE_MIRABA_EL_AGUA } from './hombreagua.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -154,6 +155,19 @@ const ENTRADAS: EntradaCatalogo[] = [
     // desenlace de El Vigésimo, no encadena nada de contenido nuevo más allá
     // de eso. `continuacion: true` porque literalmente retoma dónde quedó,
     // no es una historia que se lea suelta.
+    requiere: ['el-vigesimo'],
+    continuacion: true,
+  },
+  {
+    scenario: EL_HOMBRE_QUE_MIRABA_EL_AGUA,
+    // FECHADA EN 1928, NO EN 1679, a propósito. Lo que se juega transcurre en
+    // 1679, pero el HECHO —recibir la visión— pasa en 1928, y el catálogo
+    // ordena por esta fecha: una entrada de 1679 aparecería antes que Agua
+    // Quieta en la pantalla de inicio, que es un spoiler estructural y además
+    // rompería `mesesEntre` (da 0 con fechas hacia atrás).
+    cuando: '1928-11-12',
+    epoca: 'Noviembre de 1928 · una visión de 1679',
+    duracion: 'Treinta a cuarenta minutos',
     requiere: ['el-vigesimo'],
     continuacion: true,
   },

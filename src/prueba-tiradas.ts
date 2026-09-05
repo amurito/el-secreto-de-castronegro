@@ -158,7 +158,17 @@ async function main() {
       // El Vigésimo (ponerse el anillo, destruirlo, o ninguna de las dos).
       // La escena rama por `consecuencia`, no por dado — pedir una tirada acá
       // sería decir que a veces el investigador no se acuerda de qué hizo.
-      && !/bernardo dej/i.test(f.etiqueta),
+      && !/bernardo dej/i.test(f.etiqueta)
+      // "Mirar el agua", en El Hombre que Miraba el Agua: es la escena de
+      // apertura de la visión, y lo que el agua devuelve depende de con qué
+      // final se cerró El Vigésimo, no de mirar mejor. Un dado acá podría
+      // dejar a alguien sin el beat que abre la aventura entera.
+      && !/^Mirar el agua$/i.test(f.etiqueta)
+      // "Quedarte a ver qué hace", misma aventura: mirar a un hombre durante
+      // una hora no es una habilidad. Hace lo que hace, se lo mire bien o
+      // mal, y lo que importa —POR QUÉ entra al agua— está en lo que dijo
+      // antes, no en lo que se alcance a percibir mientras entra.
+      && !/^Quedarte a ver qué hace$/i.test(f.etiqueta),
   );
   for (const f of examinarSinDado) console.log(`   ⚠ ${f.aventura}: «${f.etiqueta}» sin tirada`);
   check('examinar algo siempre pide un dado, salvo procedimientos de resultado determinado',

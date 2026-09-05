@@ -1,0 +1,477 @@
+{
+  "id": "el-hombre-que-miraba-el-agua",
+  "title": "El Hombre que Miraba el Agua",
+  "surfacePremise": "Algo —el rubí en la mano, o el agua de cualquier pozo, según lo que haya quedado después de la Casa de Díaz— muestra una tarde que no es de ahora: una laguna blanca en un campo sin pueblo, y un hombre parado en la orilla que lleva nueve años midiéndole el nivel al agua.",
+  "items": [
+    {
+      "id": "it-libreta-medidas",
+      "name": "Libreta de medidas",
+      "aliases": ["libreta", "la libreta", "libreta de medidas", "cuaderno"],
+      "shortDescription": "Una libreta de tapas de cuero, abierta sobre un cajón. Columnas de números con fecha: el nivel del agua, día por día, durante nueve años. No falta ni un día.",
+      "owner": "campamento",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-bernardo-1679",
+      "name": "Bernardo",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Cuarenta y pocos años, la ropa cara gastada de estar nueve años en un campo sin nadie que la vea. Habla en voz alta mirando el agua. No te mira a vos: no puede.",
+      "motivation": "Terminar de entender qué es esto antes de que se le acabe la plata o la paciencia del socio.",
+      "fears": ["Haber gastado nueve años en un charco de sal."],
+      "refusals": ["No admite en voz alta que puede estar leyendo mal."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-villeira",
+      "name": "Villeira-Pereira",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "El socio. Puso la mitad de la plata y ninguna de las ideas, y hace tres años que viene diciendo que se vuelve. Sigue sin volverse.",
+      "motivation": "Recuperar algo de lo puesto, o al menos entender en qué lo puso.",
+      "fears": ["Que Bernardo tenga razón."],
+      "refusals": ["No se acerca a la piedra. Ni una vez en nueve años."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-inventario",
+      "title": "Inventario, en otra letra",
+      "author": "sin firma",
+      "date": "entre 1650 y 1675, sin año exacto",
+      "location": "Entre los papeles del campamento",
+      "kind": "ledger",
+      "content": "Recuperado de la casa del sur:\n\nUn (1) aro de metal blanco, sin piedra, partido. No sirve.\nUn (1) aro con piedra roja, entero. Responde.\nDos (2) aros de cobre, con piedra de vidrio. No responden. Se descartan.\nSiete (7) hojas de instrucción, copiadas de las hojas del padre S. Falta la cuarta.\n\nDe los siete que empezaron quedan dos. No se anota por qué, se anota que quedan dos.\n\nEl que responde no se manda por correo ni se lleva encima más de una jornada seguida. Se deja donde se lo encontró, o lo más parecido que haya. Nadie explicó nunca por qué y todos lo cumplieron.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+    },
+    {
+      "id": "doc-instruccion",
+      "title": "Hoja de instrucción, copiada",
+      "author": "copia de mano de Bernardo sobre un original sin firma",
+      "date": "copiada en 1669",
+      "location": "Entre los papeles del campamento",
+      "kind": "note",
+      "content": "…y donde el agua queda blanca en la orilla y quieta sin viento, el reflejo puede adelantarse. No es el agua: es el lugar. El agua nada más lo muestra.\n\nMarcar el límite con un círculo cerrado, grabado y no pintado, porque la pintura se va y el asunto no.\n\nAnotar lo que se vea aunque no se entienda, y sobre todo lo que no pueda anotarse en otro lado. El que viene después no va a tener más que eso.\n\nNo pedirle nada. No es de los que dan.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+    }
+  ],
+  "locations": {
+    "orilla": {
+      "id": "orilla",
+      "name": "La orilla del agua blanca",
+      "aliases": ["orilla", "la orilla", "laguna", "el agua", "agua blanca"],
+      "description": "Una laguna baja en un campo llano que no termina en ninguna parte. El borde está encostrado de blanco —sal, la misma que deja el ganado alrededor de cualquier bañado de esta pampa— y por eso el agua se ve blanca desde lejos. De cerca es agua nomás.\n\nEstá completamente quieta, y no hay viento que explique lo contrario ni viento que explique esto.\n\nUn hombre de unos cuarenta años está parado en la orilla, con una libreta cerrada en la mano, mirándola. No te mira a vos.",
+      "atmosphere": [
+        "No hay pueblo. No hay camino. Hay una carreta a media legua y humo de un fuego chico.",
+        "El agua no devuelve el cielo que hay: devuelve uno parecido, con la luz un poco más tarde.",
+        "El hombre habla en voz alta cada tanto, sin dirigirse a nadie que esté."
+      ],
+      "connections": ["campamento", "piedra"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-bernardo-1679"],
+      "visited": false,
+      "umbralIntensity": 9,
+      "features": [
+        {
+          "id": "f-estacas",
+          "names": ["estacas", "las estacas", "estaca"],
+          "description": "Una fila de estacas clavadas entrando en el agua, con muescas talladas a distintas alturas.",
+          "closerLook": "Nueve años de muescas. La mano que las talló fue firme todo el tiempo, incluso en los tramos donde la última muesca y la anterior están a un dedo de distancia y no cambia nada. Es el trabajo de alguien que mide porque medir es lo único que sabe hacer con lo que no entiende.",
+          "examineSkill": "descubrir",
+          "exposure": 2,
+          "clue": {
+            "description": "El hombre de la orilla lleva nueve años midiendo el nivel de la laguna, día por día, sin faltar uno solo. Mide porque medir es lo único que sabe hacer con lo que no entiende.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-costra",
+          "names": ["costra", "la costra", "sal", "borde blanco"],
+          "description": "La costra blanca del borde, dura, que cruje si se la pisa.",
+          "closerLook": "Es sal. Nada más que sal, de la que deja cualquier bañado que se seca y se vuelve a llenar cien veces. Lo raro no es la sal: lo raro es que estás mirando un charco de agua salada en el medio de la nada y hace un minuto estabas en 1928.",
+          "examineSkill": "descubrir",
+          "exposure": 1
+        }
+      ]
+    },
+    "campamento": {
+      "id": "campamento",
+      "name": "El campamento",
+      "aliases": ["campamento", "el campamento", "rancho", "carpa"],
+      "description": "Un rancho de adobe a medio hacer, con techo de lona, levantado para dos temporadas y habitado hace nueve años. Adentro hay más papel que ropa.\n\nSobre un cajón dado vuelta, una libreta abierta. Contra la pared, un baúl con la tapa levantada, lleno de hojas que no son de la misma mano.",
+      "atmosphere": [
+        "Huele a sebo de vela y a papel guardado húmedo.",
+        "Alguien apiló las hojas por tamaño, no por tema. Es el orden de quien no quiere decidir todavía qué es más importante."
+      ],
+      "connections": ["orilla", "alto"],
+      "itemsPresent": ["it-libreta-medidas"],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 4,
+      "features": [
+        {
+          "id": "f-baul",
+          "names": ["baúl", "el baúl", "baul", "hojas", "papeles"],
+          "description": "El baúl abierto, con las hojas apiladas por tamaño.",
+          "closerLook": "Dos manos distintas, y ninguna de las dos es la de la libreta. Una escribió un inventario; la otra, instrucciones. La de las instrucciones es más vieja, y está copiada: se nota porque el que copiaba dudó en las abreviaturas.",
+          "examineSkill": "descubrir",
+          "exposure": 2
+        }
+      ]
+    },
+    "piedra": {
+      "id": "piedra",
+      "name": "La piedra marcada",
+      "aliases": ["piedra", "la piedra", "monolito", "la piedra marcada"],
+      "description": "Tres metros de piedra negra clavados derechos en un campo donde no hay una sola piedra en veinte leguas. Alrededor, en un círculo de unos seis metros, el pasto está enfermo: amarillo desde la raíz.\n\nNadie del campamento se acerca. La huella del pasto pisado llega hasta el borde del círculo y ahí se termina, como si fuera una pared.",
+      "atmosphere": [
+        "No se oye un pájaro. Contás hasta cien y no se oye un pájaro.",
+        "La sombra de la piedra cae exactamente donde tiene que caer para esta hora. Eso, después de todo lo demás, casi decepciona."
+      ],
+      "connections": ["orilla"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 8,
+      "features": [
+        {
+          "id": "f-base",
+          "names": ["base", "la base", "pie de la piedra"],
+          "description": "La base de la piedra, a la altura de la rodilla, donde el pasto enfermo empieza a ganarle al sano.",
+          "closerLook": "La piedra está picada, no cortada: herramienta de piedra contra piedra, por gente que no tenía metal. Sea quien sea que la puso acá, no fue el hombre de la orilla, ni nadie que se le parezca.",
+          "examineSkill": "arqueologia",
+          "exposure": 2
+        }
+      ]
+    },
+    "alto": {
+      "id": "alto",
+      "name": "El alto",
+      "aliases": ["alto", "el alto", "loma", "carreta", "carretas"],
+      "description": "Una loma muy suave —lo más parecido a un alto que hay en veinte leguas— con dos carretas, un corral de palo a pique y un fuego chico. Es el único lugar desde donde se ve la laguna entera.\n\nEn doscientos cincuenta años, acá va a estar la plaza.",
+      "atmosphere": [
+        "El socio está sentado contra una rueda, haciendo cuentas en voz baja.",
+        "Hay estacas clavadas en el pasto formando un rectángulo grande. Alguien ya midió dónde va a ir algo."
+      ],
+      "connections": ["campamento"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-villeira"],
+      "visited": false,
+      "umbralIntensity": 2,
+      "features": [
+        {
+          "id": "f-estacas-alto",
+          "names": ["estacas del alto", "rectángulo", "estacas clavadas"],
+          "description": "El rectángulo de estacas clavadas en el pasto de la loma.",
+          "closerLook": "Es la medida de una plaza. Alguien que todavía no decidió fundar nada ya midió dónde iría la plaza, y la midió mirando la laguna, no el camino ni el agua de beber.",
+          "examineSkill": "descubrir",
+          "exposure": 1,
+          "clue": {
+            "description": "En el alto hay un rectángulo de estacas con la medida de una plaza, orientado hacia la laguna y no hacia el camino ni hacia el agua de beber. Está clavado antes de que nadie decidiera fundar nada.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "startLocation": "orilla",
+  "startTime": {
+    "iso": "1679-11-14T17:30:00",
+    "precision": "minute",
+    "display": "una tarde de noviembre de 1679"
+  },
+  "startUmbralPermeability": 40,
+  "timeline": [],
+  "conversations": [
+    {
+      "id": "b-que-hace",
+      "npc": "npc-bernardo-1679",
+      "orden": 10,
+      "etiqueta": "Preguntarle qué está haciendo acá",
+      "intencion": "Le pregunto a Bernardo qué está haciendo acá",
+      "claves": ["esta haciendo", "que hace", "que hace aca", "que busca"],
+      "agotado": { "op": "pista", "contiene": "vino a verificar un documento" },
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "No gira la cabeza. Contesta como contesta un hombre que hace nueve años que se contesta solo en voz alta.\n\n—Vine tres meses a verificar un papel —dice—. Eso fue en el sesenta y nueve.\n\nSe queda callado un rato largo.\n\n—El papel decía la verdad. Ése es el problema. Si hubiera mentido, yo estaría en Córdoba."
+        ],
+        "pista": {
+          "description": "El hombre de la orilla vino a verificar un documento que no era suyo, para tres meses, en 1669. Sigue acá nueve años después porque el documento decía la verdad.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "b-papeles",
+      "npc": "npc-bernardo-1679",
+      "orden": 20,
+      "etiqueta": "Preguntarle de quién son los papeles",
+      "intencion": "Le pregunto a Bernardo de quién son los papeles del baúl",
+      "claves": ["los papeles", "de quien son", "del baul", "las hojas"],
+      "agotado": { "op": "pista", "contiene": "de los siete que empezaron quedaban dos" },
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "—De unos que estuvieron antes. En el sur, veinte años antes que yo. —Se pasa la lengua por los labios, que los tiene partidos de sol—. Eran siete. Cuando llegué a ellos quedaban dos, y uno no hablaba.\n\n—Recuperaron cosas. No las hicieron: las recuperaron, que no es lo mismo, y ellos tampoco sabían de quién las estaban recuperando. Copiaron instrucciones de otras instrucciones. En algún punto de esa cadena hubo alguien que escribió la primera y ese alguien no dejó nombre.\n\n—A mí me alcanzaba con que funcionara. Eso también es un error, seguro. Pero es el mío."
+        ],
+        "pista": {
+          "description": "Los papeles vienen de un grupo del sur, veinte años anterior: de los siete que empezaron quedaban dos cuando Bernardo llegó. Recuperaron y copiaron; no fabricaron. Quién escribió la primera instrucción no quedó anotado en ningún lado.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "b-agua",
+      "npc": "npc-bernardo-1679",
+      "orden": 30,
+      "etiqueta": "Preguntarle qué vio en el agua",
+      "intencion": "Le pregunto a Bernardo qué vio en el agua",
+      "claves": ["que vio", "en el agua", "el reflejo", "que muestra"],
+      "agotado": { "op": "pista", "contiene": "una mano tomando un anillo" },
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "Ahora sí se mueve: se acuclilla en la orilla, con los dedos a un centímetro de la superficie, sin tocarla.\n\n—Al principio, nada. Dos años de nada, midiendo. Después el reflejo empezó a llegar tarde. Poco: lo que tarda en llegar un eco a media legua.\n\n—Después mostró cosas que no estaban. Un carro que no había. Un hombre parado donde yo no estaba parado. Y hace once días —levanta la cabeza, por primera vez con algo parecido a la alegría— me mostró una mano metiéndose en el agua y sacando un anillo.\n\n—Una mano. Sacando algo del fondo de mi laguna. Eso no es una casualidad, señor. Eso es una indicación."
+        ],
+        "pista": {
+          "description": "El agua le mostró a Bernardo una mano tomando un anillo del fondo. Él lo lee como una indicación de que hay algo ahí y de que es para él. La imagen, en sí misma, no dice de quién es la mano.",
+          "kind": "testimonial",
+          "reliability": "unknown"
+        }
+      }
+    },
+    {
+      "id": "v-bernardo",
+      "npc": "npc-villeira",
+      "orden": 40,
+      "etiqueta": "Preguntarle al socio qué piensa de todo esto",
+      "intencion": "Le pregunto al socio qué piensa de todo esto",
+      "claves": ["que piensa", "al socio", "de todo esto", "que opina"],
+      "agotado": { "op": "pista", "contiene": "lee un dibujo como si fuera una orden" },
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "Contesta sin levantar la vista de las cuentas, y contesta como si le hubieran hecho la pregunta hace un rato y recién ahora se decidiera.\n\n—Yo veo lo mismo que él. Que quede claro: yo también veo que el reflejo llega tarde. No soy un idiota y no me estoy yendo por eso.\n\n—Me voy a ir porque él ve un dibujo y lee una orden. Yo veo el mismo dibujo y veo un dibujo. —Marca una cifra, la tacha, la vuelve a escribir—. Nueve años mirando y todavía no le preguntó ni una vez al agua qué es lo que quiere. Le dice lo que quiere él y espera que el agua conteste que sí."
+        ],
+        "pista": {
+          "description": "El socio ve las mismas anomalías que Bernardo y no las discute. Lo que le parece un error es otra cosa: que Bernardo lee un dibujo como si fuera una orden dirigida a él.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "v-circulos",
+      "npc": "npc-villeira",
+      "orden": 50,
+      "etiqueta": "Preguntarle por los círculos grabados",
+      "intencion": "Le pregunto al socio por los círculos grabados",
+      "claves": ["circulos", "grabados", "las marcas"],
+      "disponible": { "op": "narrado", "contiene": "grabado y no pintado" },
+      "agotado": { "op": "pista", "contiene": "grabar y anotar" },
+      "cede": {
+        "actitud": 0,
+        "texto": [
+          "—Eso lo hago yo —dice, y es la primera vez que dice algo con orgullo—. Él mide el agua; yo grabo el límite y anoto lo que pasa adentro. Está en las hojas viejas: grabado y no pintado, porque la pintura se va.\n\n—Y anotar lo que no se pueda anotar en otro lado. Eso también está. —Se encoge de hombros—. No entiendo para qué sirve. Lo hago igual. Alguien va a venir después y no va a tener más que esto."
+        ],
+        "pista": {
+          "description": "En 1679 el trabajo está repartido: Bernardo mide el agua, el socio graba el círculo del límite y anota lo que pasa adentro, siguiendo instrucciones que ninguno de los dos entiende. Grabar y anotar: las dos mitades del mismo encargo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "mirar-agua-anillo",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "miro el agua|me asomo al agua|miro la laguna" },
+          { "op": "consecuencia", "contiene": "quedó vinculado a él" }
+        ]
+      }
+    },
+    {
+      "id": "mirar-agua-sin-anillo",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "miro el agua|me asomo al agua|miro la laguna" },
+          { "op": "consecuencia", "contiene": "cortando el ciclo sin saber si hacía falta" }
+        ]
+      }
+    },
+    {
+      "id": "mirar-agua-ciego",
+      "prioridad": 90,
+      "cuando": { "op": "texto", "patron": "miro el agua|me asomo al agua|miro la laguna" }
+    },
+    {
+      "id": "leer-papeles",
+      "prioridad": 92,
+      "cuando": { "op": "texto", "patron": "leo los papeles|reviso el baul|reviso el baúl|leo las hojas" }
+    },
+    {
+      "id": "mirar-circulos",
+      "prioridad": 92,
+      "cuando": { "op": "texto", "patron": "miro los circulos|examino los circulos|miro las marcas de la piedra" }
+    },
+    {
+      "id": "el-encuentro",
+      "prioridad": 94,
+      "cuando": { "op": "texto", "patron": "me quedo a ver que hace bernardo|miro lo que hace bernardo" }
+    },
+    {
+      "id": "te-ve",
+      "prioridad": 96,
+      "cuando": { "op": "texto", "patron": "me quedo donde puede verme|dejo que me vea" }
+    },
+    {
+      "id": "fin-dejarlo",
+      "prioridad": 98,
+      "cuando": { "op": "texto", "patron": "dejo que la vision se cierre|me dejo llevar de vuelta" }
+    },
+    {
+      "id": "fin-intervenir",
+      "prioridad": 98,
+      "cuando": { "op": "texto", "patron": "trato de advertirle|le grito que no" }
+    },
+    {
+      "id": "fin-quedarse",
+      "prioridad": 98,
+      "cuando": { "op": "texto", "patron": "me quedo hasta la fundacion|me quedo hasta el final" }
+    }
+  ],
+  "actions": [
+    {
+      "id": "mirar-agua",
+      "grupo": "observar",
+      "orden": 10,
+      "lugar": "orilla",
+      "intencion": "Miro el agua",
+      "etiqueta": "Mirar el agua",
+      "hecha": { "op": "narrado", "contiene": "De cerca es agua nomás, y eso es lo peor" }
+    },
+    {
+      "id": "leer-papeles",
+      "grupo": "observar",
+      "orden": 12,
+      "lugar": "campamento",
+      "intencion": "Leo los papeles del baúl",
+      "etiqueta": "Leer los papeles del baúl",
+      "hecha": { "op": "narrado", "contiene": "grabado y no pintado" }
+    },
+    {
+      "id": "mirar-circulos",
+      "grupo": "observar",
+      "orden": 14,
+      "lugar": "piedra",
+      "intencion": "Miro los círculos de la piedra",
+      "etiqueta": "Mirar los círculos de la piedra",
+      "hecha": { "op": "narrado", "contiene": "ocho círculos grabados" }
+    },
+    {
+      "id": "el-encuentro",
+      "grupo": "usar",
+      "orden": 20,
+      "lugar": "orilla",
+      "intencion": "Me quedo a ver qué hace Bernardo",
+      "etiqueta": "Quedarte a ver qué hace",
+      "visible": { "op": "pista", "contiene": "una mano tomando un anillo" },
+      "hecha": { "op": "narrado", "contiene": "Sale con la mano cerrada" }
+    },
+    {
+      "id": "te-ve",
+      "grupo": "usar",
+      "orden": 22,
+      "lugar": "orilla",
+      "intencion": "Me quedo donde puede verme",
+      "etiqueta": "Quedarte donde pueda verte",
+      "visible": { "op": "narrado", "contiene": "Sale con la mano cerrada" },
+      "hecha": { "op": "narrado", "contiene": "No sabe tu nombre" }
+    },
+    {
+      "id": "fin-dejarlo",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Dejo que la visión se cierre",
+      "etiqueta": "Dejar que la visión se cierre"
+    },
+    {
+      "id": "fin-intervenir",
+      "grupo": "decidir",
+      "orden": 91,
+      "final": true,
+      "intencion": "Trato de advertirle",
+      "etiqueta": "Tratar de advertirle",
+      "visible": { "op": "narrado", "contiene": "Sale con la mano cerrada" }
+    },
+    {
+      "id": "fin-quedarse",
+      "grupo": "decidir",
+      "orden": 92,
+      "final": true,
+      "intencion": "Me quedo hasta la fundación",
+      "etiqueta": "Quedarte hasta la fundación",
+      "visible": { "op": "narrado", "contiene": "No sabe tu nombre" }
+    }
+  ],
+  "endings": [
+    {
+      "id": "dejarlo",
+      "title": "Lo que se mira sin tocar",
+      "condition": "El investigador mira la tarde de 1679 sin meterse, y deja que la visión se cierre sola."
+    },
+    {
+      "id": "intervenir",
+      "title": "Lo que se dice y no se oye",
+      "condition": "El investigador trata de advertirle a Bernardo, y vuelve sin poder probar que algo haya cambiado."
+    },
+    {
+      "id": "quedarse",
+      "title": "Lo que se queda hasta el final",
+      "condition": "El investigador se queda a ver la fundación de 1680, y paga la diferencia."
+    }
+  ],
+  "opening": "Tres semanas después de la Casa de Díaz, mirás agua.\n\nNo importa mucho cuál: un aljibe, una palangana, la superficie quieta de cualquier cosa. Lo que importa es que esta vez el reflejo llega tarde, y que cuando llega no es el tuyo.\n\nDespués estás parado en la orilla de una laguna que no conocés, en un campo llano sin un solo árbol, con la ropa que tenías puesta hace un segundo y todo lo que llevabas encima. Es de tarde y hace calor de noviembre.\n\nNo hay pueblo. No hay camino. A media legua hay una carreta y el humo de un fuego chico, y en la orilla, a diez metros, hay un hombre de unos cuarenta años mirando el agua con una libreta cerrada en la mano.\n\nNo te ve."
+}

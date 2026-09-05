@@ -61,6 +61,23 @@ export const HECHIZOS: Hechizo[] = [
     efecto: 'estabilidad',
     magnitud: 8,
   },
+  {
+    // El más viejo de los tres y el único que no se aprende de Bernardo sino
+    // de los papeles que Bernardo consiguió de otro. Es, literalmente, el
+    // gesto del que baja —degradado, sin nadie que sepa por qué— el Círculo
+    // Rojo de 1926: anotar lo que no se puede anotar en otro lado.
+    id: 'contar-lo-que-no-se-anota',
+    nombre: 'Contar lo que no se puede anotar',
+    costoPM: 3,
+    costoCordura: 1,
+    descripcion:
+      'Se escribe lo que se acaba de ver, con la mano firme, antes de que la ' +
+      'cabeza tenga tiempo de acomodarlo en algo más fácil de recordar. No ' +
+      'sirve para entender: sirve para no perder el hilo. Recupera bastante ' +
+      'Estabilidad, y cuesta un punto de Cordura escribirlo tal cual fue.',
+    efecto: 'estabilidad',
+    magnitud: 14,
+  },
 ];
 
 export const HECHIZO_POR_ID: Record<string, Hechizo> = Object.fromEntries(
