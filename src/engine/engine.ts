@@ -2119,6 +2119,12 @@ export class Turn {
       // temporal de toolApplySanityLoss: en modo motor no hay Keeper en vivo
       // que decida aplicarla si el motor no lo hace.
       if (t === 'DISSOLUTION') {
+        // Las dos penalizan. Antes Descubrir tenía BONIFICACIÓN (dice: -1):
+        // como Descubrir se pide todo el tiempo y Orientarse casi nunca, el
+        // saldo neto se sentía como un regalo por cruzar el umbral más grave
+        // de los cuatro, justo lo contrario de lo que dice la propia
+        // descripción ("notarlo cuesta tanto como no notarlo"). Reportado
+        // jugando: se sentía un buff, no un costo.
         this.aplicarCondicion({
           name: 'La secuencia no es una sola',
           description:
@@ -2130,7 +2136,7 @@ export class Turn {
           mechanicalEffect: {
             skillModifiers: [
               { skill: 'orientarse', dice: 1 },
-              { skill: 'descubrir', dice: -1 },
+              { skill: 'descubrir', dice: 1 },
             ],
           },
         });
@@ -2511,7 +2517,32 @@ export class Turn {
     };
     this.emit('TIME_ADVANCED', { from, to, minutes, reason });
     this.recoverPatience(minutes);
+    this.recoverMagicPoints(minutes);
     this.abrirElMundo(minutes);
+  }
+
+  /**
+   * PM se recuperan 1 por hora, sin pasar de PM máximo (regla real, p. 172).
+   * Mismo patrón que `recoverPatience`: se recuperan con el tiempo del
+   * MUNDO, no esperando frente a la pantalla — y con esto alcanza para las
+   * dos cosas a la vez: dentro de una aventura (cualquier `advance_time`
+   * los va acercando al máximo) y ENTRE aventuras (`continuarCampana`
+   * siempre salta semanas o meses, muchas más que las horas que hacen
+   * falta para llenar cualquier PM máximo real), sin necesitar un
+   * reseteo aparte en `heredarInvestigador` como si tiene PV.
+   */
+  private recoverMagicPoints(minutes: number) {
+    const puntos = Math.floor(minutes / 60);
+    if (puntos <= 0) return;
+    const inv = this.investigator;
+    if (inv.derived.mp >= inv.derived.maxMp) return;
+    const from = inv.derived.mp;
+    const to = clamp(from + puntos, 0, inv.derived.maxMp);
+    if (to === from) return;
+    this.emit('STAT_CHANGED', {
+      investigatorId: inv.id, stat: 'mp', from, to, delta: to - from,
+      cause: 'pasó el tiempo y la Magia volvió sola',
+    });
   }
 
   /**

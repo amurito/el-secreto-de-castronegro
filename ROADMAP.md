@@ -3158,6 +3158,36 @@ ya arreglada en §3.2-duotrigies):**
 Probado en `prueba:agua-blanca`, `prueba:invierno`, `prueba:sueno` y
 `prueba:auditoria`; ninguna de las tres suites necesitó tocarse.
 
+### 3.2-quatrigies PM se recuperan solos, Disolución deja de ser un buff, y el libro de Bernardo cita a alguien más
+
+Tres ajustes puntuales, pedidos jugando la sesión anterior.
+
+**Los PM se recuperan 1 por hora, sin pasar del máximo (p. 172).**
+`recoverMagicPoints` (engine.ts), enganchado en `advanceTimeBy` al lado de
+`recoverPatience` — mismo patrón, mismo lugar. Alcanza para las dos
+situaciones a la vez: dentro de una aventura (cualquier `advance_time` los
+va acercando al máximo) y ENTRE aventuras (`continuarCampana` siempre
+salta semanas o meses, muchas más que las horas que hacen falta para
+llenar cualquier PM máximo real), sin necesitar un reseteo aparte en
+`heredarInvestigador` como sí tiene PV.
+
+**Disolución (cuarto umbral) dejó de sentirse como un regalo.** Su
+condición mecánica («La secuencia no es una sola») penalizaba Orientarse
+Y BONIFICABA Descubrir. Reportado jugando: como Descubrir se pide todo el
+tiempo y Orientarse casi nunca, cruzar el umbral más grave de los cuatro
+se sentía como un buff neto, justo lo contrario de lo que dice su propia
+descripción ("notarlo cuesta tanto como no notarlo"). Ahora las dos
+penalizan.
+
+**El libro sin título de Bernardo, en "Lo que Bernardo sabía", ahora cita
+a alguien más.** Un nombre que no es el de Bernardo, un lugar que no es
+Castronegro, con letra distinta al resto —copiada, no recordada—. Deja
+una pista documentaria nueva: Bernardo no inventó nada de esto, lo
+aprendió de alguien que a su vez lo aprendió de otro. No resuelve nada
+—nadie tiene nombre todavía—, sólo dice que existe algo más grande detrás
+de Bernardo, siguiendo la regla de oro del canon (v0.7 §15: más cerca de
+la verdad, más información y menos certeza).
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

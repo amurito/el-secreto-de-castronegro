@@ -157,8 +157,41 @@ async function main() {
   check('la Cordura no se tocó ("sostener el aire" no cuesta Cordura)',
     invDe(s).derived.san === sanAntes, `${sanAntes} → ${invDe(s).derived.san}`);
 
+  console.log('\n6. LOS PM SE RECUPERAN CON EL TIEMPO, 1 POR HORA, SIN PASAR DEL MÁXIMO');
+  {
+    const t = await Turn.open(id);
+    // Los deja bien abajo para no depender de cuánto quedó de las secciones
+    // anteriores. `apply_sanity_loss`/etc. no tocan PM; se fuerza gastando.
+    t.executeTool('cast_spell', { spell_id: 'sostener-el-aire' });
+    await t.commit();
+    let ss = (await Turn.open(id)).state;
+    const mpAntes = invDe(ss).derived.mp;
+    const maxMp = invDe(ss).derived.maxMp;
+
+    const t2 = await Turn.open(id);
+    t2.executeTool('advance_time', { minutes: 59, reason: 'prueba: menos de una hora' });
+    await t2.commit();
+    ss = (await Turn.open(id)).state;
+    check('menos de una hora no recupera nada', invDe(ss).derived.mp === mpAntes,
+      `${mpAntes} → ${invDe(ss).derived.mp}`);
+
+    const t3 = await Turn.open(id);
+    t3.executeTool('advance_time', { minutes: 121, reason: 'prueba: dos horas y monedas' });
+    await t3.commit();
+    ss = (await Turn.open(id)).state;
+    check('dos horas recuperan 2 PM, no más', invDe(ss).derived.mp === Math.min(maxMp, mpAntes + 2),
+      `${mpAntes} → ${invDe(ss).derived.mp} (máximo ${maxMp})`);
+
+    const t4 = await Turn.open(id);
+    t4.executeTool('advance_time', { minutes: 60 * 100, reason: 'prueba: mucho tiempo' });
+    await t4.commit();
+    ss = (await Turn.open(id)).state;
+    check('con tiempo de sobra, no pasa del máximo', invDe(ss).derived.mp === maxMp,
+      String(invDe(ss).derived.mp));
+  }
+
   // ══ 2. EL CONTENIDO: "LO QUE BERNARDO SABÍA" ═════════════════════════════
-  console.log('\n6. RAMA DEL AHIJADO (heredar el anillo)');
+  console.log('\n7. RAMA DEL AHIJADO (heredar el anillo)');
   {
     const idPrevio = await createCampaign(AGUA_QUIETA, 'PREVIA-HEREDAR', 'i'.repeat(64));
     let t = await Turn.open(idPrevio);
@@ -191,7 +224,7 @@ async function main() {
       JSON.stringify(e.ending));
   }
 
-  console.log('\n7. RAMA DEL LIBRO (cortar el anillo)');
+  console.log('\n8. RAMA DEL LIBRO (cortar el anillo)');
   {
     const idPrevio = await createCampaign(AGUA_QUIETA, 'PREVIA-CORTAR', 'k'.repeat(64));
     let t = await Turn.open(idPrevio);
@@ -215,7 +248,7 @@ async function main() {
       (invDe(e).skills['mitos' as never]?.base ?? 0) > mitosAntes);
   }
 
-  console.log('\n8. NI ANILLO NI LIBRO (denunciar/irse): sin magia');
+  console.log('\n9. NI ANILLO NI LIBRO (denunciar/irse): sin magia');
   {
     const idPrevio = await createCampaign(AGUA_QUIETA, 'PREVIA-NADA', 'm'.repeat(64));
     let t = await Turn.open(idPrevio);
