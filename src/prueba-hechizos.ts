@@ -13,8 +13,13 @@
  *   2. El contenido nuevo, "Lo que Bernardo sabía": las tres ramas según
  *      cómo terminó El Vigésimo (Ahijado, libro, ninguna), y que el segundo
  *      hechizo y el cierre respondan a lo que ya se aprendió.
+ *   3. Retrocompatibilidad: una campaña guardada antes de esta feature no
+ *      tiene estos campos en su CAMPAIGN_CREATED persistido, y el motor
+ *      tiene que rellenarlos al plegar el log en vez de reventar.
  */
 
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { createCampaign, Turn, loadState } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { LO_QUE_BERNARDO_SABIA } from './scenario/loquebernardosabia.ts';
@@ -270,6 +275,30 @@ async function main() {
     check('el desenlace reconoce que no hay nada que llevarse',
       Boolean(e.ending) && /Sin nada que llevarse/.test(String(e.ending?.title ?? '')),
       JSON.stringify(e.ending));
+  }
+
+  console.log('\n10. RETROCOMPATIBILIDAD: campaña guardada antes de que existieran spellsKnown/pendingLuckBonus');
+  {
+    // Bug real, reportado jugando el 2026-09-14: una campaña vieja no tiene
+    // estos dos campos en el CAMPAIGN_CREATED que ya está persistido — el
+    // fold es del log crudo, no del tipo actual. Simula ese log viejo
+    // borrando los campos del evento ya escrito en disco, y confirma que
+    // `initFromCreation` (reducers.ts) los rellena en vez de reventar.
+    const idVieja = await createCampaign(AGUA_QUIETA, 'CAMPAÑA-VIEJA', 'o'.repeat(64));
+    const log = join(process.cwd(), 'partidas', idVieja, 'eventos.jsonl');
+    const lineas = readFileSync(log, 'utf8').split('\n').filter((l) => l.trim());
+    const creado = JSON.parse(lineas[0]!);
+    for (const inv of creado.payload.investigators) {
+      delete inv.spellsKnown;
+      delete inv.pendingLuckBonus;
+    }
+    lineas[0] = JSON.stringify(creado);
+    writeFileSync(log, lineas.join('\n') + '\n', 'utf8');
+
+    const { state } = await loadState(idVieja);
+    const inv = invDe(state);
+    check('spellsKnown se rellena con [] en vez de romper', Array.isArray(inv.spellsKnown) && inv.spellsKnown.length === 0);
+    check('pendingLuckBonus se rellena con 0', inv.pendingLuckBonus === 0);
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
