@@ -332,7 +332,32 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--line); border-left: 3px solid var(--line);
   border-radius: 3px; padding: 0.8rem 1rem; margin-bottom: 0.7rem; font-size: 0.78rem;
 }
-.roll-big { margin: 0 2rem 1rem; max-width: 42rem; align-self: center; width: calc(100% - 4rem); }
+/*
+ * La ficha de tirada NO es prosa: es una tabla —dados, umbrales, el detalle
+ * de los modificadores— y por eso no le corresponde la medida de 42rem que
+ * sí le corresponde a un párrafo. Reportado jugando en monitor ancho: la
+ * tarjeta quedaba angosta y alta en el medio de la pantalla, con el detalle
+ * de modificadores partido en muchas líneas y bandas muertas a los lados,
+ * mientras el turno con varias tiradas se iba abajo del pliegue.
+ */
+.roll-big { margin: 0 2rem 1rem; align-self: center; width: calc(100% - 4rem); }
+
+/*
+ * Las tiradas de UN turno. Son varias cuando el motor tira por su cuenta
+ * además de la del jugador: la INT de crisis después de una pérdida grande
+ * de Cordura, la CON de una herida, la defensa de un NPC. Apiladas se comen
+ * la pantalla; en fila entran de a dos o tres y se leen como lo que son,
+ * el mismo turno. `min-width` mantiene legible la ficha antes de envolver.
+ */
+.rolls-turno { display: flex; flex-direction: column; }
+
+/* Lado a lado sólo cuando hay ancho de verdad: por debajo de esto la ficha
+   quedaría más angosta que su propio contenido y se saldría de la pantalla. */
+@media (min-width: 1100px) {
+  .rolls-turno { flex-direction: row; flex-wrap: wrap; gap: 0 0.7rem; align-items: flex-start; }
+  .rolls-turno .roll-big { flex: 1 1 26rem; min-width: 22rem; width: auto; margin-left: 2rem; margin-right: 2rem; }
+  .rolls-turno .roll-big ~ .roll-big { margin-left: 0; }
+}
 .roll-ok { border-left-color: var(--ok); }
 .roll-bad { border-left-color: var(--bad); }
 
@@ -380,6 +405,8 @@ button { font-family: inherit; cursor: pointer; }
 .roll-result { font-size: 2rem; line-height: 1; color: var(--text); }
 .roll-detail { color: var(--text-faint); font-size: 0.68rem; line-height: 1.5; }
 .roll-mods { margin-top: 0.2rem; color: var(--exposure); }
+.roll-mods-neto { font-weight: 600; }
+.roll-mods-item { opacity: 0.72; padding-left: 0.6rem; }
 .roll-degree { margin-top: 0.6rem; letter-spacing: 0.12em; font-size: 0.72rem; }
 .deg-ok { color: var(--ok); }
 .deg-bad { color: var(--bad); }
@@ -474,8 +501,15 @@ button { font-family: inherit; cursor: pointer; }
  * vacío a los costados en pantalla ancha. Los botones se envuelven solos
  * (`.grupo-botones` tiene `flex-wrap`), así que lo único que hacía falta era
  * darles más ancho para envolver.
+ *
+ * Sin tope fijo desde 2026-09-14: reportado jugando en monitor ancho, 62rem
+ * seguía dejando cinco filas de botones —una por grupo— y bandas muertas a
+ * los costados, mientras la narración se quedaba sin alto. Ahora la zona de
+ * acciones usa el ancho REAL de la columna central: cada grupo entra en
+ * menos filas, y el alto que se ahorra se lo lleva la lectura. La narración
+ * sigue centrada a 42rem, que es lo que necesita un párrafo.
  */
-.input-area { padding: 1rem 2rem 1.5rem; max-width: 62rem; width: 100%; margin: 0 auto; }
+.input-area { padding: 1rem 2rem 1.5rem; width: 100%; margin: 0 auto; }
 
 /* ── ACCIONES ─────────────────────────────────────────────────────────────
    Agrupadas por tipo. Lo que se ve acá es lo que se puede hacer AHORA:

@@ -86,9 +86,17 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
       stakes_success: 'entendés qué vino de dónde',
       stakes_failure: 'leés lo que alcanza a leerse',
     }),
-    resolver: ({ tirada }) => {
+    resolver: ({ tirada, estado }) => {
       const numero = tirada?.numero ?? 1;
       const perdidaSiFalla = tirada?.grado === 'fumble' ? 4 : 1 + (numero % 4);
+      // El libro sin título de «Lo que Bernardo sabía» cita "un nombre que no
+      // es el de Bernardo y un lugar que no es Castronegro" y lo deja sin
+      // explicar a propósito. Acá, doscientos cincuenta años antes, están las
+      // dos cosas sobre la mesa. Es el único lugar de la campaña donde esa
+      // pista puede cerrarse, así que se lee la consecuencia que dejó aquella
+      // aventura — las pistas no cruzan entre aventuras, las consecuencias sí.
+      const leyoElLibro = estado.consequences.some((c) =>
+        c.description.includes('leyó de punta a punta el libro sin título'));
       // Dos efectos porque `documento` entrega UNO por efecto, y acá hay dos
       // papeles distintos: el inventario y la instrucción copiada. El motor
       // aplica la lista en orden (ver `EfectoEscena` en escena.ts).
@@ -97,6 +105,10 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
           'Son dos manos, y ninguna de las dos es la de la libreta de la orilla.',
           'La primera hizo un inventario: aros, piedras, hojas contadas. La palabra que repite no es «hecho» ni «fabricado»: es **recuperado**. Recuperaron cosas de una casa del sur, y de quién eran esas cosas antes no lo anotó nadie, ni parece que lo hayan sabido.',
           'La segunda mano es más vieja y está copiada de otra: se nota porque el que copiaba dudaba en las abreviaturas. Es una instrucción. Dice dónde mirar, dice marcar el límite grabado y no pintado —porque la pintura se va y el asunto no—, y dice anotar lo que no se pueda anotar en otro lado.',
+          ...(leyoElLibro ? [
+            'Y entonces te frenás, porque las dos cosas que estás leyendo ya las leíste antes: en el libro sin título de Bernardo, tres semanas y doscientos cincuenta años más adelante, citadas dos veces con letra más vieja que el resto. Un nombre que no era el suyo y un lugar que no era Castronegro. El nombre está firmando este inventario. El lugar es la casa del sur de donde sacaron los aros.',
+            'Bernardo no citaba a un maestro ni a una autoridad: citaba el papel que tiene ahora mismo en el baúl, a diez metros de donde estás parado, y que todavía no terminó de leer. Lo que en 1928 parecía la punta de algo mucho más grande resulta ser, visto desde acá, un hombre copiando a otro hombre que copiaba a alguien más.',
+          ] : []),
           tirada?.exito
             ? 'Y hay una cosa más, que sale de comparar las dos manos y no de leer ninguna: la instrucción es anterior al inventario. Los que recuperaron los aros estaban siguiendo un papel que ya existía, copiado de otro que ya existía. En algún punto de esa cadena alguien escribió el primero. Ese alguien no dejó nombre, ni fecha, ni la más mínima intención de dejarlos.'
             : 'Alcanzás a leer las dos, pero no a ponerlas en orden entre ellas: cuál copió a cuál, y cuántas copias hay entre esa instrucción y la primera que existió, se te escapa.',
@@ -108,12 +120,28 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
           id: 'contar-lo-que-no-se-anota',
           source: 'las hojas de instrucción del baúl, en el campamento de 1679',
         },
-        pistas: [{
-          description: 'Los papeles del campamento son de dos manos anteriores a Bernardo: un inventario de cosas RECUPERADAS —nunca fabricadas— de una casa del sur, y una instrucción copiada de otra instrucción. Nadie anotó de quién eran las cosas ni quién escribió la primera hoja.',
-          kind: 'documentary',
-          source: 'el baúl del campamento, 1679',
-          reliability: 'reliable',
-        }],
+        pistas: [
+          {
+            description: 'Los papeles del campamento son de dos manos anteriores a Bernardo: un inventario de cosas RECUPERADAS —nunca fabricadas— de una casa del sur, y una instrucción copiada de otra instrucción. Nadie anotó de quién eran las cosas ni quién escribió la primera hoja.',
+            kind: 'documentary',
+            source: 'el baúl del campamento, 1679',
+            reliability: 'reliable',
+          },
+          ...(leyoElLibro ? [{
+            description: 'El nombre y el lugar que el libro sin título de Bernardo citaba con letra más vieja son los del inventario del baúl de 1679: la fuente de Bernardo no era un maestro, era este papel. Él también estaba copiando.',
+            kind: 'documentary' as const,
+            source: 'comparar el libro de Bernardo con los papeles del campamento',
+            reliability: 'reliable' as const,
+          }] : []),
+        ],
+        ...(leyoElLibro ? {
+          consecuencia: {
+            description: 'El investigador identificó la fuente que el libro de Bernardo citaba sin nombrar: los papeles del grupo que trabajó entre 1650 y 1675, que Bernardo tenía en su campamento antes de fundar el pueblo.',
+            scope: 'world' as const,
+            permanent: true,
+            worldReminder: 'Bernardo copiaba de alguien que copiaba de alguien. La primera mano de esa cadena sigue sin nombre.',
+          },
+        } : {}),
         exposicion: { amount: 4, source: 'hombreagua:papeles', cause: 'leer instrucciones escritas para que las siga otro' },
       }, {
         documento: { id: 'doc-instruccion', how: 'copiada de mano de Bernardo, en el mismo baúl' },

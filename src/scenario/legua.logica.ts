@@ -78,15 +78,24 @@ export const LEGUA_LOGICA: LogicaDeEscenas = [
           // El desenlace ya lo cuenta en prosa —«la primera cosa que va a
           // hacer tu cabeza es empezar a contar postes»—; esto lo vuelve
           // mecánico. Contar de menos no es sólo mala suerte social: cuenta
-          // en vez de escuchar. Y por qué es NEGATIVO en Descubrir: la misma
-          // compulsión que distrae en una charla afila la cuenta de detalles.
+          // en vez de escuchar.
+          //
+          // Las DOS penalizan. Antes Descubrir tenía bonificación (dados: -1)
+          // con el argumento de que la misma compulsión que distrae en una
+          // charla afila la cuenta de detalles. Reportado jugando (2026-09-14,
+          // con una ficha de Descubrir 80%): se apilaba con otros bonos y
+          // hacía trivial la tirada que más se pide en todo el juego — el
+          // mismo problema, y el mismo criterio, que ya corrigió Disolución.
+          // Una manía no es una ventaja: contar POSTES no es mirar bien, es
+          // mirar los postes en vez de lo que había que mirar.
           crisis: {
             nombre: 'Compulsión de contar', tipo: 'mania',
             descripcion:
               'Postes, baldosas, sillas, palabras de una frase ajena: cualquier fila de cosas se cuenta sola, ' +
               'sin que lo decida, y si alguien interrumpe hay que volver a empezar. Cuesta prestarle a una ' +
-              'conversación la atención que se le está yendo a un número.',
-            afecta: [{ skill: 'persuasion', dados: 1 }, { skill: 'descubrir', dados: -1 }],
+              'conversación la atención que se le está yendo a un número, y cuesta mirar una escena entera ' +
+              'cuando una parte de la cabeza ya se puso a contar lo que hay en ella.',
+            afecta: [{ skill: 'persuasion', dados: 1 }, { skill: 'descubrir', dados: 1 }],
           },
         },
         pistas: [{

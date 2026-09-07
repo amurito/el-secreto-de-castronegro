@@ -194,13 +194,7 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
         <div className="roll-detail">
           {!animar && <div>dados: {roll.dice.join(' · ')}</div>}
           <div>umbrales: ≤{roll.thresholds.regular} · ≤{roll.thresholds.hard} · ≤{roll.thresholds.extreme}</div>
-          {roll.modifiers?.length > 0 && (
-            <div className="roll-mods">
-              {roll.modifiers.map((m: any, i: number) => (
-                <div key={i}>{m.count} dado(s) de {m.kind === 'bonus_die' ? 'bonificación' : 'penalización'} — {m.reason}</div>
-              ))}
-            </div>
-          )}
+          {roll.modifiers?.length > 0 && <Modificadores modifiers={roll.modifiers} />}
         </div>
       </div>
       <div className={`roll-degree ${good ? 'deg-ok' : 'deg-bad'}${tardio}`}>
@@ -213,6 +207,36 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
           <span className="roll-degree-nota"> — no alcanza para {DIFF_LABEL[roll.difficulty] ?? roll.difficulty}</span>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Los modificadores de una tirada, con el NETO adelante.
+ *
+ * Reportado jugando: una tirada de Descubrir mostraba tres líneas de
+ * bonificación y una de penalización, y se leía como si se hubieran tirado
+ * cuatro dados de ventaja. No es lo que pasa —CoC 7e netea los modificadores
+ * y topea en 2, y el motor ya lo hace en `tensDiceNeeded`—, pero la ficha
+ * listaba los pedidos sin decir en qué quedaron. Ahora dice primero el saldo
+ * real, y las líneas de abajo quedan como lo que son: de dónde salió cada uno.
+ */
+function Modificadores({ modifiers }: { modifiers: any[] }) {
+  const neto = modifiers.reduce(
+    (n: number, m: any) => n + (m.kind === 'bonus_die' ? m.count : -m.count), 0);
+  const extra = Math.min(Math.abs(neto), 2);
+  const resumen = neto === 0
+    ? 'se anulan entre sí: ningún dado extra'
+    : `${extra} dado${extra === 1 ? '' : 's'} de ${neto > 0 ? 'bonificación' : 'penalización'}` +
+      (Math.abs(neto) > extra ? ` (el tope de las reglas son 2; se pidieron ${Math.abs(neto)})` : '');
+  return (
+    <div className="roll-mods">
+      <div className="roll-mods-neto">Neto: {resumen}</div>
+      {modifiers.map((m: any, i: number) => (
+        <div key={i} className="roll-mods-item">
+          {m.kind === 'bonus_die' ? '+' : '−'}{m.count} — {m.reason}
+        </div>
+      ))}
     </div>
   );
 }

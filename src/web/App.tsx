@@ -131,7 +131,15 @@ export function App() {
    * Ahora dura hasta que la usa.
    */
   const [marcas, setMarcas] = useState<Marcas>({ vistas: new Set(), pendientes: new Set() });
-  const [lastRoll, setLastRoll] = useState<any>(null);
+  // Las tiradas de ESTE turno, no la última. Reportado jugando: cuando el
+  // motor tira por su cuenta —la INT de crisis de Cordura, la CON de una
+  // Herida Grave, la defensa de un NPC— esas tiradas iban sólo a la pestaña
+  // de auditoría, porque `tiradaInterna` no devuelve `emit` al cliente y acá
+  // había un único slot que además se pisaba. Se calculan por diferencia
+  // contra `state.rolls`, que ya las trae todas: así entra cualquier tirada
+  // que el motor haga, sin que el motor tenga que acordarse de avisar.
+  const [rollsDelTurno, setRollsDelTurno] = useState<any[]>([]);
+  const rollsAntes = useRef(0);
   /** Pistas que había la última vez que se miró el tablero. Para el aviso. */
   const [pistasVistas, setPistasVistas] = useState(0);
   const [tab, setTab] = useState<Tab>('tablero');
@@ -233,7 +241,7 @@ export function App() {
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
       aplicarOpciones(data.options ?? [], data.campaignId);
-      setLastRoll(null); setStreaming('');
+      setRollsDelTurno([]); setStreaming('');
     } catch (e) {
       setError(`No se pudo crear la partida: ${(e as Error).message}`);
     } finally {
@@ -295,7 +303,7 @@ export function App() {
       setState(data.state);
       setLines([{ id: 'opening', kind: 'keeper', text: data.opening }]);
       aplicarOpciones(data.options ?? [], data.campaignId);
-      setLastRoll(null); setStreaming('');
+      setRollsDelTurno([]); setStreaming('');
     } catch (e) {
       setError(`No se pudo crear la partida: ${(e as Error).message}`);
     } finally {
@@ -314,7 +322,11 @@ export function App() {
         { id: 'opening', kind: 'keeper', text: data.opening },
         ...data.state.narrative.map((n: any) => ({ id: n.id, kind: n.kind, text: n.text })),
       ]);
-      setLastRoll(data.state.rolls[data.state.rolls.length - 1] ?? null);
+      // Al abrir una partida ya empezada se muestra sólo la última tirada: las
+      // de "este turno" todavía no existen, el turno no lo jugó esta sesión.
+      const previas = data.state.rolls ?? [];
+      rollsAntes.current = previas.length;
+      setRollsDelTurno(previas.length ? [previas[previas.length - 1]] : []);
       aplicarOpciones(data.options ?? [], id);
     } catch (e) {
       setError(`No se pudo abrir la partida: ${(e as Error).message}`);
@@ -352,7 +364,8 @@ export function App() {
     // las acciones no tiran dados —hablar, agarrar, caminar—, y sin esto la
     // ficha de la tirada anterior seguía en pantalla debajo de la narración
     // nueva. Se lee como si esa tirada hubiera resuelto también esta acción.
-    setBusy(true); setError(null); setStreaming(''); setOptions([]); setLastRoll(null);
+    rollsAntes.current = state?.rolls?.length ?? 0;
+    setBusy(true); setError(null); setStreaming(''); setOptions([]); setRollsDelTurno([]);
     // En móvil la respuesta llega a la historia: si el jugador tocó una opción
     // desde otro panel, hay que llevarlo a donde va a pasar algo.
     setPanel('historia');
@@ -364,8 +377,18 @@ export function App() {
         switch (msg.kind) {
           case 'narration_delta': acc += msg.data as string; setStreaming(acc); break;
           case 'narration_replace': acc = msg.data as string; setStreaming(acc); break;
-          case 'roll': setLastRoll(msg.data); break;
-          case 'state': setState(msg.data); break;
+          // `roll` sigue llegando para la tirada que pidió el jugador —es la
+          // que aparece primero, mientras el estado todavía no llegó—, pero
+          // el estado de abajo es el que manda: trae también las que tiró el
+          // motor solo.
+          case 'roll': setRollsDelTurno((r) => (r.length ? r : [msg.data])); break;
+          case 'state': {
+            const s = msg.data as { rolls?: any[] };
+            setState(msg.data);
+            const nuevas = (s.rolls ?? []).slice(rollsAntes.current);
+            if (nuevas.length) setRollsDelTurno(nuevas);
+            break;
+          }
           case 'options': aplicarOpciones((msg.data as Opcion[]) ?? []); break;
           case 'error': setError(String(msg.data)); break;
           default: break;
@@ -672,7 +695,15 @@ export function App() {
 
         {state?.npcs && <Rivales npcs={state.npcs} />}
 
-        {lastRoll && <RollCard roll={lastRoll} big animar={animarDados} />}
+        {rollsDelTurno.length > 0 && (
+          <div className="rolls-turno">
+            {rollsDelTurno.map((r, i) => (
+              // Sólo la primera anima: con dos o tres tiradas en el turno,
+              // animarlas todas a la vez es ruido, no suspenso.
+              <RollCard key={r?.id ?? i} roll={r} big animar={animarDados && i === 0} />
+            ))}
+          </div>
+        )}
 
         {error && <div className="error">{error}</div>}
 
@@ -692,7 +723,7 @@ export function App() {
                   setState(r.state);
                   setLines([{ id: 'opening', kind: 'keeper', text: r.opening }]);
                   aplicarOpciones(r.options ?? [], r.campaignId);
-                  setLastRoll(null); setStreaming(''); setTab('tablero');
+                  setRollsDelTurno([]); setStreaming(''); setTab('tablero');
                 }}
               />
             )}
