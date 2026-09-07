@@ -320,6 +320,13 @@ function heredarInvestigador(inv: Investigator, meses: number): Investigator {
     // La frontera tiene que arrancar en 0 en cada campaña nueva; lo que se
     // preserva entre campañas es `sessionsSurvived`, no esto.
     experience: { ...inv.experience, lastDevelopmentSeq: 0 },
+    // La locura indefinida por acumulación (p. 156) se mide POR AVENTURA:
+    // lo perdido en la anterior no cuenta para el umbral de ésta. La Cordura
+    // de arranque es la que el investigador trae puesta —no se cura sola
+    // entre aventuras, a propósito— así que el umbral nuevo sale de acá, no
+    // de un máximo teórico.
+    sanityLostThisScenario: 0,
+    sanAtStartOfScenario: inv.derived.san,
   };
 }
 
@@ -2019,42 +2026,74 @@ export class Turn {
       });
       note = ' CORDURA EN 0: LOCURA INDEFINIDA. El investigador queda fuera de juego como personaje jugable — ' +
         'es el mismo cierre que la muerte, aunque no lo sea. No lo deshagas, no lo suavices.';
-    } else if (from - to >= 5) {
-      const int = this.tiradaInterna(
-        inv.id, inv.name, 'INT (crisis)', inv.characteristics.INT,
-        'no perder el control de golpe, aunque el golpe haya sido fuerte',
-      );
-      if (meetsDifficulty(int.degree, 'regular')) {
-        note = ` Perdió ${from - to} de golpe y el manual pide tirar INT para ver si la crisis se manifiesta ` +
-          'ahora mismo: la INT aguanta. No hay crisis inmediata.';
-      } else {
-        // Si quien pidió la pérdida declaró una fobia o manía concreta, se
-        // lleva esa en vez de la genérica. El motor decide SI cruza el piso
-        // —la Exposición alta suma de más y quien pide la pérdida no puede
-        // saber cuánto de antemano— pero QUÉ se lleva puede venir declarado.
-        const nombre = String(raw.crisis_name ?? '').trim() || 'Crisis de locura temporal';
-        const descripcion = String(raw.crisis_description ?? '').trim()
-          || `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final de la ` +
-             'escena, y lo que haga durante ella no es enteramente decisión suya.';
-        const tipo = String(raw.crisis_kind ?? 'mental') as Condition['kind'];
-        const skillModifiers: NonNullable<MechanicalEffect['skillModifiers']> = [];
-        for (const n of [1, 2] as const) {
-          const skill = String(raw[`crisis_skill_${n}`] ?? '').trim();
-          const dice = Number(raw[`crisis_dice_${n}`] ?? 0);
-          if (skill && dice !== 0) skillModifiers.push({ skill: skill as SkillId, dice });
+    } else {
+      if (from - to >= 5) {
+        const int = this.tiradaInterna(
+          inv.id, inv.name, 'INT (crisis)', inv.characteristics.INT,
+          'no perder el control de golpe, aunque el golpe haya sido fuerte',
+        );
+        if (meetsDifficulty(int.degree, 'regular')) {
+          note += ` Perdió ${from - to} de golpe y el manual pide tirar INT para ver si la crisis se manifiesta ` +
+            'ahora mismo: la INT aguanta. No hay crisis inmediata.';
+        } else {
+          // Si quien pidió la pérdida declaró una fobia o manía concreta, se
+          // lleva esa en vez de la genérica. El motor decide SI cruza el piso
+          // —la Exposición alta suma de más y quien pide la pérdida no puede
+          // saber cuánto de antemano— pero QUÉ se lleva puede venir declarado.
+          const nombre = String(raw.crisis_name ?? '').trim() || 'Crisis de locura temporal';
+          const descripcion = String(raw.crisis_description ?? '').trim()
+            || `Perdió ${from - to} puntos de Cordura de golpe: ${cause}. La crisis dura hasta el final de la ` +
+               'escena, y lo que haga durante ella no es enteramente decisión suya.';
+          const tipo = String(raw.crisis_kind ?? 'mental') as Condition['kind'];
+          const skillModifiers: NonNullable<MechanicalEffect['skillModifiers']> = [];
+          for (const n of [1, 2] as const) {
+            const skill = String(raw[`crisis_skill_${n}`] ?? '').trim();
+            const dice = Number(raw[`crisis_dice_${n}`] ?? 0);
+            if (skill && dice !== 0) skillModifiers.push({ skill: skill as SkillId, dice });
+          }
+          this.aplicarCondicion({
+            name: nombre,
+            description: descripcion,
+            kind: tipo,
+            temporary: true,
+            ...(skillModifiers.length ? { mechanicalEffect: { skillModifiers } } : {}),
+          });
+          note += skillModifiers.length
+            ? ` Pérdida de 5 o más en un golpe, y la INT no aguantó: se lleva «${nombre}», con efecto real en ` +
+              'tiradas futuras — ver la ficha.'
+            : ' Pérdida de 5 o más en un golpe, y la INT no aguantó: crisis de locura temporal aplicada — ver la ' +
+              'condición en la ficha.';
         }
-        this.aplicarCondicion({
-          name: nombre,
-          description: descripcion,
-          kind: tipo,
-          temporary: true,
-          ...(skillModifiers.length ? { mechanicalEffect: { skillModifiers } } : {}),
-        });
-        note = skillModifiers.length
-          ? ` Pérdida de 5 o más en un golpe, y la INT no aguantó: se lleva «${nombre}», con efecto real en ` +
-            'tiradas futuras — ver la ficha.'
-          : ' Pérdida de 5 o más en un golpe, y la INT no aguantó: crisis de locura temporal aplicada — ver la ' +
-            'condición en la ficha.';
+      }
+
+      // ★ LOCURA INDEFINIDA POR ACUMULACIÓN (p. 156) — un mecanismo aparte
+      //   del de arriba. No mide un golpe: mide el TOTAL perdido en esta
+      //   aventura. El umbral es 5 o un quinto de la Cordura con la que la
+      //   aventura arrancó, lo que sea mayor (p. ej., con 65 de arranque, el
+      //   umbral es 13, no 5). Se evalúa una sola vez, la tirada exacta en
+      //   la que el acumulado CRUZA el umbral — sin esa comparación
+      //   antes/después, cada pérdida posterior volvería a tirar de nuevo.
+      const antes = inv.sanityLostThisScenario ?? 0;
+      const despues = antes + (from - to);
+      const arranque = inv.sanAtStartOfScenario ?? from;
+      const umbralAcumulado = Math.max(5, Math.floor(arranque / 5));
+      if (antes < umbralAcumulado && despues >= umbralAcumulado) {
+        const int2 = this.tiradaInterna(
+          inv.id, inv.name, 'INT (acumulada)', inv.characteristics.INT,
+          `no quebrarse por el total ya perdido en esta aventura: ${despues} de ${arranque} de Cordura de arranque`,
+        );
+        if (meetsDifficulty(int2.degree, 'regular')) {
+          note += ` Lo acumulado en esta aventura (${despues} de ${arranque} de Cordura de arranque) cruzó el ` +
+            'quinto que el manual vigila aparte de cualquier golpe puntual (p. 156): la INT aguanta también esta vez.';
+        } else {
+          this.emit('INVESTIGATOR_WENT_INSANE', {
+            investigatorId: inv.id,
+            cause: `Locura indefinida por acumulación: ${despues} de Cordura perdida en esta aventura, sobre ${arranque} de arranque. ${cause}`,
+          });
+          note += ' LOCURA INDEFINIDA POR ACUMULACIÓN (p. 156): no fue un solo golpe, fue la suma de toda la ' +
+            'aventura, y la INT no aguantó. El investigador queda fuera de juego como personaje jugable, igual ' +
+            'que si hubiera llegado a 0 de golpe.';
+        }
       }
     }
 

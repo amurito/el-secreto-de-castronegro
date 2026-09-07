@@ -65,6 +65,8 @@ function make(
     ringBond: null,
     pendingLuckBonus: 0,
     spellsKnown: [],
+    sanityLostThisScenario: 0,
+    sanAtStartOfScenario: derived.san,
   };
 }
 

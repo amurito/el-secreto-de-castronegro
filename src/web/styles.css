@@ -773,6 +773,7 @@ button { font-family: inherit; cursor: pointer; }
 /* La fila que todavía está tirando, en la fase de desarrollo. */
 .desarrollo-fila-tirando { opacity: 0.8; }
 .d-dado-girando { color: var(--accent); font-variant-numeric: tabular-nums; }
+.desarrollo-siguiente { margin: 0.4rem 0 0.2rem; }
 
 .finales-vacio { color: var(--text-faint); font-size: 0.8rem; line-height: 1.6; font-family: var(--serif); }
 .finales-intro {

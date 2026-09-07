@@ -182,6 +182,8 @@ export function crearInvestigador(
     origin: skills['esquivar']?.base ? 'occupation' : 'personal',
   };
 
+  const derivado = computeDerived(ch, { luck: tirada.suerte, edad: decisiones.edad });
+
   const investigador: Investigator = {
     id: `inv-${decisiones.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 24)}-${Date.now().toString(36)}`,
     playerId: 'jugador-local',
@@ -194,7 +196,7 @@ export function crearInvestigador(
     nationality: 'Argentina',
     description: decisiones.descripcion.trim(),
     characteristics: ch,
-    derived: computeDerived(ch, { luck: tirada.suerte, edad: decisiones.edad }),
+    derived: derivado,
     skills,
     umbral: emptyUmbralState(),
     conditions: [],
@@ -208,6 +210,8 @@ export function crearInvestigador(
     ringBond: null,
     pendingLuckBonus: 0,
     spellsKnown: [],
+    sanityLostThisScenario: 0,
+    sanAtStartOfScenario: derivado.san,
   };
 
   return { ok: true, investigador, problemas: [], chequeosEdu: chequeos, armaInicialId };

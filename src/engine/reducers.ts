@@ -98,6 +98,15 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       const inv = cloneInvestigator(s, p.investigatorId);
       if (!inv) break;
       inv.derived = { ...inv.derived, [p.stat]: p.to } as typeof inv.derived;
+      // Acumulador de la locura indefinida por total de aventura (p. 156):
+      // sólo suma pérdidas reales de Cordura, nunca recuperación. Vive acá,
+      // sobre el mismo evento que ya cambia `derived.san`, porque es lo que
+      // registra la pérdida real ya aplicada (con los topes de `clamp` de
+      // por medio) — sumar el `amount` pedido en vez del `delta` aplicado
+      // contaría de más si la Cordura ya estaba cerca de 0.
+      if (p.stat === 'san' && p.delta < 0) {
+        inv.sanityLostThisScenario = (inv.sanityLostThisScenario ?? 0) + -p.delta;
+      }
       break;
     }
 
@@ -670,6 +679,13 @@ function initFromCreation(ev: GameEvent): GameState {
       ...inv,
       spellsKnown: inv.spellsKnown ?? [],
       pendingLuckBonus: inv.pendingLuckBonus ?? 0,
+      sanityLostThisScenario: inv.sanityLostThisScenario ?? 0,
+      // Campaña vieja sin el campo: lo mejor que se puede hacer es asumir
+      // que la aventura arrancó con la Cordura que el investigador tiene AL
+      // MOMENTO de plegar este evento. No es exacto para una partida a
+      // mitad de camino, pero es la misma Cordura de arranque real para
+      // toda campaña nueva de acá en más, que es lo que importa.
+      sanAtStartOfScenario: inv.sanAtStartOfScenario ?? inv.derived.san,
     };
   }
   const items: Record<string, Item> = {};

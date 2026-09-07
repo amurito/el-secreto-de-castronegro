@@ -367,6 +367,22 @@ export interface Investigator {
    */
   spellsKnown: Array<{ id: string; proven: boolean; lastAttemptAt?: string }>;
 
+  /**
+   * LOCURA INDEFINIDA POR ACUMULACIÓN (p. 156, además de la de "5 o más de
+   * golpe" que ya vive en `toolApplySanityLoss`): si lo perdido en total
+   * DENTRO DE ESTA AVENTURA llega a 5 o a un quinto de la Cordura con la que
+   * la aventura arrancó —lo que sea mayor—, hay una tirada de INT aparte, y
+   * si no sale, es locura indefinida de verdad, no una crisis pasajera.
+   *
+   * Los dos campos se reinician en `heredarInvestigador`, junto con la
+   * Cordura DE ARRANQUE de la aventura nueva (que es la de cierre de la
+   * anterior: la Cordura no se cura sola entre aventuras, a propósito).
+   * Opcionales por lo mismo que `lastAttemptAt`: una campaña guardada antes
+   * de que esto existiera no los tiene, y ausente es «todavía no aplica».
+   */
+  sanityLostThisScenario?: number;
+  sanAtStartOfScenario?: number;
+
   experience: {
     sessionsSurvived: number;
     /**

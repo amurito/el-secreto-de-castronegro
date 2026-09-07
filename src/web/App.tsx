@@ -202,6 +202,14 @@ export function App() {
   const colRightRef = useRef<HTMLDivElement>(null);
   const arrastrandoPie = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // A dónde hay que scrollear cuando aparece el desenlace. Reportado jugando:
+  // `.narrative` tiene SU PROPIO scroll interno (autoscrollea a la última
+  // línea, más abajo), pero el título y el texto del final viven DEBAJO de
+  // `.narrative`, como hermanos dentro de `.col-center` —que también scrollea,
+  // por afuera—. Nada movía ESE scroll exterior cuando el desenlace
+  // aparecía: `.narrative` seguía mostrando el final de la conversación
+  // previa y el texto del final quedaba tapado, abajo, fuera de vista.
+  const endingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     elegirApi().then(async (a) => {
@@ -213,6 +221,10 @@ export function App() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [lines, streaming]);
+
+  useEffect(() => {
+    if (state?.ending) endingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [state?.ending?.title]);
 
   /**
    * Marca las opciones recién desbloqueadas. Se calcula en el cliente a
@@ -744,7 +756,7 @@ export function App() {
         {error && <div className="error">{error}</div>}
 
         {ended ? (
-          <div className="ending">
+          <div className="ending" ref={endingRef}>
             <div className="ending-title">{state.ending.title}</div>
             <div className="ending-text">{state.ending.text}</div>
             <Epilogo ending={state.ending} board={state.board} scenarioId={state.scenarioId} />
@@ -982,65 +994,79 @@ function Epilogo({
 /**
  * Las comprobaciones de mejora de la fase de desarrollo, UNA POR UNA.
  *
- * Pedido jugando: aparecían las diez de golpe, ya resueltas, y era una tabla
- * de resultados en vez de una tirada. Acá cada habilidad tira su dado —el
- * número gira— y recién después se revela contra cuánto tiró y si subió. El
- * resultado ya estaba firmado en la cadena mucho antes de que esto girara:
- * es presentación, igual que `DadosPercentiles`.
+ * Pedido jugando dos veces seguidas: aparecían las diez de golpe, ya
+ * resueltas, y era una tabla de resultados en vez de una tirada. La primera
+ * vuelta de esto las revelaba solas, con un timer — y a ojo eso se sigue
+ * viendo como «todas juntas» si son pocas o si el timer corre rápido. Ahora
+ * el avance es DEL JUGADOR, no del reloj: cada habilidad tira su dado —gira
+ * un momento, solo— y se queda mostrada hasta que el jugador pide ver la
+ * siguiente. No hay forma de que esto se lea como una tabla: sólo se puede
+ * ver de a una.
+ *
+ * El resultado ya estaba firmado en la cadena mucho antes de que esto
+ * girara: es presentación, igual que `DadosPercentiles`.
  *
  * Con la animación apagada (o con `prefers-reduced-motion`), se muestran
- * todas reveladas de entrada, sin esperas.
+ * todas reveladas de entrada, sin esperas ni clicks — apagar la animación
+ * significa eso.
  */
 function MejorasAnimadas({ mejoras, animar }: { mejoras: any[]; animar: boolean }) {
   const activa = animar && !prefiereMenosMovimiento();
-  const [reveladas, setReveladas] = useState(() => (activa ? 0 : mejoras.length));
+  // Cuántas ya se revelaron y quedaron fijas en pantalla.
+  const [indice, setIndice] = useState(0);
+  // La que está girando AHORA, antes de que el jugador la vea resuelta.
+  const [girando, setGirando] = useState(() => activa && mejoras.length > 0);
   const [cara, setCara] = useState(1);
 
+  // Cada vez que el jugador avanza el índice, la nueva fila arranca girando.
   useEffect(() => {
-    if (!activa) { setReveladas(mejoras.length); return; }
-    setReveladas(0);
-    const plazos: number[] = [];
-    for (let i = 1; i <= mejoras.length; i++) {
-      plazos.push(window.setTimeout(() => setReveladas(i), i * 650));
-    }
-    return () => plazos.forEach(clearTimeout);
-  }, [activa, mejoras.length]);
+    if (activa && indice < mejoras.length) setGirando(true);
+  }, [activa, indice, mejoras.length]);
 
-  // El número que gira mientras una fila espera su turno.
+  // El giro es sólo un momento —no hace falta esperar al jugador para verlo
+  // girar, sólo para AVANZAR una vez que ya paró—.
   useEffect(() => {
-    if (!activa || reveladas >= mejoras.length) return;
+    if (!activa || !girando) return;
     const tic = window.setInterval(() => setCara(1 + Math.floor(Math.random() * 100)), 70);
-    return () => clearInterval(tic);
-  }, [activa, reveladas, mejoras.length]);
+    const para = window.setTimeout(() => setGirando(false), 700);
+    return () => { clearInterval(tic); clearTimeout(para); };
+  }, [activa, girando]);
+
+  const fila = (m: any) => (
+    <div key={m.skill} className={`desarrollo-fila ${m.gain > 0 ? 'sube' : ''}`}>
+      <span className="d-label">{m.label}</span>
+      <span className="d-num">{m.antes}%</span>
+      <span className="d-dado">tirada {m.check}</span>
+      <span className="d-res">
+        {m.gain > 0 ? `+${m.gain} → ${m.despues}%` : 'ya lo sabía demasiado bien'}
+      </span>
+    </div>
+  );
+
+  if (!activa) return <>{mejoras.map(fila)}</>;
 
   return (
     <>
-      {mejoras.map((m: any, i: number) => {
-        const lista = i < reveladas;
-        // Sólo la que está por salir muestra el dado girando; las que vienen
-        // después ni aparecen, para que se lean de a una y no como una lista.
-        if (!lista && i > reveladas) return null;
-        if (!lista) {
-          return (
-            <div key={m.skill} className="desarrollo-fila desarrollo-fila-tirando">
-              <span className="d-label">{m.label}</span>
-              <span className="d-num">{m.antes}%</span>
-              <span className="d-dado d-dado-girando">tirada {cara}</span>
-              <span className="d-res">…</span>
-            </div>
-          );
-        }
-        return (
-          <div key={m.skill} className={`desarrollo-fila ${m.gain > 0 ? 'sube' : ''}`}>
-            <span className="d-label">{m.label}</span>
-            <span className="d-num">{m.antes}%</span>
-            <span className="d-dado">tirada {m.check}</span>
-            <span className="d-res">
-              {m.gain > 0 ? `+${m.gain} → ${m.despues}%` : 'ya lo sabía demasiado bien'}
-            </span>
+      {mejoras.slice(0, indice).map(fila)}
+      {indice < mejoras.length && (
+        girando ? (
+          <div className="desarrollo-fila desarrollo-fila-tirando">
+            <span className="d-label">{mejoras[indice].label}</span>
+            <span className="d-num">{mejoras[indice].antes}%</span>
+            <span className="d-dado d-dado-girando">tirada {cara}</span>
+            <span className="d-res">…</span>
           </div>
-        );
-      })}
+        ) : (
+          <>
+            {fila(mejoras[indice])}
+            {indice + 1 < mejoras.length && (
+              <button className="ghost desarrollo-siguiente" onClick={() => setIndice(indice + 1)}>
+                Ver la siguiente comprobación →
+              </button>
+            )}
+          </>
+        )
+      )}
     </>
   );
 }

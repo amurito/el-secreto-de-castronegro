@@ -148,6 +148,66 @@ async function main() {
       vista !== null, vista?.slice(-160) ?? '(la INT aguantó en todas las semillas probadas)');
   }
 
+  // ── Locura indefinida por ACUMULACIÓN, aparte de la de "5 o más de golpe" ──
+  // p. 156: si el total perdido EN LA AVENTURA llega a 5 o a un quinto de la
+  // Cordura de arranque (lo que sea mayor), hay otra tirada de INT aparte, y
+  // si no aguanta, es locura indefinida de verdad — igual que llegar a 0,
+  // aunque el investigador esté lejos de 0. Reportado jugando: terminó una
+  // aventura en 57 sin que esto se evaluara nunca, porque no existía.
+  console.log('\nLOCURA INDEFINIDA POR ACUMULACIÓN (p. 156): SE MIDE EL TOTAL DE LA AVENTURA, NO UN GOLPE');
+  {
+    // Cinco pérdidas de 3 (ninguna llega a 5, así que el gatillo de "golpe
+    // único" de arriba no se dispara ni una vez) hasta cruzar el umbral: con
+    // 65 de arranque, el umbral es max(5, 65/5) = 13, así que cruza en la
+    // quinta (15 acumulados).
+    async function golpesChicosHastaCruzar(quiereAguante: boolean) {
+      for (const letra of SEMILLAS) {
+        const id = await createCampaign(AGUA_QUIETA, `CORDURA-ACUM-${letra}`, letra.repeat(64));
+        const t = await Turn.open(id);
+        const arranque = t.investigator.sanAtStartOfScenario ?? t.investigator.derived.san;
+        let ultimo = { ok: true, message: '' };
+        for (let i = 0; i < 5; i++) {
+          ultimo = t.executeTool('apply_sanity_loss', { amount: 3, cause: 'prueba' });
+        }
+        await t.commit();
+        const final = (await Turn.open(id)).investigator;
+        const insano = final.status === 'insane';
+        if (insano === !quiereAguante) return { mensaje: ultimo.message, arranque, final };
+      }
+      return null;
+    }
+
+    const aguanta = await golpesChicosHastaCruzar(true);
+    check('alguna semilla hace que la INT aguante el acumulado', aguanta !== null);
+    if (aguanta) {
+      check('el umbral usado es un quinto de la Cordura de ARRANQUE, no de la máxima',
+        Math.max(5, Math.floor(aguanta.arranque / 5)) === 13, `arranque ${aguanta.arranque}`);
+      check('lo dice sin mezclarlo con el gatillo de golpe único',
+        /cruzó el quinto/.test(aguanta.mensaje) && !/golpe único/.test(aguanta.mensaje), aguanta.mensaje);
+      check('sigue jugable: la INT aguantó', aguanta.final.status === 'alive');
+    }
+
+    const noAguanta = await golpesChicosHastaCruzar(false);
+    check('alguna semilla hace que la INT NO aguante el acumulado', noAguanta !== null);
+    if (noAguanta) {
+      check('queda fuera de juego, igual que llegar a 0', noAguanta.final.status === 'insane');
+      check('el mensaje distingue esto de "Cordura en 0"',
+        /LOCURA INDEFINIDA POR ACUMULACIÓN/.test(noAguanta.mensaje) && noAguanta.final.derived.san > 0,
+        `${noAguanta.mensaje.slice(-140)} — Cordura final ${noAguanta.final.derived.san}`);
+    }
+
+    // No se evalúa dos veces: cruzar el umbral una vez y seguir perdiendo
+    // después no debería disparar una segunda tirada de "INT (acumulada)".
+    const id = await createCampaign(AGUA_QUIETA, 'CORDURA-ACUM-UNA-VEZ', 'q'.repeat(64));
+    const t = await Turn.open(id);
+    for (let i = 0; i < 8; i++) t.executeTool('apply_sanity_loss', { amount: 3, cause: 'prueba' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    const acumuladas = s.rolls.filter((r) => /INT \(acumulada\)/.test(r.commitment.skillLabel));
+    check('la tirada "INT (acumulada)" aparece como máximo una vez en toda la aventura',
+      acumuladas.length <= 1, `${acumuladas.length}`);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

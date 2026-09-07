@@ -3472,6 +3472,53 @@ se revela contra cuánto tiró y si subió. Con la animación apagada o con
 `prefers-reduced-motion`, todas reveladas de entrada y sin esperas, mismo
 criterio que `DadosPercentiles`.
 
+### 3.2-novatrigies Locura indefinida por acumulación, la fase de desarrollo se pide de a una, y el desenlace deja de esconderse ✔ HECHO
+
+Cuarta sesión sobre la décima aventura, 2026-09-14.
+
+**1. Locura indefinida por acumulación (p. 156), la mitad de la regla que
+faltaba.** La sesión de Cordura de esta campaña (§3.2-duotrigies) implementó
+"perder 5 o más DE GOLPE obliga a tirar INT" — pero el manual tiene una
+SEGUNDA regla, aparte, que mide el TOTAL de la aventura: si lo acumulado
+llega a 5 o a un quinto de la Cordura con la que la aventura arrancó (lo que
+sea mayor), hay otra tirada de INT, y si no aguanta es locura indefinida de
+verdad, aunque el investigador esté lejos de 0. Reportado jugando: cerrar
+una aventura en 57 sin que esto se evaluara nunca, porque no existía.
+
+Implementado con dos campos nuevos en `Investigator`
+(`sanityLostThisScenario`, `sanAtStartOfScenario`), ambos opcionales para
+retrocompatibilidad y reiniciados en `heredarInvestigador` al empezar cada
+aventura —la Cordura de arranque es la que el investigador trae puesta, no
+se cura sola entre aventuras—. Se evalúa una sola vez, en la tirada exacta
+que CRUZA el umbral, comparando el acumulado antes/después en vez de guardar
+un flag aparte.
+
+**2. La fase de desarrollo pasa de un timer a control del jugador.** La
+primera vuelta de esto (sesión anterior) las revelaba con un `setTimeout`
+escalonado — y a ojo, sobre todo con pocas habilidades, seguía leyéndose
+como "todas juntas". Ahora cada comprobación tira, se queda fija en pantalla,
+y el jugador pide ver la siguiente con un botón: no hay margen para que esto
+se lea como una tabla, porque literalmente no se puede ver más de una a la
+vez sin tocar nada.
+
+**3. El desenlace dejaba de verse al cerrar la aventura.** `.narrative`
+tiene su propio scroll interno y autoscrollea a la última línea; el título y
+el texto del final son hermanos suyos, MÁS ABAJO, dentro del mismo panel que
+también scrollea por afuera — y nada movía ese scroll exterior cuando el
+desenlace aparecía. Ahora un `scrollIntoView` lleva la vista al desenlace en
+cuanto aparece.
+
+**Quedó afuera, a propósito, por ahora:** cómo se restaura la Suerte. Hoy no
+se restaura nunca —sólo se gasta—, y la regla opcional del manual ("testear
+la Suerte" entre aventuras: tirar contra la Suerte actual y, si falla,
+tirar una Suerte nueva que sólo reemplaza si es más alta) necesitaría
+consumir la cadena de dados verificable ANTES de que exista el primer evento
+de la campaña nueva, lo cual pisa los índices de las tiradas reales a menos
+que se le sume plomería nueva (un campo de arranque para `rng.nextIndex`, o
+resolverlo como eventos posteriores a `CAMPAIGN_CREATED`, al estilo
+`sembrarHerencia`). Es una feature real, no un bug — se preguntó, se explicó
+el estado actual, y se dejó para cuando el usuario decida si la quiere.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
