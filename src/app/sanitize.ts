@@ -36,7 +36,7 @@ export interface ClientState {
   campaignId: string;
   title: string;
   session: number;
-  worldTime: { display: string };
+  worldTime: { display: string; iso: string };
   scenarioId: string;
   location: { id: string; name: string; description: string; connections: string[] };
   investigator: unknown;
@@ -72,7 +72,11 @@ export function sanitizeForClient(state: GameState): ClientState {
     campaignId: state.campaignId,
     title: state.title,
     session: state.session,
-    worldTime: { display: state.world.time.display },
+    // El ISO va al cliente además del rótulo: la pestaña de hechizos mide
+    // contra él cuánto falta para poder volver a lanzar (`esperaRestante` en
+    // App.tsx). No es información oculta — es la hora que el propio
+    // encabezado ya muestra, en un formato con el que se puede restar.
+    worldTime: { display: state.world.time.display, iso: state.world.time.iso },
     scenarioId: state.scenarioId,
     location: {
       id: loc.id,

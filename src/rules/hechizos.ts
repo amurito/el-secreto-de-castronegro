@@ -23,7 +23,7 @@
  * dos cosas o nada.
  */
 
-export type EfectoHechizo = 'bono_dado' | 'estabilidad';
+export type EfectoHechizo = 'bono_dado' | 'estabilidad' | 'exposicion';
 
 export interface Hechizo {
   id: string;
@@ -33,8 +33,21 @@ export interface Hechizo {
   costoCordura?: number;
   descripcion: string;
   efecto: EfectoHechizo;
-  /** Cuánto vale el efecto: dados de bonificación, o puntos de Estabilidad. */
+  /**
+   * Cuánto vale el efecto: dados de bonificación, puntos de Estabilidad, o
+   * puntos de Exposición que se BAJAN (nunca por debajo del piso que deja el
+   * pico histórico, y sin tocar los umbrales ya cruzados: ésos son memoria
+   * permanente y no los devuelve nada).
+   */
   magnitud: number;
+  /**
+   * Minutos que hay que esperar antes de volver a lanzar ESTE hechizo, salga
+   * o no salga. Sin esto no habría nada que impidiera apretar el botón hasta
+   * que la tirada saliera bien —reportado jugando: cuatro intentos seguidos
+   * en el mismo minuto, sin costo— ni encadenar el mismo efecto hasta
+   * llenar la barra que repara. Ver `toolCastSpell`.
+   */
+  esperaMinutos: number;
 }
 
 export const HECHIZOS: Hechizo[] = [
@@ -49,6 +62,9 @@ export const HECHIZOS: Hechizo[] = [
       'saber por un instante que hay más de una forma para elegir.',
     efecto: 'bono_dado',
     magnitud: 1,
+    // Media hora: el más barato de los tres y el que menos descoloca, pero
+    // igual no se puede encadenar dentro de la misma escena.
+    esperaMinutos: 30,
   },
   {
     id: 'sostener-el-aire',
@@ -60,6 +76,10 @@ export const HECHIZOS: Hechizo[] = [
       'Estabilidad de inmediato, sin costo de Cordura propio.',
     efecto: 'estabilidad',
     magnitud: 8,
+    // Una hora, que es lo mismo que tarda en volver 1 Punto de Magia: sin
+    // esto, con la ficha llena se podía subir la Estabilidad de a ocho hasta
+    // quedarse sin PM, esperar, y repetir. Estabilidad infinita.
+    esperaMinutos: 60,
   },
   {
     // El más viejo de los tres y el único que no se aprende de Bernardo sino
@@ -72,11 +92,23 @@ export const HECHIZOS: Hechizo[] = [
     costoCordura: 1,
     descripcion:
       'Se escribe lo que se acaba de ver, con la mano firme, antes de que la ' +
-      'cabeza tenga tiempo de acomodarlo en algo más fácil de recordar. No ' +
-      'sirve para entender: sirve para no perder el hilo. Recupera bastante ' +
-      'Estabilidad, y cuesta un punto de Cordura escribirlo tal cual fue.',
-    efecto: 'estabilidad',
-    magnitud: 14,
+      'cabeza tenga tiempo de acomodarlo en algo más fácil de recordar. Lo ' +
+      'que queda en el papel deja de estar solamente adentro: baja la ' +
+      'Exposición al Umbral, que es lo que pesa. No devuelve ningún umbral ya ' +
+      'cruzado —eso no lo devuelve nada— ni baja del piso que dejó el pico. ' +
+      'Cuesta un punto de Cordura escribirlo tal cual fue.',
+    // Baja Exposición, no repara Estabilidad. Es lo que el gesto DICE que
+    // hace —sacárselo de la cabeza y ponerlo en un papel— y además es el
+    // único de los tres que toca la barra que ninguna otra cosa del juego
+    // puede bajar dentro de una aventura. Que exista una salida, cara y con
+    // espera larga, hace que la Exposición sea una decisión y no sólo un
+    // contador que sube.
+    efecto: 'exposicion',
+    magnitud: 8,
+    // Seis horas: es el más poderoso de los tres por lejos. Con esta espera,
+    // usarlo cuesta media jornada diegética — y el tiempo, en este motor,
+    // abre el mundo (sube la Permeabilidad). Nunca es gratis.
+    esperaMinutos: 360,
   },
 ];
 

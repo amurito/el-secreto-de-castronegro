@@ -80,6 +80,7 @@ export type GameEventType =
   | 'EVENT_ALTERED'
   | 'TEMPORAL_ECHO_RECEIVED'
   | 'UMBRAL_EXPOSURE'
+  | 'UMBRAL_EXPOSURE_RELIEVED'
   | 'WORLD_PERMEABILITY_SHIFT'
   | 'STABILITY_SHIFT'
   | 'THRESHOLD_CROSSED'
@@ -170,6 +171,23 @@ export interface UmbralExposurePayload {
   source: string;
   /** Lo que habría dado la primera vez. Para auditar el decaimiento. */
   amountBeforeDecay: number;
+}
+
+/**
+ * La Exposición BAJA. Es el único camino que la mueve hacia abajo DENTRO de
+ * una aventura — entre una y la siguiente lo hace `exposicionTrasMeses`.
+ *
+ * A propósito no lleva `source`: los rendimientos decrecientes existen para
+ * que repetir el mismo contacto rinda cada vez menos, y esto no es contacto,
+ * es lo contrario. Nunca baja de `pisoDeExposicion(peakExposure)`, y no toca
+ * ni el pico ni los umbrales ya cruzados: un umbral cruzado no se descruza.
+ */
+export interface UmbralExposureRelievedPayload {
+  investigatorId: InvestigatorId;
+  from: number;
+  to: number;
+  amount: number;
+  cause: string;
 }
 
 /**
@@ -466,6 +484,12 @@ export interface SpellCastPayload {
   provenNow: boolean;
   /** Sólo si el efecto del hechizo es `'bono_dado'`. */
   bonusDiceTo?: number;
+  /**
+   * ISO del mundo del intento, incluso cuando el hechizo NO salió: la espera
+   * de `Hechizo.esperaMinutos` corre desde que se intenta, no desde que sale.
+   * Si no, fallar sería gratis y se podría insistir hasta que saliera.
+   */
+  attemptedAt?: string;
 }
 
 export interface RingBondedPayload {

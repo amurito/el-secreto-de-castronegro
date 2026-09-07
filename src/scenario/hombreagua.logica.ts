@@ -358,12 +358,27 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
     // dice que sirve Historia: «ubicar un objeto, estilo o costumbre en su
     // época». Fallar no bloquea nada: deja el siglo en vez del año.
     id: 'ubicarse',
-    prueba: () => ({
-      skill: 'historia', difficulty: 'regular',
-      reason: 'poner en su época lo que tenés delante: la carreta, la ropa, la letra de los papeles',
-      stakes_success: 'sacás el año con dos o tres de error',
-      stakes_failure: 'sacás el siglo y nada más',
-    }),
+    // Historia o EDU, la que el investigador tenga más alta. Historia es la
+    // habilidad exacta —«ubicar un objeto, estilo o costumbre en su época»,
+    // dice su propia ficha— pero nace en 5% y una médica rural puede no
+    // haberla tocado nunca; EDU es lo que un adulto instruido sabe sin haber
+    // estudiado el tema. Que la escena elija la mejor de las dos es lo que
+    // hace que esta tirada no sea un peaje para el que no compró Historia, y
+    // de paso le da a EDU su primer uso real en todo el juego.
+    prueba: (s) => {
+      const inv = s.investigators[s.activeInvestigator]!;
+      const historia = inv.skills['historia']?.base ?? 5;
+      const usaEdu = inv.characteristics.EDU > historia;
+      return {
+        skill: usaEdu ? 'EDU' : 'historia',
+        difficulty: 'regular',
+        reason: usaEdu
+          ? 'poner en su época lo que tenés delante con lo que sabe cualquiera que haya estudiado: la carreta, la ropa, la letra'
+          : 'poner en su época lo que tenés delante: la carreta, la ropa, la letra de los papeles',
+        stakes_success: 'sacás el año con dos o tres de error',
+        stakes_failure: 'sacás el siglo y nada más',
+      };
+    },
     resolver: ({ tirada }) => ({
       texto: [
         'Te sentás en la costra y hacés lo único que se puede hacer con esto: pensarlo como si fuera un problema de fechas y no una cosa que te está pasando.',
@@ -433,6 +448,122 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
     },
   },
   {
+    // TIRADA DE SIZ, y una de las pocas del juego. En CoC 7e el TAMAÑO no se
+    // tira solo casi nunca, pero acá la pregunta es literalmente de tamaño:
+    // a Bernardo el agua le daba por el pecho, y si le daba por el pecho A ÉL
+    // no le da por el pecho a cualquiera. Hacer pie donde el fondo cae es una
+    // cuestión de cuánto mide el que entra, no de lo bien que nade.
+    id: 'vadear',
+    prueba: () => ({
+      skill: 'SIZ', difficulty: 'regular',
+      reason: 'hacer pie donde el fondo empieza a caer, con el agua subiendo',
+      stakes_success: 'llegás caminando hasta donde estuvo él',
+      stakes_failure: 'el fondo se te va antes de llegar',
+    }),
+    resolver: ({ tirada, estado }) => {
+      const siz = estado.investigators[estado.activeInvestigator]!.characteristics.SIZ;
+      return {
+        texto: [
+          'Entrás pisando. La costra cruje, después es barro, después es barro blando y frío que se te mete entre los dedos.',
+          tirada?.exito
+            ? `Con ${siz} de TAMAÑO hacés pie hasta bastante más adentro de lo que parecía desde la orilla, y llegás caminando hasta el punto exacto donde lo viste hundirse. Ahí el agua te da por el pecho, igual que a él.`
+            : `El fondo se te va antes de llegar. Con ${siz} de TAMAÑO, el punto donde él tenía el agua por el pecho es el punto donde vos ya no tocás — y no es que el fondo baje: es que baja MÁS de lo que bajaba hace un rato, en el mismo lugar.`,
+          tirada?.exito
+            ? 'Y ahí abajo, con los pies, no encontrás nada. Barro parejo, sin un pozo, sin una piedra, sin un hueco de donde alguien pueda haber sacado algo. Él sacó algo de acá hace veinte minutos.'
+            : 'Volvés a la orilla de espaldas, sin darle la espalda al agua, que es exactamente lo que hacen los pájaros de la laguna de Los Álamos y lo pensás justo cuando ya lo estás haciendo.',
+        ],
+        exposicion: { amount: tirada?.exito ? 7 : 5, source: 'hombreagua:vadear', cause: 'meterse en el agua que te trajo' },
+        cordura: { amount: tirada?.exito ? 2 : 1, cause: 'buscar con los pies el pozo del que salió el anillo, y no encontrarlo' },
+        ...(tirada?.exito ? {
+          pistas: [{
+            description: 'En el punto exacto donde Bernardo se hundió y sacó el anillo, el fondo de la laguna es barro parejo: no hay pozo, ni piedra, ni hueco del que se pueda haber sacado nada.',
+            kind: 'experiential' as const,
+            source: 'vadear hasta el punto',
+            reliability: 'reliable' as const,
+          }],
+        } : {}),
+      };
+    },
+  },
+  {
+    // NADAR, en dificultad fácil: es una laguna baja de pampa, no un río. Lo
+    // que la hace peligrosa no es el agua. La pifia sí se nota — es la única
+    // manera de que una tirada fácil signifique algo.
+    id: 'nadar',
+    // «Fácil» no es un escalón de dificultad en CoC 7e —hay regular, difícil
+    // y extrema— y este motor hace bien en no inventarlo. Una tirada fácil se
+    // representa con un DADO DE BONIFICACIÓN sobre la dificultad regular, que
+    // es lo que corresponde acá: es una laguna baja de pampa, sin corriente y
+    // sin profundidad, no un río.
+    prueba: () => ({
+      skill: 'nadar', difficulty: 'regular',
+      reason: 'soltarte del fondo en una laguna que te da por el pecho',
+      stakes_success: 'nadás los diez metros sin drama',
+      stakes_failure: 'tragás agua y volvés',
+      bonus_dice: 1,
+      modifier_reason: 'es una laguna baja y mansa, no un río',
+    }),
+    resolver: ({ tirada }) => {
+      const pifia = tirada?.grado === 'fumble';
+      if (pifia) {
+        return {
+          texto: [
+            'Te soltás del fondo.',
+            'Y el agua no te sostiene. No es que te hundas: es que la laguna deja de tener arriba. Das una brazada hacia donde estaba el cielo y la brazada sale contra barro; das la otra hacia donde estaba el barro y sale al aire. Durante un tiempo que no podés medir, las dos direcciones son la misma y ninguna te sirve.',
+            'Cuando volvés a saber cuál es cuál estás de rodillas en la costra, del lado de afuera, tosiendo agua salada, y hay diez metros de orilla seca entre vos y el punto donde te soltaste. No los caminaste.',
+            'La libreta de él sigue sobre la costra, cerrada, exactamente donde la dejó. Y el hombre sigue en el agua, de espaldas, sin haberse dado vuelta ni una vez.',
+          ],
+          cordura: {
+            amount: 6,
+            cause: 'que el agua deje de tener arriba y abajo mientras estás adentro',
+            crisis: {
+              nombre: 'Sin arriba',
+              descripcion: 'Bajo el agua, y a veces sólo con cerrar los ojos en la bañadera, las direcciones dejan de estar donde tienen que estar. No se puede nadar sin saber para dónde es la superficie.',
+              tipo: 'phobia' as const,
+              afecta: [{ skill: 'nadar', dados: 1 }],
+            },
+          },
+          exposicion: { amount: 16, source: 'hombreagua:nadar-pifia', cause: 'quedar adentro del agua que refleja, sin arriba ni abajo' },
+          estabilidad: { amount: -14, cause: 'diez metros que no se caminaron' },
+          dano: { amount: 2, cause: 'tragar agua salada y salir a la rastra' },
+          pistas: [{
+            description: 'Adentro de la laguna, soltado del fondo, el agua deja de tener arriba y abajo. El investigador salió a diez metros de donde entró, sin haber recorrido esa distancia.',
+            kind: 'experiential',
+            source: 'nadar en la laguna',
+            reliability: 'reliable',
+          }],
+          consecuencia: {
+            description: 'El investigador se soltó del fondo de la laguna de la visión y el agua dejó de tener arriba y abajo: salió diez metros más allá sin haber recorrido la distancia.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Adentro de esa agua, las direcciones no son una propiedad del lugar.',
+          },
+        };
+      }
+      return {
+        texto: [
+          'Te soltás del fondo.',
+          tirada?.exito
+            ? 'Y es una laguna nomás: fría, quieta, sin corriente. Nadás los diez metros hasta el punto y volvés, y el cuerpo hace todo lo que un cuerpo hace en el agua. Nada raro. Absolutamente nada raro, y eso ya es raro a esta altura.'
+            : 'Y tragás. No pasa nada grave —hacés pie a los dos metros y volvés tosiendo— pero volvés. El agua no hizo nada en particular: simplemente no sabés nadar tan bien como creías.',
+          tirada?.exito
+            ? 'Lo único que sacás en limpio lo sacás con los ojos abiertos abajo del agua: se ve. Se ve el fondo, se ven tus propias manos, se ve la luz de arriba. En un charco de sal con barro removido, a esta hora, no se tendría que ver nada.'
+            : 'Desde la orilla, escupiendo, mirás el agua otra vez. Sigue sin una arruga, con vos adentro hace diez segundos.',
+        ],
+        exposicion: { amount: tirada?.exito ? 8 : 4, source: 'hombreagua:nadar', cause: 'meter el cuerpo entero en el agua que refleja' },
+        cordura: { amount: tirada?.exito ? 2 : 1, cause: 'nadar adentro de una visión' },
+        ...(tirada?.exito ? {
+          pistas: [{
+            description: 'Bajo el agua de la laguna se ve con una claridad imposible: el fondo, las propias manos, la luz de arriba, en un charco de sal con el barro removido y a media tarde.',
+            kind: 'experiential' as const,
+            source: 'nadar en la laguna',
+            reliability: 'reliable' as const,
+          }],
+        } : {}),
+      };
+    },
+  },
+  {
     id: 'fin-dejarlo',
     resolver: () => ({
       consecuencia: {
@@ -454,16 +585,33 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
   },
   {
     id: 'fin-intervenir',
-    resolver: () => ({
+    // TIRADA DE APP, y es su primer uso real en el juego. No es vanidad:
+    // acá el investigador es una aparición sin contexto en la orilla de un
+    // hombre solo, y lo único que tiene para que lo tomen en serio en vez de
+    // por una alucinación es cómo se ve y cómo se planta. La tirada NO
+    // decide si Bernardo cambia de idea —el canon no lo permite: el pueblo
+    // se funda igual— sino CUÁNTO de lo que dijo le queda encima.
+    prueba: () => ({
+      skill: 'APP', difficulty: 'regular',
+      reason: 'que lo que aparece gritándole en la orilla parezca una persona y no una alucinación de la sed',
+      stakes_success: 'te mira como se mira a alguien',
+      stakes_failure: 'te oye como se oye un ruido',
+    }),
+    resolver: ({ tirada }) => ({
       texto: [
         'Le gritás. Le gritás lo que sabés: que eso no es una promesa, que la mano del reflejo puede ser cualquier mano, que va a pasar trescientos años preguntándole a un agua que no contesta.',
         'Algo pasa. Eso es lo peor de todo: algo pasa. Levanta la cabeza a mitad de tu frase, con la cara del que oyó un ruido en el campo de noche, y se queda quieto un segundo largo.',
+        tirada?.exito
+          ? 'Y te mira. Te mira a la cara, de arriba abajo, como se mira a una persona: registra la ropa que no es de ninguna parte, la cara, la manera de pararte. Mueve la boca como para contestar algo. No contesta.'
+          : 'Y no te mira. Gira la cabeza hacia el ruido como se gira hacia un ruido —hacia el aire, un poco a la izquierda de donde estás— y no encuentra nada que valga la pena mirar dos veces.',
         'Después mira el puño cerrado y sigue.',
       ],
-      cordura: { amount: 3, cause: 'hablarle a alguien que capaz te oyó y siguió igual' },
+      cordura: { amount: tirada?.exito ? 4 : 3, cause: 'hablarle a alguien que capaz te oyó y siguió igual' },
       consecuencia: {
-        description: 'El investigador trató de advertirle a Bernardo Díaz, en 1679, que estaba leyendo mal lo que el agua le mostraba. Bernardo levantó la cabeza a mitad de la frase. Después siguió.',
-        scope: 'world',
+        description: tirada?.exito
+          ? 'El investigador trató de advertirle a Bernardo Díaz que estaba leyendo mal lo que el agua le mostraba, y Bernardo lo miró a la cara antes de seguir.'
+          : 'El investigador trató de advertirle a Bernardo Díaz que estaba leyendo mal lo que el agua le mostraba. Bernardo giró la cabeza hacia el ruido, sin encontrar nada. Después siguió.',
+        scope: 'world' as const,
         permanent: true,
         worldReminder: 'Alguien le habló a Bernardo antes de que fundara nada. Nadie puede decir si lo oyó, y el pueblo se fundó igual.',
       },
@@ -473,6 +621,9 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
         text: [
           'Volvés a 1928 con la garganta como si hubieras gritado de verdad, que es un detalle que no le vas a poder explicar a nadie.',
           'Castronegro sigue donde estaba. El pueblo se fundó en 1680, la Casa de Díaz está en la loma, y todo lo que pasó siguió pasando exactamente como pasó.',
+          tirada?.exito
+            ? 'Y te queda esto, que no sirve para nada y no se va: te miró a la cara. Sea lo que sea que haya visto, vio algo con forma de persona diciéndole que no. Y siguió.'
+            : 'Y te queda esto, que no sirve para nada y no se va: giró la cabeza hacia el aire, un poco a la izquierda de donde estabas. Ni siquiera fuiste una figura. Fuiste un ruido.',
           'Lo que no podés decidir —ni esa noche, ni después— es si eso significa que no te oyó, o si significa que te oyó y no le alcanzó, o si significa que oírte era parte de lo que siempre había pasado. Las tres explicaciones alcanzan para lo mismo. Ninguna se puede probar.',
         ],
       },

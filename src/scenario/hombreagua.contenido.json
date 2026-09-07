@@ -567,6 +567,22 @@
       }
     },
     {
+      "id": "vadear",
+      "prioridad": 74,
+      "cuando": {
+        "op": "texto",
+        "patron": "vadeo hasta donde estuvo|camino hasta donde estuvo|entro caminando al agua"
+      }
+    },
+    {
+      "id": "nadar",
+      "prioridad": 73,
+      "cuando": {
+        "op": "texto",
+        "patron": "nado hasta el fondo|cruzo la laguna nadando|me tiro a nadar"
+      }
+    },
+    {
       "id": "fin-dejarlo",
       "prioridad": 98,
       "cuando": {
@@ -718,6 +734,38 @@
       "hecha": {
         "op": "narrado",
         "contiene": "Ahora sabés en qué siglo estás parado"
+      }
+    },
+    {
+      "id": "vadear",
+      "grupo": "usar",
+      "orden": 17,
+      "lugar": "orilla",
+      "intencion": "Vadeo hasta donde estuvo él",
+      "etiqueta": "Vadear hasta donde estuvo él",
+      "visible": {
+        "op": "narrado",
+        "contiene": "Sale con la mano cerrada"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Entrás pisando"
+      }
+    },
+    {
+      "id": "nadar",
+      "grupo": "usar",
+      "orden": 18,
+      "lugar": "orilla",
+      "intencion": "Nado hasta el fondo",
+      "etiqueta": "Nadar hasta donde no se hace pie",
+      "visible": {
+        "op": "narrado",
+        "contiene": "Entrás pisando"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Te soltás del fondo"
       }
     },
     {

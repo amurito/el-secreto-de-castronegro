@@ -131,9 +131,14 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       const p = ev.payload as P.SpellCastPayload;
       const inv = cloneInvestigator(s, p.investigatorId);
       if (!inv) break;
-      if (p.provenNow) {
-        inv.spellsKnown = inv.spellsKnown.map((h) => (h.id === p.spellId ? { ...h, proven: true } : h));
-      }
+      inv.spellsKnown = inv.spellsKnown.map((h) => (h.id === p.spellId
+        ? {
+            ...h,
+            proven: p.provenNow ? true : h.proven,
+            // El intento marca la espera aunque el hechizo no haya salido.
+            lastAttemptAt: p.attemptedAt ?? h.lastAttemptAt,
+          }
+        : h));
       if (p.bonusDiceTo !== undefined) inv.pendingLuckBonus = p.bonusDiceTo;
       break;
     }
@@ -158,6 +163,17 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
           },
         ],
       };
+      break;
+    }
+
+    case 'UMBRAL_EXPOSURE_RELIEVED': {
+      const p = ev.payload as P.UmbralExposureRelievedPayload;
+      const inv = cloneInvestigator(s, p.investigatorId);
+      if (!inv) break;
+      // Baja SÓLO el nivel actual. `peakExposure` y `thresholdsCrossed` no se
+      // tocan: son la memoria permanente del contacto, y descargar lo que se
+      // puede descargar no descruza ningún umbral.
+      inv.umbral = { ...inv.umbral, exposure: p.to };
       break;
     }
 

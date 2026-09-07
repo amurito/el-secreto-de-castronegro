@@ -359,7 +359,13 @@ export interface Investigator {
    * si sale bien, nunca más vuelve a pedirla. `toolCastSpell` la consulta y
    * la actualiza.
    */
-  spellsKnown: Array<{ id: string; proven: boolean }>;
+  /**
+   * `lastAttemptAt` es el ISO del mundo del último INTENTO —salga o no—, y es
+   * lo que sostiene la espera de `Hechizo.esperaMinutos`. Opcional a
+   * propósito: una campaña guardada antes de que existiera no lo tiene, y
+   * ausente significa «nunca lo intentó», que es la lectura correcta.
+   */
+  spellsKnown: Array<{ id: string; proven: boolean; lastAttemptAt?: string }>;
 
   experience: {
     sessionsSurvived: number;

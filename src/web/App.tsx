@@ -76,6 +76,28 @@ function guardarAvisoMetahorrorVisto(): void {
   try { localStorage.setItem(CLAVE_AVISO_METAHORROR, '1'); } catch { /* sin storage, se juega igual */ }
 }
 
+/**
+ * Minutos que faltan para poder volver a lanzar un hechizo, contra el reloj
+ * DEL MUNDO. Espeja `minutosHastaPoderLanzar` del motor: acá sólo apaga el
+ * botón y explica por qué — quien decide de verdad sigue siendo el motor.
+ */
+function esperaRestante(
+  lastAttemptAt: string | undefined, esperaMinutos: number, worldIso: string | undefined,
+): number {
+  if (!lastAttemptAt || !worldIso || !esperaMinutos) return 0;
+  const desde = new Date(lastAttemptAt).getTime();
+  const ahora = new Date(worldIso).getTime();
+  if (!Number.isFinite(desde) || !Number.isFinite(ahora)) return 0;
+  return Math.max(0, esperaMinutos - Math.floor((ahora - desde) / 60000));
+}
+
+function textoEspera(minutos: number): string {
+  const h = Math.floor(minutos / 60);
+  const m = minutos % 60;
+  if (h <= 0) return `${m} min`;
+  return m > 0 ? `${h} h ${m} min` : `${h} h`;
+}
+
 /** Qué opciones vio el jugador y cuáles todavía no tocó. Ver `aplicarOpciones`. */
 interface Marcas { vistas: Set<string>; pendientes: Set<string> }
 
@@ -423,6 +445,10 @@ export function App() {
     try {
       const r = await api.castSpell(campaignId, spellId);
       setState(r.state);
+      // La tirada de PODER de la primera vez llegaba en `r.tiradas` y esta
+      // pantalla la tiraba a la basura: el jugador veía «no consigue que
+      // responda» sin ver contra qué había tirado. Reportado jugando.
+      setRollsDelTurno(r.tiradas ?? []);
       setLines((l) => [...l, {
         id: `hechizo-${Date.now()}`, kind: 'keeper',
         text: r.mensaje.replace('RECHAZADO POR EL MOTOR: ', ''),
@@ -795,10 +821,14 @@ export function App() {
           {tab === 'documentos' && <Documents docs={state?.documents ?? []} />}
           {tab === 'hechizos' && (
             <div className="hechizos">
-              {(state?.investigator?.spellsKnown ?? []).map((h: { id: string; proven: boolean }) => {
+              {(state?.investigator?.spellsKnown ?? []).map((h: { id: string; proven: boolean; lastAttemptAt?: string }) => {
                 const def = HECHIZO_POR_ID[h.id];
                 if (!def) return null;
                 const pm = state?.investigator?.derived?.mp ?? 0;
+                // Cuánto falta para poder volver a lanzarlo. Se mide contra el
+                // reloj del MUNDO, igual que en el motor (`toolCastSpell`):
+                // acá sólo se muestra, la decisión la toma el motor igual.
+                const espera = esperaRestante(h.lastAttemptAt, def.esperaMinutos, state?.worldTime?.iso);
                 return (
                   <div className="hechizo" key={h.id}>
                     <div className="hechizo-titulo">
@@ -810,8 +840,8 @@ export function App() {
                       {def.costoPM} PM{def.costoCordura ? ` · ${def.costoCordura} de Cordura` : ''}
                       {pm < def.costoPM && ' · sin PM suficientes: el resto sale de tus Puntos de Vida'}
                     </div>
-                    <button className="primary" disabled={busy} onClick={() => lanzarHechizo(h.id)}>
-                      Lanzar
+                    <button className="primary" disabled={busy || espera > 0} onClick={() => lanzarHechizo(h.id)}>
+                      {espera > 0 ? `Todavía no — faltan ${textoEspera(espera)}` : 'Lanzar'}
                     </button>
                   </div>
                 );

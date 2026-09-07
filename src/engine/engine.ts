@@ -33,6 +33,7 @@ import {
   applyExposure, applyStabilityLoss, applyStabilityRecovery,
   stabilityPenaltyDice, extraSanLossFromExposure, thresholdInfo,
   extraExposureFromPermeability, permeabilityFromMinutes, exposicionTrasMeses,
+  pisoDeExposicion,
 } from '../rules/umbral.ts';
 import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
 import { STABILITY_RECOVERY, techoDeEstabilidad, EXPOSURE_THRESHOLDS } from '../rules/umbral.config.ts';
@@ -82,6 +83,17 @@ export interface ToolOutcome {
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const id = uuid;
+
+/**
+ * Lo que se tarda en lanzar un hechizo —o en intentarlo sin conseguirlo—.
+ *
+ * Tiene que ser bastante MENOR que la espera del hechizo más corto: si
+ * lanzar consumiera tanto tiempo como la espera, la espera no mordería nunca
+ * (al terminar el intento ya habría pasado). Diez minutos también es lo que
+ * hace que la magia no sea gratis en el otro sentido: el tiempo, en este
+ * motor, abre el mundo (`abrirElMundo` sube la Permeabilidad).
+ */
+const MINUTOS_POR_LANZAMIENTO = 10;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CREACIÓN Y CARGA
@@ -1054,6 +1066,28 @@ export class Turn {
       return this.reject('cast_spell', raw, 'El investigador está inconsciente o peor: no puede lanzar nada.');
     }
 
+    // ── La espera entre intentos ────────────────────────────────────────────
+    // El manual dice que un lanzamiento fallido no cuesta Puntos de Magia, y
+    // eso está bien; lo que no dice en ningún lado es que se pueda insistir
+    // sin límite en el mismo minuto. Reportado jugando: cuatro intentos
+    // seguidos del mismo hechizo, todos fallidos, todos gratis, en la misma
+    // pantalla. Y con un efecto que repara (Estabilidad, Exposición) el
+    // problema es peor todavía: sin espera se encadena hasta llenar la barra.
+    // La espera corre desde el INTENTO, no desde el éxito.
+    const espera = this.minutosHastaPoderLanzar(conocido, hechizo.esperaMinutos);
+    if (espera > 0) {
+      const horas = Math.floor(espera / 60);
+      const mins = espera % 60;
+      const cuanto = horas > 0
+        ? `${horas} hora${horas === 1 ? '' : 's'}${mins > 0 ? ` y ${mins} minutos` : ''}`
+        : `${mins} minutos`;
+      return this.reject('cast_spell', raw,
+        `«${hechizo.nombre}» no vuelve a responder tan seguido: hay que esperar ${cuanto} más. ` +
+        `Lanzarlo deja a quien lo lanza en un estado del que no se sale apretando de nuevo.`);
+    }
+
+    const attemptedAt = this.state.world.time.iso;
+
     // ── La tirada de la primera vez (p. 174). Después de probado, nunca más. ──
     let provenNow = false;
     if (!conocido.proven) {
@@ -1065,11 +1099,14 @@ export class Turn {
       });
       if (!tirada.ok) return tirada;
       if (!this.ctx.lastRollSucceeded) {
+        // Falla, no cobra PM (p. 174) — pero SÍ quema el intento y el tiempo.
+        this.emit('SPELL_CAST', { investigatorId: inv.id, spellId, provenNow: false, attemptedAt });
+        this.advanceTimeBy(MINUTOS_POR_LANZAMIENTO, `intentar «${hechizo.nombre}» sin conseguirlo`);
         return {
           ok: true,
           message: `${inv.name} intenta «${hechizo.nombre}» por primera vez y no consigue que responda. ` +
-            `No se cobra nada: un lanzamiento fallido no tiene costo (p. 174) — se puede volver a intentar ` +
-            `otro turno.`,
+            `No se cobra Magia: un lanzamiento fallido no tiene ese costo (p. 174). Lo que sí cuesta es el ` +
+            `intento — hay que dejar pasar un rato antes de volver a probar.`,
         };
       }
       provenNow = true;
@@ -1102,13 +1139,17 @@ export class Turn {
     // ── El efecto: uno de dos tipos genéricos, nunca algo que sepa de una
     // aventura en particular. Ver la cabecera de rules/hechizos.ts. ──
     let bonusDiceTo: number | undefined;
+    let notaEfecto = '';
     if (hechizo.efecto === 'bono_dado') {
       bonusDiceTo = clamp(inv.pendingLuckBonus + hechizo.magnitud, 0, 2);
     } else if (hechizo.efecto === 'estabilidad') {
       this.toolApplyStability({ amount: hechizo.magnitud, cause: `lanzar «${hechizo.nombre}»` });
+    } else if (hechizo.efecto === 'exposicion') {
+      notaEfecto = ' ' + this.bajarExposicion(hechizo.magnitud, `lanzar «${hechizo.nombre}»`);
     }
 
-    this.emit('SPELL_CAST', { investigatorId: inv.id, spellId, provenNow, bonusDiceTo });
+    this.emit('SPELL_CAST', { investigatorId: inv.id, spellId, provenNow, bonusDiceTo, attemptedAt });
+    this.advanceTimeBy(MINUTOS_POR_LANZAMIENTO, `lanzar «${hechizo.nombre}»`);
 
     return {
       ok: true,
@@ -1116,8 +1157,54 @@ export class Turn {
         `${inv.name} lanza «${hechizo.nombre}». PM ${mpFrom} → ${mpTo}` +
         (resto > 0 ? ` (y ${resto} de Puntos de Vida)` : '') + '.' +
         (provenNow ? ' Queda probado: no vuelve a pedir tirada.' : '') +
-        ` ${hechizo.descripcion}`,
+        ` ${hechizo.descripcion}` + notaEfecto,
     };
+  }
+
+  /**
+   * Minutos que faltan para poder volver a lanzar un hechizo, o 0 si ya se
+   * puede. Se mide contra el reloj DEL MUNDO, no contra el real: lo que
+   * importa es cuánto pasó adentro de la ficción.
+   */
+  private minutosHastaPoderLanzar(
+    conocido: { lastAttemptAt?: string }, esperaMinutos: number,
+  ): number {
+    if (!conocido.lastAttemptAt || esperaMinutos <= 0) return 0;
+    const desde = new Date(conocido.lastAttemptAt).getTime();
+    const ahora = new Date(this.state.world.time.iso).getTime();
+    if (!Number.isFinite(desde) || !Number.isFinite(ahora)) return 0;
+    const pasados = Math.floor((ahora - desde) / 60000);
+    return Math.max(0, esperaMinutos - pasados);
+  }
+
+  /**
+   * Baja la Exposición al Umbral. Es el único camino del motor que la mueve
+   * hacia abajo DENTRO de una aventura —`exposicionTrasMeses` sólo corre
+   * entre una y la siguiente— y por eso tiene dos límites duros:
+   *
+   *   · nunca por debajo del piso que dejó el pico histórico
+   *     (`pisoDeExposicion`): haber llegado lejos deja marca aunque se
+   *     descargue lo que se pueda descargar;
+   *   · no toca `peakExposure` ni `thresholdsCrossed`. Un umbral cruzado no
+   *     se descruza: eso es memoria permanente y no lo devuelve nada.
+   */
+  private bajarExposicion(cuanto: number, cause: string): string {
+    const inv = this.investigator;
+    const from = inv.umbral.exposure;
+    const piso = pisoDeExposicion(inv.umbral.peakExposure);
+    const to = Math.max(piso, from - Math.abs(cuanto));
+    if (to === from) {
+      return from <= piso
+        ? `La Exposición ya está en el piso que dejó el pico (${piso} de 100): escribirlo no la baja más.`
+        : 'La Exposición no se movió.';
+    }
+    this.emit('UMBRAL_EXPOSURE_RELIEVED', {
+      investigatorId: inv.id, from, to, amount: from - to, cause,
+    });
+    const tocoPiso = to === piso && from - to < Math.abs(cuanto);
+    return `Exposición al Umbral ${from} → ${to} de 100.` +
+      (tocoPiso ? ` (No baja más: ${piso} es el piso que dejó haber llegado a ${inv.umbral.peakExposure}.)` : '') +
+      ' Los umbrales ya cruzados siguen cruzados.';
   }
 
   // ── COMBATE ────────────────────────────────────────────────────────────────

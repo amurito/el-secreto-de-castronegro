@@ -120,9 +120,14 @@ async function main() {
   console.log('\n4. UNA SEGUNDA VEZ, YA PROBADO, NO PIDE TIRADA — Y COBRA DE NUEVO');
   {
     const antesDeRolls = s.rolls.length;
-    const mp2Antes = invDe(s).derived.mp;
-    const hp2Antes = invDe(s).derived.hp;
     const t = await Turn.open(id);
+    // Hay que dejar pasar la espera del hechizo: desde que existe, no se
+    // puede volver a lanzar el mismo en el mismo rato (ver bloque 9-bis).
+    t.executeTool('advance_time', { minutes: 60, reason: 'dejar pasar la espera del hechizo' });
+    // Los PM se miden DESPUÉS de avanzar el tiempo: pasar una hora recupera
+    // 1 PM (p. 172), y medirlos antes hacía que la cuenta no cerrara por uno.
+    const mp2Antes = t.state.investigators[t.state.activeInvestigator]!.derived.mp;
+    const hp2Antes = t.state.investigators[t.state.activeInvestigator]!.derived.hp;
     const r = t.executeTool('cast_spell', { spell_id: 'adivinar-la-forma' });
     check('acepta', r.ok, r.message);
     await t.commit();
@@ -275,6 +280,79 @@ async function main() {
     check('el desenlace reconoce que no hay nada que llevarse',
       Boolean(e.ending) && /Sin nada que llevarse/.test(String(e.ending?.title ?? '')),
       JSON.stringify(e.ending));
+  }
+
+  console.log('\n9-bis. LA ESPERA ENTRE LANZAMIENTOS');
+  {
+    // Reportado jugando: cuatro intentos del mismo hechizo en la misma
+    // pantalla, todos fallidos, todos gratis. El manual dice que fallar no
+    // cuesta Puntos de Magia, no que se pueda insistir sin límite.
+    const id = await createCampaign(AGUA_QUIETA, 'ESPERA', 'v'.repeat(64));
+    let t = await Turn.open(id);
+    t.executeTool('learn_spell', { spell_id: 'sostener-el-aire', source: 'prueba' });
+    await t.commit();
+
+    // Un turno por intento, como en el juego real: `castSpell` (api.local.ts)
+    // abre su propio Turn en cada clic. Meter los dos en el mismo turno
+    // chocaría antes contra «una tirada por intención», que es otra regla.
+    t = await Turn.open(id);
+    const primero = t.executeTool('cast_spell', { spell_id: 'sostener-el-aire' });
+    await t.commit();
+
+    t = await Turn.open(id);
+    const segundo = t.executeTool('cast_spell', { spell_id: 'sostener-el-aire' });
+    await t.commit();
+    check('el primer intento se acepta (salga o no el hechizo)', primero.ok, primero.message.slice(0, 60));
+    check('el segundo intento seguido se rechaza por la espera',
+      !segundo.ok && /esperar/.test(segundo.message), segundo.message.slice(0, 90));
+
+    // Y la espera corre contra el reloj DEL MUNDO: si pasa el tiempo, se puede.
+    t = await Turn.open(id);
+    t.executeTool('advance_time', { minutes: 120, reason: 'prueba' });
+    const tercero = t.executeTool('cast_spell', { spell_id: 'sostener-el-aire' });
+    await t.commit();
+    check('pasado el tiempo del mundo, vuelve a poder lanzarse', tercero.ok, tercero.message.slice(0, 60));
+  }
+
+  console.log('\n9-ter. «CONTAR LO QUE NO SE PUEDE ANOTAR» BAJA EXPOSICIÓN');
+  {
+    const id = await createCampaign(AGUA_QUIETA, 'EXPOSICION', 'w'.repeat(64));
+    let t = await Turn.open(id);
+    t.executeTool('learn_spell', { spell_id: 'contar-lo-que-no-se-anota', source: 'prueba' });
+    // Se sube la Exposición desde varias fuentes distintas: con una sola, los
+    // rendimientos decrecientes no dejarían llegar lo bastante alto.
+    for (const f of ['a', 'b', 'c', 'd', 'e', 'f']) {
+      t.executeTool('apply_umbral_exposure', { amount: 12, source: `prueba:${f}`, cause: 'prueba' });
+    }
+    await t.commit();
+    const antes = invDe((await loadState(id)).state);
+    const expAntes = antes.umbral.exposure;
+    const picoAntes = antes.umbral.peakExposure;
+    const umbralesAntes = antes.umbral.thresholdsCrossed.length;
+    check('la Exposición subió lo suficiente para poder bajarla', expAntes > 20, `${expAntes}`);
+
+    // Se insiste con semillas hasta que la tirada de PODER de la primera vez
+    // salga: no se puede fijar el resultado de una tirada con una semilla.
+    let lanzo = false;
+    for (let i = 0; i < 12 && !lanzo; i++) {
+      const t2 = await Turn.open(id);
+      t2.executeTool('advance_time', { minutes: 400, reason: 'esperar la espera del hechizo' });
+      const r = t2.executeTool('cast_spell', { spell_id: 'contar-lo-que-no-se-anota' });
+      await t2.commit();
+      lanzo = r.ok && /Exposición al Umbral/.test(r.message);
+    }
+    check('el hechizo llega a lanzarse en algún intento', lanzo);
+
+    const desp = invDe((await loadState(id)).state);
+    check('la Exposición BAJÓ', desp.umbral.exposure < expAntes, `${expAntes} → ${desp.umbral.exposure}`);
+    check('el pico histórico NO se tocó', desp.umbral.peakExposure === picoAntes,
+      `${picoAntes} → ${desp.umbral.peakExposure}`);
+    check('los umbrales ya cruzados siguen cruzados',
+      desp.umbral.thresholdsCrossed.length >= umbralesAntes,
+      `${umbralesAntes} → ${desp.umbral.thresholdsCrossed.length}`);
+    check('nunca baja del piso que dejó el pico',
+      desp.umbral.exposure >= Math.round(desp.umbral.peakExposure * 0.35) - 1,
+      `exp ${desp.umbral.exposure} · pico ${desp.umbral.peakExposure}`);
   }
 
   console.log('\n10. RETROCOMPATIBILIDAD: campaña guardada antes de que existieran spellsKnown/pendingLuckBonus');

@@ -3364,6 +3364,72 @@ justamente lo que el motor promete no hacer; y a diferencia del backfill de
 `spellsKnown` (§3.2-quinquatrigies-bis), acá el dato viejo es válido, no
 falta. Las campañas nuevas nacen bien.
 
+### 3.2-septatrigies Magia con freno, y las características que nadie tiraba ✔ HECHO
+
+Segunda sesión de juego sobre la décima aventura, 2026-09-14.
+
+**1. Los hechizos no tenían freno.** Cuatro intentos del mismo hechizo en la
+misma pantalla, todos fallidos, todos gratis. El manual dice que un
+lanzamiento fallido no cuesta Puntos de Magia (p. 174); no dice que se pueda
+insistir sin límite hasta que la tirada salga. Y con un efecto que REPARA
+—Estabilidad— era peor: se encadenaba hasta llenar la barra, se esperaba a
+que volvieran los PM, y otra vez. Estabilidad infinita.
+
+Ahora cada hechizo declara `esperaMinutos` y la espera corre desde el
+INTENTO, no desde el éxito: fallar quema el intento igual. Lanzar (o
+intentarlo) consume 10 minutos de reloj diegético, a propósito bastante
+menos que la espera más corta — si consumiera lo mismo, la espera no
+mordería nunca, que es exactamente el bug que tuvo la primera versión de
+esto y que la prueba cazó. La pestaña de hechizos apaga el botón y dice
+cuánto falta; la decisión igual la toma el motor.
+
+**2. La tirada de PODER de la primera vez no se veía.** `castSpell` ya
+devolvía las tiradas en `r.tiradas` y la pantalla las tiraba a la basura: el
+jugador leía «no consigue que responda» sin ver contra qué había tirado.
+
+**3. «Contar lo que no se puede anotar» pasó a bajar Exposición.** Antes
+reparaba Estabilidad, igual que «Sostener el aire», y era el tercer hechizo
+haciendo lo mismo más fuerte. Bajar Exposición es lo que el gesto DICE que
+hace —sacárselo de la cabeza y ponerlo en un papel— y es lo único que toca
+la barra que ninguna otra cosa puede bajar dentro de una aventura.
+
+Eso necesitó un camino nuevo en el motor (`UMBRAL_EXPOSURE_RELIEVED`), con
+dos límites duros: nunca baja del piso que dejó el pico histórico, y **no
+toca `peakExposure` ni `thresholdsCrossed`** — un umbral cruzado no se
+descruza, eso es memoria permanente. Con seis horas de espera, usarlo cuesta
+media jornada diegética, y el tiempo en este motor abre el mundo.
+
+**4. Las características que nadie tiraba.** Medido antes de tocar nada, en
+las diez aventuras: **APP 0, EDU 0, SIZ 0, INT 0** (INT sí se usa, pero
+sólo internamente para la crisis de Cordura), y `nadar`/`saltar` en cero.
+Se les dio su primer uso real donde de verdad corresponde, no salpicado:
+
+- **SIZ** — vadear hasta donde estuvo Bernardo. La pregunta es literalmente
+  de tamaño: si a él el agua le daba por el pecho, no le da por el pecho a
+  cualquiera. Hacer pie donde el fondo cae no depende de lo bien que nades.
+- **EDU** — `ubicarse` usa Historia **o** EDU, la que el investigador tenga
+  más alta. Historia es la habilidad exacta pero nace en 5%: sin esto, la
+  tirada era un peaje para quien no la compró.
+- **APP** — al intentar advertirle a Bernardo. No es vanidad: el
+  investigador es una aparición sin contexto en la orilla de un hombre solo,
+  y lo único que tiene para que lo tomen por una persona y no por una
+  alucinación es cómo se ve y cómo se planta. La tirada no cambia lo que
+  pasa —el canon no lo permite— sino si lo mira a la cara o gira la cabeza
+  hacia el aire.
+- **`nadar`** — soltarse del fondo, en la laguna. Con **dado de
+  bonificación**, que es como se representa una tirada fácil en CoC 7e: el
+  motor no tiene escalón «fácil» y hace bien, porque el manual tampoco. La
+  pifia sí se nota: el agua deja de tener arriba y abajo, y se sale a diez
+  metros de donde se entró sin haber recorrido la distancia.
+
+**Criterio para el futuro, por si vuelve la pregunta:** una característica
+se tira cuando la pregunta ES esa característica y ninguna habilidad la
+cubre mejor. SIZ para lo que depende del cuerpo, APP para la primera
+impresión ante quien no te conoce, EDU para lo que sabe cualquiera que haya
+estudiado cuando la habilidad específica nace en 5%. Lo que no hay que hacer
+es repartirlas para llenar la planilla: `prueba-tiradas.ts` existe justamente
+para cazar tiradas decorativas.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
