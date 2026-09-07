@@ -764,6 +764,37 @@ button { font-family: inherit; cursor: pointer; }
 }
 .tab-on { color: var(--text); border-bottom-color: var(--accent); }
 
+/* ── EL BANNER DE HECHIZO NUEVO ────────────────────────────────────────────
+   Fijo arriba del todo, por encima de los tres paneles — no compite por
+   espacio con nada, y no se puede confundir con una línea más del texto.
+   Reportado jugando: la línea en el historial y el pulso de la pestaña no
+   se notaban lo suficiente. */
+.tostada-hechizo {
+  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
+  z-index: 50; display: flex; align-items: center; gap: 0.7rem;
+  background: var(--bg-panel); border: 1px solid var(--accent);
+  border-radius: 6px; padding: 0.7rem 1.1rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  animation: tostada-entra 0.35s ease-out;
+}
+.tostada-icono { font-size: 1.3rem; color: var(--accent); }
+.tostada-titulo {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-faint);
+}
+.tostada-nombre { font-family: var(--serif); font-size: 1rem; color: var(--text); }
+@keyframes tostada-entra {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tostada-hechizo { animation: none; }
+}
+@media (max-width: 860px) {
+  .tostada-hechizo { left: 1rem; right: 1rem; top: 0.6rem; transform: none; }
+  @keyframes tostada-entra { from { opacity: 0; } to { opacity: 1; } }
+}
+
 /* Aviso de "hay algo nuevo acá" — hoy sólo lo usa HECHIZOS al aprender uno. */
 .tab-nuevo { color: var(--accent); animation: tab-pulso 1.6s ease-in-out infinite; }
 @keyframes tab-pulso {

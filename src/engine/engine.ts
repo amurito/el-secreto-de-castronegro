@@ -1044,7 +1044,7 @@ export class Turn {
     return {
       ok: true,
       message: `${inv.name} aprende «${hechizo.nombre}» (${source}). Todavía no lo probó: la primera vez ` +
-        `que lo lance va a pedir una tirada de Poder difícil (p. 174).`,
+        `que lo lance va a pedir una tirada de Poder difícil.`,
     };
   }
 
@@ -1112,8 +1112,8 @@ export class Turn {
         return {
           ok: true,
           message: `${inv.name} intenta «${hechizo.nombre}» por primera vez y no consigue que responda. ` +
-            `No se cobra Magia: un lanzamiento fallido no tiene ese costo (p. 174). Lo que sí cuesta es el ` +
-            `intento — hay que dejar pasar un rato antes de volver a probar.`,
+            `No se cobra Magia por un intento fallido. Lo que sí cuesta es el intento mismo — hay que dejar ` +
+            `pasar un rato antes de volver a probar.`,
         };
       }
       provenNow = true;
@@ -1998,8 +1998,14 @@ export class Turn {
     const cause = String(raw.cause ?? '');
     const inv = this.investigator;
 
-    // ★ El motor suma la pérdida extra por Exposición alta. Regla, no decisión.
-    const extra = extraSanLossFromExposure(inv.umbral);
+    // ★ El motor suma la pérdida extra por Exposición alta. Regla, no
+    //   decisión — pero SÓLO si de verdad hubo pérdida de la fuente. Sin
+    //   este `base > 0`, una tirada de Cordura que salió bien y no cuesta
+    //   nada (`amount: 0`) igual se llevaba el extra por Exposición, lo cual
+    //   no tiene sentido: no hay golpe del que "el horror tenga dónde
+    //   agarrarse". Reportado jugando: "Cordura 67 → 65 (0 de la fuente + 2
+    //   extra...)".
+    const extra = base > 0 ? extraSanLossFromExposure(inv.umbral) : 0;
     const total = base + extra;
 
     const from = inv.derived.san;
@@ -2033,8 +2039,7 @@ export class Turn {
           'no perder el control de golpe, aunque el golpe haya sido fuerte',
         );
         if (meetsDifficulty(int.degree, 'regular')) {
-          note += ` Perdió ${from - to} de golpe y el manual pide tirar INT para ver si la crisis se manifiesta ` +
-            'ahora mismo: la INT aguanta. No hay crisis inmediata.';
+          note += ` Perdió ${from - to} de golpe, pero aguanta el control: no hay crisis inmediata.`;
         } else {
           // Si quien pidió la pérdida declaró una fobia o manía concreta, se
           // lleva esa en vez de la genérica. El motor decide SI cruza el piso
@@ -2059,10 +2064,8 @@ export class Turn {
             ...(skillModifiers.length ? { mechanicalEffect: { skillModifiers } } : {}),
           });
           note += skillModifiers.length
-            ? ` Pérdida de 5 o más en un golpe, y la INT no aguantó: se lleva «${nombre}», con efecto real en ` +
-              'tiradas futuras — ver la ficha.'
-            : ' Pérdida de 5 o más en un golpe, y la INT no aguantó: crisis de locura temporal aplicada — ver la ' +
-              'condición en la ficha.';
+            ? ` El golpe fue demasiado: se lleva «${nombre}», con efecto real en tiradas futuras — ver la ficha.`
+            : ' El golpe fue demasiado: crisis de locura temporal aplicada — ver la condición en la ficha.';
         }
       }
 
@@ -2083,16 +2086,15 @@ export class Turn {
           `no quebrarse por el total ya perdido en esta aventura: ${despues} de ${arranque} de Cordura de arranque`,
         );
         if (meetsDifficulty(int2.degree, 'regular')) {
-          note += ` Lo acumulado en esta aventura (${despues} de ${arranque} de Cordura de arranque) cruzó el ` +
-            'quinto que el manual vigila aparte de cualquier golpe puntual (p. 156): la INT aguanta también esta vez.';
+          note += ` No fue un solo golpe: es lo que ya lleva acumulado en esta aventura. Aun así, aguanta.`;
         } else {
           this.emit('INVESTIGATOR_WENT_INSANE', {
             investigatorId: inv.id,
             cause: `Locura indefinida por acumulación: ${despues} de Cordura perdida en esta aventura, sobre ${arranque} de arranque. ${cause}`,
           });
-          note += ' LOCURA INDEFINIDA POR ACUMULACIÓN (p. 156): no fue un solo golpe, fue la suma de toda la ' +
-            'aventura, y la INT no aguantó. El investigador queda fuera de juego como personaje jugable, igual ' +
-            'que si hubiera llegado a 0 de golpe.';
+          note += ' No fue un solo golpe: es la suma de toda la aventura, y esta vez no aguanta. LOCURA ' +
+            'INDEFINIDA: el investigador queda fuera de juego como personaje jugable, igual que si hubiera ' +
+            'llegado a 0 de golpe.';
         }
       }
     }

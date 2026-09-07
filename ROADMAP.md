@@ -3572,6 +3572,31 @@ entidad de los Mitos: el Ahijado; segunda vía, un tomo: los papeles del
 campamento); lo que faltaba era visibilidad, no mecánica, y quedó resuelto
 en el punto 3.
 
+### 3.2-unquadragies Los mensajes dejan de citar el manual, y el aviso de hechizo nuevo es un banner de verdad ✔ HECHO
+
+Sexta sesión sobre la décima aventura, 2026-09-14.
+
+**1. Los mensajes de Cordura citaban el manual y la página.** "el manual
+pide tirar INT", "(p. 156)", "Pérdida de 5 o más en un golpe" — todo eso es
+metajuego: el investigador no sabe que existe un manual. Reescritos para
+decir sólo el EFECTO ("perdió 7 de golpe, pero aguanta el control", "no fue
+un solo golpe: es lo que ya lleva acumulado"), nunca la regla que lo produce.
+De paso se limpiaron dos citas de página iguales en los mensajes de
+`cast_spell`/`learn_spell` (p. 174), mismo criterio.
+
+**2. Bug real: el extra por Exposición se aplicaba sobre una pérdida de 0.**
+"Cordura 67 → 65 (0 de la fuente + 2 extra…)" — una tirada de Cordura que
+sale bien y no cuesta nada no puede llevarse un extra "porque el horror
+tiene dónde agarrarse": no hubo golpe del que agarrarse. `extra` ahora sólo
+se calcula si `base > 0`. Con test de regresión.
+
+**3. El aviso de hechizo nuevo pasó a ser un banner de verdad.** La vuelta
+anterior de esto (línea en el historial + pestaña pulsando) no se notaba lo
+suficiente, reportado jugando. Se agregó un banner fijo arriba de toda la
+pantalla, por encima de los tres paneles, que se borra solo a los 5
+segundos — la señal que pedía el jugador desde el principio ("un popup").
+Las otras dos señales quedan como refuerzo.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

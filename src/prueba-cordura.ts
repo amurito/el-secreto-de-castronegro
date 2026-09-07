@@ -72,7 +72,7 @@ async function main() {
     const r = await golpeDeSiete(false);
     check('alguna semilla dio una INT que aguanta (para poder probar la rama)', r !== null);
     if (r) {
-      check('el motor avisa que la INT aguantó', /la INT aguanta/i.test(r.mensaje), r.mensaje);
+      check('el motor avisa que aguantó el control, sin citar la regla', /aguanta el control/i.test(r.mensaje), r.mensaje);
       check('no se agregó ninguna condición nueva', r.despues.conditions.length === r.antes,
         `${r.antes} → ${r.despues.conditions.length}`);
       check('la Cordura de todos modos bajó', r.despues.derived.san < 99, String(r.despues.derived.san));
@@ -124,6 +124,26 @@ async function main() {
     const sanDespues = (await Turn.open(id)).investigator.derived.san;
     check('perdió más de los 2 declarados', sanAntes - sanDespues > 2, `${sanAntes} → ${sanDespues}`);
     check('el mensaje explica por qué', /el horror tiene dónde agarrarse/.test(r.message));
+  }
+
+  // ── Sin pérdida de la fuente, el extra por Exposición no se aplica ───────
+  // Reportado jugando: "Cordura 67 → 65 (0 de la fuente + 2 extra...)" — una
+  // tirada de Cordura que sale bien y no cuesta nada (`amount: 0`) no puede
+  // llevarse un extra "porque el horror tiene dónde agarrarse": no hubo golpe
+  // del que agarrarse.
+  console.log('\nCON EXPOSICIÓN ALTA PERO PÉRDIDA DECLARADA EN 0, NO HAY EXTRA');
+  {
+    const id = await createCampaign(AGUA_QUIETA, 'CORDURA-EXPUESTO-CERO', 'y'.repeat(64));
+    const t = await Turn.open(id);
+    t.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba:a', cause: 'prueba' });
+    t.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba:b', cause: 'prueba' });
+    t.executeTool('apply_umbral_exposure', { amount: 20, source: 'prueba:c', cause: 'prueba' });
+    const sanAntes = t.investigator.derived.san;
+    const r = t.executeTool('apply_sanity_loss', { amount: 0, cause: 'prueba' });
+    await t.commit();
+    const sanDespues = (await Turn.open(id)).investigator.derived.san;
+    check('no perdió nada', sanAntes === sanDespues, `${sanAntes} → ${sanDespues}`);
+    check('el mensaje no inventa un extra sobre una pérdida de 0', !/extra/.test(r.message), r.message);
   }
 
   // ── Un NPC nota la crisis sin que se lo pregunten ────────────────────────
@@ -182,8 +202,9 @@ async function main() {
     if (aguanta) {
       check('el umbral usado es un quinto de la Cordura de ARRANQUE, no de la máxima',
         Math.max(5, Math.floor(aguanta.arranque / 5)) === 13, `arranque ${aguanta.arranque}`);
-      check('lo dice sin mezclarlo con el gatillo de golpe único',
-        /cruzó el quinto/.test(aguanta.mensaje) && !/golpe único/.test(aguanta.mensaje), aguanta.mensaje);
+      check('lo dice como efecto, sin citar el manual ni la página',
+        /No fue un solo golpe/.test(aguanta.mensaje) && !/p\. ?156/.test(aguanta.mensaje) && !/manual/i.test(aguanta.mensaje),
+        aguanta.mensaje);
       check('sigue jugable: la INT aguantó', aguanta.final.status === 'alive');
     }
 
@@ -192,7 +213,8 @@ async function main() {
     if (noAguanta) {
       check('queda fuera de juego, igual que llegar a 0', noAguanta.final.status === 'insane');
       check('el mensaje distingue esto de "Cordura en 0"',
-        /LOCURA INDEFINIDA POR ACUMULACIÓN/.test(noAguanta.mensaje) && noAguanta.final.derived.san > 0,
+        /No fue un solo golpe/.test(noAguanta.mensaje) && !/CORDURA EN 0/.test(noAguanta.mensaje)
+          && noAguanta.final.derived.san > 0,
         `${noAguanta.mensaje.slice(-140)} — Cordura final ${noAguanta.final.derived.san}`);
     }
 

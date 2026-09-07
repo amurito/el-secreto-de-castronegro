@@ -180,6 +180,11 @@ export function App() {
   // banal". Esto marca la pestaña HECHIZOS hasta que el jugador la abre, y
   // agrega una línea aparte, corta y sin mezclar, al hilo de la historia.
   const [hayHechizoNuevo, setHayHechizoNuevo] = useState(false);
+  // El banner flotante en sí — el nombre del hechizo, o null si no hay que
+  // mostrar nada. Aparte de la línea en el historial y de la pestaña
+  // pulsando: reportado jugando que ninguna de las dos se notaba lo
+  // suficiente, así que esto es la señal que no se puede pasar por alto.
+  const [tostadaHechizo, setTostadaHechizo] = useState<string | null>(null);
   const spellsAntes = useRef<number | null>(null);
   const [tab, setTab] = useState<Tab>('tablero');
   const [error, setError] = useState<string | null>(null);
@@ -248,9 +253,18 @@ export function App() {
         id: `hechizo-nuevo-${Date.now()}`, kind: 'system',
         text: def ? `✦ Aprendiste un hechizo nuevo: «${def.nombre}».` : '✦ Aprendiste un hechizo nuevo.',
       }]);
+      setTostadaHechizo(def?.nombre ?? 'un hechizo nuevo');
     }
     spellsAntes.current = known.length;
   }, [state?.investigator?.spellsKnown?.length]);
+
+  // La tostada se borra sola. 5 segundos alcanza para leerla sin que
+  // obligue a hacer nada — no es un diálogo que haya que cerrar.
+  useEffect(() => {
+    if (!tostadaHechizo) return;
+    const t = window.setTimeout(() => setTostadaHechizo(null), 5000);
+    return () => clearTimeout(t);
+  }, [tostadaHechizo]);
 
   /**
    * Marca las opciones recién desbloqueadas. Se calcula en el cliente a
@@ -742,6 +756,15 @@ export function App() {
 
   return (
     <div className="app" data-panel={panel}>
+      {tostadaHechizo && (
+        <div className="tostada-hechizo" role="status">
+          <span className="tostada-icono">✦</span>
+          <div>
+            <div className="tostada-titulo">Hechizo nuevo</div>
+            <div className="tostada-nombre">{tostadaHechizo}</div>
+          </div>
+        </div>
+      )}
       <aside className="col col-left"><Sheet inv={inv} /></aside>
 
       <main className="col col-center" ref={colCenterRef}>
