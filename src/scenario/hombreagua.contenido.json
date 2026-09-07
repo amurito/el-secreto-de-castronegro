@@ -6,7 +6,12 @@
     {
       "id": "it-libreta-medidas",
       "name": "Libreta de medidas",
-      "aliases": ["libreta", "la libreta", "libreta de medidas", "cuaderno"],
+      "aliases": [
+        "libreta",
+        "la libreta",
+        "libreta de medidas",
+        "cuaderno"
+      ],
       "shortDescription": "Una libreta de tapas de cuero, abierta sobre un cajón. Columnas de números con fecha: el nivel del agua, día por día, durante nueve años. No falta ni un día.",
       "owner": "campamento",
       "carried": false,
@@ -15,7 +20,11 @@
       "discoveredProperties": [],
       "conditionalProperties": [],
       "temporalProperties": [],
-      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
       "usageCount": 0
     }
   ],
@@ -23,12 +32,20 @@
     {
       "id": "npc-bernardo-1679",
       "name": "Bernardo",
-      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
       "status": "alive",
       "description": "Cuarenta y pocos años, la ropa cara gastada de estar nueve años en un campo sin nadie que la vea. Habla en voz alta mirando el agua. No te mira a vos: no puede.",
       "motivation": "Terminar de entender qué es esto antes de que se le acabe la plata o la paciencia del socio.",
-      "fears": ["Haber gastado nueve años en un charco de sal."],
-      "refusals": ["No admite en voz alta que puede estar leyendo mal."],
+      "fears": [
+        "Haber gastado nueve años en un charco de sal."
+      ],
+      "refusals": [
+        "No admite en voz alta que puede estar leyendo mal."
+      ],
       "knowledge": [],
       "secrets": [],
       "relationships": [],
@@ -40,12 +57,20 @@
     {
       "id": "npc-villeira",
       "name": "Villeira-Pereira",
-      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
       "status": "alive",
       "description": "El socio. Puso la mitad de la plata y ninguna de las ideas, y hace tres años que viene diciendo que se vuelve. Sigue sin volverse.",
       "motivation": "Recuperar algo de lo puesto, o al menos entender en qué lo puso.",
-      "fears": ["Que Bernardo tenga razón."],
-      "refusals": ["No se acerca a la piedra. Ni una vez en nueve años."],
+      "fears": [
+        "Que Bernardo tenga razón."
+      ],
+      "refusals": [
+        "No se acerca a la piedra. Ni una vez en nueve años."
+      ],
       "knowledge": [],
       "secrets": [],
       "relationships": [],
@@ -68,7 +93,11 @@
       "accuracy": "accurate",
       "cluesContained": [],
       "obtainedAt": null,
-      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
     },
     {
       "id": "doc-instruccion",
@@ -82,29 +111,48 @@
       "accuracy": "accurate",
       "cluesContained": [],
       "obtainedAt": null,
-      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
     }
   ],
   "locations": {
     "orilla": {
       "id": "orilla",
       "name": "La orilla del agua blanca",
-      "aliases": ["orilla", "la orilla", "laguna", "el agua", "agua blanca"],
+      "aliases": [
+        "orilla",
+        "la orilla",
+        "laguna",
+        "el agua",
+        "agua blanca"
+      ],
       "description": "Una laguna baja en un campo llano que no termina en ninguna parte. El borde está encostrado de blanco —sal, la misma que deja el ganado alrededor de cualquier bañado de esta pampa— y por eso el agua se ve blanca desde lejos. De cerca es agua nomás.\n\nEstá completamente quieta, y no hay viento que explique lo contrario ni viento que explique esto.\n\nUn hombre de unos cuarenta años está parado en la orilla, con una libreta cerrada en la mano, mirándola. No te mira a vos.",
       "atmosphere": [
         "No hay pueblo. No hay camino. Hay una carreta a media legua y humo de un fuego chico.",
         "El agua no devuelve el cielo que hay: devuelve uno parecido, con la luz un poco más tarde.",
         "El hombre habla en voz alta cada tanto, sin dirigirse a nadie que esté."
       ],
-      "connections": ["campamento", "piedra"],
+      "connections": [
+        "campamento",
+        "piedra"
+      ],
       "itemsPresent": [],
-      "npcsPresent": ["npc-bernardo-1679"],
+      "npcsPresent": [
+        "npc-bernardo-1679"
+      ],
       "visited": false,
       "umbralIntensity": 9,
       "features": [
         {
           "id": "f-estacas",
-          "names": ["estacas", "las estacas", "estaca"],
+          "names": [
+            "estacas",
+            "las estacas",
+            "estaca"
+          ],
           "description": "Una fila de estacas clavadas entrando en el agua, con muescas talladas a distintas alturas.",
           "closerLook": "Nueve años de muescas. La mano que las talló fue firme todo el tiempo, incluso en los tramos donde la última muesca y la anterior están a un dedo de distancia y no cambia nada. Es el trabajo de alguien que mide porque medir es lo único que sabe hacer con lo que no entiende.",
           "examineSkill": "descubrir",
@@ -117,9 +165,14 @@
         },
         {
           "id": "f-costra",
-          "names": ["costra", "la costra", "sal", "borde blanco"],
+          "names": [
+            "costra",
+            "la costra",
+            "sal",
+            "borde blanco"
+          ],
           "description": "La costra blanca del borde, dura, que cruje si se la pisa.",
-          "closerLook": "Es sal. Nada más que sal, de la que deja cualquier bañado que se seca y se vuelve a llenar cien veces. Lo raro no es la sal: lo raro es que estás mirando un charco de agua salada en el medio de la nada y hace un minuto estabas en 1928.",
+          "closerLook": "Es sal. Nada más que sal, de la que deja cualquier bañado que se seca y se vuelve a llenar cien veces. Lo raro no es la sal: lo raro es que estás mirando un charco de agua salada en el medio de la nada, y que hace un minuto estabas bajo techo, en una casa que todavía no está construida en ninguna parte de este campo.",
           "examineSkill": "descubrir",
           "exposure": 1
         }
@@ -128,38 +181,75 @@
     "campamento": {
       "id": "campamento",
       "name": "El campamento",
-      "aliases": ["campamento", "el campamento", "rancho", "carpa"],
+      "aliases": [
+        "campamento",
+        "el campamento",
+        "rancho",
+        "carpa"
+      ],
       "description": "Un rancho de adobe a medio hacer, con techo de lona, levantado para dos temporadas y habitado hace nueve años. Adentro hay más papel que ropa.\n\nSobre un cajón dado vuelta, una libreta abierta. Contra la pared, un baúl con la tapa levantada, lleno de hojas que no son de la misma mano.",
       "atmosphere": [
         "Huele a sebo de vela y a papel guardado húmedo.",
         "Alguien apiló las hojas por tamaño, no por tema. Es el orden de quien no quiere decidir todavía qué es más importante."
       ],
-      "connections": ["orilla", "alto"],
-      "itemsPresent": ["it-libreta-medidas"],
+      "connections": [
+        "orilla",
+        "alto"
+      ],
+      "itemsPresent": [
+        "it-libreta-medidas"
+      ],
       "npcsPresent": [],
       "visited": false,
       "umbralIntensity": 4,
       "features": [
         {
           "id": "f-baul",
-          "names": ["baúl", "el baúl", "baul", "hojas", "papeles"],
+          "names": [
+            "baúl",
+            "el baúl",
+            "baul",
+            "hojas",
+            "papeles"
+          ],
           "description": "El baúl abierto, con las hojas apiladas por tamaño.",
           "closerLook": "Dos manos distintas, y ninguna de las dos es la de la libreta. Una escribió un inventario; la otra, instrucciones. La de las instrucciones es más vieja, y está copiada: se nota porque el que copiaba dudó en las abreviaturas.",
           "examineSkill": "descubrir",
           "exposure": 2
+        },
+        {
+          "id": "f-carreta",
+          "names": [
+            "carreta",
+            "la carreta",
+            "el carro",
+            "ruedas",
+            "bueyes"
+          ],
+          "description": "La carreta parada al lado del fuego, con las varas apoyadas en el suelo y los bueyes sueltos a veinte metros.",
+          "closerLook": "Rueda de rayos de madera con llanta de hierro clavada, sin un solo tornillo en toda la armazón: todo es espiga, cuña y correa de tiento. El eje es de una pieza y está engrasado con sebo. No es una carreta pobre ni vieja: es una carreta NUEVA de una época en la que un tornillo era caro y una rosca se hacía a mano.",
+          "examineSkill": "descubrir",
+          "exposure": 1
         }
       ]
     },
     "piedra": {
       "id": "piedra",
       "name": "La piedra marcada",
-      "aliases": ["piedra", "la piedra", "monolito", "la piedra marcada"],
+      "aliases": [
+        "piedra",
+        "la piedra",
+        "monolito",
+        "la piedra marcada"
+      ],
       "description": "Tres metros de piedra negra clavados derechos en un campo donde no hay una sola piedra en veinte leguas. Alrededor, en un círculo de unos seis metros, el pasto está enfermo: amarillo desde la raíz.\n\nNadie del campamento se acerca. La huella del pasto pisado llega hasta el borde del círculo y ahí se termina, como si fuera una pared.",
       "atmosphere": [
         "No se oye un pájaro. Contás hasta cien y no se oye un pájaro.",
         "La sombra de la piedra cae exactamente donde tiene que caer para esta hora. Eso, después de todo lo demás, casi decepciona."
       ],
-      "connections": ["orilla"],
+      "connections": [
+        "orilla"
+      ],
       "itemsPresent": [],
       "npcsPresent": [],
       "visited": false,
@@ -167,7 +257,11 @@
       "features": [
         {
           "id": "f-base",
-          "names": ["base", "la base", "pie de la piedra"],
+          "names": [
+            "base",
+            "la base",
+            "pie de la piedra"
+          ],
           "description": "La base de la piedra, a la altura de la rodilla, donde el pasto enfermo empieza a ganarle al sano.",
           "closerLook": "La piedra está picada, no cortada: herramienta de piedra contra piedra, por gente que no tenía metal. Sea quien sea que la puso acá, no fue el hombre de la orilla, ni nadie que se le parezca.",
           "examineSkill": "arqueologia",
@@ -178,21 +272,35 @@
     "alto": {
       "id": "alto",
       "name": "El alto",
-      "aliases": ["alto", "el alto", "loma", "carreta", "carretas"],
+      "aliases": [
+        "alto",
+        "el alto",
+        "loma",
+        "carreta",
+        "carretas"
+      ],
       "description": "Una loma muy suave —lo más parecido a un alto que hay en veinte leguas— con dos carretas, un corral de palo a pique y un fuego chico. Es el único lugar desde donde se ve la laguna entera.\n\nEn doscientos cincuenta años, acá va a estar la plaza.",
       "atmosphere": [
         "El socio está sentado contra una rueda, haciendo cuentas en voz baja.",
         "Hay estacas clavadas en el pasto formando un rectángulo grande. Alguien ya midió dónde va a ir algo."
       ],
-      "connections": ["campamento"],
+      "connections": [
+        "campamento"
+      ],
       "itemsPresent": [],
-      "npcsPresent": ["npc-villeira"],
+      "npcsPresent": [
+        "npc-villeira"
+      ],
       "visited": false,
       "umbralIntensity": 2,
       "features": [
         {
           "id": "f-estacas-alto",
-          "names": ["estacas del alto", "rectángulo", "estacas clavadas"],
+          "names": [
+            "estacas del alto",
+            "rectángulo",
+            "estacas clavadas"
+          ],
           "description": "El rectángulo de estacas clavadas en el pasto de la loma.",
           "closerLook": "Es la medida de una plaza. Alguien que todavía no decidió fundar nada ya midió dónde iría la plaza, y la midió mirando la laguna, no el camino ni el agua de beber.",
           "examineSkill": "descubrir",
@@ -210,7 +318,7 @@
   "startTime": {
     "iso": "1679-11-14T17:30:00",
     "precision": "minute",
-    "display": "una tarde de noviembre de 1679"
+    "display": "una tarde de calor, en ninguna parte"
   },
   "startUmbralPermeability": 40,
   "timeline": [],
@@ -221,8 +329,16 @@
       "orden": 10,
       "etiqueta": "Preguntarle qué está haciendo acá",
       "intencion": "Le pregunto a Bernardo qué está haciendo acá",
-      "claves": ["esta haciendo", "que hace", "que hace aca", "que busca"],
-      "agotado": { "op": "pista", "contiene": "vino a verificar un documento" },
+      "claves": [
+        "esta haciendo",
+        "que hace",
+        "que hace aca",
+        "que busca"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "vino a verificar un documento"
+      },
       "cede": {
         "actitud": 0,
         "texto": [
@@ -241,8 +357,16 @@
       "orden": 20,
       "etiqueta": "Preguntarle de quién son los papeles",
       "intencion": "Le pregunto a Bernardo de quién son los papeles del baúl",
-      "claves": ["los papeles", "de quien son", "del baul", "las hojas"],
-      "agotado": { "op": "pista", "contiene": "de los siete que empezaron quedaban dos" },
+      "claves": [
+        "los papeles",
+        "de quien son",
+        "del baul",
+        "las hojas"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "de los siete que empezaron quedaban dos"
+      },
       "cede": {
         "actitud": 0,
         "texto": [
@@ -261,8 +385,16 @@
       "orden": 30,
       "etiqueta": "Preguntarle qué vio en el agua",
       "intencion": "Le pregunto a Bernardo qué vio en el agua",
-      "claves": ["que vio", "en el agua", "el reflejo", "que muestra"],
-      "agotado": { "op": "pista", "contiene": "una mano tomando un anillo" },
+      "claves": [
+        "que vio",
+        "en el agua",
+        "el reflejo",
+        "que muestra"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "una mano tomando un anillo"
+      },
       "cede": {
         "actitud": 0,
         "texto": [
@@ -281,8 +413,16 @@
       "orden": 40,
       "etiqueta": "Preguntarle al socio qué piensa de todo esto",
       "intencion": "Le pregunto al socio qué piensa de todo esto",
-      "claves": ["que piensa", "al socio", "de todo esto", "que opina"],
-      "agotado": { "op": "pista", "contiene": "lee un dibujo como si fuera una orden" },
+      "claves": [
+        "que piensa",
+        "al socio",
+        "de todo esto",
+        "que opina"
+      ],
+      "agotado": {
+        "op": "pista",
+        "contiene": "lee un dibujo como si fuera una orden"
+      },
       "cede": {
         "actitud": 0,
         "texto": [
@@ -301,9 +441,19 @@
       "orden": 50,
       "etiqueta": "Preguntarle por los círculos grabados",
       "intencion": "Le pregunto al socio por los círculos grabados",
-      "claves": ["circulos", "grabados", "las marcas"],
-      "disponible": { "op": "narrado", "contiene": "grabado y no pintado" },
-      "agotado": { "op": "pista", "contiene": "grabar y anotar" },
+      "claves": [
+        "circulos",
+        "grabados",
+        "las marcas"
+      ],
+      "disponible": {
+        "op": "narrado",
+        "contiene": "grabado y no pintado"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "grabar y anotar"
+      },
       "cede": {
         "actitud": 0,
         "texto": [
@@ -324,8 +474,14 @@
       "cuando": {
         "op": "y",
         "de": [
-          { "op": "texto", "patron": "miro el agua|me asomo al agua|miro la laguna" },
-          { "op": "consecuencia", "contiene": "quedó vinculado a él" }
+          {
+            "op": "texto",
+            "patron": "miro el agua|me asomo al agua|miro la laguna"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "quedó vinculado a él"
+          }
         ]
       }
     },
@@ -335,50 +491,104 @@
       "cuando": {
         "op": "y",
         "de": [
-          { "op": "texto", "patron": "miro el agua|me asomo al agua|miro la laguna" },
-          { "op": "consecuencia", "contiene": "cortando el ciclo sin saber si hacía falta" }
+          {
+            "op": "texto",
+            "patron": "miro el agua|me asomo al agua|miro la laguna"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "cortando el ciclo sin saber si hacía falta"
+          }
         ]
       }
     },
     {
       "id": "mirar-agua-ciego",
       "prioridad": 90,
-      "cuando": { "op": "texto", "patron": "miro el agua|me asomo al agua|miro la laguna" }
+      "cuando": {
+        "op": "texto",
+        "patron": "miro el agua|me asomo al agua|miro la laguna"
+      }
     },
     {
       "id": "leer-papeles",
       "prioridad": 92,
-      "cuando": { "op": "texto", "patron": "leo los papeles|reviso el baul|reviso el baúl|leo las hojas" }
+      "cuando": {
+        "op": "texto",
+        "patron": "leo los papeles|reviso el baul|reviso el baúl|leo las hojas"
+      }
     },
     {
       "id": "mirar-circulos",
       "prioridad": 92,
-      "cuando": { "op": "texto", "patron": "miro los circulos|examino los circulos|miro las marcas de la piedra" }
+      "cuando": {
+        "op": "texto",
+        "patron": "miro los circulos|examino los circulos|miro las marcas de la piedra"
+      }
     },
     {
       "id": "el-encuentro",
       "prioridad": 94,
-      "cuando": { "op": "texto", "patron": "me quedo a ver que hace bernardo|miro lo que hace bernardo" }
+      "cuando": {
+        "op": "texto",
+        "patron": "me quedo a ver que hace bernardo|miro lo que hace bernardo"
+      }
     },
     {
       "id": "te-ve",
       "prioridad": 96,
-      "cuando": { "op": "texto", "patron": "me quedo donde puede verme|dejo que me vea" }
+      "cuando": {
+        "op": "texto",
+        "patron": "me quedo donde puede verme|dejo que me vea"
+      }
+    },
+    {
+      "id": "mirar-carreta",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "miro la carreta|examino la carreta|miro el carro"
+      }
+    },
+    {
+      "id": "ubicarse",
+      "prioridad": 75,
+      "cuando": {
+        "op": "texto",
+        "patron": "trato de ubicarme en el tiempo|en que ano estoy|me ubico en el tiempo"
+      }
+    },
+    {
+      "id": "tocar-agua",
+      "prioridad": 72,
+      "cuando": {
+        "op": "texto",
+        "patron": "meto la mano en el agua|toco el agua"
+      }
     },
     {
       "id": "fin-dejarlo",
       "prioridad": 98,
-      "cuando": { "op": "texto", "patron": "dejo que la vision se cierre|me dejo llevar de vuelta" }
+      "cuando": {
+        "op": "texto",
+        "patron": "dejo que la vision se cierre|me dejo llevar de vuelta"
+      }
     },
     {
       "id": "fin-intervenir",
       "prioridad": 98,
-      "cuando": { "op": "texto", "patron": "trato de advertirle|le grito que no" }
+      "cuando": {
+        "op": "texto",
+        "patron": "trato de advertirle|le grito que no"
+      }
     },
     {
       "id": "fin-quedarse",
       "prioridad": 98,
-      "cuando": { "op": "texto", "patron": "me quedo hasta la fundacion|me quedo hasta el final" }
+      "cuando": {
+        "op": "texto",
+        "patron": "me quedo hasta la fundacion|me quedo hasta el final"
+      }
     }
   ],
   "actions": [
@@ -389,7 +599,10 @@
       "lugar": "orilla",
       "intencion": "Miro el agua",
       "etiqueta": "Mirar el agua",
-      "hecha": { "op": "narrado", "contiene": "De cerca es agua nomás, y eso es lo peor" }
+      "hecha": {
+        "op": "narrado",
+        "contiene": "De cerca es agua nomás, y eso es lo peor"
+      }
     },
     {
       "id": "leer-papeles",
@@ -398,7 +611,10 @@
       "lugar": "campamento",
       "intencion": "Leo los papeles del baúl",
       "etiqueta": "Leer los papeles del baúl",
-      "hecha": { "op": "narrado", "contiene": "grabado y no pintado" }
+      "hecha": {
+        "op": "narrado",
+        "contiene": "grabado y no pintado"
+      }
     },
     {
       "id": "mirar-circulos",
@@ -407,7 +623,10 @@
       "lugar": "piedra",
       "intencion": "Miro los círculos de la piedra",
       "etiqueta": "Mirar los círculos de la piedra",
-      "hecha": { "op": "narrado", "contiene": "ocho círculos grabados" }
+      "hecha": {
+        "op": "narrado",
+        "contiene": "ocho círculos grabados"
+      }
     },
     {
       "id": "el-encuentro",
@@ -416,8 +635,14 @@
       "lugar": "orilla",
       "intencion": "Me quedo a ver qué hace Bernardo",
       "etiqueta": "Quedarte a ver qué hace",
-      "visible": { "op": "pista", "contiene": "una mano tomando un anillo" },
-      "hecha": { "op": "narrado", "contiene": "Sale con la mano cerrada" }
+      "visible": {
+        "op": "pista",
+        "contiene": "una mano tomando un anillo"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Sale con la mano cerrada"
+      }
     },
     {
       "id": "te-ve",
@@ -426,8 +651,74 @@
       "lugar": "orilla",
       "intencion": "Me quedo donde puede verme",
       "etiqueta": "Quedarte donde pueda verte",
-      "visible": { "op": "narrado", "contiene": "Sale con la mano cerrada" },
-      "hecha": { "op": "narrado", "contiene": "No sabe tu nombre" }
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "Sale con la mano cerrada"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "narrado",
+              "contiene": "sale del agua con la cara ya girada"
+            }
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "No sabe tu nombre"
+      }
+    },
+    {
+      "id": "mirar-carreta",
+      "grupo": "observar",
+      "orden": 13,
+      "lugar": "campamento",
+      "intencion": "Miro la carreta",
+      "etiqueta": "Mirar la carreta de cerca",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "con las varas apoyadas en el suelo"
+      }
+    },
+    {
+      "id": "tocar-agua",
+      "grupo": "usar",
+      "orden": 16,
+      "lugar": "orilla",
+      "intencion": "Meto la mano en el agua",
+      "etiqueta": "Meter la mano en el agua",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "metés la mano hasta la muñeca"
+      }
+    },
+    {
+      "id": "ubicarse",
+      "grupo": "decidir",
+      "orden": 18,
+      "intencion": "Trato de ubicarme en el tiempo",
+      "etiqueta": "Tratar de ubicarte en el tiempo",
+      "visible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "sin un solo tornillo"
+          },
+          {
+            "op": "narrado",
+            "contiene": "grabado y no pintado"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Ahora sabés en qué siglo estás parado"
+      }
     },
     {
       "id": "fin-dejarlo",
@@ -444,7 +735,10 @@
       "final": true,
       "intencion": "Trato de advertirle",
       "etiqueta": "Tratar de advertirle",
-      "visible": { "op": "narrado", "contiene": "Sale con la mano cerrada" }
+      "visible": {
+        "op": "narrado",
+        "contiene": "Sale con la mano cerrada"
+      }
     },
     {
       "id": "fin-quedarse",
@@ -453,7 +747,10 @@
       "final": true,
       "intencion": "Me quedo hasta la fundación",
       "etiqueta": "Quedarte hasta la fundación",
-      "visible": { "op": "narrado", "contiene": "No sabe tu nombre" }
+      "visible": {
+        "op": "narrado",
+        "contiene": "No sabe tu nombre"
+      }
     }
   ],
   "endings": [

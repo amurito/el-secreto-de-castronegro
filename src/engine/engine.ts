@@ -770,6 +770,7 @@ export class Turn {
         case 'transfer_item': return this.toolTransferItem(raw);
         case 'move_to_location': return this.toolMoveToLocation(raw);
         case 'advance_time': return this.toolAdvanceTime(raw);
+        case 'set_time_label': return this.toolSetTimeLabel(raw);
         case 'record_consequence': return this.toolRecordConsequence(raw);
         case 'temporal_echo': return this.toolTemporalEcho(raw);
         case 'reach_ending': return this.toolReachEnding(raw);
@@ -2494,6 +2495,26 @@ export class Turn {
     if (minutes <= 0) return this.reject('advance_time', raw, 'El tiempo sólo avanza hacia adelante.');
     this.advanceTimeBy(minutes, String(raw.reason ?? ''));
     return { ok: true, message: `Ahora son las ${this.state.world.time.display}.` };
+  }
+
+  /**
+   * Cambia cómo se rotula el momento actual sin mover el reloj del mundo.
+   *
+   * Existe porque el encabezado muestra `world.time.display` y ese texto lo
+   * fijaba el escenario de una vez y para siempre en `startTime`. Sirve
+   * mientras el investigador sepa en qué día está. Cuando la aventura es
+   * sobre NO saberlo, el rótulo se lo contaba antes de que él lo averiguara.
+   *
+   * El motor no interpreta el rótulo: lo escribe. Qué dice y cuándo cambia lo
+   * decide la escena (`EfectoEscena.rotuloTiempo`).
+   */
+  private toolSetTimeLabel(raw: Record<string, unknown>): ToolOutcome {
+    const display = String(raw.display ?? '').trim();
+    if (!display) return this.reject('set_time_label', raw, 'Hace falta un rótulo.');
+    const from = this.state.world.time.display;
+    if (from === display) return { ok: true, message: 'El rótulo ya decía eso.' };
+    this.emit('TIME_LABEL_SET', { from, to: display, reason: String(raw.reason ?? '') });
+    return { ok: true, message: `Ahora el momento se llama: ${display}.` };
   }
 
   private advanceTimeBy(minutes: number, reason: string) {

@@ -99,12 +99,55 @@ async function main() {
     s = await jugar(id, 'Me quedo a ver qué hace Bernardo');
     check('el encuentro narra que sale con la mano cerrada', narrado(s, 'Sale con la mano cerrada'));
     check('NO dice que lo haya fabricado', !narrado(s, 'fabricó el anillo'));
-    check('...y recién ahí aparece dejar que te vea', ids().includes('te-ve'), ids().join(', '));
+    // El encuentro pide Sigilo, y la tirada decide QUIÉN maneja el encuentro:
+    // con éxito el jugador elige cuándo dejarse ver, y con fallo lo ve
+    // Bernardo primero y esa decisión ya no existe. No se puede afirmar cuál
+    // de las dos sale con una semilla fija (ver `prueba-cordura.ts` para el
+    // mismo criterio), así que se comprueba la propiedad que vale en las dos:
+    // la cadena sigue, y las dos ramas dicen que no sabe su nombre.
+    const loVioAntes = narrado(s, 'sale del agua con la cara ya girada');
+    check('te-ve se ofrece si NO te vio, y no se ofrece si te vio',
+      ids().includes('te-ve') === !loVioAntes,
+      loVioAntes ? 'lo vio primero' : 'no lo vio');
+    check('en las dos ramas la cadena avanza hasta los finales del encuentro',
+      ids().includes('fin-intervenir'), ids().join(', '));
 
-    s = await jugar(id, 'Me quedo donde puede verme');
-    check('te ve, y no sabe tu nombre', narrado(s, 'No sabe tu nombre'));
+    if (!loVioAntes) {
+      s = await jugar(id, 'Me quedo donde puede verme');
+      check('te ve, y no sabe tu nombre', narrado(s, 'No sabe tu nombre'));
+    } else {
+      check('te ve igual, y tampoco sabe tu nombre', narrado(s, 'No sabe tu nombre'));
+    }
     check('cuesta Cordura de verdad', invDe(s).derived.san < 99);
     check('...y recién ahí aparece quedarse hasta la fundación', ids().includes('fin-quedarse'), ids().join(', '));
+  }
+
+  console.log('\n2-bis. LAS DOS RAMAS DEL SIGILO EXISTEN Y SE DISTINGUEN');
+  {
+    // Se recorren semillas hasta encontrar una de cada lado. Fijar una sola
+    // haría que la suite dejara de cubrir la rama que esa semilla no toca.
+    let conSigilo = false, sinSigilo = false;
+    for (const letra of 'fghijklmnopq') {
+      const idS = await visionTras(CON_ANILLO, 'heredar', letra);
+      await jugar(idS, 'Le pregunto a Bernardo qué vio en el agua');
+      const s = await jugar(idS, 'Me quedo a ver qué hace Bernardo');
+      const visto = narrado(s, 'sale del agua con la cara ya girada');
+      if (visto && !sinSigilo) {
+        sinSigilo = true;
+        check('si te descubre: te mira como a un testigo, no como a una confirmación',
+          narrado(s, 'Te mira como se mira un testigo') || narrado(s, 'como se mira un testigo'));
+        check('...y cuesta más Exposición que hacerlo bien',
+          invDe(s).umbral.exposure >= 15, `${invDe(s).umbral.exposure}`);
+      }
+      if (!visto && !conSigilo) {
+        conSigilo = true;
+        check('si no te descubre: le cambia la cara y no te nombra a vos',
+          narrado(s, 'le acaban de contestar que sí'));
+      }
+      if (conSigilo && sinSigilo) break;
+    }
+    check('las dos ramas del sigilo son alcanzables', conSigilo && sinSigilo,
+      `sigilo ok: ${conSigilo} · descubierto: ${sinSigilo}`);
   }
 
   console.log('\n3. LOS PAPELES: DOS DOCUMENTOS, MITOS Y EL HECHIZO MÁS VIEJO');
@@ -147,6 +190,75 @@ async function main() {
     check('«Lo que se queda hasta el final» se alcanza', c.ending?.id === 'quedarse', JSON.stringify(c.ending?.title));
     check('...y explica el nombre viejo del pueblo por la sal, sin misticismo',
       /por la sal/.test(String(c.ending?.text ?? '')));
+  }
+
+  console.log('\n4-bis. LA AVENTURA NO REGALA EL AÑO: HAY QUE UBICARSE');
+  {
+    const idU = await visionTras(CON_ANILLO, 'heredar', 'r');
+    let s = (await loadState(idU)).state;
+    // El encabezado sale del rótulo del tiempo del mundo. Antes decía «1679»
+    // desde el primer segundo y contestaba solo la pregunta de la aventura.
+    check('el rótulo del tiempo NO nombra el año al empezar',
+      !/16\d\d/.test(s.world.time.display), s.world.time.display);
+    const ids = () => accionesDisponibles(s, EL_HOMBRE_QUE_MIRABA_EL_AGUA).map((o) => o.id);
+    check('ubicarse no se ofrece antes de tener con qué', !ids().includes('ubicarse'), ids().join(', '));
+
+    await jugar(idU, 'Voy al campamento');
+    s = await jugar(idU, 'Miro la carreta');
+    check('la carreta se puede mirar y deja rastro de época',
+      narrado(s, 'con las varas apoyadas en el suelo'));
+
+    s = (await loadState(idU)).state;
+    const puedeUbicarse = ids().includes('ubicarse');
+    check('con evidencia de época ya se puede intentar ubicarse', puedeUbicarse, ids().join(', '));
+
+    if (puedeUbicarse) {
+      s = await jugar(idU, 'Trato de ubicarme en el tiempo');
+      check('ubicarse cambia el rótulo del tiempo', s.world.time.display !== 'una tarde de calor, en ninguna parte',
+        s.world.time.display);
+      // Con éxito sale el año; fallando, sólo el siglo. Las dos son válidas y
+      // no se puede fijar cuál con una semilla, así que se comprueba que el
+      // rótulo diga UNA de las dos cosas y nunca siga en «ninguna parte».
+      check('el rótulo nuevo dice el año o el siglo',
+        /1679/.test(s.world.time.display) || /siglo que no es el tuyo/.test(s.world.time.display),
+        s.world.time.display);
+      check('...y deja pista de cuándo está parado',
+        s.board.clues.some((c) => /siglo XVII|noviembre de 1679/.test(c.description)));
+    }
+  }
+
+  console.log('\n4-ter. EL AGUA CONTESTA SI LA TOCÁS');
+  {
+    const idT = await visionTras(SIN_ANILLO, 'cortar', 's');
+    const s = await jugar(idT, 'Meto la mano en el agua');
+    check('se puede meter la mano y el agua no se porta como agua',
+      narrado(s, 'metés la mano hasta la muñeca'));
+    check('cuesta Exposición', invDe(s).umbral.exposure > 0, `${invDe(s).umbral.exposure}`);
+  }
+
+  console.log('\n4-quater. EL LIBRO DE BERNARDO CIERRA SU PISTA EN LOS PAPELES');
+  {
+    // Sólo si el investigador leyó el libro sin título en «Lo que Bernardo
+    // sabía»: ahí el libro citaba un nombre y un lugar sin explicarlos, y
+    // este baúl es el único lugar de la campaña donde eso se cierra.
+    const conLibro = await visionTras(
+      'El investigador volvió a la Casa de Díaz y leyó de punta a punta el libro sin título que Bernardo dejó en su laboratorio.',
+      'cortar', 't');
+    await jugar(conLibro, 'Voy al campamento');
+    const s = await jugar(conLibro, 'Leo los papeles del baúl');
+    check('reconoce el nombre y el lugar que el libro citaba',
+      narrado(s, 'ya las leíste antes'), 'la conexión con el libro sale');
+    check('deja pista propia de la conexión',
+      s.board.clues.some((c) => c.description.includes('la fuente de Bernardo no era un maestro')));
+    check('y consecuencia permanente',
+      s.consequences.some((c) => c.description.includes('identificó la fuente que el libro de Bernardo citaba')));
+
+    // Sin haber leído el libro, ese párrafo NO puede aparecer.
+    const sinLibro = await visionTras(NI_UNO_NI_OTRO, 'irse-vigesimo', 'u');
+    await jugar(sinLibro, 'Voy al campamento');
+    const s2 = await jugar(sinLibro, 'Leo los papeles del baúl');
+    check('sin haber leído el libro, no se menciona ninguna conexión',
+      !narrado(s2, 'ya las leíste antes'));
   }
 
   console.log('\n5. LO SELLADO SIGUE SELLADO');

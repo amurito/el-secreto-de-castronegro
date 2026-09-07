@@ -3261,6 +3261,109 @@ entregado»:**
   matchea nunca. Las cinco de esta aventura nacieron con tilde; la
   auditoría las cazó antes de publicar.
 
+### 3.2-quinquatrigies-bis Campañas viejas y campos nuevos ✔ HECHO
+
+Bug real, reportado jugando: una campaña empezada antes de que existieran
+Suerte y Magia llegaba a «Lo que Bernardo sabía» y reventaba con «Cannot
+read properties of undefined (reading 'length')» en `inv.spellsKnown.length`.
+
+**Causa.** El estado se reconstruye plegando el log CRUDO, no el tipo
+TypeScript de hoy. Un `CAMPAIGN_CREATED` persistido hace semanas no tiene
+`spellsKnown` ni `pendingLuckBonus` en su payload, y `initFromCreation`
+copiaba el investigador tal cual. Poner el valor por defecto en `ficha.ts` y
+`pregens.ts` sólo cubre las campañas creadas DESPUÉS del cambio.
+
+**Arreglo.** `initFromCreation` (reducers.ts) rellena los dos campos al
+plegar, así que la partida vieja se autorepara sola al recargar, sin tocar
+el log. Con prueba de regresión en `prueba-hechizos.ts` que fabrica un log
+viejo borrando los campos del evento ya escrito en disco.
+
+**Regla para la próxima vez:** agregar un campo a `Investigator` (o a `Npc`,
+o a cualquier cosa que viaje dentro de `CAMPAIGN_CREATED`) no termina en el
+tipo. Si algo lo va a leer asumiendo que existe, hay que backfillearlo en el
+punto donde el estado se reconstruye desde el log.
+
+### 3.2-sexatrigies El Hombre que Miraba el Agua, segunda pasada ✔ HECHO
+
+Primera sesión de juego real de la décima aventura. Seis cosas, todas
+reportadas jugando el 2026-09-14.
+
+**1. Las tiradas que hace el motor solo no se veían.** La INT de crisis de
+Cordura salía en la pestaña de auditoría y en ningún lado más: la ficha
+grande del panel central mostraba una sola tirada —la que pidió el jugador—
+porque `tiradaInterna` no devuelve `emit` al cliente y la UI tenía un único
+slot que además se pisaba solo. Ahora se muestran **todas las tiradas del
+turno**, calculadas por diferencia contra `state.rolls`. Es la solución
+barata a propósito: entra cualquier tirada que el motor haga —la CON de una
+herida grave, la defensa de un NPC en combate— sin que el motor tenga que
+acordarse de avisarle a nadie. En pantalla ancha entran de a dos por fila.
+
+**2. Los modificadores se leían como si se sumaran todos.** Una tirada de
+Descubrir mostraba tres líneas de bonificación y una de penalización, y el
+jugador contó cuatro dados de ventaja. No es lo que pasa —CoC 7e netea y
+topea en 2, y `tensDiceNeeded` ya lo hacía bien—, pero la ficha listaba los
+modificadores *pedidos* sin decir en qué quedaron. Ahora dice primero el
+saldo real, y avisa cuando el tope recortó lo que se pidió.
+
+**3. «Compulsión de contar» era un premio.** La manía de La Legua bonificaba
+Descubrir con el argumento de que la misma compulsión que distrae en una
+charla afila la cuenta de detalles. Con Descubrir en 80% y apilada con otros
+bonos, hacía trivial la tirada que más se pide en todo el juego. Es el mismo
+problema y el mismo criterio que ya corrigió Disolución (§3.2-quatrigies):
+**una crisis no es una ventaja**. Las dos caras penalizan ahora.
+
+**4. La pista que el libro de Bernardo dejaba abierta ahora cierra acá.**
+«Lo que Bernardo sabía» hace que el libro sin título cite "un nombre que no
+es el suyo y un lugar que no es Castronegro", sin explicarlos. Los papeles
+del baúl de 1679 son el único lugar de la campaña donde eso puede cerrarse,
+y no lo hacían. Ahora, **si el investigador leyó el libro**, reconoce ahí el
+nombre y el lugar: Bernardo no citaba a un maestro, citaba el papel que
+tiene en el baúl. Deja pista y consecuencia propias. Se gatea por
+consecuencia, no por pista, porque las pistas no cruzan entre aventuras.
+
+**5. La aventura regalaba el año.** El encabezado decía «una tarde de
+noviembre de 1679» desde el primer segundo y el catálogo la anunciaba como
+«una visión de 1679»: contestaba sola la única pregunta que estaba haciendo.
+Ahora arranca en «una tarde de calor, en ninguna parte», el catálogo dice
+sólo «una visión», y el año sale de una **tirada de Historia** sobre la
+evidencia que el jugador haya juntado —la carreta sin roscas, la valona, la
+ese larga de los papeles, la manera de anotar los números—. Fallar no
+bloquea nada: deja el siglo en vez del año. Toda la prosa y las pistas
+anteriores a esa tirada dejaron de nombrar 1679.
+
+Esto necesitó una pieza de motor nueva y genérica: **`EfectoEscena.rotuloTiempo`**
+(tool `set_time_label`, evento `TIME_LABEL_SET`). Cambia el rótulo del
+momento actual sin mover el reloj: el mundo no se movió, se movió lo que el
+investigador sabe de él. El motor no interpreta el rótulo, sólo lo escribe;
+qué dice y cuándo cambia lo decide la escena. Sirve para cualquier aventura
+donde no saber cuándo estás sea parte del asunto.
+
+**6. Y era un pasillo.** Tres de once escenas tiraban dados y el beat central
+—que Bernardo levante la vista y te vea— pasaba igual hicieras lo que
+hicieras. Ahora:
+
+- **El encuentro pide Sigilo**, y la tirada decide *quién maneja el
+  encuentro*, no si el hecho ocurre: Bernardo entra al agua y sale con el
+  anillo pase lo que pase. Con éxito mirás sin que te note y después elegís
+  vos si te dejás ver. **Fallando, te ve él**, desde el agua, con el puño
+  todavía cerrado — y ahí la lectura es la contraria y peor: no le servís de
+  confirmación, le aparecés como un testigo el mismo día en que el agua le
+  contestó. Cuesta más Cordura, más Exposición, y deja una fobia propia.
+- **Se puede tocar el mundo**: mirar la carreta (Descubrir) y meter la mano
+  en el agua (COR), que contesta —las ondas rebotan contra un borde que está
+  a un palmo de la mano, en todas las direcciones a la vez—.
+- La suite nueva cubre las **dos** ramas del sigilo recorriendo semillas
+  hasta encontrar una de cada lado, en vez de fijar una y dejar la otra sin
+  probar (mismo criterio que §3.2-duotrigies).
+
+**Queda anotado, sin arreglar:** una condición ya aplicada guarda su
+`mechanicalEffect` en el log, así que una campaña que cruzó Disolución
+*antes* del arreglo de §3.2-quatrigies sigue teniendo la versión que
+bonificaba Descubrir. Corregirlo sería reescribir el pasado, que es
+justamente lo que el motor promete no hacer; y a diferencia del backfill de
+`spellsKnown` (§3.2-quinquatrigies-bis), acá el dato viejo es válido, no
+falta. Las campañas nuevas nacen bien.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

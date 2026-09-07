@@ -79,6 +79,14 @@ function aplicarEfecto(
   if (efecto.tiempo) {
     run('advance_time', { minutes: efecto.tiempo.minutes, reason: efecto.tiempo.reason });
   }
+  // Después de `tiempo`, a propósito: si la misma escena avanza el reloj y
+  // además rebautiza el momento, el rótulo tiene que ser lo último que se
+  // escribe — `advance_time` lo pisa con un «HH:MM».
+  if (efecto.rotuloTiempo) {
+    run('set_time_label', {
+      display: efecto.rotuloTiempo.display, reason: efecto.rotuloTiempo.reason,
+    });
+  }
   // Antes que `descubre`: si la propiedad se destraba por uso, el uso tiene
   // que estar registrado cuando el gate lo consulte.
   if (efecto.usa) {

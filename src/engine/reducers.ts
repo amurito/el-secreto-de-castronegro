@@ -470,6 +470,14 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       break;
     }
 
+    case 'TIME_LABEL_SET': {
+      const p = ev.payload as P.TimeLabelSetPayload;
+      // Sólo el rótulo: el `iso` y la precisión quedan donde estaban, porque
+      // el mundo no se movió — se movió lo que el investigador sabe de él.
+      s.world.time = { ...s.world.time, display: p.to };
+      break;
+    }
+
     case 'EVENT_CATEGORIZED': {
       const p = ev.payload as P.EventCategorizedPayload;
       s.world.timeline = s.world.timeline.map((t) =>

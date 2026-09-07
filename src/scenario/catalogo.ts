@@ -166,7 +166,11 @@ const ENTRADAS: EntradaCatalogo[] = [
     // Quieta en la pantalla de inicio, que es un spoiler estructural y además
     // rompería `mesesEntre` (da 0 con fechas hacia atrás).
     cuando: '1928-11-12',
-    epoca: 'Noviembre de 1928 · una visión de 1679',
+    // Sin el año de la visión, a propósito: averiguar CUÁNDO está parado es
+    // una de las cosas que la aventura le pide al jugador (acción «ubicarse»,
+    // tirada de Historia). Decirlo en la pantalla de inicio contestaba la
+    // pregunta antes de hacerla.
+    epoca: 'Noviembre de 1928 · una visión',
     duracion: 'Treinta a cuarenta minutos',
     requiere: ['el-vigesimo'],
     continuacion: true,

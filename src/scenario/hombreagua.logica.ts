@@ -17,7 +17,7 @@ import type { LogicaDeEscenas } from './cargarAventura.ts';
 const CIERRE_AGUA =
   'Te agachás y mirás de cerca. La costra del borde es sal, el fondo es barro, ' +
   'el agua es agua. De cerca es agua nomás, y eso es lo peor: no hay nada acá ' +
-  'que explique por qué estás parado en 1679.';
+  'que explique por qué estás parado donde estás.';
 
 export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
   {
@@ -32,9 +32,9 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
       ],
       exposicion: { amount: 6, source: 'hombreagua:agua', cause: 'mirar de cerca el agua que te trajo' },
       pistas: [{
-        description: 'En la laguna de 1679 el reflejo del investigador llega tarde y devuelve el anillo en la mano equivocada. La visión entró por el rubí.',
+        description: 'En la laguna de la visión el reflejo del investigador llega tarde y devuelve el anillo en la mano equivocada. La visión entró por el rubí.',
         kind: 'experiential',
-        source: 'la orilla, 1679',
+        source: 'la orilla de la visión',
         reliability: 'unknown',
       }],
     }),
@@ -50,9 +50,9 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
       ],
       exposicion: { amount: 6, source: 'hombreagua:agua', cause: 'mirar de cerca el agua que te trajo' },
       pistas: [{
-        description: 'En la laguna de 1679 el reflejo del investigador llega tarde y devuelve, detrás de él, el horno del laboratorio de Bernardo prendido — el mismo donde se destruyó el anillo, doscientos cincuenta años después.',
+        description: 'En la laguna de la visión el reflejo del investigador llega tarde y devuelve, detrás de él, el horno del laboratorio de Bernardo prendido — el mismo donde se destruyó el anillo, doscientos cincuenta años después.',
         kind: 'experiential',
-        source: 'la orilla, 1679',
+        source: 'la orilla de la visión',
         reliability: 'unknown',
       }],
     }),
@@ -68,9 +68,9 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
       ],
       exposicion: { amount: 5, source: 'hombreagua:agua', cause: 'mirar de cerca el agua que te trajo' },
       pistas: [{
-        description: 'En la laguna de 1679 el reflejo del investigador llega tarde y no muestra nada más. Lo que lo trajo no parecía tener nada que decirle en particular.',
+        description: 'En la laguna de la visión el reflejo del investigador llega tarde y no muestra nada más. Lo que lo trajo no parecía tener nada que decirle en particular.',
         kind: 'experiential',
-        source: 'la orilla, 1679',
+        source: 'la orilla de la visión',
         reliability: 'unknown',
       }],
     }),
@@ -114,21 +114,21 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
             : 'Alcanzás a leer las dos, pero no a ponerlas en orden entre ellas: cuál copió a cuál, y cuántas copias hay entre esa instrucción y la primera que existió, se te escapa.',
         ],
         documento: { id: 'doc-inventario', how: 'entre los papeles del baúl del campamento' },
-        mitos: { amount: tirada?.exito ? 2 : 1, source: 'las hojas de instrucción copiadas, en el campamento de 1679' },
+        mitos: { amount: tirada?.exito ? 2 : 1, source: 'las hojas de instrucción copiadas, en el campamento de la visión' },
         cordura: { amount: tirada?.exito ? 2 : perdidaSiFalla, cause: 'leer una instrucción que ya era copia de una copia' },
         aprenderHechizo: {
           id: 'contar-lo-que-no-se-anota',
-          source: 'las hojas de instrucción del baúl, en el campamento de 1679',
+          source: 'las hojas de instrucción del baúl, en el campamento de la visión',
         },
         pistas: [
           {
             description: 'Los papeles del campamento son de dos manos anteriores a Bernardo: un inventario de cosas RECUPERADAS —nunca fabricadas— de una casa del sur, y una instrucción copiada de otra instrucción. Nadie anotó de quién eran las cosas ni quién escribió la primera hoja.',
             kind: 'documentary',
-            source: 'el baúl del campamento, 1679',
+            source: 'el baúl del campamento de la visión',
             reliability: 'reliable',
           },
           ...(leyoElLibro ? [{
-            description: 'El nombre y el lugar que el libro sin título de Bernardo citaba con letra más vieja son los del inventario del baúl de 1679: la fuente de Bernardo no era un maestro, era este papel. Él también estaba copiando.',
+            description: 'El nombre y el lugar que el libro sin título de Bernardo citaba con letra más vieja son los del inventario del baúl del campamento: la fuente de Bernardo no era un maestro, era este papel. Él también estaba copiando.',
             kind: 'documentary' as const,
             source: 'comparar el libro de Bernardo con los papeles del campamento',
             reliability: 'reliable' as const,
@@ -181,12 +181,12 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
           ? 'La base de la piedra tiene ocho círculos grabados uno encima del otro, hondos, no pintados. El pulso del primero tiembla; el del octavo no. Alguien viene repitiendo la marca, año tras año, siguiendo una instrucción que no entiende.'
           : 'La base de la piedra tiene círculos grabados encimados, hondos y no pintados: alguien viene repitiendo la misma marca desde hace años.',
         kind: 'physical',
-        source: 'la piedra marcada, 1679',
+        source: 'la piedra marcada de la visión',
         reliability: 'reliable',
       }],
       jugadorNota: {
         statement: 'Doscientos cincuenta años después, dos familias de Villa Requena repintan en almagre un círculo en la semana de San Juan, sin que nadie sepa explicar por qué. Debajo de esa pintura hay un círculo grabado, más viejo, más hondo, que no es de ningún invierno que nadie recuerde. Es éste. El investigador no tiene forma de saberlo.',
-        source: 'la piedra marcada, 1679',
+        source: 'la piedra marcada de la visión',
         reliability: 'unknown',
       },
     }),
@@ -194,29 +194,83 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
   {
     // Bernardo encuentra el anillo. NO lo fabrica: lo saca del fondo. Y lo
     // importante no es que lo encuentre: es POR QUÉ entra a buscarlo.
+    //
+    // La tirada decide QUIÉN maneja el encuentro, no si el hecho ocurre:
+    // Bernardo entra al agua y sale con el anillo pase lo que pase. Con
+    // sigilo, mirás sin que te note y después elegís vos si te dejás ver
+    // (acción `te-ve`). Sin sigilo, te ve él, desde el agua, en el peor
+    // momento posible: con el puño todavía cerrado y sin haber terminado de
+    // convencerse de nada. Reportado jugando: el beat central estaba
+    // guionado —pasaba igual hicieras lo que hicieras— y la aventura se
+    // sentía un pasillo.
     id: 'el-encuentro',
-    resolver: () => ({
-      texto: [
-        'No hace nada durante una hora. Mide, anota, mira. Después, sin ningún aviso, deja la libreta sobre la costra seca y se mete al agua vestido.',
-        'Camina hasta que le da por el pecho, en línea recta, exactamente hacia el punto donde estuvo mirando toda la tarde. Se agacha. Se hunde. El agua se cierra sin una onda, que no es lo que hace el agua cuando alguien se hunde en ella.',
-        'Sale con la mano cerrada.',
-        'Desde donde estás no se ve qué tiene en el puño, y no hace falta: la cara le cambió de una manera que no le va a volver a cambiar en trescientos años. Es la cara de alguien a quien le acaban de contestar que sí.',
-        'Y lo que pasó, si lo mirás sin ponerle nada encima, fue esto: un hombre vio una imagen en el agua, decidió que la imagen era una indicación dirigida a él, y fue a buscar lo que la imagen mostraba. La imagen nunca dijo de quién era la mano.',
-      ],
-      exposicion: { amount: 9, source: 'hombreagua:encuentro', cause: 'ver a alguien recibir la respuesta que se venía diciendo solo' },
-      pistas: [{
-        description: 'Bernardo no fabricó el anillo: lo sacó del fondo de la laguna, once días después de que el agua le mostrara una mano tomando un anillo. Interpretó la imagen como una indicación dirigida a él. La imagen nunca dijo de quién era la mano.',
-        kind: 'experiential',
-        source: 'la orilla, 1679',
-        reliability: 'reliable',
-      }],
-      consecuencia: {
-        description: 'El investigador vio, en una visión de 1679, cómo Bernardo Díaz encontró el anillo en el fondo de la laguna: no lo fabricó, y entró a buscarlo porque leyó un reflejo como una orden.',
-        scope: 'world',
-        permanent: true,
-        worldReminder: 'Alguien vio el primer error de Bernardo con sus propios ojos. El error no fue encontrar el anillo: fue creer que el agua se lo estaba ofreciendo.',
-      },
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'mirarlo de cerca sin que se dé cuenta de que hay alguien más en la orilla',
+      stakes_success: 'lo ves entero sin que sepa que estás',
+      stakes_failure: 'te ve antes de que vos decidas dejarte ver',
     }),
+    resolver: ({ tirada }) => {
+      const visto = !tirada?.exito;
+      const numero = tirada?.numero ?? 1;
+      const perdidaSiLoVio = tirada?.grado === 'fumble' ? 7 : 2 + (numero % 5);
+      return {
+        texto: [
+          'No hace nada durante una hora. Mide, anota, mira. Después, sin ningún aviso, deja la libreta sobre la costra seca y se mete al agua vestido.',
+          'Camina hasta que le da por el pecho, en línea recta, exactamente hacia el punto donde estuvo mirando toda la tarde. Se agacha. Se hunde. El agua se cierra sin una onda, que no es lo que hace el agua cuando alguien se hunde en ella.',
+          'Sale con la mano cerrada.',
+          visto
+            ? 'Y sale mirándote. No hubo un momento en que te descubriera: sale del agua con la cara ya girada hacia donde estás, como si supiera desde antes de hundirse que ahí había alguien. Te ve con el puño todavía cerrado, antes de haber mirado él mismo lo que sacó.'
+            : 'Desde donde estás no se ve qué tiene en el puño, y no hace falta: la cara le cambió de una manera que no le va a volver a cambiar en trescientos años. Es la cara de alguien a quien le acaban de contestar que sí.',
+          visto
+            ? 'Y ahí está la diferencia, y es toda la diferencia: no te mira como una confirmación. Te mira como a algo que apareció en su orilla el mismo día en que el agua le contestó, y no sabe todavía si sos parte de la respuesta o el precio de haberla pedido. Se queda con el agua por el pecho, quieto, calculando, con la mano cerrada abajo del agua para que no la veas.'
+            : 'Y lo que pasó, si lo mirás sin ponerle nada encima, fue esto: un hombre vio una imagen en el agua, decidió que la imagen era una indicación dirigida a él, y fue a buscar lo que la imagen mostraba. La imagen nunca dijo de quién era la mano.',
+          ...(visto ? ['No sabe tu nombre. Eso lo ves igual, y de esta manera es peor: no te mira como se mira una fecha. Te mira como se mira un testigo.'] : []),
+        ],
+        exposicion: {
+          amount: visto ? 15 : 9,
+          source: 'hombreagua:encuentro',
+          cause: visto ? 'que te vea antes de que vos lo decidas' : 'ver a alguien recibir la respuesta que se venía diciendo solo',
+        },
+        ...(visto ? {
+          cordura: {
+            amount: perdidaSiLoVio,
+            cause: 'que te encuentre él a vos, con el puño todavía cerrado',
+            crisis: {
+              nombre: 'El testigo',
+              descripcion: 'Alguien que llevaba doscientos cincuenta años muerto te vio la cara antes de que vos decidieras mostrársela. Cada vez que alguien te mira más de la cuenta, la idea vuelve entera.',
+              tipo: 'phobia' as const,
+              afecta: [{ skill: 'psicologia', dados: 1 }],
+            },
+          },
+          estabilidad: { amount: -8, cause: 'perder el único control que tenías adentro de la visión' },
+        } : {}),
+        pistas: [
+          {
+            description: 'Bernardo no fabricó el anillo: lo sacó del fondo de la laguna, once días después de que el agua le mostrara una mano tomando un anillo. Interpretó la imagen como una indicación dirigida a él. La imagen nunca dijo de quién era la mano.',
+            kind: 'experiential' as const,
+            source: 'la orilla de la visión',
+            reliability: 'reliable' as const,
+          },
+          ...(visto ? [{
+            description: 'Bernardo vio al investigador ANTES de mirar lo que había sacado del agua, y no lo leyó como una confirmación: lo leyó como un testigo que apareció el mismo día en que el agua le contestó.',
+            kind: 'experiential' as const,
+            source: 'la orilla de la visión',
+            reliability: 'reliable' as const,
+          }] : []),
+        ],
+        consecuencia: {
+          description: visto
+            ? 'El investigador vio, en una visión de 1679, cómo Bernardo Díaz encontró el anillo en el fondo de la laguna — y Bernardo lo vio a él primero, antes de mirar lo que había sacado.'
+            : 'El investigador vio, en una visión de 1679, cómo Bernardo Díaz encontró el anillo en el fondo de la laguna: no lo fabricó, y entró a buscarlo porque leyó un reflejo como una orden.',
+          scope: 'world' as const,
+          permanent: true,
+          worldReminder: visto
+            ? 'Bernardo encontró el anillo y encontró un testigo el mismo día, y nunca supo cuál de las dos cosas contestaba a la otra.'
+            : 'Alguien vio el primer error de Bernardo con sus propios ojos. El error no fue encontrar el anillo: fue creer que el agua se lo estaba ofreciendo.',
+        },
+      };
+    },
   },
   {
     // El beat al que apunta toda la aventura: Reciprocidad (canon §2)
@@ -255,7 +309,7 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
         pistas: [{
           description: 'En 1679 Bernardo levantó la vista del anillo recién sacado del agua y miró directamente al investigador, y alrededor de él, como si viera un grupo entero. No lo miró como a un intruso: lo miró como a una confirmación. No sabía su nombre.',
           kind: 'experiential',
-          source: 'la orilla, 1679',
+          source: 'la orilla de la visión',
           reliability: 'reliable',
         }],
         consecuencia: {
@@ -264,6 +318,117 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
           permanent: true,
           worldReminder: 'Bernardo lo vio a él. Doscientos cincuenta años antes de conocerlo, y le sirvió para convencerse.',
         },
+      };
+    },
+  },
+  {
+    // Evidencia de época que se puede leer sin saber nada del lugar: la
+    // carreta. Sirve de insumo para `ubicarse`.
+    id: 'mirar-carreta',
+    prueba: () => ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'mirar de qué está hecha la carreta, no qué carga',
+      stakes_success: 'ves cómo está armada',
+      stakes_failure: 'ves una carreta',
+    }),
+    resolver: ({ tirada }) => ({
+      texto: [
+        'La carreta está parada al lado del fuego, con las varas apoyadas en el suelo y los bueyes sueltos a veinte metros.',
+        tirada?.exito
+          ? 'Rueda de rayos de madera con llanta de hierro clavada, y sin un solo tornillo en toda la armazón: todo es espiga, cuña y correa de tiento. El eje es de una pieza, engrasado con sebo. No es una carreta pobre ni una carreta vieja: es una carreta NUEVA, hecha con esmero, de una época en la que una rosca de metal se hacía a mano y costaba más que la madera.'
+          : 'Es una carreta de bueyes, cargada y bien mantenida. Podrías decir que es vieja, pero no lo es: está nueva. Lo que no sabrías decir, mirándola así, es de cuándo.',
+      ],
+      exposicion: { amount: 1, source: 'hombreagua:carreta', cause: 'medir con los ojos una época que no es la tuya' },
+      ...(tirada?.exito ? {
+        pistas: [{
+          description: 'La carreta del campamento no tiene una sola pieza roscada: todo es espiga, cuña y tiento, y está nueva. Es de una época en la que la rosca de metal todavía se hacía a mano.',
+          kind: 'physical' as const,
+          source: 'el campamento, la carreta',
+          reliability: 'reliable' as const,
+        }],
+      } : {}),
+    }),
+  },
+  {
+    // Ubicarse en el tiempo. Antes el encabezado decía «1679» desde el primer
+    // segundo y el catálogo lo anunciaba: la aventura contestaba sola la
+    // única pregunta que estaba haciendo. Ahora arranca «en ninguna parte» y
+    // el año sale de una tirada de Historia sobre la evidencia que el
+    // investigador haya juntado — que es exactamente para lo que la ficha
+    // dice que sirve Historia: «ubicar un objeto, estilo o costumbre en su
+    // época». Fallar no bloquea nada: deja el siglo en vez del año.
+    id: 'ubicarse',
+    prueba: () => ({
+      skill: 'historia', difficulty: 'regular',
+      reason: 'poner en su época lo que tenés delante: la carreta, la ropa, la letra de los papeles',
+      stakes_success: 'sacás el año con dos o tres de error',
+      stakes_failure: 'sacás el siglo y nada más',
+    }),
+    resolver: ({ tirada }) => ({
+      texto: [
+        'Te sentás en la costra y hacés lo único que se puede hacer con esto: pensarlo como si fuera un problema de fechas y no una cosa que te está pasando.',
+        tirada?.exito
+          ? 'La carreta sin roscas. El cuello de la camisa de él, que no es cuello sino valona, y ya estaba pasado de moda en Europa cuando esta gente se embarcó. La letra de los papeles, con la ese larga en el medio de las palabras. La forma de anotar los números en la libreta, que no usa el cero como lo usás vos. Ninguna de las cuatro cosas prueba nada sola. Las cuatro juntas caen en la misma década, y esa década está a doscientos cincuenta años de la tuya.'
+          : 'La carreta, la ropa, la letra. Sabés que es viejo. Sabés que es MUY viejo, más viejo que cualquier cosa que hayas tocado antes de esta tarde. De ahí a poner un número hay una distancia que no vas a poder cruzar sentado en una costra de sal.',
+        tirada?.exito
+          ? 'Ahora sabés en qué siglo estás parado, y con qué año empieza la cuenta: mil seiscientos setenta y nueve. Castronegro se funda en 1680. Estás a un año.'
+          : 'Ahora sabés en qué siglo estás parado, y eso es todo lo que vas a sacar: el diecisiete, en algún lado. Suficiente para entender que el pueblo todavía no existe, y que el hombre de la orilla no lo fundó todavía.',
+      ],
+      rotuloTiempo: {
+        display: tirada?.exito
+          ? 'una tarde de noviembre de 1679'
+          : 'una tarde de un siglo que no es el tuyo',
+        reason: 'el investigador ubicó lo que tiene delante en su época',
+      },
+      cordura: {
+        amount: tirada?.exito ? 2 : 1,
+        cause: 'ponerle un número a la distancia que te separa de donde estabas',
+      },
+      exposicion: { amount: 3, source: 'hombreagua:ubicarse', cause: 'aceptar la fecha en vez de discutirla' },
+      pistas: [{
+        description: tirada?.exito
+          ? 'La visión transcurre en noviembre de 1679: la carreta, la ropa, la letra y la manera de anotar los números caen todas en la misma década. Castronegro se funda al año siguiente.'
+          : 'La visión transcurre en algún punto del siglo XVII: la carreta, la ropa y la letra lo ubican ahí, aunque no alcanzan para un año exacto. El pueblo todavía no existe.',
+        kind: 'physical',
+        source: 'poner en época lo que hay alrededor',
+        reliability: tirada?.exito ? 'reliable' : 'unknown',
+      }],
+    }),
+  },
+  {
+    // Interactuar con el mundo de 1679, y que el mundo conteste. Es la
+    // reciprocidad del canon (§2) en chiquito: tocar también es mirar.
+    id: 'tocar-agua',
+    prueba: () => ({
+      skill: 'COR', difficulty: 'regular',
+      reason: 'meter la mano en el agua que te trajo hasta acá',
+      stakes_success: 'la sacás entera y sabiendo algo',
+      stakes_failure: 'la sacás entera',
+    }),
+    resolver: ({ tirada, estado }) => {
+      const bernardoEnElAgua = estado.narrative.some((n) => n.text.includes('Sale con la mano cerrada'));
+      return {
+        texto: [
+          'Te agachás en la costra y metés la mano hasta la muñeca.',
+          'Está fría, y es agua: pesa lo que pesa el agua, moja lo que moja el agua. Nada de lo que pasa después contradice eso, y por eso es peor.',
+          tirada?.exito
+            ? 'Lo que pasa es que las ondas salen mal. Salen del punto donde entró tu mano, se abren un palmo, y vuelven. No se apagan: vuelven, como si en algún lugar del charco hubiera un borde contra el cual rebotar, y ese borde estuviera a un palmo de tu mano en todas las direcciones a la vez.'
+            : 'Lo que pasa es que tardás en sentir el frío. Un segundo largo con la mano adentro sin sentir nada, y después el frío entero de golpe, como si el agua hubiera tenido que enterarse primero de que había una mano.',
+          bernardoEnElAgua
+            ? 'Y en la misma agua donde hace un rato estuvo él hundido hasta la cabeza, tu mano no encuentra fondo a la distancia que debería. Está más hondo de este lado del que caminó él.'
+            : 'La sacás más rápido de lo que la metiste, y te la secás en el pantalón dos veces más de las necesarias.',
+        ],
+        cordura: { amount: tirada?.exito ? 2 : 1, cause: 'meter una parte del cuerpo en el lugar por donde entró la visión' },
+        exposicion: { amount: tirada?.exito ? 6 : 4, source: 'hombreagua:tocar', cause: 'tocar la superficie que refleja' },
+        estabilidad: { amount: -4, cause: 'comprobar con la mano que el agua no se comporta como agua' },
+        ...(tirada?.exito ? {
+          pistas: [{
+            description: 'Las ondas que hace la mano del investigador en la laguna no se apagan: rebotan contra un borde que está a un palmo de la mano, en todas las direcciones a la vez. El agua tiene un límite que no coincide con su orilla.',
+            kind: 'experiential' as const,
+            source: 'la orilla, meter la mano',
+            reliability: 'reliable' as const,
+          }],
+        } : {}),
       };
     },
   },
@@ -281,7 +446,7 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
         title: 'Lo que se mira sin tocar',
         text: [
           'No hacés nada. Es más difícil de lo que parece y es lo único que estabas en condiciones de hacer bien.',
-          'La tarde de 1679 se va como se va cualquier tarde: sin apuro y sin avisar. En algún momento el agua deja de estar delante tuyo y hay una pared, o un techo, o el borde de un aljibe, y ya es 1928 otra vez y tenés la ropa seca.',
+          'La tarde se va como se va cualquier tarde: sin apuro y sin avisar. En algún momento el agua deja de estar delante tuyo y hay una pared, o un techo, o el borde de un aljibe, y ya es 1928 otra vez y tenés la ropa seca.',
           'Lo que te queda no es una prueba. Es haber visto a un hombre que todavía no había hecho nada, decidir hacerlo.',
         ],
       },

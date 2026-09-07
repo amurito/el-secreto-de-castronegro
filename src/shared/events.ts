@@ -75,6 +75,7 @@ export type GameEventType =
   | 'DOCUMENT_OBTAINED'
   | 'LOCATION_ENTERED'
   | 'TIME_ADVANCED'
+  | 'TIME_LABEL_SET'
   | 'EVENT_CATEGORIZED'
   | 'EVENT_ALTERED'
   | 'TEMPORAL_ECHO_RECEIVED'
@@ -304,6 +305,17 @@ export interface TimeAdvancedPayload {
   from: WorldTime;
   to: WorldTime;
   minutes: number;
+  reason: string;
+}
+
+/**
+ * Cambia cómo se ROTULA el momento actual, sin moverlo. Para cuando el
+ * investigador recién ahí entiende cuándo está parado: el reloj del mundo no
+ * cambia, cambia lo que él puede decir sobre él. Ver `EfectoEscena.rotuloTiempo`.
+ */
+export interface TimeLabelSetPayload {
+  from: string;
+  to: string;
   reason: string;
 }
 

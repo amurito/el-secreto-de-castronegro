@@ -167,6 +167,21 @@ export interface EfectoEscena {
   };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
+  /**
+   * Cambia el RÓTULO del tiempo del mundo sin moverlo.
+   *
+   * El encabezado muestra `world.time.display`, y hasta acá ese texto sólo
+   * podía fijarlo el escenario en `startTime` o pisarlo `advanceTimeBy` con
+   * un «HH:MM». Eso alcanza mientras el investigador sepa en qué día está,
+   * que es el caso normal. No alcanza cuando la aventura es justamente sobre
+   * NO saber cuándo estás: el rótulo tenía que decir la fecha desde el primer
+   * segundo, y con eso le regalaba al jugador la única pregunta que la
+   * aventura le estaba haciendo.
+   *
+   * El motor no sabe qué dice el rótulo ni por qué cambia: sólo lo escribe.
+   * Es la escena la que decide que el investigador ya reunió con qué ubicarse.
+   */
+  rotuloTiempo?: { display: string; reason: string };
   pregunta?: string;
   descubre?: {
     itemId: string;
