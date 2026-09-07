@@ -46,9 +46,36 @@ export interface TurnEvent {
   data: unknown;
 }
 
+/**
+ * Un final ya alcanzado, para el archivo. Reportado jugando: el texto del
+ * desenlace se lee UNA vez, empujado por lo que venga después en la
+ * narración, y no había forma de volver a leerlo — ni el de esa aventura ni
+ * el de las anteriores, que viven en otra campaña del navegador.
+ */
+export interface FinalArchivado {
+  campaignId: string;
+  scenarioId: string;
+  /** Título de la aventura, no del final. */
+  aventura: string;
+  /** Época diegética, tal como la muestra el catálogo. */
+  epoca: string;
+  title: string;
+  text: string;
+  /** Orden diegético de la aventura, para ordenar el archivo. */
+  cuando: string;
+  /** Si es la campaña abierta ahora mismo. */
+  actual: boolean;
+}
+
 export interface GameApi {
   status(): Promise<StatusInfo>;
   listCampaigns(): Promise<CampaignSummary[]>;
+  /**
+   * Los finales de todas las partidas de este navegador, en orden diegético.
+   * Lee cada campaña terminada, no un registro aparte: así el archivo
+   * funciona también para las que ya estaban jugadas antes de que existiera.
+   */
+  finalesArchivados(): Promise<FinalArchivado[]>;
   createCampaign(scenarioId: string): Promise<{
     campaignId: string; opening: string; state: ClientState; options: Opcion[];
   }>;

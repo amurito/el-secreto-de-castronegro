@@ -411,6 +411,29 @@ button { font-family: inherit; cursor: pointer; }
 .deg-ok { color: var(--ok); }
 .deg-bad { color: var(--bad); }
 
+/* ── LA FICHA PLEGADA ────────────────────────────────────────────────────
+   Una sola fila. Reportado jugando: la ficha completa medía más de 200px de
+   alto en el medio de la pantalla y empujaba fuera de vista el texto de la
+   escena que esa misma tirada acababa de resolver — se leía el número y no
+   lo que el número había producido. Acá va lo único que importa en el
+   momento; el detalle sigue entero en la pestaña de tiradas y se puede
+   abrir con «detalle».                                                      */
+.roll-fila {
+  display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+  padding: 0.45rem 0.9rem;
+}
+.roll-fila .dados-compactos { margin: 0; }
+.roll-fila .dado { width: 1.7rem; height: 1.7rem; font-size: 0.72rem; border-radius: 4px; }
+.roll-fila-dados { color: var(--text-faint); font-size: 0.72rem; }
+.roll-fila-result { font-size: 1.35rem; line-height: 1; color: var(--text); font-variant-numeric: tabular-nums; }
+.roll-fila-grado { letter-spacing: 0.1em; font-size: 0.68rem; }
+.roll-desplegar {
+  margin-left: auto; background: none; border: 1px solid var(--line);
+  color: var(--text-faint); font-family: var(--mono); font-size: 0.62rem;
+  letter-spacing: 0.1em; padding: 0.15rem 0.5rem; border-radius: 3px;
+}
+.roll-desplegar:hover { color: var(--text); border-color: var(--accent-dim); }
+
 /* ── LOS DADOS ──────────────────────────────────────────────────────────────
    Percentiles de CoC 7e: un d10 de decenas (00-90) y uno de unidades (0-9).
    El retardo de .roll-tardio lo pone el componente en línea, desde la misma
@@ -736,6 +759,44 @@ button { font-family: inherit; cursor: pointer; }
   letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 2px solid transparent;
 }
 .tab-on { color: var(--text); border-bottom-color: var(--accent); }
+
+/* Segunda fila: lo de consulta ocasional. Más chica y más apagada que la
+   primera a propósito — no compite con las pestañas de cada turno. */
+.tabs-secundarias { border-bottom-color: var(--line); }
+.tabs-secundarias .tab {
+  padding: 0.45rem 0.3rem; font-size: 0.6rem; letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+.tabs-secundarias .tab-on { opacity: 1; }
+
+/* ── EL ARCHIVO DE FINALES ─────────────────────────────────────────────── */
+/* La fila que todavía está tirando, en la fase de desarrollo. */
+.desarrollo-fila-tirando { opacity: 0.8; }
+.d-dado-girando { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+.finales-vacio { color: var(--text-faint); font-size: 0.8rem; line-height: 1.6; font-family: var(--serif); }
+.finales-intro {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.9rem;
+}
+.final-item {
+  border-left: 2px solid var(--line); padding-left: 0.8rem; margin-bottom: 1.4rem;
+}
+.final-actual { border-left-color: var(--accent); }
+.final-aventura {
+  font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent); display: flex; gap: 0.5rem; align-items: baseline;
+}
+.final-chip {
+  border: 1px solid var(--line); border-radius: 2px; padding: 0 0.3rem;
+  font-size: 0.55rem; color: var(--text-faint); letter-spacing: 0.06em;
+}
+.final-epoca { font-family: var(--mono); font-size: 0.58rem; color: var(--text-faint); margin-top: 0.15rem; }
+.final-titulo { font-family: var(--serif); font-size: 0.95rem; color: var(--text); margin: 0.4rem 0 0.3rem; }
+.final-parrafo {
+  font-family: var(--serif); font-size: 0.82rem; line-height: 1.65;
+  color: var(--text-dim); margin: 0 0 0.5rem;
+}
 
 /* `min-height` explícito porque un flex item con overflow-y:auto tiene
    mínimo automático CERO: sin esto, el contenido de altura libre de abajo

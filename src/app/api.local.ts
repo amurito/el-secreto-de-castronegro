@@ -14,7 +14,7 @@ import { createCampaign, loadState, Turn } from '../engine/engine.ts';
 import { useStore, store } from '../engine/store.ts';
 import { browserStore } from '../engine/store.browser.ts';
 import { verifyRollChain } from '../engine/rng.ts';
-import { ESCENARIOS, mesesEntre } from '../scenario/catalogo.ts';
+import { ESCENARIOS, mesesEntre, entradaDe } from '../scenario/catalogo.ts';
 import { SIMULADOR } from '../scenario/simulador.ts';
 import { ARMA_POR_ID } from '../rules/armas.ts';
 import { toClientRoll } from '../shared/protocol.ts';
@@ -23,7 +23,7 @@ import { accionesDisponibles } from '../scenario/acciones.ts';
 import { sanitizeForClient, estadoDeCombate } from './sanitize.ts';
 import { conTrato } from '../rules/tratamiento.ts';
 import type { GameState } from '../shared/types.ts';
-import type { GameApi, StatusInfo, TurnEvent, RivalReal, ArmaDisponible, CombateResult } from './api.ts';
+import type { GameApi, StatusInfo, TurnEvent, RivalReal, ArmaDisponible, CombateResult, FinalArchivado } from './api.ts';
 
 const activo = (state: GameState) => state.investigators[state.activeInvestigator];
 
@@ -159,6 +159,39 @@ export function createLocalApi(): GameApi {
         campaignId: c.campaignId, title: c.title, scenarioId: c.scenarioId,
         createdAt: c.createdAt, lastPlayedAt: c.lastPlayedAt, saveIntegrity: c.saveIntegrity,
       }));
+    },
+
+    /**
+     * Recorre las campañas del navegador y devuelve las que llegaron a un
+     * final, en orden diegético. Se lee el estado de cada una en vez de
+     * llevar un registro aparte: el log ya es la verdad, y así el archivo
+     * funciona igual para las partidas que se jugaron antes de que esta
+     * pantalla existiera. Una campaña ilegible se saltea en silencio — un
+     * archivo incompleto es mejor que una pantalla que no abre.
+     */
+    async finalesArchivados(): Promise<FinalArchivado[]> {
+      const todas = await store().listCampaigns();
+      const out: FinalArchivado[] = [];
+      for (const c of todas) {
+        try {
+          const { state } = await loadState(c.campaignId);
+          if (!state.ending) continue;
+          const entrada = entradaDe(state.scenarioId);
+          out.push({
+            campaignId: c.campaignId,
+            scenarioId: state.scenarioId,
+            aventura: entrada?.scenario.title ?? state.title,
+            epoca: entrada?.epoca ?? '',
+            title: state.ending.title,
+            text: Array.isArray(state.ending.text) ? state.ending.text.join('\n\n') : String(state.ending.text),
+            cuando: entrada?.cuando ?? c.createdAt.slice(0, 10),
+            actual: false,
+          });
+        } catch {
+          // Campaña ilegible (log corrupto, versión vieja): no rompe el resto.
+        }
+      }
+      return out.sort((a, b) => a.cuando.localeCompare(b.cuando));
     },
 
     async createCampaign(scenarioId) {

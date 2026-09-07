@@ -1229,6 +1229,23 @@ export class Turn {
     const rollId = id();
     const index = this.state.rng.nextIndex;
     const stakes = { onSuccess: '', onFailure: '' };
+
+    // ★ El dado comprado con Suerte vale para LA PRÓXIMA TIRADA, y una
+    //   tirada que el motor fuerza también es una tirada. Reportado jugando:
+    //   el jugador compró el dado, el turno siguiente el motor le pidió la
+    //   INT de crisis de Cordura, y el dado no se usó ni se gastó — quedó
+    //   colgado hasta el final de la aventura mientras la única tirada que
+    //   hubo salía sin él. El botón dice «dado extra en la próxima tirada» y
+    //   ésta lo era. Sólo cuando el que tira es el investigador: las tiradas
+    //   del rival en una enfrentada no se llevan su Suerte.
+    const inv = this.investigator;
+    const dadosDeSuerte = actorId === inv.id ? inv.pendingLuckBonus : 0;
+    if (dadosDeSuerte > 0) {
+      modifiers = [
+        ...modifiers,
+        { kind: 'bonus_die', count: clamp(dadosDeSuerte, 0, 2), reason: 'dado comprado con Suerte' },
+      ];
+    }
     this.emit('ROLL_REQUESTED', {
       rollId, investigatorId: actorId, skill: etiqueta, skillLabel: `${actorName}: ${etiqueta}`,
       baseValue: valor, difficulty: 'regular' as Difficulty, modifiers,
@@ -1257,6 +1274,9 @@ export class Turn {
       narratedIn: null,
     };
     this.emit('ROLL_EXECUTED', { roll: record });
+    if (dadosDeSuerte > 0) {
+      this.emit('LUCK_BONUS_CONSUMED', { investigatorId: inv.id, bonusDice: dadosDeSuerte, rollId });
+    }
     return { degree, rawResult };
   }
 

@@ -3430,6 +3430,48 @@ estudiado cuando la habilidad específica nace en 5%. Lo que no hay que hacer
 es repartirlas para llenar la planilla: `prueba-tiradas.ts` existe justamente
 para cazar tiradas decorativas.
 
+### 3.2-octotrigies La Suerte que no se gastaba, y la interfaz que tapaba el texto ✔ HECHO
+
+Tercera sesión sobre la décima aventura, 2026-09-14.
+
+**1. El dado comprado con Suerte no valía para las tiradas del motor.** El
+jugador lo compró, el turno siguiente el motor le pidió la INT de crisis de
+Cordura, y el dado no se usó ni se gastó: quedó colgado hasta el final de la
+aventura mientras la única tirada que hubo salió sin él. `toolRequestRoll`
+lo consumía y `tiradaInterna` no. El botón dice «dado extra en la próxima
+tirada» y ésa lo era, así que ahora también lo aplica —sólo cuando el que
+tira es el investigador: las tiradas del rival en una enfrentada no se
+llevan su Suerte—.
+
+**2. La ficha de tirada tapaba lo que la tirada había producido.** Medía más
+de 200px de alto en el medio de la pantalla y empujaba fuera de vista el
+texto de la escena que ella misma acababa de resolver: se leía el número y
+no lo que el número hizo. Ahora arranca **plegada en una fila** (44px
+medidos): qué se tiró, cuánto salió, si alcanzó. El detalle completo sigue
+donde siempre estuvo —la pestaña de tiradas— y se puede abrir con «detalle».
+
+**3. Segunda fila de pestañas.** «El mundo recuerda» y «usted lo nota»
+vivían fijos abajo del panel derecho, de altura libre, con un divisor
+arrastrable que existía para pelear por el espacio con el tablero. Pasaron a
+ser pestañas de una segunda fila, más chica y más apagada que la primera: se
+consultan de vez en cuando, no cada turno.
+
+**4. El archivo de finales.** Pedido jugando: el texto del desenlace se lee
+una sola vez —y a veces ni eso, porque lo que sigue lo empuja fuera de
+pantalla— y no había forma de volver a leerlo, ni el de esa aventura ni el
+de las anteriores, que viven en otra campaña del navegador. La pestaña
+«finales» recorre las campañas de este navegador, se queda con las que
+llegaron a un desenlace y las muestra en orden diegético. Se lee del log de
+cada una, no de un registro aparte: así funciona igual para las partidas
+jugadas antes de que esto existiera.
+
+**5. La fase de desarrollo tira los dados de a uno.** Aparecían las diez
+comprobaciones de golpe, ya resueltas: era una tabla de resultados, no una
+tirada. Ahora cada habilidad tira su dado —el número gira— y recién después
+se revela contra cuánto tiró y si subió. Con la animación apagada o con
+`prefers-reduced-motion`, todas reveladas de entrada y sin esperas, mismo
+criterio que `DadosPercentiles`.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

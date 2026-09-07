@@ -135,6 +135,42 @@ async function main() {
   check('«Apelo a mi suerte» clasifica como verbo «suerte»',
     classify(finalState, 'Apelo a mi suerte').verb === 'suerte');
 
+  console.log('\n6. EL DADO COMPRADO TAMBIÉN VALE PARA LAS TIRADAS QUE FUERZA EL MOTOR');
+  {
+    // Bug reportado jugando: el jugador compró el dado, el turno siguiente el
+    // motor le pidió la INT de crisis de Cordura (por perder 5+ de golpe), y
+    // el dado no se usó ni se gastó — quedó colgado hasta el final de la
+    // aventura mientras la única tirada que hubo salió sin él. El botón dice
+    // «dado extra en la próxima tirada», y ésa lo era.
+    const id = await createCampaign(AGUA_QUIETA, 'SUERTE-INTERNA', 'z'.repeat(64));
+    let t = await Turn.open(id);
+    t.executeTool('spend_luck', {});
+    await t.commit();
+
+    const inv0 = (await Turn.open(id)).state;
+    const pendiente = inv0.investigators[inv0.activeInvestigator]!.pendingLuckBonus;
+    check('quedó un dado comprado', pendiente === 1, `${pendiente}`);
+
+    // Una pérdida de Cordura de 5+ obliga al motor a tirar INT por su cuenta.
+    t = await Turn.open(id);
+    const rollsAntes = t.state.rolls.length;
+    t.executeTool('apply_sanity_loss', { amount: 6, cause: 'prueba' });
+    await t.commit();
+
+    const s = (await Turn.open(id)).state;
+    const nuevas = s.rolls.slice(rollsAntes);
+    const intCrisis = nuevas.find((r) => /INT/.test(r.commitment.skillLabel));
+    check('el motor tiró la INT de crisis', !!intCrisis,
+      nuevas.map((r) => r.commitment.skillLabel).join(', '));
+    check('...y esa tirada llevó el dado comprado con Suerte',
+      !!intCrisis?.commitment.modifiers.some(
+        (m) => m.kind === 'bonus_die' && /Suerte/.test(m.reason)),
+      JSON.stringify(intCrisis?.commitment.modifiers ?? []));
+    check('...y el dado quedó gastado, no colgado',
+      s.investigators[s.activeInvestigator]!.pendingLuckBonus === 0,
+      `${s.investigators[s.activeInvestigator]!.pendingLuckBonus}`);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

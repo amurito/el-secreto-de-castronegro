@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DadosPercentiles, useRevelacionTardia } from './dados.tsx';
 import { pisoDeExposicion } from '../rules/umbral.ts';
 import { meetsDifficulty } from '../rules/dice.ts';
@@ -150,6 +150,13 @@ const esDadoDeDesarrollo = (roll: any) => /^1D\d+$/.test(String(roll?.skill ?? '
 export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; animar?: boolean }) {
   // Antes de cualquier return: los hooks no admiten salidas anticipadas.
   const revelado = useRevelacionTardia(!!animar, String(roll?.id ?? ''));
+  // La ficha del panel central arranca PLEGADA. Reportado jugando: el cuadro
+  // de la tirada era tan alto que empujaba fuera de pantalla el texto de la
+  // escena que esa misma tirada había resuelto — se leía el resultado y no lo
+  // que el resultado produjo. Plegada dice lo único que importa en el momento
+  // (qué se tiró, cuánto salió, si alcanzó) en una fila; el detalle completo
+  // vive donde ya vivía, en la pestaña de tiradas, y acá se puede abrir.
+  const [abierta, setAbierta] = useState(false);
 
   // Una tirada mal formada no puede tumbar la partida entera: la interfaz
   // degrada, el motor sigue teniendo el registro correcto.
@@ -177,6 +184,33 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
   const good = meetsDifficulty(roll.degree as SuccessDegree, roll.difficulty as Difficulty);
   // Sin animación no se toca nada: ni tapado, ni fundido, ni clase de más.
   const tardio = !animar ? '' : revelado ? ' roll-visible' : ' roll-tapado';
+
+  const notaDificultad = !good && !['failure', 'fumble'].includes(roll.degree)
+    ? ` — no alcanza para ${DIFF_LABEL[roll.difficulty] ?? roll.difficulty}` : '';
+
+  // ── La ficha compacta del panel central ────────────────────────────────
+  // Una fila: qué se tiró, cuánto salió, si alcanzó. Lo demás, al desplegar.
+  if (big && !abierta) {
+    return (
+      <div className={`roll roll-big roll-fila ${good ? 'roll-ok' : 'roll-bad'}`}>
+        <span className="roll-dice-icon">🎲</span>
+        <span className="roll-skill">{roll.skill}</span>
+        <span className="roll-base">{roll.base}%</span>
+        {animar
+          ? <DadosPercentiles roll={roll} compacto />
+          : <span className="roll-fila-dados">{roll.dice.join(' · ')}</span>}
+        <span className={`roll-fila-result${tardio}`}>{roll.result}</span>
+        <span className={`roll-fila-grado ${good ? 'deg-ok' : 'deg-bad'}${tardio}`}>
+          {DEGREE_LABEL[roll.degree] ?? roll.degree}{notaDificultad}
+        </span>
+        <button className="roll-desplegar" onClick={() => setAbierta(true)}
+          title="Ver el detalle de la tirada">
+          detalle
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={`roll ${big ? 'roll-big' : ''} ${good ? 'roll-ok' : 'roll-bad'}`}>
       <div className="roll-head">
@@ -184,6 +218,11 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
         <span className="roll-skill">{roll.skill}</span>
         <span className="roll-base">{roll.base}%</span>
         <span className="roll-diff">Dificultad: {DIFF_LABEL[roll.difficulty] ?? roll.difficulty}</span>
+        {big && (
+          <button className="roll-desplegar" onClick={() => setAbierta(false)} title="Plegar">
+            plegar
+          </button>
+        )}
       </div>
       <div className="roll-reason">{roll.reason}</div>
       {animar && <DadosPercentiles roll={roll} />}
@@ -203,9 +242,7 @@ export function RollCard({ roll, big, animar }: { roll: any; big?: boolean; anim
             regular» sigue siendo ese grado aunque se haya pedido «Difícil».
             Sin esta aclaración, la tarjeta decía «ÉXITO REGULAR» en rojo, que
             lee como una contradicción — se aclara qué faltó. */}
-        {!good && !['failure', 'fumble'].includes(roll.degree) && (
-          <span className="roll-degree-nota"> — no alcanza para {DIFF_LABEL[roll.difficulty] ?? roll.difficulty}</span>
-        )}
+        {notaDificultad && <span className="roll-degree-nota">{notaDificultad}</span>}
       </div>
     </div>
   );

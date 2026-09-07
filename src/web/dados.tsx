@@ -101,7 +101,8 @@ export function guardarPreferenciaDados(activa: boolean): void {
  * documentado en shared/types.ts. Si alguna vez se invierte, acá se vería al
  * instante: el dado de decenas mostraría el número equivocado.
  */
-export function DadosPercentiles({ roll }: { roll: any }) {
+/** `compacto`: sin la nota de bonificación, para la ficha plegada del panel central. */
+export function DadosPercentiles({ roll, compacto }: { roll: any; compacto?: boolean }) {
   const unidadReal: number = roll.dice[0] ?? 0;
   const decenasReales: number[] = roll.dice.slice(1);
 
@@ -152,7 +153,7 @@ export function DadosPercentiles({ roll }: { roll: any }) {
   const unidadEnPantalla = unidadQuieta ? unidadReal : giroUnidad;
 
   return (
-    <div className="dados" aria-hidden="true">
+    <div className={`dados${compacto ? ' dados-compactos' : ''}`} aria-hidden="true">
       <div className="dados-grupo">
         {decenasEnPantalla.map((d, i) => (
           <div
@@ -172,7 +173,7 @@ export function DadosPercentiles({ roll }: { roll: any }) {
           {unidadEnPantalla}
         </div>
       </div>
-      {señalarElegido && (
+      {señalarElegido && !compacto && (
         <div className="dados-nota">
           {mode === 'bonus' ? 'bonificación: el más bajo' : 'penalización: el más alto'}
         </div>

@@ -12,7 +12,17 @@ import type { Investigator } from '../shared/types.ts';
 import { leerPreferenciaDados, guardarPreferenciaDados, prefiereMenosMovimiento } from './dados.tsx';
 import { HECHIZO_POR_ID } from '../rules/hechizos.ts';
 
-type Tab = 'tablero' | 'inventario' | 'documentos' | 'tiradas' | 'hechizos';
+type Tab =
+  | 'tablero' | 'inventario' | 'documentos' | 'tiradas' | 'hechizos'
+  // Segunda fila: consulta ocasional, no de cada turno.
+  | 'recuerda' | 'aparte' | 'finales';
+
+/** Las que necesitan un rótulo más largo que su propio id. */
+const ETIQUETA_TAB: Partial<Record<Tab, string>> = {
+  recuerda: 'el mundo recuerda',
+  aparte: 'usted lo nota',
+  finales: 'finales',
+};
 
 interface Line { id: string; kind: string; text: string }
 
@@ -815,6 +825,23 @@ export function App() {
             <button key={t} className={`tab ${tab === t ? 'tab-on' : ''}`} onClick={() => setTab(t)}>{t}</button>
           ))}
         </div>
+        {/* Segunda fila: lo que se consulta de vez en cuando, no en cada
+            turno. «El mundo recuerda» y «usted lo nota» vivían abajo, fijos y
+            de altura libre, y con una campaña larga encima le comían la
+            pantalla al tablero — reportado jugando. Acá abren y cierran. */}
+        <div className="tabs tabs-secundarias">
+          {(
+            [
+              ...((state?.consequences?.length ?? 0) > 0 ? ['recuerda'] : []),
+              ...((inv?.playerKnowledge?.length ?? 0) > 0 ? ['aparte'] : []),
+              'finales',
+            ] as Tab[]
+          ).map((t) => (
+            <button key={t} className={`tab ${tab === t ? 'tab-on' : ''}`} onClick={() => setTab(t)}>
+              {ETIQUETA_TAB[t] ?? t}
+            </button>
+          ))}
+        </div>
         <div className="tab-body">
           {tab === 'tablero' && <Board board={state?.board} />}
           {tab === 'inventario' && <Inventory items={state?.items ?? []} />}
@@ -848,6 +875,25 @@ export function App() {
               })}
             </div>
           )}
+          {tab === 'recuerda' && (
+            <div className="consequences">
+              {(state?.consequences ?? []).map((c: any, i: number) => (
+                <div key={i} className="cons">{c.permanent ? '● ' : '○ '}{c.description}</div>
+              ))}
+            </div>
+          )}
+          {/* A propósito distinto de la ficha: esto no es lo que el
+              investigador sabe, es lo que USTED —quien lee— nota. El
+              investigador no da señales de haberlo entendido. */}
+          {tab === 'aparte' && (
+            <div className="aparte">
+              <div className="aparte-title">Usted lo nota. Su investigador, todavía no.</div>
+              {(inv?.playerKnowledge ?? []).map((k: string, i: number) => (
+                <div key={i} className="aparte-item">{k}</div>
+              ))}
+            </div>
+          )}
+          {tab === 'finales' && <Finales api={api} campaignId={campaignId} estadoActual={state} />}
           {tab === 'tiradas' && (
             <>
               {/* El interruptor vive acá porque acá es donde el jugador viene a
@@ -873,43 +919,6 @@ export function App() {
             </>
           )}
         </div>
-        {/* Envueltos juntos y con su propio scroll: sin esto, «el mundo
-            recuerda» y «usted lo nota» —de altura libre, sin tope— le
-            robaban espacio a `.tab-body` (que sí puede achicarse, porque su
-            `overflow-y:auto` le da mínimo cero) hasta dejar Pistas
-            reducido a dos tarjetas visibles con una campaña larga encima.
-            Reportado jugando: con cinco consecuencias y un párrafo de nota,
-            el tablero quedaba más chico que las dos secciones fijas juntas. */}
-        {((state?.consequences?.length ?? 0) > 0 || (inv?.playerKnowledge?.length ?? 0) > 0) && (
-          <>
-            <div
-              className="resizer-pie"
-              onMouseDown={empezarArrastrePie}
-              title="Arrastrar para cambiar el alto de esta sección"
-            />
-            <div className="col-right-pie" style={{ height: `${altoPie}%` }}>
-            {state?.consequences?.length > 0 && (
-              <div className="consequences">
-                <div className="cons-title">El mundo recuerda</div>
-                {state.consequences.map((c: any, i: number) => (
-                  <div key={i} className="cons">{c.permanent ? '● ' : '○ '}{c.description}</div>
-                ))}
-              </div>
-            )}
-            {/* Aparte, y a propósito distinto de la ficha: esto no es lo que el
-                investigador sabe, es lo que USTED —quien lee— nota. El
-                investigador no da señales de haberlo entendido. */}
-            {inv?.playerKnowledge?.length > 0 && (
-              <div className="aparte">
-                <div className="aparte-title">Usted lo nota. Su investigador, todavía no.</div>
-                {inv.playerKnowledge.map((k: string, i: number) => (
-                  <div key={i} className="aparte-item">{k}</div>
-                ))}
-              </div>
-            )}
-            </div>
-          </>
-        )}
       </aside>
 
       {/* Sólo en móvil: el CSS la esconde en pantalla grande. */}
@@ -966,6 +975,146 @@ function Epilogo({
       <p className="epilogo-nota">
         Ninguno de los cinco es ganar y ninguno es perder. Los Álamos sigue ahí en todos.
       </p>
+    </div>
+  );
+}
+
+/**
+ * Las comprobaciones de mejora de la fase de desarrollo, UNA POR UNA.
+ *
+ * Pedido jugando: aparecían las diez de golpe, ya resueltas, y era una tabla
+ * de resultados en vez de una tirada. Acá cada habilidad tira su dado —el
+ * número gira— y recién después se revela contra cuánto tiró y si subió. El
+ * resultado ya estaba firmado en la cadena mucho antes de que esto girara:
+ * es presentación, igual que `DadosPercentiles`.
+ *
+ * Con la animación apagada (o con `prefers-reduced-motion`), se muestran
+ * todas reveladas de entrada, sin esperas.
+ */
+function MejorasAnimadas({ mejoras, animar }: { mejoras: any[]; animar: boolean }) {
+  const activa = animar && !prefiereMenosMovimiento();
+  const [reveladas, setReveladas] = useState(() => (activa ? 0 : mejoras.length));
+  const [cara, setCara] = useState(1);
+
+  useEffect(() => {
+    if (!activa) { setReveladas(mejoras.length); return; }
+    setReveladas(0);
+    const plazos: number[] = [];
+    for (let i = 1; i <= mejoras.length; i++) {
+      plazos.push(window.setTimeout(() => setReveladas(i), i * 650));
+    }
+    return () => plazos.forEach(clearTimeout);
+  }, [activa, mejoras.length]);
+
+  // El número que gira mientras una fila espera su turno.
+  useEffect(() => {
+    if (!activa || reveladas >= mejoras.length) return;
+    const tic = window.setInterval(() => setCara(1 + Math.floor(Math.random() * 100)), 70);
+    return () => clearInterval(tic);
+  }, [activa, reveladas, mejoras.length]);
+
+  return (
+    <>
+      {mejoras.map((m: any, i: number) => {
+        const lista = i < reveladas;
+        // Sólo la que está por salir muestra el dado girando; las que vienen
+        // después ni aparecen, para que se lean de a una y no como una lista.
+        if (!lista && i > reveladas) return null;
+        if (!lista) {
+          return (
+            <div key={m.skill} className="desarrollo-fila desarrollo-fila-tirando">
+              <span className="d-label">{m.label}</span>
+              <span className="d-num">{m.antes}%</span>
+              <span className="d-dado d-dado-girando">tirada {cara}</span>
+              <span className="d-res">…</span>
+            </div>
+          );
+        }
+        return (
+          <div key={m.skill} className={`desarrollo-fila ${m.gain > 0 ? 'sube' : ''}`}>
+            <span className="d-label">{m.label}</span>
+            <span className="d-num">{m.antes}%</span>
+            <span className="d-dado">tirada {m.check}</span>
+            <span className="d-res">
+              {m.gain > 0 ? `+${m.gain} → ${m.despues}%` : 'ya lo sabía demasiado bien'}
+            </span>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+/**
+ * EL ARCHIVO DE FINALES.
+ *
+ * Reportado jugando: el texto del desenlace se lee una sola vez —y a veces ni
+ * eso, porque lo que sigue en la narración lo empuja fuera de pantalla— y no
+ * había forma de volver a leerlo, ni el de esta aventura ni el de las
+ * anteriores, que viven en otra campaña del navegador.
+ *
+ * Se leen del log de cada campaña terminada, no de un registro aparte, así
+ * que funciona igual para las partidas jugadas antes de que esto existiera.
+ * El final de la campaña ABIERTA sale del estado en memoria: todavía no
+ * necesariamente está en el índice cuando se abre esta pestaña.
+ */
+function Finales({ api, campaignId, estadoActual }: {
+  api: GameApi | null; campaignId: string | null; estadoActual: any;
+}) {
+  const [finales, setFinales] = useState<any[] | null>(null);
+
+  useEffect(() => {
+    let vivo = true;
+    if (!api) return;
+    api.finalesArchivados()
+      .then((f) => { if (vivo) setFinales(f); })
+      .catch(() => { if (vivo) setFinales([]); });
+    return () => { vivo = false; };
+  }, [api, campaignId, estadoActual?.ending?.title]);
+
+  if (finales === null) return <div className="finales-vacio">Buscando en las partidas de este navegador…</div>;
+
+  // El de la campaña abierta puede no estar todavía en lo que devolvió el
+  // índice: se agrega acá si falta, marcado como el de ahora.
+  const conActual = [...finales];
+  if (estadoActual?.ending && !conActual.some((f) => f.campaignId === campaignId)) {
+    const e = entradaDe(estadoActual.scenarioId);
+    conActual.push({
+      campaignId, scenarioId: estadoActual.scenarioId,
+      aventura: e?.scenario.title ?? estadoActual.title,
+      epoca: e?.epoca ?? '',
+      title: estadoActual.ending.title,
+      text: Array.isArray(estadoActual.ending.text)
+        ? estadoActual.ending.text.join('\n\n') : String(estadoActual.ending.text),
+      cuando: e?.cuando ?? '',
+      actual: true,
+    });
+  }
+  const marcados = conActual.map((f) => ({ ...f, actual: f.campaignId === campaignId }));
+
+  if (marcados.length === 0) {
+    return (
+      <div className="finales-vacio">
+        Todavía no cerraste ninguna aventura. Cuando cierres una, su desenlace queda acá para releerlo.
+      </div>
+    );
+  }
+
+  return (
+    <div className="finales">
+      <div className="finales-intro">
+        {marcados.length === 1 ? 'Un desenlace' : `${marcados.length} desenlaces`} · en orden de cuándo pasaron
+      </div>
+      {marcados.map((f, i) => (
+        <div key={`${f.campaignId}-${i}`} className={`final-item ${f.actual ? 'final-actual' : ''}`}>
+          <div className="final-aventura">{f.aventura}{f.actual && <span className="final-chip">esta partida</span>}</div>
+          {f.epoca && <div className="final-epoca">{f.epoca}</div>}
+          <div className="final-titulo">{f.title}</div>
+          {String(f.text).split('\n\n').filter(Boolean).map((p: string, j: number) => (
+            <p key={j} className="final-parrafo">{p}</p>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
@@ -1039,16 +1188,7 @@ function Desarrollo({
               derecho a la comprobación.
             </div>
           )}
-          {informe.mejoras.map((m: any) => (
-            <div key={m.skill} className={`desarrollo-fila ${m.gain > 0 ? 'sube' : ''}`}>
-              <span className="d-label">{m.label}</span>
-              <span className="d-num">{m.antes}%</span>
-              <span className="d-dado">tirada {m.check}</span>
-              <span className="d-res">
-                {m.gain > 0 ? `+${m.gain} → ${m.despues}%` : 'ya lo sabía demasiado bien'}
-              </span>
-            </div>
-          ))}
+          <MejorasAnimadas mejoras={informe.mejoras} animar={leerPreferenciaDados()} />
           <div className="desarrollo-regla">
             Se mejora sacando POR ENCIMA del valor actual. Cuanto mejor sos en algo, menos te queda por
             aprender de la experiencia.
