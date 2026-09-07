@@ -3519,6 +3519,59 @@ resolverlo como eventos posteriores a `CAMPAIGN_CREATED`, al estilo
 `sembrarHerencia`). Es una feature real, no un bug — se preguntó, se explicó
 el estado actual, y se dejó para cuando el usuario decida si la quiere.
 
+### 3.2-quadragies Nerf de Exposición, aprender hechizos se nota, locura indefinida en español, y el historial se puede achicar ✔ HECHO
+
+Quinta sesión sobre la décima aventura, 2026-09-14.
+
+**1. Nerfeado el extra de Cordura por Exposición alta.** Con Exposición en
+100 (el tope, y no infrecuente ya con esta aventura), cada pérdida de
+Cordura declarada se llevaba **+3** de más — y con la locura indefinida por
+acumulación recién implementada (§3.2-novatrigies), ese +3 constante
+aceleraba el total de la aventura contra un umbral que además es más chico
+cuanto más alta está la Exposición: doble penalización sobre lo mismo.
+Techo bajado a +2 (`SAN_EXTRA_LOSS_BY_EXPOSURE` en `umbral.config.ts`); 55 y
+80 quedan iguales a propósito, así el salto real sigue estando en cruzar 30.
+
+**2. `fin-quedarse` (El Hombre que Miraba el Agua) tenía la pérdida de
+Cordura más grande de la aventura sin ninguna tirada.** A diferencia de
+`el-encuentro` (magnitud atada a una tirada de sigilo ya hecha) o
+`fin-intervenir` (atada a una de APP), acá no había ningún dado de por
+medio: 4 de Cordura, siempre, sin condición. Ahora tira COR real: éxito no
+cuesta nada —"ver pasar el año sin que la cabeza se raye" es lo que
+significa tener éxito en una tirada de Cordura—, fracaso cuesta lo mismo que
+antes, pifia cuesta más.
+
+**3. Aprender un hechizo dejó de ser un párrafo perdido en medio de la
+prosa.** Se agregó: un aviso aparte en la narración ("✦ Aprendiste un
+hechizo nuevo: «Nombre»"), la pestaña HECHIZOS pulsando hasta que se abre, y
+—reportado jugando— la ficha del hechizo ahora muestra "Aprendido de: …": el
+motor pedía ese dato como obligatorio desde el principio (`toolLearnSpell`)
+y no se guardaba en `spellsKnown` ni se mostraba en ningún lado.
+
+**4. La locura indefinida se veía en inglés.** `inv.status.toUpperCase()`
+para cualquier estado que no fuera 'dead' mostraba literalmente "INSANE" —
+el único lugar de toda la interfaz que no estaba en español. Además, la
+pantalla de cierre decía "ha muerto" también para la locura indefinida,
+contradiciendo al propio motor (cuyo mensaje dice "es el mismo cierre que la
+muerte, aunque no lo sea"). Las dos pantallas distinguen ahora entre morir y
+cruzar a locura indefinida.
+
+**5. Un desplazable entre el historial y lo que viene después.** El
+`scrollIntoView` de la sesión anterior lleva la vista al desenlace, pero
+`.narrative` seguía quedándose con todo el espacio que sobraba (`flex:1`) y
+lo de abajo —la tirada, el desenlace— quedaba apretado en el resto.
+Reaprovechando el patrón de arrastre que antes usaba el pie del panel
+derecho (`.resizer-pie`, ya muerto desde que ese pie pasó a pestañas), ahora
+hay una barra arrastrable entre `.narrative` y el resto de `.col-center`:
+el jugador reparte el espacio en el momento, y la elección se recuerda
+entre partidas (`castronegro:alto-narrativa`).
+
+**Quedó afuera:** el resto de las reglas oficiales de aprendizaje de
+hechizos ya estaban cubiertas (p. 174 — tercera vía, enseñado por una
+entidad de los Mitos: el Ahijado; segunda vía, un tomo: los papeles del
+campamento); lo que faltaba era visibilidad, no mecánica, y quedó resuelto
+en el punto 3.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

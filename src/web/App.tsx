@@ -42,27 +42,28 @@ async function elegirApi(): Promise<GameApi> {
 }
 
 /**
- * Alto de «el mundo recuerda» + «usted lo nota» en el panel derecho, como %
- * del alto disponible. Reportado jugando: con muchas pistas acumuladas, el
- * tope fijo (antes 38%) dejaba a veces esas dos secciones apretadas o al
- * tablero de pistas apretado; se vuelve arrastrable para que cada jugador lo
- * deje donde le sirve, y la elección se recuerda entre partidas.
+ * Alto de `.narrative` dentro de `.col-center`, como % del alto disponible.
+ * Reportado jugando: el historial de la conversación previa se quedaba con
+ * casi todo el panel del medio, y lo que aparece DEBAJO —la tirada, el
+ * desenlace— quedaba apretado en el resto, aunque el `scrollIntoView` ya lo
+ * lleve a la vista. Arrastrable para que cada jugador reparta el espacio
+ * como le sirve, y se recuerda entre partidas.
  */
-const CLAVE_ALTO_PIE = 'castronegro:alto-pie';
-const ALTO_PIE_MIN = 10;
-const ALTO_PIE_MAX = 70;
-const ALTO_PIE_DEFECTO = 38;
+const CLAVE_ALTO_NARRATIVA = 'castronegro:alto-narrativa';
+const ALTO_NARRATIVA_MIN = 20;
+const ALTO_NARRATIVA_MAX = 85;
+const ALTO_NARRATIVA_DEFECTO = 55;
 
-function leerPreferenciaAltoPie(): number {
+function leerPreferenciaAltoNarrativa(): number {
   try {
-    const v = Number(localStorage.getItem(CLAVE_ALTO_PIE));
-    if (Number.isFinite(v) && v >= ALTO_PIE_MIN && v <= ALTO_PIE_MAX) return v;
+    const v = Number(localStorage.getItem(CLAVE_ALTO_NARRATIVA));
+    if (Number.isFinite(v) && v >= ALTO_NARRATIVA_MIN && v <= ALTO_NARRATIVA_MAX) return v;
   } catch { /* sin storage, se usa el valor por defecto */ }
-  return ALTO_PIE_DEFECTO;
+  return ALTO_NARRATIVA_DEFECTO;
 }
 
-function guardarPreferenciaAltoPie(pct: number): void {
-  try { localStorage.setItem(CLAVE_ALTO_PIE, String(Math.round(pct))); } catch { /* sin storage, se juega igual */ }
+function guardarPreferenciaAltoNarrativa(pct: number): void {
+  try { localStorage.setItem(CLAVE_ALTO_NARRATIVA, String(Math.round(pct))); } catch { /* sin storage, se juega igual */ }
 }
 
 /**
@@ -174,6 +175,12 @@ export function App() {
   const rollsAntes = useRef(0);
   /** Pistas que había la última vez que se miró el tablero. Para el aviso. */
   const [pistasVistas, setPistasVistas] = useState(0);
+  // Aprender un hechizo se contaba sólo en el párrafo de la escena, mezclado
+  // con el resto del texto — reportado jugando: "aprender hechizos se siente
+  // banal". Esto marca la pestaña HECHIZOS hasta que el jugador la abre, y
+  // agrega una línea aparte, corta y sin mezclar, al hilo de la historia.
+  const [hayHechizoNuevo, setHayHechizoNuevo] = useState(false);
+  const spellsAntes = useRef<number | null>(null);
   const [tab, setTab] = useState<Tab>('tablero');
   const [error, setError] = useState<string | null>(null);
   /** Escenario elegido para crear personaje propio. null = no estamos creando. */
@@ -197,10 +204,10 @@ export function App() {
   const [animarDados, setAnimarDados] = useState(leerPreferenciaDados);
   /** Aviso de meta-horror ya visto y descartado, en este navegador. */
   const [avisoMetahorrorVisto, setAvisoMetahorrorVisto] = useState(leerAvisoMetahorrorVisto);
-  /** Alto de «el mundo recuerda» + «usted lo nota», en % del panel derecho. Arrastrable. */
-  const [altoPie, setAltoPie] = useState(leerPreferenciaAltoPie);
-  const colRightRef = useRef<HTMLDivElement>(null);
-  const arrastrandoPie = useRef(false);
+  /** Alto de `.narrative` dentro de `.col-center`, en %. Arrastrable. */
+  const [altoNarrativa, setAltoNarrativa] = useState(leerPreferenciaAltoNarrativa);
+  const colCenterRef = useRef<HTMLDivElement>(null);
+  const arrastrandoNarrativa = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   // A dónde hay que scrollear cuando aparece el desenlace. Reportado jugando:
   // `.narrative` tiene SU PROPIO scroll interno (autoscrollea a la última
@@ -225,6 +232,25 @@ export function App() {
   useEffect(() => {
     if (state?.ending) endingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [state?.ending?.title]);
+
+  // Al cargar o crear una campaña, lo que ya sabe no es "nuevo": sólo avisa
+  // cuando el número de hechizos SUBE durante la sesión ya abierta.
+  useEffect(() => { spellsAntes.current = null; }, [campaignId]);
+
+  useEffect(() => {
+    const known = state?.investigator?.spellsKnown ?? [];
+    if (spellsAntes.current === null) { spellsAntes.current = known.length; return; }
+    if (known.length > spellsAntes.current) {
+      const nuevo = known[known.length - 1];
+      const def = nuevo && HECHIZO_POR_ID[nuevo.id];
+      setHayHechizoNuevo(true);
+      setLines((l) => [...l, {
+        id: `hechizo-nuevo-${Date.now()}`, kind: 'system',
+        text: def ? `✦ Aprendiste un hechizo nuevo: «${def.nombre}».` : '✦ Aprendiste un hechizo nuevo.',
+      }]);
+    }
+    spellsAntes.current = known.length;
+  }, [state?.investigator?.spellsKnown?.length]);
 
   /**
    * Marca las opciones recién desbloqueadas. Se calcula en el cliente a
@@ -379,23 +405,28 @@ export function App() {
     }
   }
 
-  /** Arrastre del divisor entre el tablero y «el mundo recuerda» / «usted lo nota». */
-  function empezarArrastrePie(e: React.MouseEvent) {
+  /**
+   * Arrastre del divisor entre `.narrative` (el historial) y lo que viene
+   * después en el mismo panel —la tirada del turno, el desenlace—. Mide
+   * desde ARRIBA de `.col-center`, porque lo que se está fijando es cuánto
+   * mide `.narrative`, no cuánto mide el resto.
+   */
+  function empezarArrastreNarrativa(e: React.MouseEvent) {
     e.preventDefault();
-    arrastrandoPie.current = true;
-    const contenedor = colRightRef.current;
+    arrastrandoNarrativa.current = true;
+    const contenedor = colCenterRef.current;
     function mover(ev: MouseEvent) {
-      if (!arrastrandoPie.current || !contenedor) return;
+      if (!arrastrandoNarrativa.current || !contenedor) return;
       const rect = contenedor.getBoundingClientRect();
-      const desdeAbajo = rect.bottom - ev.clientY;
-      const pct = (desdeAbajo / rect.height) * 100;
-      setAltoPie(Math.min(ALTO_PIE_MAX, Math.max(ALTO_PIE_MIN, pct)));
+      const desdeArriba = ev.clientY - rect.top;
+      const pct = (desdeArriba / rect.height) * 100;
+      setAltoNarrativa(Math.min(ALTO_NARRATIVA_MAX, Math.max(ALTO_NARRATIVA_MIN, pct)));
     }
     function soltar() {
-      arrastrandoPie.current = false;
+      arrastrandoNarrativa.current = false;
       window.removeEventListener('mousemove', mover);
       window.removeEventListener('mouseup', soltar);
-      setAltoPie((actual) => { guardarPreferenciaAltoPie(actual); return actual; });
+      setAltoNarrativa((actual) => { guardarPreferenciaAltoNarrativa(actual); return actual; });
     }
     window.addEventListener('mousemove', mover);
     window.addEventListener('mouseup', soltar);
@@ -713,7 +744,7 @@ export function App() {
     <div className="app" data-panel={panel}>
       <aside className="col col-left"><Sheet inv={inv} /></aside>
 
-      <main className="col col-center">
+      <main className="col col-center" ref={colCenterRef}>
         <header className="scene-head">
           <div className="scene-name">{state?.location?.name}</div>
           <div className="scene-time">{state?.worldTime?.display}</div>
@@ -730,7 +761,7 @@ export function App() {
           )}
         </header>
 
-        <div className="narrative" ref={scrollRef}>
+        <div className="narrative" ref={scrollRef} style={{ flex: `0 0 ${altoNarrativa}%` }}>
           {lines.map((l) => (
             <div key={l.id} className={`line line-${l.kind}`}>
               {l.kind === 'player' && <span className="line-mark">▸ </span>}
@@ -740,6 +771,18 @@ export function App() {
           {streaming && <div className="line line-keeper line-streaming">{streaming}</div>}
           {busy && !streaming && <div className="thinking">El Keeper está resolviendo…</div>}
         </div>
+
+        {/* Pedido jugando: un desplazable entre el historial y lo que viene
+            después (la tirada, el desenlace), para regular en el momento
+            cuánto espacio se lleva cada uno — sin esto, `.narrative` con
+            `flex:1` se quedaba con todo lo que sobraba y lo de abajo quedaba
+            apretado en el resto, aunque `scrollIntoView` ya lo lleve a la
+            vista. */}
+        <div
+          className="resizer-narrativa"
+          onMouseDown={empezarArrastreNarrativa}
+          title="Arrastrar para cambiar cuánto espacio ocupa el historial"
+        />
 
         {state?.npcs && <Rivales npcs={state.npcs} />}
 
@@ -780,11 +823,29 @@ export function App() {
           </div>
         ) : dead ? (
           <div className="death">
-            <div className="death-title">{inv.name} ha muerto.</div>
-            <p>
-              La muerte es permanente. El mundo conserva todas las consecuencias, pistas y relaciones
-              que dejó. Podés continuar con otro investigador.
-            </p>
+            {/* Reportado jugando: esto decía "ha muerto" también para la
+                locura indefinida, contradiciendo al propio motor —cuyo
+                mensaje dice explícitamente "es el mismo cierre que la
+                muerte, AUNQUE NO LO SEA"—. Un investigador loco no está
+                muerto: está fuera de juego. */}
+            {inv.status === 'insane' ? (
+              <>
+                <div className="death-title">{inv.name} cruzó a locura indefinida.</div>
+                <p>
+                  No murió: quedó fuera de juego como personaje jugable, con la misma definición que la
+                  muerte pero sin serlo. El mundo conserva todas las consecuencias, pistas y relaciones
+                  que dejó. Podés continuar con otro investigador.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="death-title">{inv.name} ha muerto.</div>
+                <p>
+                  La muerte es permanente. El mundo conserva todas las consecuencias, pistas y relaciones
+                  que dejó. Podés continuar con otro investigador.
+                </p>
+              </>
+            )}
             {state.reserveAvailable.map((r: any) => (
               <button key={r.id} className="primary" onClick={() => continueWith(r.id)}>
                 Continuar como {r.name}, {r.occupation.toLowerCase()}
@@ -824,7 +885,7 @@ export function App() {
         )}
       </main>
 
-      <aside className="col col-right" ref={colRightRef}>
+      <aside className="col col-right">
         <div className="tabs">
           {(
             [
@@ -834,7 +895,13 @@ export function App() {
               ...(state?.investigator?.spellsKnown?.length ? ['hechizos'] : []),
             ] as Tab[]
           ).map((t) => (
-            <button key={t} className={`tab ${tab === t ? 'tab-on' : ''}`} onClick={() => setTab(t)}>{t}</button>
+            <button
+              key={t}
+              className={`tab ${tab === t ? 'tab-on' : ''} ${t === 'hechizos' && hayHechizoNuevo ? 'tab-nuevo' : ''}`}
+              onClick={() => { setTab(t); if (t === 'hechizos') setHayHechizoNuevo(false); }}
+            >
+              {t}
+            </button>
           ))}
         </div>
         {/* Segunda fila: lo que se consulta de vez en cuando, no en cada
@@ -860,7 +927,7 @@ export function App() {
           {tab === 'documentos' && <Documents docs={state?.documents ?? []} />}
           {tab === 'hechizos' && (
             <div className="hechizos">
-              {(state?.investigator?.spellsKnown ?? []).map((h: { id: string; proven: boolean; lastAttemptAt?: string }) => {
+              {(state?.investigator?.spellsKnown ?? []).map((h: { id: string; proven: boolean; lastAttemptAt?: string; source?: string }) => {
                 const def = HECHIZO_POR_ID[h.id];
                 if (!def) return null;
                 const pm = state?.investigator?.derived?.mp ?? 0;
@@ -874,6 +941,10 @@ export function App() {
                       {def.nombre}
                       {!h.proven && <span className="hechizo-sin-probar">sin probar — pide Poder difícil</span>}
                     </div>
+                    {/* De dónde salió. El motor lo pedía como obligatorio desde
+                        el principio y no se mostraba en ningún lado —
+                        reportado jugando: "no dice de qué libro sale". */}
+                    {h.source && <p className="hechizo-fuente">Aprendido de: {h.source}</p>}
                     <p className="hechizo-desc">{def.descripcion}</p>
                     <div className="hechizo-costo">
                       {def.costoPM} PM{def.costoCordura ? ` · ${def.costoCordura} de Cordura` : ''}

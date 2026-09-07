@@ -365,7 +365,16 @@ export interface Investigator {
    * propósito: una campaña guardada antes de que existiera no lo tiene, y
    * ausente significa «nunca lo intentó», que es la lectura correcta.
    */
-  spellsKnown: Array<{ id: string; proven: boolean; lastAttemptAt?: string }>;
+  /**
+   * `source` es de dónde lo aprendió, en prosa —"el Ahijado, en el
+   * laboratorio", "las hojas de instrucción del baúl"—. Se guardaba en el
+   * evento `SPELL_LEARNED` desde el principio y no se persistía en la ficha:
+   * `toolLearnSpell` lo pedía como obligatorio, la escena siempre lo
+   * mandaba, y se tiraba igual. Reportado jugando: "Contar lo que no se
+   * puede anotar" no decía de qué libro salía. Opcional para no romper una
+   * campaña vieja que ya tiene el hechizo sin este dato.
+   */
+  spellsKnown: Array<{ id: string; proven: boolean; lastAttemptAt?: string; source?: string }>;
 
   /**
    * LOCURA INDEFINIDA POR ACUMULACIÓN (p. 156, además de la de "5 o más de

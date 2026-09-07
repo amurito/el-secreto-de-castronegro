@@ -243,10 +243,17 @@ export const STABILITY_AFFECTED_SKILLS = [
  * Con exposición alta, un fallo de SAN duele más: el horror tiene dónde agarrarse.
  * NO es conversión: la exposición no consume SAN por sí sola.
  */
+// Reportado jugando: con Exposición en 100 (el tope), el extra llegaba a +3
+// sobre CADA pérdida de Cordura declarada — con la locura indefinida por
+// acumulación ya implementada (p. 156, §3.2-novatrigies), ese +3 constante
+// aceleraba el total de la aventura contra un umbral que además es más bajo
+// cuanto más alta esté la Exposición: doble penalización sobre lo mismo. El
+// techo baja a +2; 55 y 80 quedan iguales a propósito, así el salto real
+// sigue estando en cruzar 30, no en seguir subiendo después.
 export const SAN_EXTRA_LOSS_BY_EXPOSURE = [
   { aboveExposure: 30, extraSanLoss: 1 },
   { aboveExposure: 55, extraSanLoss: 2 },
-  { aboveExposure: 80, extraSanLoss: 3 },
+  { aboveExposure: 80, extraSanLoss: 2 },
 ];
 
 /** Permeabilidad del mundo: cuánto sube al ocurrir una manifestación. */

@@ -132,7 +132,7 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       const inv = cloneInvestigator(s, p.investigatorId);
       if (!inv) break;
       if (inv.spellsKnown.some((h) => h.id === p.spellId)) break;
-      inv.spellsKnown = [...inv.spellsKnown, { id: p.spellId, proven: false }];
+      inv.spellsKnown = [...inv.spellsKnown, { id: p.spellId, proven: false, source: p.source }];
       break;
     }
 

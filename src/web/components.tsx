@@ -8,6 +8,15 @@ import type { SuccessDegree, Difficulty } from '../shared/types.ts';
 // FICHA
 // ─────────────────────────────────────────────────────────────────────────────
 
+/** `Investigator['status']` distinto de 'alive', en español. */
+const ETIQUETA_STATUS: Record<string, string> = {
+  dead: 'MUERTO',
+  insane: 'LOCURA INDEFINIDA',
+  missing: 'DESAPARECIDO',
+  retired: 'RETIRADO',
+  unconscious: 'INCONSCIENTE',
+};
+
 const UMBRAL_LABEL: Record<string, string> = {
   FIRST_CONTACT: 'PRIMER CONTACTO',
   RECIPROCITY: 'RECIPROCIDAD',
@@ -25,7 +34,12 @@ export function Sheet({ inv }: { inv: any }) {
       <div className="sheet-id">
         <div className="sheet-name">{inv.name}</div>
         <div className="sheet-sub">{inv.age} años · {inv.occupation}</div>
-        {inv.status !== 'alive' && <div className="dead-badge">{inv.status === 'dead' ? 'MUERTO' : inv.status.toUpperCase()}</div>}
+        {/* Reportado jugando: para `status: 'insane'` esto mostraba el nombre
+            del status en inglés tal cual («INSANE»), único lugar de toda la
+            interfaz que no estaba en español. */}
+        {inv.status !== 'alive' && (
+          <div className="dead-badge">{ETIQUETA_STATUS[inv.status] ?? inv.status.toUpperCase()}</div>
+        )}
       </div>
 
       <div className="stat-grid">

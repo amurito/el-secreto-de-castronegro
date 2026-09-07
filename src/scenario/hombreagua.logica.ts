@@ -630,15 +630,32 @@ export const EL_HOMBRE_QUE_MIRABA_EL_AGUA_LOGICA: LogicaDeEscenas = [
     }),
   },
   {
+    // Reportado jugando: era la pérdida de Cordura más grande de toda la
+    // aventura y la única sin ninguna tirada de por medio, ni propia ni
+    // prestada de otra habilidad — a diferencia de `el-encuentro` (sigilo) o
+    // `fin-intervenir` (APP), acá no hay ningún dado ya tirado del que
+    // colgar el monto. Tirada de COR real: éxito no cuesta nada —ver pasar
+    // el año sin que la cabeza se raye es exactamente lo que dice "éxito" en
+    // una tirada de Cordura—, fracaso cuesta lo que costaba antes, pifia
+    // cuesta más.
     id: 'fin-quedarse',
-    resolver: () => ({
+    prueba: () => ({
+      skill: 'COR', difficulty: 'regular',
+      reason: 'ver pasar un año entero, del otro lado, sin que la cabeza se raye de golpe',
+      stakes_success: 'lo ves entero y seguís entero',
+      stakes_failure: 'lo ves entero y te cuesta',
+    }),
+    resolver: ({ tirada }) => ({
       texto: [
         'Te quedás. La tarde no se termina: se estira, y en algún punto deja de ser la misma tarde sin que puedas señalar dónde.',
         'Ves el invierno. Ves las carretas del socio yéndose y volviendo con más gente. Ves el rectángulo de estacas del alto convertirse en un rectángulo de zanjas, y después en una plaza. Ves a Bernardo dictarle a alguien un libro con nueve apellidos en la primera hoja, y ves que la mano que escribe no es la suya.',
         'Y en algún momento de todo eso, sin ceremonia, el hombre le pone nombre al lugar: le dice el nombre de lo que ve todos los días desde la loma. Agua Blanca. Por la sal del borde. Por nada más que la sal del borde.',
       ],
       mitos: { amount: 1, source: 'ver la fundación entera de 1680 desde adentro' },
-      cordura: { amount: 4, cause: 'ver un año entero pasar sin poder salirte' },
+      cordura: {
+        amount: tirada?.grado === 'fumble' ? 8 : (tirada?.exito ? 0 : 4),
+        cause: 'ver un año entero pasar sin poder salirte',
+      },
       exposicion: { amount: 12, source: 'hombreagua:fundacion', cause: 'quedarse del otro lado más tiempo del que nadie debería' },
       consecuencia: {
         description: 'El investigador se quedó en la visión hasta la fundación de 1680, y vio a Bernardo Díaz ponerle Agua Blanca al lugar por la sal del borde de la laguna.',
