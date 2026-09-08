@@ -135,6 +135,25 @@ export const ARMAS: Arma[] = [
     nota: 'A dos manos. Pesada, lenta y terminante.',
   },
 
+  // ── Fuera de catálogo: objeto de una aventura concreta ────────────────────
+  // Único caso del catálogo con `habilidad` distinta de 'pelea'/'armas_fuego':
+  // el motor no sabe nada de esto —`toolResolveAttack` sólo lee
+  // `arma.habilidad` para decidir con qué tirar (engine.ts)—, así que un
+  // arma que se usa con otra habilidad es, mecánicamente, gratis: no hizo
+  // falta tocar el motor ni la pantalla de combate para que exista una
+  // segunda vía de vencer a un rival con Ocultismo en vez de Pelea. Ver "El
+  // Vigésimo" (elvigesimo.contenido.json, it-punzon-circulo) y ROADMAP
+  // §3.2-duoquadragies para el porqué.
+  {
+    id: 'punzon-circulo', nombre: 'El punzón del Círculo', habilidad: 'ocultismo',
+    dano: { cantidad: 1, caras: 4, suma: 0 },
+    aporteBonificacion: 'completa', empala: true, alcance: 0,
+    nota:
+      'Del grupo que recuperó conocimiento del anillo entre 1650 y 1675, antes de Bernardo — el mismo ' +
+      'gesto de grabar un límite, no pintarlo (ver "El Hombre que Miraba el Agua"). No corta por la fuerza ' +
+      'del brazo: corta porque sabe dónde grabar. Usarlo bien es saber, no pegar.',
+  },
+
   // ── Armas de fuego de mano, época ─────────────────────────────────────────
   // La bonificación de daño NO se aplica a armas de fuego (Tabla 1, nota).
   {

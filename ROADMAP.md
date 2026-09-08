@@ -3597,6 +3597,51 @@ pantalla, por encima de los tres paneles, que se borra solo a los 5
 segundos — la señal que pedía el jugador desde el principio ("un popup").
 Las otras dos señales quedan como refuerzo.
 
+### 3.2-duoquadragies El punzón del Círculo — segunda vía contra Bernardo, sin depender de Pelea ✔ HECHO
+
+La pieza de diseño más grande que quedaba pendiente del carril de contenido:
+hoy `cortar`/`heredar` el anillo de Bernardo en "El Vigésimo" dependía de
+ganarle una pelea real, y un investigador no combativo (Elena, médica rural,
+Pelea 25% de fábrica) casi no tenía chance. El canon (v0.7 §5.3) además
+prohíbe sacarle el anillo sin pelea —eso lo mata igual—, así que la salida
+tenía que seguir siendo una confrontación real, sólo que ganable por otro
+camino.
+
+**El hallazgo que redujo esto a casi puro contenido:** Bernardo ya tenía un
+mecanismo de invulnerabilidad genérico del motor (`Npc.combate.invulnerabilidad`,
+no específico de él) con un punto débil —"la mano del anillo"— que requiere
+arma cortante. Y cada arma **ya declara con qué habilidad se ataca**
+(`Arma.habilidad`, `rules/armas.ts`), leído directo por `toolResolveAttack`
+(`skill: arma.habilidad`). No hizo falta tocar el motor ni la pantalla de
+combate: un arma nueva con `habilidad: 'ocultismo'` en vez de `'pelea'` ya
+aparece sola como opción en el combate (`armasDisponibles`,
+`api.local.ts`) y ya tira Ocultismo contra el punto débil.
+
+**Lo que se agregó, todo contenido:**
+- `punzon-circulo` en `rules/armas.ts` — el arma en sí, `habilidad: 'ocultismo'`.
+- `it-punzon-circulo` en `elvigesimo.contenido.json`, escondido (no en
+  ningún `itemsPresent`) detrás de una cadena de DOS tiradas difíciles:
+  `buscar-libro-ajeno` en la biblioteca (`buscar_libros`, difícil — un
+  cuaderno del grupo de 1650-1675 que Bernardo guardó, con la línea "si hace
+  falta pararlo a él…") y `buscar-trastero` en el trastero del sótano
+  (`ocultismo`, difícil — el objeto en sí, entregado con `traslada`). Fallar
+  cualquiera de las dos NO deja sin rastro: decide profundidad, no acceso —
+  mismo criterio que `mirar-circulos` en `hombreagua.logica.ts`.
+- Sumado a los ocho "hechos" que ya daban dados de preparación para toda la
+  pelea contra Bernardo (`bernardo-enfrentar`).
+
+**Lo que NO cambió:** los cuatro desenlaces, cómo se descubre y degrada el
+punto débil, la pantalla de combate. Un investigador de Pelea alta sigue
+pudiendo ganar a mano limpia exactamente como antes — es una vía alternativa,
+no obligatoria.
+
+Verificado con un caso nuevo en `prueba-el-vigesimo.ts`: un investigador con
+Ocultismo 70% y la Pelea de fábrica de Elena (25%, con la que moriría en tres
+asaltos yendo a los golpes) le gana a Bernardo por el punto débil con el
+punzón — y se confirma que la tirada de ataque es "Ocultismo", no "Pelea",
+distinguiéndola de las tiradas que el motor fuerza para el resto de los
+presentes en el mismo asalto (Ahijado, Bernardo defendiéndose).
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

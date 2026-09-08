@@ -60,6 +60,46 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     },
   },
 
+  {
+    // SEGUNDA VÍA para el combate final, sin tocar Pelea: el arma que se
+    // consigue acá se ataca con Ocultismo (`rules/armas.ts`,
+    // `punzon-circulo`), no con Pelea — un investigador flojo en combate
+    // pero fuerte en Ocultismo puede ganarle a Bernardo por el punto débil
+    // sin depender de su Pelea. Opcional a propósito: quien ya pelea bien
+    // sigue pudiendo ganar a mano limpia, exactamente como hasta ahora.
+    //
+    // La biblioteca tiene «tres idiomas que reconocés y dos que no»
+    // (`locations.biblioteca.description`, ya publicado) — entre esos dos
+    // hay algo que no es de Bernardo. Difícil de verdad, y fallar NO deja
+    // sin rastro: decide profundidad, no acceso (mismo criterio que
+    // `mirar-circulos` en hombreagua.logica.ts).
+    id: 'buscar-libro-ajeno',
+    prueba: () => ({
+      skill: 'buscar_libros', difficulty: 'hard',
+      reason: 'encontrar, entre tres idiomas propios y dos ajenos, una letra que no es la suya',
+      stakes_success: 'sabés exactamente qué buscar y dónde',
+      stakes_failure: 'sabés que hay algo, nada más',
+    }),
+    resolver: ({ tirada }) => ({
+      texto: [
+        'No todo acá lo escribió Bernardo. Entre los lomos hay un cuaderno más chico, sin título, con una letra que no es la suya —más vieja, más apretada— y una fecha que no llega a 1680.',
+        tirada?.exito
+          ? 'Es un inventario, copiado de otro: componentes recuperados, y al final una línea aparte, distinta de las demás: «si hace falta pararlo a él, que sea con lo que se hizo con la mano y no con lo que se hizo con la piel». Debajo, un dibujo chico: un punzón, con un círculo grabado en la base. Al margen, mucho después, con la letra de Bernardo: «lo guardé donde nadie baja a buscar nada».'
+          : 'Es viejo, y no es de Bernardo, y habla de «pararlo a él» sin decir con qué. No llegás a leer más antes de que la letra se te mezcle con las otras dos que no entendés.',
+      ],
+      cordura: { amount: 1, cause: 'leer algo que un grupo entero escribió pensando en el día que hiciera falta pararlo a Bernardo' },
+      exposicion: { amount: 4, source: 'biblioteca:libro-ajeno', cause: 'encontrar, en la propia casa de Bernardo, algo escrito para pararlo a él' },
+      pistas: [{
+        description: tirada?.exito
+          ? 'Un cuaderno ajeno en la biblioteca de Bernardo, de antes de 1680: un inventario de lo recuperado por el grupo que le enseñó, con una línea sobre «pararlo a él» y el dibujo de un punzón con un círculo grabado. Una nota de Bernardo dice que lo guardó «donde nadie baja a buscar nada» — el trastero del sótano.'
+          : 'Hay un cuaderno ajeno en la biblioteca de Bernardo, de antes de 1680, que habla de «pararlo a él» sin decir con qué ni dónde.',
+        kind: 'documentary',
+        source: 'la biblioteca de la Casa de Díaz',
+        reliability: tirada?.exito ? 'reliable' : 'unknown',
+      }],
+    }),
+  },
+
   // ══ EL DORMITORIO DE BERNARDO ═════════════════════════════════════════════
 
   {
@@ -233,6 +273,50 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
     },
   },
 
+  {
+    // Segunda mitad de la pista de la biblioteca: acá está lo que Bernardo
+    // «guardó donde nadie baja a buscar nada». Gateado por la pista de la
+    // biblioteca Y por el guardián fuera del medio (mismo `npcFuera` que ya
+    // usa `examinar-cadaver-guardian` — ver la acción en el JSON), así que
+    // no compite con esa escena por el mismo turno.
+    id: 'buscar-trastero',
+    prueba: () => ({
+      skill: 'ocultismo', difficulty: 'hard',
+      reason: 'reconocer, entre cajones viejos, cuál es el que no es de la casa',
+      stakes_success: 'lo encontrás entero y sabés qué es',
+      stakes_failure: 'revolvés todo y no encontrás nada',
+    }),
+    resolver: ({ tirada, estado }) => {
+      if (!tirada?.exito) {
+        return {
+          texto: [
+            'Cajones apilados, la mayoría con loza rota y ropa que nadie va a volver a usar. Ninguno tiene nada que valga la pena cargar.',
+            'Si Bernardo escondió algo acá, no lo encontrás esta vez.',
+          ],
+        };
+      }
+      return {
+        texto: [
+          'Un cajón, más al fondo que el resto, tiene un candado nuevo sobre madera vieja —lo cambió hace poco, y no hizo falta forzarlo: la madera de alrededor cede sola.',
+          'Adentro, envuelto en un trapo que no se deshizo en doscientos cincuenta años, hay un punzón corto. Mango de cuero curtido, punta gastada de un uso que no fue para escribir. En la base, grabado, un círculo chico.',
+          'No pesa como un arma. Pesa como algo que alguien guardó, no como algo que alguien usa.',
+        ],
+        traslada: {
+          itemId: 'it-punzon-circulo', a: estado.activeInvestigator, carried: true,
+          cause: 'lo encuentra en un cajón escondido del trastero',
+        },
+        cordura: { amount: 1, cause: 'sostener algo que un grupo entero pensó, doscientos cincuenta años antes, que iba a hacer falta usar contra Bernardo' },
+        exposicion: { amount: 5, source: 'sotano:punzon', cause: 'tener en la mano lo que estaba pensado para pararlo a él' },
+        pistas: [{
+          description: 'El punzón del Círculo estaba escondido en un cajón con candado nuevo, en el trastero del sótano de la Casa de Díaz — Bernardo lo guardó él mismo, doscientos cincuenta años después de que se lo dejaran.',
+          kind: 'physical',
+          source: 'el trastero del sótano de la Casa de Díaz',
+          reliability: 'reliable',
+        }],
+      };
+    },
+  },
+
   // ══ EL MAUSOLEO ═══════════════════════════════════════════════════════════
   // Contenido secundario, explorable en cualquier momento: nunca es de ida,
   // a diferencia del sótano. Adapta la IDEA del mausoleo de la aventura
@@ -345,6 +429,7 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
         pista('no sabe si el ciclo de nacimientos'),
         pista('custodiaba la puerta del sótano'),
         pista('el bronce rayado desde adentro'),
+        pista('El punzón del Círculo estaba escondido'),
       ].filter(Boolean).length;
 
       const dice = hechos >= PREPARACION_BERNARDO.dosDados ? 2 : hechos >= PREPARACION_BERNARDO.unDado ? 1 : 0;

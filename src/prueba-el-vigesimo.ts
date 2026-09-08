@@ -62,6 +62,24 @@ const PELEADOR: Investigator = {
   derived: { ...ELENA.derived, hp: 60, maxHp: 60 },
 };
 
+/**
+ * Un investigador ocultista y flojo en Pelea, para probar la SEGUNDA vía
+ * contra Bernardo: ganarle por el punto débil con el punzón del Círculo
+ * (Ocultismo), sin depender de Pelea. Pelea se deja como la de fábrica de
+ * Elena (25%) a propósito — si el punzón no funcionara, esta pelea sería
+ * imposible de ganar con ella.
+ */
+const OCULTISTA: Investigator = {
+  ...ELENA,
+  skills: { ...ELENA.skills, ocultismo: { base: 70, origin: 'occupation' } },
+  // Los PV suben por la misma razón que en PELEADOR más arriba: para probar
+  // qué pasa DESPUÉS del primer intercambio hace falta sobrevivir más de un
+  // par de asaltos. Lo que se prueba acá es que Ocultismo alto compensa
+  // Pelea floja (25%, sin tocar) al ir por el punto débil — no cuánto
+  // aguanta Elena de fábrica a los golpes de Bernardo, que es otra pregunta.
+  derived: { ...ELENA.derived, hp: 60, maxHp: 60 },
+};
+
 async function jugarEn(esc: typeof AGUA_BLANCA, titulo: string, semilla: string, guion: string[], herencia?: { estadoAnterior: GameState; mesesTranscurridos: number }, propio?: Investigator) {
   const id = await createCampaign(esc, titulo, semilla.repeat(64).slice(0, 64), herencia, propio);
   for (const intencion of guion) {
@@ -270,6 +288,68 @@ async function main() {
     check('yendo por la mano, con filo, Bernardo cae',
       (fin.npcs['npc-bernardo']?.combate?.hp ?? 1) <= 0,
       `hp ${fin.npcs['npc-bernardo']?.combate?.hp} · mano ${fin.npcs['npc-bernardo']?.combate?.invulnerabilidad?.hpPuntoDebil}`);
+  }
+
+  console.log('\nSEGUNDA VÍA: EL PUNZÓN DEL CÍRCULO GANA POR OCULTISMO, NO POR PELEA');
+  {
+    // El punzón se consigue en la biblioteca + el trastero (auditado aparte
+    // en prueba:auditoria); acá se prueba lo que importa de verdad: que
+    // atacar CON ÉL tira Ocultismo —no Pelea— y que eso alcanza para tumbar
+    // a Bernardo con un investigador que en Pelea es tan flojo como Elena
+    // de fábrica (25%, moriría en tres asaltos yendo a los golpes).
+    const { id } = await jugarEn(EL_VIGESIMO, '7b OCULTISTA', 'p',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 }, OCULTISTA);
+
+    // El punzón, directo al inventario: la cadena de pistas que lo entrega
+    // (biblioteca → trastero) ya la cubre prueba:auditoria por su cuenta;
+    // acá lo que se prueba es el combate, no cómo se llega al objeto.
+    {
+      const t = await Turn.open(id);
+      t.executeTool('transfer_item', {
+        item_id: 'it-punzon-circulo', to: t.investigator.id, carried: 'true', cause: 'prueba',
+      });
+      await t.commit();
+    }
+
+    // Primero hay que descubrirle el punto débil peleando (mismo requisito
+    // que con cualquier arma — ver la ✓ más arriba, "el motor rechaza ir
+    // por la mano" sin haberla visto cerrarse antes no aplica acá porque el
+    // punzón sí corta, pero el punto débil igual hay que conocerlo).
+    {
+      const t = await Turn.open(id);
+      const antes = t.state.rolls.length;
+      t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'punzon-circulo' });
+      await t.commit();
+      // Con el Ahijado también presente en el combate, este turno puede
+      // traer más de una tirada nueva —la del investigador atacando, y las
+      // que fuerce el motor para el resto de los presentes—. La del
+      // investigador se distingue porque `toolRequestRoll` (el jugador
+      // pidiendo su propia tirada) NO antepone el nombre del actor al
+      // rótulo, a diferencia de `tiradaInterna` (lo que tira el motor por
+      // su cuenta, "Ahijado: Pelea", "Bernardo: Pelea") — ver `engine.ts`.
+      const s = (await Turn.open(id)).state;
+      const nuevas = s.rolls.slice(antes);
+      const tiradaAtaque = nuevas.find((r) => r.commitment.skillLabel === 'Ocultismo');
+      check('el ataque con el punzón tira OCULTISMO, no Pelea',
+        !!tiradaAtaque, nuevas.map((r) => r.commitment.skillLabel).join(', '));
+    }
+
+    // Yendo por la mano con el punzón, hasta que caiga o hasta agotar el
+    // margen de asaltos (Bernardo pega fuerte: puede que Elena no sobreviva
+    // en alguna semilla, y esta prueba no fuerza una semilla en particular).
+    for (let n = 0; n < 40; n++) {
+      const t = await Turn.open(id);
+      const b = t.state.npcs['npc-bernardo'];
+      const inv = t.investigator;
+      if ((b?.combate?.hp ?? 0) <= 0 || inv.status !== 'alive' || t.state.ending) break;
+      t.executeTool('resolve_attack', { npc_id: 'npc-bernardo', weapon_id: 'punzon-circulo', punto_debil: 'true' });
+      await t.commit();
+    }
+    const fin2 = (await Turn.open(id)).state;
+    check('con Pelea floja pero el punzón, Bernardo puede caer igual (segunda vía real)',
+      (fin2.npcs['npc-bernardo']?.combate?.hp ?? 1) <= 0,
+      `hp ${fin2.npcs['npc-bernardo']?.combate?.hp} · investigador ${fin2.investigators[fin2.activeInvestigator]?.status}`);
   }
 
   console.log('\nCON BERNARDO VENCIDO SE ABREN CORTAR Y HEREDAR');
