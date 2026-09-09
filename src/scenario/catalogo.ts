@@ -10,9 +10,11 @@
  * diegética; el catálogo se ordena por ella. Una aventura escrita después puede
  * transcurrir antes y encajar en su lugar sin renumerar nada.
  *
- * `requiere` deja declarar que una aventura da por vistas las cosas de otra.
- * Todavía no lo usa nadie —con una sola aventura no hay qué encadenar— pero
- * está acá para que la segunda no obligue a inventar el mecanismo con apuro.
+ * `requiere` deja declarar que una aventura da por vistas las cosas de otra
+ * puntual — es sólo texto informativo en la tarjeta, nunca bloquea nada.
+ * `desbloqueaCon` es distinto: bloquea de verdad en la interfaz hasta que
+ * haya AL MENOS UN final archivado de cualquier otra aventura (ver su doc
+ * en `EntradaCatalogo` más abajo).
  */
 
 import type { Scenario } from './types.ts';
@@ -49,6 +51,21 @@ export interface EntradaCatalogo {
    * no decir nada.
    */
   continuacion?: true;
+  /**
+   * Se recomienda —y por defecto se BLOQUEA en la interfaz, con un escape a
+   * mano— hasta que el navegador tenga archivado al menos un final de
+   * cualquier otra aventura del catálogo.
+   *
+   * Sólo lo usa El Círculo Rojo. No es lo mismo que `requiere`: `requiere`
+   * apunta a aventuras puntuales y es sólo texto informativo; esto es un
+   * bloqueo real (`App.tsx`, pantalla de inicio) y no señala una aventura
+   * concreta sino «cualquiera de las diez». Motivo, jugándola en 2026-09-09:
+   * escrita para leerse DESPUÉS —el jugadorNota que conecta el obelisco con
+   * Bernardo y con 1928 cae plano si todavía no se conoce a ninguno de los
+   * dos— pero por fecha diegética aparecía primera en la lista, así que
+   * quien entraba a jugar por primera vez la tenía como opción más visible.
+   */
+  desbloqueaCon?: 'algun-final-archivado';
 }
 
 const ENTRADAS: EntradaCatalogo[] = [
@@ -66,7 +83,9 @@ const ENTRADAS: EntradaCatalogo[] = [
     // Sin `requiere` y sin `continuacion`: no depende de nada y no encadena
     // investigador con nadie —su elenco es de doscientos cincuenta años antes
     // que Elena—. Los cabos con las otras diez los ata el jugador leyendo
-    // (`jugadorNota`), no el motor.
+    // (`jugadorNota`), no el motor. Sí lleva `desbloqueaCon`: aparece primera
+    // por fecha, pero se juega mejor sabiendo ya quién es Bernardo.
+    desbloqueaCon: 'algun-final-archivado',
   },
   {
     scenario: AGUA_QUIETA,

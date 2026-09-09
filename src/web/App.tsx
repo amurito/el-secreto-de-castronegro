@@ -230,6 +230,27 @@ export function App() {
     });
   }, []);
 
+  // Qué aventuras con `desbloqueaCon: 'algun-final-archivado'` siguen
+  // bloqueadas: null mientras no se sabe (todavía no hay finales cargados,
+  // se trata como bloqueada para no mostrar de entrada la más spoileable),
+  // y el set de ids que el jugador desbloqueó a mano esta sesión —no
+  // persiste: es un escape para quien de verdad quiere jugarla ya, no una
+  // preferencia que haya que recordar entre visitas.
+  const [hayFinalPrevio, setHayFinalPrevio] = useState<boolean | null>(null);
+  const [forzadas, setForzadas] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!api) return;
+    let vivo = true;
+    api.finalesArchivados()
+      .then((f) => { if (vivo) setHayFinalPrevio(f.length > 0); })
+      .catch(() => { if (vivo) setHayFinalPrevio(false); });
+    return () => { vivo = false; };
+    // Se re-chequea al volver a la pantalla de inicio (campaignId → null):
+    // así, terminar la primera aventura desbloquea las que dependían de
+    // «alguna» sin necesitar recargar la página.
+  }, [api, campaignId]);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [lines, streaming]);
@@ -620,7 +641,10 @@ export function App() {
           {/* Una tarjeta por aventura, en el orden cronológico del universo y
               no en el orden en que se escribieron. Agregar una aventura al
               catálogo la hace aparecer acá sin tocar la interfaz. */}
-          {CATALOGO.map((e) => (
+          {CATALOGO.map((e) => {
+            const bloqueada = e.desbloqueaCon === 'algun-final-archivado'
+              && hayFinalPrevio !== true && !forzadas.has(e.scenario.id);
+            return (
             <div className="scenario-card" key={e.scenario.id}>
               <h2>{e.scenario.title}</h2>
               <p>{e.scenario.surfacePremise}</p>
@@ -637,6 +661,21 @@ export function App() {
                       {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.</>}
                 </div>
               ) : null}
+              {bloqueada ? (
+                <div className="scenario-bloqueada">
+                  Está escrita para leerse después de conocer al menos una de
+                  las otras diez — se lee distinto sabiendo ya quién es
+                  Bernardo. Por eso queda a un lado hasta que termines alguna.
+                  {' '}
+                  <button
+                    type="button"
+                    className="scenario-forzar"
+                    onClick={() => setForzadas((s) => new Set(s).add(e.scenario.id))}
+                  >
+                    Jugarla igual
+                  </button>
+                </div>
+              ) : (
               <div className="scenario-botones">
                 {/* El nombre sale del elenco de LA AVENTURA, no escrito a
                     mano: hasta la décima todas empezaban con Elena y decirlo
@@ -660,6 +699,7 @@ export function App() {
                   </button>
                 )}
               </div>
+              )}
 
               {cargandoEn === e.scenario.id && (
                 <div className="sim-plantillas">
@@ -689,7 +729,8 @@ export function App() {
                 </div>
               )}
             </div>
-          ))}
+            );
+          })}
 
           {/* El banco de pruebas. Va DESPUÉS de las aventuras y con otro
               aspecto a propósito: no es una historia, y ponerlo entre ellas
