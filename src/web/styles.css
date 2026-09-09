@@ -89,6 +89,40 @@ button { font-family: inherit; cursor: pointer; }
 .saves { margin-top: 2.5rem; }
 .saves h3 { font-weight: 400; font-size: 1rem; color: var(--text-dim); margin: 0 0 0.3rem; }
 .saves-note { font-size: 0.8rem; color: var(--text-faint); margin: 0 0 1rem; }
+.saves-vacio { font-size: 0.85rem; color: var(--text-faint); font-style: italic; padding: 0.4rem 0; }
+
+/* ── MENÚ DE INICIO ───────────────────────────────────────────────────────
+   Pedido del usuario: cuatro puertas, no una página larga. Cada botón lleva
+   a su propia pantalla («‹ Volver» las cierra todas de la misma forma). */
+.menu-inicio {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.4rem;
+}
+.menu-opcion {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem;
+  background: var(--bg-panel); border: 1px solid var(--line); border-radius: 4px;
+  padding: 1.1rem 1.2rem; text-align: left; transition: border-color 0.15s;
+}
+.menu-opcion:hover:not(:disabled) { border-color: var(--accent-dim); }
+.menu-opcion:disabled { opacity: 0.4; cursor: default; }
+.menu-opcion-titulo { font-size: 1.05rem; color: var(--text); }
+.menu-opcion-nota { font-size: 0.78rem; color: var(--text-faint); line-height: 1.4; }
+
+.volver-menu {
+  background: none; border: none; color: var(--text-faint); font-size: 0.85rem;
+  padding: 0 0 1.2rem; margin: 0; cursor: pointer;
+}
+.volver-menu:hover { color: var(--text); }
+
+.aviso-guardado {
+  font-family: var(--mono); font-size: 0.78rem; line-height: 1.5;
+  padding: 0.8rem 1rem; border-radius: 3px; margin-top: 1.2rem;
+  border: 1px solid var(--ok); color: var(--text-dim);
+  display: flex; flex-direction: column; gap: 0.6rem; align-items: flex-start;
+}
+
+@media (max-width: 480px) {
+  .menu-inicio { grid-template-columns: 1fr; }
+}
 .save-row-wrap { display: flex; gap: 0.4rem; margin-bottom: 0.4rem; }
 .save-del {
   background: var(--bg-panel); border: 1px solid var(--line); color: var(--text-faint);

@@ -63,6 +63,7 @@ const TRASFONDO_RAPIDO: BackstoryAspect[] = [
 
 export function Creacion({
   scenarioTitulo, onListo, onCancelar, ocupado, rapido = false,
+  etiquetaFinal = 'Empezar la aventura', etiquetaFinalOcupado = 'Empezando…',
 }: {
   scenarioTitulo: string;
   onListo: (investigador: unknown, armaInicialId: string | null, ocupacionId: string) => void;
@@ -74,6 +75,14 @@ export function Creacion({
    * directo de repartir habilidades a armar la ficha.
    */
   rapido?: boolean;
+  /**
+   * El botón final no siempre arranca una partida —desde el menú, «Crear
+   * investigador» sólo GUARDA la ficha—, así que el texto es configurable.
+   * `rapido` tiene el suyo propio, fijo («Entrar al galpón»): el simulador
+   * nunca se abre desde el menú mínimo, así que no hace falta parametrizarlo.
+   */
+  etiquetaFinal?: string;
+  etiquetaFinalOcupado?: string;
 }) {
   const catalogo = useMemo(catalogoCreacion, []);
   const [paso, setPaso] = useState<Paso>('quien');
@@ -459,7 +468,7 @@ export function Creacion({
           <div className="creacion-pie">
             <button className="ghost" onClick={() => setPaso('puntos')}>Atrás</button>
             <button className="primary" onClick={crear} disabled={ocupado}>
-              {ocupado ? 'Empezando…' : 'Empezar la aventura'}
+              {ocupado ? etiquetaFinalOcupado : etiquetaFinal}
             </button>
           </div>
         </div>

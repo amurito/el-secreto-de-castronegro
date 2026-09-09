@@ -201,6 +201,15 @@ export function App() {
   /** Id de la aventura cuyo selector de «Cargar personaje» está desplegado, o null si ninguno. */
   const [cargandoEn, setCargandoEn] = useState<string | null>(null);
   /**
+   * Qué se ve en la pantalla de inicio. Pedido del usuario: antes todo vivía
+   * en una sola página larga —la ruta de campaña, once tarjetas de aventura,
+   * el simulador, las partidas guardadas, todo junto—; ahora es un menú
+   * mínimo y tres pantallas propias, cada una con su «‹ Volver».
+   */
+  const [vista, setVista] = useState<'menu' | 'aventuras' | 'continuar' | 'simulador'>('menu');
+  /** Confirmación breve al guardar un investigador SIN arrancar ninguna partida. */
+  const [investigadorGuardado, setInvestigadorGuardado] = useState(false);
+  /**
    * Qué panel se ve EN MÓVIL. En pantalla grande no se usa: las tres columnas
    * están a la vista y este estado lo ignora el CSS.
    *
@@ -613,17 +622,34 @@ export function App() {
   // ── PANTALLA DE CREACIÓN ───────────────────────────────────────────────────
   if (!campaignId && creando) {
     const alGalpon = creando === 'simulador';
+    // Desde el menú: arma un investigador y lo GUARDA, sin arrancar ninguna
+    // partida todavía. Misma creación que las demás —nada de esto es
+    // específico de una aventura—, sólo cambia qué se hace al terminar.
+    const soloGuardar = creando === 'plantilla';
     return (
       <div className="start">
         <div className="start-inner start-ancho">
           <Creacion
-            scenarioTitulo={alGalpon ? 'Simulador de combate' : entradaDe(creando)?.scenario.title ?? ''}
+            scenarioTitulo={
+              alGalpon ? 'Simulador de combate'
+                : soloGuardar ? 'guardarlo y elegirlo después'
+                  : entradaDe(creando)?.scenario.title ?? ''
+            }
             ocupado={busy}
             rapido={alGalpon}
+            {...(soloGuardar ? { etiquetaFinal: 'Guardar investigador', etiquetaFinalOcupado: 'Guardando…' } : {})}
             onCancelar={() => setCreando(null)}
-            onListo={(inv, arma, ocupacionId) => (alGalpon
-              ? abrirSimulador(inv, true, arma, ocupacionId)
-              : newCampaignConFicha(creando, inv, arma, true, ocupacionId))}
+            onListo={(inv, arma, ocupacionId) => {
+              if (alGalpon) return abrirSimulador(inv, true, arma, ocupacionId);
+              if (soloGuardar) {
+                guardarPlantilla(inv as Investigator, arma, ocupacionId);
+                setPlantillas(listarPlantillas());
+                setCreando(null);
+                setInvestigadorGuardado(true);
+                return;
+              }
+              return newCampaignConFicha(creando, inv, arma, true, ocupacionId);
+            }}
           />
           {error && <div className="error error-inicio">{error}</div>}
         </div>
@@ -632,7 +658,12 @@ export function App() {
   }
 
   // ── PANTALLA DE INICIO ─────────────────────────────────────────────────────
-  if (!campaignId) {
+  //
+  // Menú mínimo, pedido por el usuario: antes todo vivía en una sola página
+  // larga —la ruta de campaña, once tarjetas, el simulador, las partidas
+  // guardadas, todo junto, scrolleando—. Ahora la entrada es un menú de
+  // cuatro botones y cada uno abre SU pantalla, con su propio «‹ Volver».
+  if (!campaignId && vista === 'menu') {
     return (
       <div className="start">
         <div className="start-inner">
@@ -662,88 +693,190 @@ export function App() {
               </button>
             </div>
           )}
-          <RutaCampana jugados={scenariosJugados} onElegir={irATarjeta} />
-          {/* Una tarjeta por aventura, en el orden cronológico del universo y
-              no en el orden en que se escribieron. Agregar una aventura al
-              catálogo la hace aparecer acá sin tocar la interfaz. */}
-          {CATALOGO.map((e) => {
-            const bloqueada = e.desbloqueaCon === 'algun-final-archivado'
-              && hayFinalPrevio !== true && !forzadas.has(e.scenario.id);
-            return (
-            <div
-              className={`scenario-card${resaltada === e.scenario.id ? ' scenario-card-resaltada' : ''}`}
-              key={e.scenario.id}
-              ref={(el) => { cardRefs.current[e.scenario.id] = el; }}
+
+          <div className="menu-inicio">
+            <button className="menu-opcion" onClick={() => setVista('aventuras')} disabled={!api}>
+              <span className="menu-opcion-titulo">Aventuras</span>
+              <span className="menu-opcion-nota">Once historias, en su orden.</span>
+            </button>
+            <button className="menu-opcion" onClick={() => setVista('continuar')} disabled={!api}>
+              <span className="menu-opcion-titulo">Continuar</span>
+              <span className="menu-opcion-nota">Retomar una partida guardada.</span>
+            </button>
+            <button
+              className="menu-opcion"
+              onClick={() => { setInvestigadorGuardado(false); setCreando('plantilla'); }}
+              disabled={!api}
             >
-              <h2>{e.scenario.title}</h2>
-              <p>{e.scenario.surfacePremise}</p>
-              <div className="scenario-meta">
-                {e.epoca} · {e.duracion} · Muerte permanente
-              </div>
-              {e.requiere?.length ? (
-                <div className={`scenario-antes${e.continuacion ? ' scenario-continuacion' : ''}`}>
-                  {e.continuacion
-                    ? <>Continúa directamente después de{' '}
-                      {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.
-                      Se puede empezar acá, pero está escrita para quien ya estuvo.</>
-                    : <>Se puede jugar sola. Se lee distinto después de{' '}
-                      {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.</>}
+              <span className="menu-opcion-titulo">Crear investigador</span>
+              <span className="menu-opcion-nota">Armalo ahora, elegilo después.</span>
+            </button>
+            {/* El banco de pruebas ya existía, escondido al final de la lista
+                larga de antes. Un menú mínimo es la ocasión de subirlo a la
+                vista, no de sacarlo. */}
+            <button className="menu-opcion" onClick={() => setVista('simulador')} disabled={!api}>
+              <span className="menu-opcion-titulo">Simulador de combate</span>
+              <span className="menu-opcion-nota">Un galpón para probar las reglas de pelea.</span>
+            </button>
+          </div>
+
+          {investigadorGuardado && (
+            <div className="aviso-guardado">
+              Investigador guardado. Elegilo con «Cargar personaje» en cualquier aventura o en el simulador.
+              <button className="ghost" onClick={() => setInvestigadorGuardado(false)}>Entendido</button>
+            </div>
+          )}
+
+          {/* Sin esto, un fallo del almacenamiento dejaba el botón muerto y sin
+              explicación: el jugador clickeaba y no pasaba nada. */}
+          {error && <div className="error error-inicio">{error}</div>}
+        </div>
+      </div>
+    );
+  }
+
+  if (!campaignId) {
+    return (
+      <div className="start">
+        <div className="start-inner">
+          <button className="volver-menu" onClick={() => setVista('menu')}>‹ Volver</button>
+
+          {vista === 'aventuras' && (
+            <>
+              <RutaCampana jugados={scenariosJugados} onElegir={irATarjeta} />
+              {/* Una tarjeta por aventura, en el orden cronológico del universo y
+                  no en el orden en que se escribieron. Agregar una aventura al
+                  catálogo la hace aparecer acá sin tocar la interfaz. */}
+              {CATALOGO.map((e) => {
+                const bloqueada = e.desbloqueaCon === 'algun-final-archivado'
+                  && hayFinalPrevio !== true && !forzadas.has(e.scenario.id);
+                return (
+                <div
+                  className={`scenario-card${resaltada === e.scenario.id ? ' scenario-card-resaltada' : ''}`}
+                  key={e.scenario.id}
+                  ref={(el) => { cardRefs.current[e.scenario.id] = el; }}
+                >
+                  <h2>{e.scenario.title}</h2>
+                  <p>{e.scenario.surfacePremise}</p>
+                  <div className="scenario-meta">
+                    {e.epoca} · {e.duracion} · Muerte permanente
+                  </div>
+                  {e.requiere?.length ? (
+                    <div className={`scenario-antes${e.continuacion ? ' scenario-continuacion' : ''}`}>
+                      {e.continuacion
+                        ? <>Continúa directamente después de{' '}
+                          {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.
+                          Se puede empezar acá, pero está escrita para quien ya estuvo.</>
+                        : <>Se puede jugar sola. Se lee distinto después de{' '}
+                          {e.requiere.map((id) => entradaDe(id)?.scenario.title ?? id).join(', ')}.</>}
+                    </div>
+                  ) : null}
+                  {bloqueada ? (
+                    <div className="scenario-bloqueada">
+                      Está escrita para leerse después de conocer al menos una de
+                      las otras diez — se lee distinto sabiendo ya quién es
+                      Bernardo. Por eso queda a un lado hasta que termines alguna.
+                      {' '}
+                      <button
+                        type="button"
+                        className="scenario-forzar"
+                        onClick={() => setForzadas((s) => new Set(s).add(e.scenario.id))}
+                      >
+                        Jugarla igual
+                      </button>
+                    </div>
+                  ) : (
+                  <div className="scenario-botones">
+                    {/* El nombre sale del elenco de LA AVENTURA, no escrito a
+                        mano: hasta la décima todas empezaban con Elena y decirlo
+                        así era cierto, pero «El Círculo Rojo» (1674) tiene elenco
+                        propio y el botón mentía. */}
+                    <button className="primary" onClick={() => newCampaign(e.scenario.id)} disabled={busy || !api}>
+                      {busy
+                        ? 'Abriendo…'
+                        : `Empezar con ${e.scenario.investigators[0]?.name.split(' ')[0] ?? 'el pregenerado'}`}
+                    </button>
+                    <button className="ghost" onClick={() => setCreando(e.scenario.id)} disabled={busy || !api}>
+                      Crear investigador
+                    </button>
+                    {plantillas.length > 0 && (
+                      <button
+                        className="ghost"
+                        onClick={() => setCargandoEn(cargandoEn === e.scenario.id ? null : e.scenario.id)}
+                        disabled={busy || !api}
+                      >
+                        Cargar personaje
+                      </button>
+                    )}
+                  </div>
+                  )}
+
+                  {cargandoEn === e.scenario.id && (
+                    <div className="sim-plantillas">
+                      <div className="sim-plantillas-titulo">Personajes guardados</div>
+                      {plantillas.map((p) => (
+                        <div className="sim-plantilla-row" key={p.id}>
+                          <button
+                            className="sim-plantilla-usar"
+                            onClick={() => newCampaignConFicha(
+                              e.scenario.id, p.investigador, p.armaInicialId ?? null, false, p.ocupacionId ?? null,
+                            )}
+                            disabled={busy || !api}
+                          >
+                            {p.nombre}
+                            <span className="sim-plantilla-datos">{p.investigador.occupation}</span>
+                          </button>
+                          <button
+                            className="sim-plantilla-borrar"
+                            onClick={() => { borrarPlantilla(p.id); setPlantillas(listarPlantillas()); }}
+                            disabled={busy}
+                            title="Borrar esta plantilla"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ) : null}
-              {bloqueada ? (
-                <div className="scenario-bloqueada">
-                  Está escrita para leerse después de conocer al menos una de
-                  las otras diez — se lee distinto sabiendo ya quién es
-                  Bernardo. Por eso queda a un lado hasta que termines alguna.
-                  {' '}
-                  <button
-                    type="button"
-                    className="scenario-forzar"
-                    onClick={() => setForzadas((s) => new Set(s).add(e.scenario.id))}
-                  >
-                    Jugarla igual
-                  </button>
-                </div>
-              ) : (
+                );
+              })}
+            </>
+          )}
+
+          {vista === 'continuar' && api && <PreviousCampaigns api={api} onLoad={loadCampaign} />}
+
+          {vista === 'simulador' && (
+            <div className="scenario-card scenario-card-sim">
+              <h2>Simulador de combate</h2>
+              <p>
+                Un galpón vacío y tres personas dispuestas a que las golpeen. No hay nada que descubrir:
+                es para probar las reglas de pelea con las manos, con el motor de verdad y los dados a la vista.
+              </p>
+              <div className="scenario-meta">Sin historia · Sin muerte permanente · Reiniciable</div>
               <div className="scenario-botones">
-                {/* El nombre sale del elenco de LA AVENTURA, no escrito a
-                    mano: hasta la décima todas empezaban con Elena y decirlo
-                    así era cierto, pero «El Círculo Rojo» (1674) tiene elenco
-                    propio y el botón mentía. */}
-                <button className="primary" onClick={() => newCampaign(e.scenario.id)} disabled={busy || !api}>
-                  {busy
-                    ? 'Abriendo…'
-                    : `Empezar con ${e.scenario.investigators[0]?.name.split(' ')[0] ?? 'el pregenerado'}`}
+                <button className="primary" onClick={() => abrirSimulador()} disabled={busy || !api}>
+                  {busy ? 'Abriendo…' : 'Entrar con Elena'}
                 </button>
-                <button className="ghost" onClick={() => setCreando(e.scenario.id)} disabled={busy || !api}>
+                <button className="ghost" onClick={() => setCreando('simulador')} disabled={busy || !api}>
                   Crear investigador
                 </button>
-                {plantillas.length > 0 && (
-                  <button
-                    className="ghost"
-                    onClick={() => setCargandoEn(cargandoEn === e.scenario.id ? null : e.scenario.id)}
-                    disabled={busy || !api}
-                  >
-                    Cargar personaje
-                  </button>
-                )}
               </div>
-              )}
 
-              {cargandoEn === e.scenario.id && (
+              {plantillas.length > 0 && (
                 <div className="sim-plantillas">
                   <div className="sim-plantillas-titulo">Personajes guardados</div>
                   {plantillas.map((p) => (
                     <div className="sim-plantilla-row" key={p.id}>
                       <button
                         className="sim-plantilla-usar"
-                        onClick={() => newCampaignConFicha(
-                          e.scenario.id, p.investigador, p.armaInicialId ?? null, false, p.ocupacionId ?? null,
-                        )}
+                        onClick={() => abrirSimulador(p.investigador)}
                         disabled={busy || !api}
                       >
                         {p.nombre}
-                        <span className="sim-plantilla-datos">{p.investigador.occupation}</span>
+                        <span className="sim-plantilla-datos">
+                          {p.investigador.occupation} · Pelea {p.investigador.skills['pelea']?.base ?? 25}%
+                        </span>
                       </button>
                       <button
                         className="sim-plantilla-borrar"
@@ -758,61 +891,9 @@ export function App() {
                 </div>
               )}
             </div>
-            );
-          })}
+          )}
 
-          {/* El banco de pruebas. Va DESPUÉS de las aventuras y con otro
-              aspecto a propósito: no es una historia, y ponerlo entre ellas
-              haría dudar de si lo es. */}
-          <div className="scenario-card scenario-card-sim">
-            <h2>Simulador de combate</h2>
-            <p>
-              Un galpón vacío y tres personas dispuestas a que las golpeen. No hay nada que descubrir:
-              es para probar las reglas de pelea con las manos, con el motor de verdad y los dados a la vista.
-            </p>
-            <div className="scenario-meta">Sin historia · Sin muerte permanente · Reiniciable</div>
-            <div className="scenario-botones">
-              <button className="primary" onClick={() => abrirSimulador()} disabled={busy || !api}>
-                {busy ? 'Abriendo…' : 'Entrar con Elena'}
-              </button>
-              <button className="ghost" onClick={() => setCreando('simulador')} disabled={busy || !api}>
-                Crear investigador
-              </button>
-            </div>
-
-            {plantillas.length > 0 && (
-              <div className="sim-plantillas">
-                <div className="sim-plantillas-titulo">Personajes guardados</div>
-                {plantillas.map((p) => (
-                  <div className="sim-plantilla-row" key={p.id}>
-                    <button
-                      className="sim-plantilla-usar"
-                      onClick={() => abrirSimulador(p.investigador)}
-                      disabled={busy || !api}
-                    >
-                      {p.nombre}
-                      <span className="sim-plantilla-datos">
-                        {p.investigador.occupation} · Pelea {p.investigador.skills['pelea']?.base ?? 25}%
-                      </span>
-                    </button>
-                    <button
-                      className="sim-plantilla-borrar"
-                      onClick={() => { borrarPlantilla(p.id); setPlantillas(listarPlantillas()); }}
-                      disabled={busy}
-                      title="Borrar esta plantilla"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Sin esto, un fallo del almacenamiento dejaba el botón muerto y sin
-              explicación: el jugador clickeaba y no pasaba nada. */}
           {error && <div className="error error-inicio">{error}</div>}
-          {api && <PreviousCampaigns api={api} onLoad={loadCampaign} />}
         </div>
       </div>
     );
@@ -1765,16 +1846,21 @@ function Acciones({
 }
 
 function PreviousCampaigns({ api, onLoad }: { api: GameApi; onLoad: (id: string) => void }) {
-  const [list, setList] = useState<any[]>([]);
+  const [list, setList] = useState<any[] | null>(null);
   useEffect(() => { api.listCampaigns().then(setList).catch(() => setList([])); }, [api]);
-  if (!list.length) return null;
   return (
     <div className="saves">
       <h3>Partidas guardadas</h3>
       <p className="saves-note">
         Un autoguardado por campaña, sin ranuras. Es lo único coherente con muerte permanente.
       </p>
-      {list.map((c) => (
+      {/* «Continuar» ahora es su propia pantalla —antes esta lista vivía al
+          pie de una página larga, y volver vacía ahí no se notaba. Acá sí. */}
+      {list === null && <div className="saves-vacio">Buscando partidas guardadas…</div>}
+      {list?.length === 0 && (
+        <div className="saves-vacio">Todavía no hay ninguna. Arrancá una desde «Aventuras».</div>
+      )}
+      {list?.map((c) => (
         <div key={c.campaignId} className="save-row-wrap">
           <button className="save-row" onClick={() => onLoad(c.campaignId)}>
             <span>{c.title}</span>
@@ -1785,7 +1871,7 @@ function PreviousCampaigns({ api, onLoad }: { api: GameApi; onLoad: (id: string)
             title="Borrar esta partida"
             onClick={async () => {
               await api.deleteCampaign(c.campaignId);
-              setList((l) => l.filter((x) => x.campaignId !== c.campaignId));
+              setList((l) => (l ?? []).filter((x) => x.campaignId !== c.campaignId));
             }}
           >×</button>
         </div>
