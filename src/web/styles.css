@@ -638,6 +638,82 @@ button { font-family: inherit; cursor: pointer; }
 }
 .scenario-forzar:hover { color: var(--text-dim); }
 
+/* ── RUTA VISUAL DE CAMPAÑA ───────────────────────────────────────────────
+   Un stepper vertical: bolita + línea, como un log de git. `.jugada` la
+   tilda, `.siguiente` es el único resaltado real (el resto queda apagado a
+   propósito, para que el ojo vaya directo a «empezá acá»). Un click no
+   navega — desplaza y resalta la tarjeta real, más abajo. */
+.ruta-campana {
+  background: var(--bg-panel); border: 1px solid var(--line); border-radius: 4px;
+  padding: 1.3rem 1.5rem 0.9rem; margin-bottom: 1.6rem;
+}
+.ruta-titulo {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.9rem;
+}
+.ruta-lista { list-style: none; margin: 0; padding: 0; }
+
+/* La bifurcación real (hoy sólo El Vigésimo): una columna por rama, cada
+   una con su propia lista plana (`tramo()` en App.tsx la arma recursiva). */
+.ruta-bifurca {
+  margin: 0.1rem 0 0 0.85rem; padding-left: 0.9rem; border-left: 1px dashed var(--line);
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
+
+.ruta-nodo { position: relative; padding-left: 1.35rem; padding-bottom: 0.75rem; }
+.ruta-nodo::before {
+  content: ''; position: absolute; left: 0; top: 0.4rem;
+  width: 0.55rem; height: 0.55rem; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--text-faint);
+}
+.ruta-nodo::after {
+  content: ''; position: absolute; left: 0.21rem; top: 1.05rem; bottom: 0;
+  width: 1px; background: var(--line);
+}
+.ruta-nodo:last-child::after { display: none; }
+/* Excepto cuando ese último nodo del tramo es el punto de bifurcación: ahí
+   la línea tiene que seguir bajando para conectar con `.ruta-bifurca`. */
+.ruta-lista:has(+ .ruta-bifurca) .ruta-nodo:last-child::after { display: block; }
+.ruta-nodo.jugada::before { background: var(--ok); border-color: var(--ok); }
+.ruta-nodo.siguiente::before {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(168, 69, 46, 0.22);
+}
+.ruta-nodo-fila {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.7rem; cursor: pointer; padding: 0.1rem 0;
+}
+.ruta-nodo-fila:hover .ruta-nodo-nombre { color: var(--accent); }
+.ruta-nodo-nombre {
+  font-size: 0.88rem; color: var(--text-dim); transition: color 0.15s;
+}
+.ruta-nodo.jugada .ruta-nodo-nombre { color: var(--text-faint); }
+.ruta-nodo.siguiente .ruta-nodo-nombre { color: var(--text); }
+.ruta-nodo-etiqueta {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.04em;
+  color: var(--text-faint); text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+}
+.ruta-nodo.siguiente .ruta-nodo-etiqueta { color: var(--accent); }
+
+.ruta-aparte {
+  font-size: 0.76rem; color: var(--text-faint); font-style: italic;
+  border-top: 1px solid var(--line); padding-top: 0.7rem; margin-top: 0.4rem;
+  line-height: 1.6;
+}
+.ruta-aparte-link {
+  background: none; border: none; padding: 0; font: inherit; font-style: normal;
+  color: var(--text-dim); text-decoration: underline; cursor: pointer;
+}
+.ruta-aparte-link:hover { color: var(--accent); }
+
+/* Pulso breve al llegar desde la ruta — dura lo que tarda irATarjeta() en
+   limpiar el estado (1.6s), no depende de la animación para cortarse. */
+.scenario-card-resaltada { animation: ruta-pulso 1.6s ease-out; }
+@keyframes ruta-pulso {
+  0% { box-shadow: 0 0 0 2px var(--accent); }
+  100% { box-shadow: 0 0 0 2px transparent; }
+}
+
 .nota-social {
   font-size: 0.78rem; color: var(--text-faint); font-style: italic;
   border-left: 2px solid var(--line); padding-left: 0.7rem; margin: 0.2rem 0 0.6rem;
@@ -711,6 +787,15 @@ button { font-family: inherit; cursor: pointer; }
 .continuar-nada {
   border-top: 1px solid var(--line); margin-top: 1.2rem; padding-top: 1.1rem;
   font-size: 0.8rem; color: var(--text-faint); font-style: italic; line-height: 1.55;
+}
+.continuar-bifurca {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem;
+}
+/* Cuando hay bifurcación, cada opción es su propia columna con línea
+   propia, para que se lea como una elección y no como un texto largo. */
+.continuar-opcion + .continuar-opcion {
+  border-top: 1px dashed var(--line); margin-top: 1rem; padding-top: 1rem;
 }
 
 /* ── FASE DE DESARROLLO ───────────────────────────────────────────────────

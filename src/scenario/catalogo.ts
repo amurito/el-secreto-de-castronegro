@@ -226,16 +226,81 @@ export const entradaDe = (id: string): EntradaCatalogo | undefined =>
   CATALOGO.find((e) => e.scenario.id === id);
 
 /**
- * La aventura que sigue a ésta en la línea del universo.
+ * Las aventuras que siguen a ésta en la línea del universo — casi siempre
+ * una sola, pero El Vigésimo se bifurca en dos epílogos independientes
+ * («Lo que Bernardo sabía» y «El Hombre que Miraba el Agua», los dos con
+ * `requiere: ['el-vigesimo']` y ninguno requiriéndose entre sí).
  *
- * Es lo que hace que una campaña sea una campaña y no una lista de partidas:
- * al cerrar una aventura y pasar la fase de desarrollo, el juego sabe adónde
- * sigue el investigador.
+ * Por RELACIÓN (`requiere`), no por posición en el array. Antes se tomaba
+ * la posición siguiente en el orden por fecha, y eso coincidía con la
+ * relación real mientras la campaña fue una sola cadena lineal — hasta que
+ * «El Círculo Rojo» se sumó fechada en 1674 y quedó primera del array:
+ * terminarla ofrecía «Continuar a Agua Quieta» y heredaba a Juana Ossorio
+ * (1674) al elenco de Elena en 1924. Encontrado armando la ruta visual de
+ * campaña, 2026-09-09.
+ */
+export function siguientesDe(id: string): EntradaCatalogo[] {
+  return CATALOGO.filter((e) => e.requiere?.includes(id));
+}
+
+/**
+ * La única continuación, para cuando no hay bifurcación — es lo que usa el
+ * encadenado real de campaña (`Turn`/`continuarCampana`). Donde SÍ hay
+ * bifurcación, se ofrecen las dos (`Continuar` en `App.tsx`).
  */
 export function siguienteDe(id: string): EntradaCatalogo | null {
-  const i = CATALOGO.findIndex((e) => e.scenario.id === id);
-  if (i < 0) return null;
-  return CATALOGO[i + 1] ?? null;
+  return siguientesDe(id)[0] ?? null;
+}
+
+/**
+ * Un nodo del árbol de campaña: una aventura y por qué caminos sigue desde
+ * ahí. `hijos` casi siempre tiene longitud 1; más de uno es una bifurcación
+ * de verdad (hoy, sólo El Vigésimo).
+ */
+export interface RutaNodo {
+  entrada: EntradaCatalogo;
+  hijos: RutaNodo[];
+}
+
+/**
+ * Una aventura APARTE de la campaña principal: no depende de nada y nada
+ * depende de ella. Hoy sólo El Círculo Rojo — un prólogo suelto, no un
+ * eslabón de la cadena de 1920. Si el día de mañana se agrega otro one-shot
+ * del mismo tipo, cae acá solo, sin tocar esta función.
+ */
+function esAparte(e: EntradaCatalogo): boolean {
+  return !e.requiere?.length && !CATALOGO.some((o) => o.requiere?.includes(e.scenario.id));
+}
+
+function construirNodo(id: string, visitados: Set<string>): RutaNodo | null {
+  // Corte de ciclos por las dudas — el catálogo de hoy no tiene ninguno,
+  // pero `requiere` es texto libre y un ciclo ahí colgaría esto para siempre.
+  if (visitados.has(id)) return null;
+  visitados.add(id);
+  const entrada = entradaDe(id);
+  if (!entrada) return null;
+  const hijos = siguientesDe(id)
+    .map((h) => construirNodo(h.scenario.id, visitados))
+    .filter((n): n is RutaNodo => n !== null);
+  return { entrada, hijos };
+}
+
+/**
+ * La(s) raíz(ces) de la campaña principal, para dibujar la ruta visual de
+ * la pantalla de inicio: todo lo que no es «aparte» y no depende de nada.
+ * Hoy es una sola —Agua Quieta— pero la función no asume esa cardinalidad.
+ */
+export function raicesDeCampana(): RutaNodo[] {
+  const visitados = new Set<string>();
+  return CATALOGO
+    .filter((e) => !e.requiere?.length && !esAparte(e))
+    .map((e) => construirNodo(e.scenario.id, visitados))
+    .filter((n): n is RutaNodo => n !== null);
+}
+
+/** Las aventuras aparte de la campaña principal (ver `esAparte`). */
+export function aventurasAparte(): EntradaCatalogo[] {
+  return CATALOGO.filter(esAparte);
 }
 
 /**

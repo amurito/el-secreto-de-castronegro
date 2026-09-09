@@ -3,7 +3,10 @@ import { Sheet, RollCard, Board, Inventory, Documents, RollHistory, Rivales } fr
 import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
-import { CATALOGO, entradaDe, siguienteDe } from '../scenario/catalogo.ts';
+import {
+  CATALOGO, entradaDe, siguienteDe, siguientesDe, raicesDeCampana, aventurasAparte,
+} from '../scenario/catalogo.ts';
+import type { RutaNodo } from '../scenario/catalogo.ts';
 import { Creacion } from './Creacion.tsx';
 import { Simulador } from './Simulador.tsx';
 import { Combate } from './Combate.tsx';
@@ -238,18 +241,38 @@ export function App() {
   // preferencia que haya que recordar entre visitas.
   const [hayFinalPrevio, setHayFinalPrevio] = useState<boolean | null>(null);
   const [forzadas, setForzadas] = useState<Set<string>>(new Set());
+  // Qué scenarioId tienen un final archivado, para pintar la ruta visual de
+  // campaña (qué nodo mostrar tildado, cuál es «el siguiente»). Superset de
+  // lo que necesita `hayFinalPrevio` — un solo llamado a la API sirve para
+  // los dos.
+  const [scenariosJugados, setScenariosJugados] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!api) return;
     let vivo = true;
     api.finalesArchivados()
-      .then((f) => { if (vivo) setHayFinalPrevio(f.length > 0); })
-      .catch(() => { if (vivo) setHayFinalPrevio(false); });
+      .then((f) => {
+        if (!vivo) return;
+        setHayFinalPrevio(f.length > 0);
+        setScenariosJugados(new Set(f.map((x) => x.scenarioId)));
+      })
+      .catch(() => { if (vivo) { setHayFinalPrevio(false); setScenariosJugados(new Set()); } });
     return () => { vivo = false; };
     // Se re-chequea al volver a la pantalla de inicio (campaignId → null):
     // así, terminar la primera aventura desbloquea las que dependían de
-    // «alguna» sin necesitar recargar la página.
+    // «alguna», y mueve el tilde de la ruta, sin necesitar recargar la
+    // página.
   }, [api, campaignId]);
+
+  // Refs de cada tarjeta de aventura, para que un click en la ruta visual
+  // desplace hasta la tarjeta real en vez de duplicar sus botones.
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [resaltada, setResaltada] = useState<string | null>(null);
+  function irATarjeta(id: string) {
+    cardRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setResaltada(id);
+    window.setTimeout(() => setResaltada((r) => (r === id ? null : r)), 1600);
+  }
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -638,6 +661,7 @@ export function App() {
               </button>
             </div>
           )}
+          <RutaCampana jugados={scenariosJugados} onElegir={irATarjeta} />
           {/* Una tarjeta por aventura, en el orden cronológico del universo y
               no en el orden en que se escribieron. Agregar una aventura al
               catálogo la hace aparecer acá sin tocar la interfaz. */}
@@ -645,7 +669,11 @@ export function App() {
             const bloqueada = e.desbloqueaCon === 'algun-final-archivado'
               && hayFinalPrevio !== true && !forzadas.has(e.scenario.id);
             return (
-            <div className="scenario-card" key={e.scenario.id}>
+            <div
+              className={`scenario-card${resaltada === e.scenario.id ? ' scenario-card-resaltada' : ''}`}
+              key={e.scenario.id}
+              ref={(el) => { cardRefs.current[e.scenario.id] = el; }}
+            >
               <h2>{e.scenario.title}</h2>
               <p>{e.scenario.surfacePremise}</p>
               <div className="scenario-meta">
@@ -1225,6 +1253,97 @@ function MejorasAnimadas({ mejoras, animar }: { mejoras: any[]; animar: boolean 
 }
 
 /**
+ * LA RUTA VISUAL DE CAMPAÑA.
+ *
+ * Pedido del usuario jugando: con once entradas en el catálogo, «no entiendo
+ * bien cada lugar de la aventura» y el orden salía de leer fechas chiquitas
+ * en cada tarjeta. Esto dibuja la cadena real —de dónde sale
+ * `raicesDeCampana()`, que arma el árbol por relación (`requiere`), no por
+ * posición— con lo ya jugado tildado y el siguiente paso resaltado.
+ *
+ * Un click no abre nada acá: desplaza hasta la tarjeta real más abajo y la
+ * resalta un momento. Las acciones (Empezar/Crear/Cargar) viven en un solo
+ * lugar, la tarjeta, para no duplicar esa lógica.
+ */
+function RutaCampana({ jugados, onElegir }: {
+  jugados: Set<string>; onElegir: (id: string) => void;
+}) {
+  const raices = raicesDeCampana();
+  if (raices.length === 0) return null;
+
+  /**
+   * Arma el TRONCO desde `n`: la cadena de nodos de un solo hijo, hasta el
+   * primero que no lo es (una hoja, o el punto donde bifurca). No anida
+   * `<li>` dentro de `<li>` —HTML inválido, y el navegador reacomoda la
+   * lista rompiendo la sangría— así que el tronco entero es UNA lista
+   * plana; sólo la bifurcación real (hoy, sólo El Vigésimo) abre una
+   * columna aparte por rama, recursiva.
+   */
+  function tramo(n: RutaNodo, padreJugado: boolean): React.ReactNode {
+    const tronco: RutaNodo[] = [];
+    let actual: RutaNodo | undefined = n;
+    while (actual) {
+      tronco.push(actual);
+      if (actual.hijos.length !== 1) break;
+      actual = actual.hijos[0];
+    }
+    const ultimo = tronco[tronco.length - 1]!;
+    const ramas = ultimo.hijos.length > 1 ? ultimo.hijos : [];
+    const ultimoJugado = jugados.has(ultimo.entrada.scenario.id);
+
+    return (
+      <>
+        <ul className="ruta-lista">
+          {tronco.map((t, i) => {
+            const id = t.entrada.scenario.id;
+            const jugada = jugados.has(id);
+            const previoJugado = i === 0 ? padreJugado : jugados.has(tronco[i - 1]!.entrada.scenario.id);
+            // «Siguiente recomendado»: no jugada, y el paso anterior sí lo
+            // está (o no hay paso anterior, es la raíz). En una bifurcación
+            // las dos ramas pueden quedar recomendadas a la vez: es
+            // literal, se puede seguir por cualquiera de las dos.
+            const recomendado = !jugada && previoJugado;
+            return (
+              <li className={`ruta-nodo${jugada ? ' jugada' : recomendado ? ' siguiente' : ''}`} key={id}>
+                <div className="ruta-nodo-fila" onClick={() => onElegir(id)}>
+                  <span className="ruta-nodo-nombre">{t.entrada.scenario.title}</span>
+                  <span className="ruta-nodo-etiqueta">
+                    {jugada ? 'jugada' : recomendado ? 'empezá acá' : t.entrada.epoca.split('·')[0]?.trim()}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        {ramas.length > 0 && (
+          <div className="ruta-bifurca">
+            {ramas.map((r) => (
+              <div className="ruta-rama" key={r.entrada.scenario.id}>{tramo(r, ultimoJugado)}</div>
+            ))}
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <div className="ruta-campana">
+      <div className="ruta-titulo">Tu campaña</div>
+      {raices.map((r) => <React.Fragment key={r.entrada.scenario.id}>{tramo(r, true)}</React.Fragment>)}
+      {aventurasAparte().length > 0 && (
+        <div className="ruta-aparte">
+          Aparte de esta línea: {aventurasAparte().map((e) => (
+            <button key={e.scenario.id} type="button" className="ruta-aparte-link" onClick={() => onElegir(e.scenario.id)}>
+              {e.scenario.title}
+            </button>
+          ))} — prólogo suelto, no hace falta jugarlo en orden.
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
  * EL ARCHIVO DE FINALES.
  *
  * Reportado jugando: el texto del desenlace se lee una sola vez —y a veces ni
@@ -1487,11 +1606,15 @@ function Continuar({
   api: GameApi; campaignId: string; scenarioId: string;
   onContinuar: (r: any) => void;
 }) {
-  const [ocupado, setOcupado] = useState(false);
+  const [ocupado, setOcupado] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const siguiente = siguienteDe(scenarioId);
+  // Plural: El Vigésimo se bifurca en dos epílogos independientes, y antes
+  // de siguientesDe() (siguienteDe relación-real, no posición) esto sólo
+  // podía ofrecer uno —el que quedara primero por fecha— dejando al otro
+  // alcanzable nomás si arrancabas esa aventura suelta desde el catálogo.
+  const siguientes = siguientesDe(scenarioId);
 
-  if (!siguiente) {
+  if (siguientes.length === 0) {
     return (
       <div className="continuar-nada">
         Hasta acá llega la línea de tiempo, por ahora. Lo que aprendió el investigador queda guardado
@@ -1500,29 +1623,34 @@ function Continuar({
     );
   }
 
-  async function ir() {
-    setOcupado(true); setError(null);
+  async function ir(destino: string) {
+    setOcupado(destino); setError(null);
     try {
-      onContinuar(await api.continuarCampana(campaignId, siguiente!.scenario.id));
+      onContinuar(await api.continuarCampana(campaignId, destino));
     } catch (e) {
       setError((e as Error).message);
-      setOcupado(false);
+      setOcupado(null);
     }
   }
 
   return (
     <div className="continuar">
-      <div className="continuar-titulo">{siguiente.epoca}</div>
-      <div className="continuar-nombre">{siguiente.scenario.title}</div>
-      <p className="continuar-premisa">{siguiente.scenario.surfacePremise}</p>
-      <div className="continuar-lleva">
-        Se lleva lo que aprendió, lo que le quedó encima y lo que el mundo recuerda. La Exposición al
-        Umbral no baja: cruzar un umbral es irreversible.
-      </div>
+      {siguientes.length > 1 && <div className="continuar-bifurca">Se bifurca — elegí por dónde seguir:</div>}
+      {siguientes.map((siguiente) => (
+        <div className="continuar-opcion" key={siguiente.scenario.id}>
+          <div className="continuar-titulo">{siguiente.epoca}</div>
+          <div className="continuar-nombre">{siguiente.scenario.title}</div>
+          <p className="continuar-premisa">{siguiente.scenario.surfacePremise}</p>
+          <div className="continuar-lleva">
+            Se lleva lo que aprendió, lo que le quedó encima y lo que el mundo recuerda. La Exposición al
+            Umbral no baja: cruzar un umbral es irreversible.
+          </div>
+          <button className="primary" onClick={() => ir(siguiente.scenario.id)} disabled={ocupado !== null}>
+            {ocupado === siguiente.scenario.id ? 'Cruzando los meses…' : `Continuar a ${siguiente.scenario.title}`}
+          </button>
+        </div>
+      ))}
       {error && <div className="error">{error}</div>}
-      <button className="primary" onClick={ir} disabled={ocupado}>
-        {ocupado ? 'Cruzando los meses…' : `Continuar a ${siguiente.scenario.title}`}
-      </button>
     </div>
   );
 }
