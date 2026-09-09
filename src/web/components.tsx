@@ -61,13 +61,19 @@ export function Sheet({ inv }: { inv: any }) {
       )}
 
       <h3 className="sub-title">Umbral</h3>
-      <Bar label="Exposición" value={inv.umbral.exposure} max={100} tone="exposure" invert />
+      <Bar
+        label="Exposición" value={inv.umbral.exposure} max={100} tone="exposure" invert
+        title="Lo que el investigador ya vio y no se puede desver — no baja mientras dura la aventura. Pasado cierto punto, fallar una tirada de Cordura pierde más de lo que perdería sola."
+      />
       {inv.umbral.peakExposure > 0 && (
         <div className="umbral-peak">
           Entre aventuras nunca baja de {pisoDeExposicion(inv.umbral.peakExposure)} — llegó a {inv.umbral.peakExposure} alguna vez.
         </div>
       )}
-      <Bar label="Estabilidad" value={inv.umbral.stability} max={100} tone="stability" />
+      <Bar
+        label="Estabilidad" value={inv.umbral.stability} max={100} tone="stability"
+        title="Qué tan firme sigue pisando lo que es real. Por debajo de 40 empieza a sumar dados de penalización a Descubrir, Escuchar, Psicología, Historia y Orientarse — y peor todavía por debajo de 20."
+      />
       {inv.umbral.thresholdsCrossed.length > 0 && (
         <div className="thresholds">
           {inv.umbral.thresholdsCrossed.map((t: string) => (
@@ -120,11 +126,15 @@ function Stat({ label, value, max, tone }: { label: string; value: number; max: 
   );
 }
 
-function Bar({ label, value, max, tone, invert }: { label: string; value: number; max: number; tone: string; invert?: boolean }) {
+function Bar({
+  label, value, max, tone, invert, title,
+}: {
+  label: string; value: number; max: number; tone: string; invert?: boolean; title?: string;
+}) {
   const pct = Math.round((value / max) * 100);
   const danger = invert ? pct >= 55 : pct <= 40;
   return (
-    <div className="bar-wrap">
+    <div className="bar-wrap" title={title}>
       <div className="bar-head"><span>{label}</span><b>{value}/{max}</b></div>
       <div className="bar-track">
         <div className={`bar-fill bar-${tone} ${danger ? 'bar-danger' : ''}`} style={{ width: `${pct}%` }} />
