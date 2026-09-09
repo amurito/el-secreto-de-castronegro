@@ -61,6 +61,23 @@ const TRASFONDO_RAPIDO: BackstoryAspect[] = [
   { id: 'rasgos', kind: 'rasgos', text: '(personaje de prueba, sin trasfondo)' },
 ];
 
+/**
+ * Plantilla de trasfondo para quien quiere jugar YA, sin escribir cinco
+ * líneas de golpe. A diferencia de `TRASFONDO_RAPIDO` esto SÍ se juega —la
+ * Cordura de verdad se recupera de acá—, así que no puede ser relleno: tiene
+ * que sostenerse como trasfondo real. Sin años, sin objetos de época, sin
+ * un lugar con nombre propio: se usa igual para un investigador de 1920
+ * que para el Círculo Rojo de 1674, y los cinco campos quedan editables
+ * después de aplicarla.
+ */
+const PLANTILLA_TRASFONDO: Record<'ideologia' | 'personas' | 'lugares' | 'posesiones' | 'rasgos', string> = {
+  personas: 'Un hermano menor, al que le prometió volver.',
+  ideologia: 'Que las cosas tienen una explicación, aunque cueste encontrarla.',
+  lugares: 'La casa donde se crió, aunque hace años que no vuelve.',
+  posesiones: 'Una carta que nunca terminó de escribir.',
+  rasgos: 'No deja las cosas a medias, ni siquiera cuando debería.',
+};
+
 export function Creacion({
   scenarioTitulo, onListo, onCancelar, ocupado, rapido = false,
   etiquetaFinal = 'Empezar la aventura', etiquetaFinalOcupado = 'Empezando…',
@@ -433,6 +450,21 @@ export function Creacion({
             No es color. De acá sale la Cordura que se recupera entre aventuras, y cada fracaso obliga a
             reescribir una de estas líneas. Con tres alcanza.
           </div>
+          <button
+            type="button"
+            className="ghost creacion-rapido"
+            onClick={() => setTrasfondo((t) => {
+              // Sólo rellena lo que está vacío: si ya escribiste una línea,
+              // el botón no te la pisa.
+              const relleno = { ...t };
+              for (const [kind, texto] of Object.entries(PLANTILLA_TRASFONDO)) {
+                if (!(relleno[kind] ?? '').trim()) relleno[kind] = texto;
+              }
+              return relleno;
+            })}
+          >
+            Llenado rápido — completa lo que falte con una plantilla, editable después
+          </button>
           {CLASES_TRASFONDO.map((c) => (
             <label className="campo" key={c.kind}>
               <span>{c.label} — <i>{c.ayuda}</i></span>

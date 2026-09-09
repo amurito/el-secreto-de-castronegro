@@ -186,6 +186,7 @@ button { font-family: inherit; cursor: pointer; }
 .car-valor { display: block; font-family: var(--mono); font-size: 1.3rem; color: var(--text); }
 
 .creacion-nota { font-size: 0.78rem; color: var(--text-faint); font-style: italic; line-height: 1.55; margin: 0.6rem 0 0.9rem; }
+.creacion-rapido { display: block; width: 100%; margin: 0 0 1.1rem; font-size: 0.82rem; }
 
 .reparto { background: var(--bg-raised); border-radius: 3px; padding: 0.7rem 0.85rem; margin-bottom: 0.6rem; }
 .reparto-titulo { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.5rem; }
