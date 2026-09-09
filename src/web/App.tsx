@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Sheet, RollCard, Board, Inventory, Documents, RollHistory, Rivales } from './components.tsx';
+import { Sheet, RollCard, Board, Inventory, Documents, RollHistory, Rivales, DIFF_LABEL } from './components.tsx';
+import { labelFor } from '../rules/skills.ts';
 import type { GameApi, StatusInfo, DevelopmentOffer } from '../app/api.ts';
 import { createLocalApi } from '../app/api.local.ts';
 import { ETIQUETA_GRUPO, type Opcion, type GrupoAccion } from '../scenario/acciones.ts';
@@ -1660,6 +1661,26 @@ const EN_LETRAS: Record<number, string> = {
   2: 'dos', 3: 'tres', 4: 'cuatro', 5: 'cinco', 6: 'seis', 7: 'siete',
 };
 
+/**
+ * El texto del riesgo, para el `title` (tooltip nativo) del botón. Reportado
+ * jugando: `stakes_success`/`stakes_failure` sólo se veían DESPUÉS de tirar,
+ * en el resultado — acá es lo mismo que ya calcula el motor
+ * (`keeper/riesgo.ts`), sólo que antes del click, no después.
+ */
+function textoRiesgo(r: NonNullable<Opcion['riesgo']>): string {
+  const cabecera = `${labelFor(r.skill)} · ${DIFF_LABEL[r.difficulty] ?? r.difficulty}`;
+  // Los temas de conversación declaran una única `razon`, no un par de
+  // apuestas — no fallan «para peor», sólo esquivan o quedan cerrados.
+  if (r.razon) return `${cabecera}
+En juego: ${r.razon}`;
+  if (r.stakesSuccess || r.stakesFailure) {
+    return `${cabecera}
+Si sale: ${r.stakesSuccess ?? '—'}
+Si no: ${r.stakesFailure ?? '—'}`;
+  }
+  return cabecera;
+}
+
 function Acciones({
   options, nuevas, busy, onPick, cuantosFinales,
 }: {
@@ -1696,8 +1717,10 @@ function Acciones({
                 className={`option option-${grupo} ${nuevas.has(o.id) ? 'option-nueva' : ''}`}
                 onClick={() => onPick(o.intencion, o.id)}
                 disabled={busy}
+                title={o.riesgo ? textoRiesgo(o.riesgo) : undefined}
               >
                 {nuevas.has(o.id) && <span className="chispa">◆</span>}
+                {o.riesgo && <span className="riesgo-marca">🎲</span>}
                 {o.etiqueta}
               </button>
             ))}

@@ -82,6 +82,29 @@ export interface AccionDef {
   orden?: number;
 }
 
+/**
+ * Vista previa de lo que se juega al elegir una opción — antes de tirar, no
+ * después. Reportado por el usuario: el motor calculaba `stakes_success`/
+ * `stakes_failure` (`PruebaEscena`, `EfectoTema.prueba`) desde hace rato,
+ * pero la interfaz sólo se enteraba de ellos DESPUÉS de tirar, en el
+ * resultado — nunca antes, cuando todavía importa decidir.
+ *
+ * Quien la llena es `keeper/riesgo.ts` (`previsualizarRiesgos`), no esta
+ * función: `acciones.ts` no puede importar de `keeper/` (regla de
+ * dependencias de CLAUDE.md, `scenario` no depende de `keeper`), así que el
+ * campo queda declarado acá —junto al resto de `Opcion`— y se llena una capa
+ * más arriba, con la MISMA clasificación de intención que usa la resolución
+ * real. Sin objetivo (`stakesSuccess`/`stakesFailure` ausentes) para los
+ * temas de conversación, que sólo declaran una `razon` única, no un par.
+ */
+export interface RiesgoTirada {
+  skill: string;
+  difficulty: string;
+  stakesSuccess?: string;
+  stakesFailure?: string;
+  razon?: string;
+}
+
 /** Lo que viaja a la interfaz. */
 export interface Opcion {
   id: string;
@@ -89,6 +112,8 @@ export interface Opcion {
   intencion: string;
   grupo: GrupoAccion;
   final?: true;
+  /** Ausente si esta opción no dispara ninguna tirada. */
+  riesgo?: RiesgoTirada;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

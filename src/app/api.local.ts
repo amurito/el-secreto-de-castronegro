@@ -19,13 +19,26 @@ import { SIMULADOR } from '../scenario/simulador.ts';
 import { ARMA_POR_ID } from '../rules/armas.ts';
 import { toClientRoll } from '../shared/protocol.ts';
 import { runOfflineTurn } from '../keeper/offline.ts';
-import { accionesDisponibles } from '../scenario/acciones.ts';
+import { accionesDisponibles, type Opcion } from '../scenario/acciones.ts';
+import { previsualizarRiesgos } from '../keeper/riesgo.ts';
 import { sanitizeForClient, estadoDeCombate } from './sanitize.ts';
 import { conTrato } from '../rules/tratamiento.ts';
 import type { GameState } from '../shared/types.ts';
+import type { Scenario } from '../scenario/types.ts';
 import type { GameApi, StatusInfo, TurnEvent, RivalReal, ArmaDisponible, CombateResult, FinalArchivado } from './api.ts';
 
 const activo = (state: GameState) => state.investigators[state.activeInvestigator];
+
+/**
+ * `accionesDisponibles` + la vista previa de riesgo, en un solo lugar —así
+ * ningún punto de este archivo puede devolver opciones sin previsualizar por
+ * olvido. `scenario` puede faltar (campaña vieja con un id que ya no existe
+ * en el catálogo): sin escenario no hay ni opciones ni riesgo que calcular.
+ */
+function opcionesConRiesgo(state: GameState, scenario: Scenario | undefined): Opcion[] {
+  if (!scenario) return [];
+  return previsualizarRiesgos(scenario, state, accionesDisponibles(state, scenario));
+}
 
 /**
  * El catálogo es la única fuente de AVENTURAS. El simulador se suma acá y no
@@ -201,7 +214,7 @@ export function createLocalApi(): GameApi {
       const { state } = await loadState(campaignId);
       return {
         campaignId, opening: conTrato(scenario.opening, activo(state)),
-        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
+        state: sanitizeForClient(state), options: opcionesConRiesgo(state, scenario),
       };
     },
 
@@ -215,7 +228,7 @@ export function createLocalApi(): GameApi {
       const { state } = await loadState(campaignId);
       return {
         campaignId, opening: conTrato(scenario.opening, activo(state)),
-        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
+        state: sanitizeForClient(state), options: opcionesConRiesgo(state, scenario),
       };
     },
 
@@ -225,7 +238,7 @@ export function createLocalApi(): GameApi {
       return {
         state: sanitizeForClient(state),
         opening: scenario ? conTrato(scenario.opening, activo(state)) : '',
-        options: scenario ? accionesDisponibles(state, scenario) : [],
+        options: opcionesConRiesgo(state, scenario),
       };
     },
 
@@ -283,7 +296,7 @@ export function createLocalApi(): GameApi {
       const { state } = await loadState(campaignId);
       return {
         campaignId, opening: conTrato(scenario.opening, activo(state)),
-        state: sanitizeForClient(state), options: accionesDisponibles(state, scenario),
+        state: sanitizeForClient(state), options: opcionesConRiesgo(state, scenario),
       };
     },
 
@@ -472,7 +485,7 @@ export function createLocalApi(): GameApi {
           ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
-          options: scenario ? accionesDisponibles(state, scenario) : [],
+          options: opcionesConRiesgo(state, scenario),
           intimidar: intimidarDisponible(state),
           rivales: rivalesReales(state),
         };
@@ -496,7 +509,7 @@ export function createLocalApi(): GameApi {
           ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
-          options: scenario ? accionesDisponibles(state, scenario) : [],
+          options: opcionesConRiesgo(state, scenario),
           intimidar: intimidarDisponible(state),
           rivales: rivalesReales(state),
         };
@@ -520,7 +533,7 @@ export function createLocalApi(): GameApi {
           ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
-          options: scenario ? accionesDisponibles(state, scenario) : [],
+          options: opcionesConRiesgo(state, scenario),
           intimidar: intimidarDisponible(state),
           rivales: rivalesReales(state),
         };
@@ -546,7 +559,7 @@ export function createLocalApi(): GameApi {
           ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
-          options: scenario ? accionesDisponibles(state, scenario) : [],
+          options: opcionesConRiesgo(state, scenario),
           intimidar: intimidarDisponible(state),
           rivales: rivalesReales(state),
         };
@@ -570,7 +583,7 @@ export function createLocalApi(): GameApi {
           ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
           tiradas: state.rolls.slice(antes).map(toClientRoll),
           combateActivo: Boolean(state.activeCombat),
-          options: scenario ? accionesDisponibles(state, scenario) : [],
+          options: opcionesConRiesgo(state, scenario),
           intimidar: intimidarDisponible(state),
           rivales: rivalesReales(state),
         };

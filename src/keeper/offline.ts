@@ -28,6 +28,7 @@ import { accionesDisponibles, detalleExaminado } from '../scenario/acciones.ts';
 import { resolverTema, temasDisponibles } from './social.ts';
 import { propiedadPorTirada, tieneAlgoMas } from '../rules/cuando-tirar.ts';
 import { escenaPara, ejecutarEscena, leerIntencion } from './escenas.ts';
+import { previsualizarRiesgos } from './riesgo.ts';
 import { conTrato } from '../rules/tratamiento.ts';
 import { apply } from '../engine/reducers.ts';
 
@@ -89,7 +90,7 @@ export async function runOfflineTurn(
 
   return {
     narration,
-    options: accionesDisponibles(comoSiYaNarrado, scenario),
+    options: previsualizarRiesgos(scenario, comoSiYaNarrado, accionesDisponibles(comoSiYaNarrado, scenario)),
   };
 }
 

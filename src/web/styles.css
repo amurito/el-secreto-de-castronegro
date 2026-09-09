@@ -581,6 +581,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 @keyframes latir { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
+/* Marca de que la opción tira dados — el detalle (habilidad, dificultad, qué
+   se juega) va en el `title` nativo del botón, no acá: agregar una línea
+   fija por opción volvía a inflar el cuadro de acciones, y ya se reportó
+   una vez que eso "tapaba el texto" (ver ROADMAP). Chico a propósito. */
+.riesgo-marca { font-size: 0.68rem; margin-right: 0.35rem; opacity: 0.55; }
+.option:hover:not(:disabled) .riesgo-marca { opacity: 0.85; }
+
 .sin-acciones {
   color: var(--text-faint); font-style: italic; font-size: 0.9rem;
   padding: 0.8rem 0;

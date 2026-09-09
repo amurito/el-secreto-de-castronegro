@@ -146,7 +146,7 @@ const DEGREE_LABEL: Record<string, string> = {
   fumble: 'PIFIA',
 };
 
-const DIFF_LABEL: Record<string, string> = { regular: 'Regular', hard: 'Difícil', extreme: 'Extrema' };
+export const DIFF_LABEL: Record<string, string> = { regular: 'Regular', hard: 'Difícil', extreme: 'Extrema' };
 
 /**
  * Los dados de la fase de desarrollo van al mismo registro que las tiradas de
