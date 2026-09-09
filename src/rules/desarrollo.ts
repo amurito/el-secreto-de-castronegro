@@ -131,6 +131,50 @@ export function maxCordura(inv: Investigator): number {
 }
 
 /**
+ * Qué desenlaces de cada aventura cuentan como "miró de frente" (confrontó
+ * el fenómeno en persona, a costo real) o "se fue" (se retiró sin
+ * comprometerse), para `premioDelKeeper` más abajo.
+ *
+ * Clave por `scenarioId`, no por id de desenlace a secas: varios ids se
+ * repiten entre aventuras con sentidos DISTINTOS —"quemar" es negarse a
+ * seguir mirando en La Firma Ajena pero es la salida de El Orden Debido, y
+ * "pintar" es mantener la costumbre en El Invierno Debido pero es entrar en
+ * la cuenta en El Orden Debido—. Sin la clave por escenario, un mismo id
+ * habría cobrado dos veces por error.
+ *
+ * Lo que NO aparece en ninguna de las dos listas de una aventura queda
+ * neutral a propósito, mismo criterio que ya usaba El Vigésimo con
+ * `denunciar`: hay desenlaces que no son ni una cosa ni la otra —reportar,
+ * documentar, destruir evidencia para no tener que decidir— y para esos el
+ * premio sigue dependiendo sólo de cuántas pistas se juntaron.
+ *
+ * Decisiones de diseño con el usuario, 2026-09-08:
+ *   · El Orden Debido: tanto `pintar` (entra en la cuenta él mismo) como
+ *     `seguir` (camina hacia el oeste, hacia lo que Remigia no nombra) son
+ *     "miró de frente" — los dos son ir hacia adentro del fenómeno, no
+ *     hacia afuera.
+ *   · El Hombre que Miraba el Agua: `intervenir` (gritarle una advertencia a
+ *     Bernardo, sabiendo que puede no servir de nada) cuenta igual que
+ *     `quedarse` (ver la fundación entera) — las dos son elegir intervenir
+ *     en vez de sólo mirar, aunque cuesten cosas distintas.
+ */
+const DESENLACES_KEEPER: Record<string, { miroDeFrente: string[]; seFue: string[] }> = {
+  'agua-quieta': { miroDeFrente: ['mirar', 'bajar'], seFue: ['llevarse'] },
+  'legua-perdida': { miroDeFrente: ['caminar'], seFue: ['llevarse'] },
+  'tercer-umbral': { miroDeFrente: ['preguntar'], seFue: ['irse'] },
+  'invierno-debido': { miroDeFrente: ['soltar'], seFue: ['irse'] },
+  'sueno-debido': { miroDeFrente: ['cambio'], seFue: ['dormido'] },
+  'orden-debido': { miroDeFrente: ['pintar', 'seguir'], seFue: ['quemar'] },
+  'agua-blanca': { miroDeFrente: ['subir'], seFue: ['irse'] },
+  'el-vigesimo': { miroDeFrente: ['cortar', 'heredar'], seFue: ['irse-vigesimo'] },
+  // "Lo que Bernardo sabía" tiene un único id de desenlace ('cerrar') sea
+  // cual sea la rama narrativa: no hay con qué distinguir acá, y el epílogo
+  // ya es corto — se lo deja fuera de la tabla, que es lo mismo que decir
+  // "ni miró de frente ni se fue", y el premio depende sólo de las pistas.
+  'el-hombre-que-miraba-el-agua': { miroDeFrente: ['quedarse', 'intervenir'], seFue: [] },
+};
+
+/**
  * Premio de Cordura del Keeper, proporcional al peligro (p. 167).
  *
  * El libro deja el valor a criterio del Keeper. Acá lo decide el estado, que es
@@ -142,16 +186,10 @@ export function maxCordura(inv: Investigator): number {
 export function premioDelKeeper(state: GameState): { dados: number; caras: number; razon: string } {
   const pistas = state.board.clues.length;
   const final = state.ending?.id ?? null;
+  const config = DESENLACES_KEEPER[state.scenarioId];
 
-  // Los desenlaces que exigen mirar de frente el fenómeno valen más que los
-  // que consisten en no mirarlo. `cortar`/`heredar` (El Vigésimo) son la
-  // versión de esta aventura de "mirar de frente": las dos exigen haber
-  // vencido a Bernardo de verdad, no sólo haber sobrevivido a la audiencia.
-  // `irse-vigesimo` es su «se fue» —salir sin pelear—. `denunciar` queda
-  // afuera a propósito: huyó de la pelea pero volvió a hacer algo con lo que
-  // vio, ni una cosa ni la otra.
-  const miroDeFrente = final === 'mirar' || final === 'bajar' || final === 'cortar' || final === 'heredar';
-  const seFue = final === 'llevarse' || final === 'irse-vigesimo';
+  const miroDeFrente = !!final && !!config?.miroDeFrente.includes(final);
+  const seFue = !!final && !!config?.seFue.includes(final);
 
   if (!final) return { dados: 0, caras: 6, razon: 'la aventura no se cerró' };
   if (seFue && pistas < 5) {

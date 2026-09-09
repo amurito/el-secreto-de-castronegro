@@ -3642,6 +3642,48 @@ punzón — y se confirma que la tirada de ataque es "Ocultismo", no "Pelea",
 distinguiéndola de las tiradas que el motor fuerza para el resto de los
 presentes en el mismo asalto (Ahijado, Bernardo defendiéndose).
 
+### 3.2-trequadragies El premio del Keeper, extendido a las otras ocho aventuras ✔ HECHO
+
+Único hueco de sistema que quedaba, aparte del arma del Círculo Rojo:
+`premioDelKeeper` (el bono de Cordura de la fase de desarrollo, p. 167) sólo
+distinguía "miró de frente"/"se fue" para Agua Quieta y El Vigésimo; el
+resto de las ocho aventuras caía siempre al tramo genérico por cantidad de
+pistas, ganara o huyera el investigador.
+
+Extendido con una tabla nueva, `DESENLACES_KEEPER` (`rules/desarrollo.ts`),
+que mapea `scenarioId → {miroDeFrente, seFue}`. La clave por escenario —no
+por id de desenlace a secas— importó de verdad: varios ids se repiten entre
+aventuras con sentido DISTINTO. "quemar" es negarse a seguir mirando en La
+Firma Ajena (neutral) pero es la salida de El Orden Debido (se fue);
+"pintar" es mantener la costumbre en El Invierno Debido (neutral) pero es
+entrar en la cuenta en El Orden Debido (miró de frente). Sin la clave por
+escenario, uno de los dos habría cobrado mal.
+
+Decisiones tomadas con el usuario, 2026-09-08:
+- **La Legua Perdida**: `caminar` / `llevarse`.
+- **La Firma Ajena**: `preguntar` / `irse`.
+- **El Invierno Debido**: `soltar` / `irse`.
+- **El Sueño Debido**: `cambio` / `dormido`.
+- **El Orden Debido**: `pintar` Y `seguir` (los dos son ir hacia el
+  fenómeno, no hacia afuera) / `quemar`.
+- **Agua Blanca**: `subir` / `irse`.
+- **El Hombre que Miraba el Agua**: `quedarse` Y `intervenir` (elegir
+  intervenir cuenta igual que quedarse hasta el final, aunque cuesten cosas
+  distintas) / sin `seFue` — ningún desenlace ahí lee como "se fue con
+  poco".
+- **Lo que Bernardo sabía**: fuera de la tabla a propósito — un único id de
+  desenlace (`cerrar`) sea cual sea la rama narrativa, sin nada con qué
+  distinguir.
+
+Lo que queda fuera de las dos listas de cada aventura sigue neutral, mismo
+criterio que ya usaba El Vigésimo con `denunciar`: reportar, documentar,
+destruir evidencia para no decidir no es ni una cosa ni la otra.
+
+Probado en `prueba-desarrollo.ts`: las nueve puntuaciones "miró de frente"
+(1D10 con 8+ pistas), las seis "se fue" (1D3 con <5 pistas), y —el caso que
+de verdad importaba probar— que "quemar" y "pintar" puntúan distinto según
+en qué aventura aparecen.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

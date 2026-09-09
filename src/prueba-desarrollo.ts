@@ -175,13 +175,70 @@ async function main() {
     // temprano" para los desenlaces de Agua Quieta (`mirar`/`bajar`/
     // `llevarse`) — los de El Vigésimo caían siempre al tramo genérico por
     // pistas, sin importar si Bernardo cayó o si el investigador huyó.
-    const conNueve = { board: { clues: new Array(9).fill(0) } };
+    const conNueve = { scenarioId: 'el-vigesimo', board: { clues: new Array(9).fill(0) } };
     const cortar = premioDelKeeper({ ...conNueve, ending: { id: 'cortar' } } as unknown as GameState);
-    const irse = premioDelKeeper({ board: { clues: [] }, ending: { id: 'irse-vigesimo' } } as unknown as GameState);
+    const irse = premioDelKeeper({ scenarioId: 'el-vigesimo', board: { clues: [] }, ending: { id: 'irse-vigesimo' } } as unknown as GameState);
     const denunciar = premioDelKeeper({ ...conNueve, ending: { id: 'denunciar' } } as unknown as GameState);
     check('vencer a Bernardo (cortar) puntúa como "miró de frente"', cortar.caras === 10, JSON.stringify(cortar));
     check('irse sin pelear puntúa como "se fue temprano"', irse.caras === 3, JSON.stringify(irse));
     check('denunciar sin haber vencido queda en el tramo genérico por pistas', denunciar.caras === 8, JSON.stringify(denunciar));
+  }
+
+  console.log('\nEL PREMIO DEL KEEPER, EXTENDIDO A LAS OTRAS OCHO AVENTURAS');
+  {
+    // Antes de esta sesión, sólo Agua Quieta y El Vigésimo distinguían
+    // "miró de frente"/"se fue" — el resto caía siempre al tramo genérico
+    // por pistas, ganara o huyera. Decidido con el usuario, 2026-09-08 (ver
+    // DESENLACES_KEEPER en rules/desarrollo.ts).
+    const con8 = (scenarioId: string) => ({ scenarioId, board: { clues: new Array(8).fill(0) } });
+    const con4 = (scenarioId: string) => ({ scenarioId, board: { clues: new Array(4).fill(0) } });
+
+    const casos: Array<{ scenarioId: string; final: string; caras8: number; nombre: string }> = [
+      { scenarioId: 'legua-perdida', final: 'caminar', caras8: 10, nombre: 'La Legua Perdida: caminar' },
+      { scenarioId: 'tercer-umbral', final: 'preguntar', caras8: 10, nombre: 'La Firma Ajena: preguntar' },
+      { scenarioId: 'invierno-debido', final: 'soltar', caras8: 10, nombre: 'El Invierno Debido: soltar' },
+      { scenarioId: 'sueno-debido', final: 'cambio', caras8: 10, nombre: 'El Sueño Debido: cambio' },
+      { scenarioId: 'orden-debido', final: 'pintar', caras8: 10, nombre: 'El Orden Debido: pintar' },
+      { scenarioId: 'orden-debido', final: 'seguir', caras8: 10, nombre: 'El Orden Debido: seguir' },
+      { scenarioId: 'agua-blanca', final: 'subir', caras8: 10, nombre: 'Agua Blanca: subir' },
+      { scenarioId: 'el-hombre-que-miraba-el-agua', final: 'quedarse', caras8: 10, nombre: 'Hombre que Miraba el Agua: quedarse' },
+      { scenarioId: 'el-hombre-que-miraba-el-agua', final: 'intervenir', caras8: 10, nombre: 'Hombre que Miraba el Agua: intervenir' },
+    ];
+    for (const c of casos) {
+      const r = premioDelKeeper({ ...con8(c.scenarioId), ending: { id: c.final } } as unknown as GameState);
+      check(`${c.nombre} con 8 pistas puntúa "miró de frente" (1D10)`, r.caras === c.caras8, JSON.stringify(r));
+    }
+
+    const casosSeFue: Array<{ scenarioId: string; final: string; nombre: string }> = [
+      { scenarioId: 'legua-perdida', final: 'llevarse', nombre: 'La Legua Perdida: llevarse' },
+      { scenarioId: 'tercer-umbral', final: 'irse', nombre: 'La Firma Ajena: irse' },
+      { scenarioId: 'invierno-debido', final: 'irse', nombre: 'El Invierno Debido: irse' },
+      { scenarioId: 'sueno-debido', final: 'dormido', nombre: 'El Sueño Debido: dormido' },
+      { scenarioId: 'orden-debido', final: 'quemar', nombre: 'El Orden Debido: quemar' },
+      { scenarioId: 'agua-blanca', final: 'irse', nombre: 'Agua Blanca: irse' },
+    ];
+    for (const c of casosSeFue) {
+      const r = premioDelKeeper({ ...con4(c.scenarioId), ending: { id: c.final } } as unknown as GameState);
+      check(`${c.nombre} con 4 pistas puntúa "se fue temprano" (1D3)`, r.caras === 3, JSON.stringify(r));
+    }
+
+    // El mismo id de desenlace, en aventuras distintas, NO tiene que cobrar
+    // lo mismo: es justo lo que la tabla por scenarioId existe para evitar.
+    // Con pocas pistas es donde se nota: "se fue" penaliza, neutral no.
+    const quemarFirmaAjena = premioDelKeeper({ ...con4('tercer-umbral'), ending: { id: 'quemar' } } as unknown as GameState);
+    const quemarOrdenDebido = premioDelKeeper({ ...con4('orden-debido'), ending: { id: 'quemar' } } as unknown as GameState);
+    check('"quemar" en La Firma Ajena es neutral: 1D4 con pocas pistas, sin penalización', quemarFirmaAjena.caras === 4, JSON.stringify(quemarFirmaAjena));
+    check('"quemar" en El Orden Debido SÍ es "se fue": 1D3 con pocas pistas — mismo id, aventura distinta', quemarOrdenDebido.caras === 3, JSON.stringify(quemarOrdenDebido));
+
+    const pintarInviernoDebido = premioDelKeeper({ ...con8('invierno-debido'), ending: { id: 'pintar' } } as unknown as GameState);
+    const pintarOrdenDebido = premioDelKeeper({ ...con8('orden-debido'), ending: { id: 'pintar' } } as unknown as GameState);
+    check('"pintar" en El Invierno Debido es neutral (1D8 con 8 pistas)', pintarInviernoDebido.caras === 8, JSON.stringify(pintarInviernoDebido));
+    check('"pintar" en El Orden Debido es "miró de frente" (1D10 con 8 pistas)', pintarOrdenDebido.caras === 10, JSON.stringify(pintarOrdenDebido));
+
+    // "Lo que Bernardo sabía" queda fuera de la tabla a propósito: un único
+    // id de desenlace, sin cómo distinguir.
+    const bernardoSabia = premioDelKeeper({ ...con8('lo-que-bernardo-sabia'), ending: { id: 'cerrar' } } as unknown as GameState);
+    check('"Lo que Bernardo sabía" queda en el tramo genérico por pistas (1D8 con 8)', bernardoSabia.caras === 8, JSON.stringify(bernardoSabia));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
