@@ -638,8 +638,14 @@ export function App() {
                 </div>
               ) : null}
               <div className="scenario-botones">
+                {/* El nombre sale del elenco de LA AVENTURA, no escrito a
+                    mano: hasta la décima todas empezaban con Elena y decirlo
+                    así era cierto, pero «El Círculo Rojo» (1674) tiene elenco
+                    propio y el botón mentía. */}
                 <button className="primary" onClick={() => newCampaign(e.scenario.id)} disabled={busy || !api}>
-                  {busy ? 'Abriendo…' : 'Empezar con Elena'}
+                  {busy
+                    ? 'Abriendo…'
+                    : `Empezar con ${e.scenario.investigators[0]?.name.split(' ')[0] ?? 'el pregenerado'}`}
                 </button>
                 <button className="ghost" onClick={() => setCreando(e.scenario.id)} disabled={busy || !api}>
                   Crear investigador
@@ -973,9 +979,21 @@ export function App() {
                       {def.costoPM} PM{def.costoCordura ? ` · ${def.costoCordura} de Cordura` : ''}
                       {pm < def.costoPM && ' · sin PM suficientes: el resto sale de tus Puntos de Vida'}
                     </div>
-                    <button className="primary" disabled={busy || espera > 0} onClick={() => lanzarHechizo(h.id)}>
-                      {espera > 0 ? `Todavía no — faltan ${textoEspera(espera)}` : 'Lanzar'}
-                    </button>
+                    {/* Un hechizo de daño necesita a quién apuntarle, y acá
+                        no hay nadie: se lanza desde la pantalla de combate.
+                        Sin esto el botón existía y el motor lo rechazaba,
+                        que es la peor manera de decir que no. */}
+                    {def.efecto === 'dano' ? (
+                      <div className="hechizo-solo-combate">
+                        Se lanza peleando: aparece entre las acciones del combate, contra el rival elegido.
+                        Contra lo que no se hiere de la manera común, tampoco alcanza esto: hay que
+                        dirigirlo al mismo punto al que iría un filo.
+                      </div>
+                    ) : (
+                      <button className="primary" disabled={busy || espera > 0} onClick={() => lanzarHechizo(h.id)}>
+                        {espera > 0 ? `Todavía no — faltan ${textoEspera(espera)}` : 'Lanzar'}
+                      </button>
+                    )}
                   </div>
                 );
               })}

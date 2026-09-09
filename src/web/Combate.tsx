@@ -24,6 +24,7 @@ import React, { useEffect, useState } from 'react';
 import type { GameApi, CombateResult, RivalReal, ArmaDisponible, IntimidarDisponible } from '../app/api.ts';
 import type { Opcion } from '../scenario/acciones.ts';
 import { ARMA_POR_ID } from '../rules/armas.ts';
+import { HECHIZO_POR_ID } from '../rules/hechizos.ts';
 import { Sheet, RollCard } from './components.tsx';
 
 const ETIQUETA_ESTADO: Record<string, string> = {
@@ -177,7 +178,24 @@ export function Combate({
     }
   }
 
+  async function lanzarHechizo(spellId: string, alPuntoDebil: boolean) {
+    setOcupado(true);
+    setError(null);
+    try {
+      agregarAlRegistro(await api.combateHechizo(campaignId, rivalId, spellId, alPuntoDebil));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
   const inv = estado?.investigator;
+  // Sólo los de daño: el resto de los hechizos no necesita objetivo y se
+  // lanza desde la pestaña de Hechizos, como siempre.
+  const hechizosDeDano = ((inv?.spellsKnown ?? []) as Array<{ id: string }>)
+    .map((h) => HECHIZO_POR_ID[h.id])
+    .filter((def): def is NonNullable<typeof def> => !!def && def.efecto === 'dano');
   const elegido = rivales.find((r) => r.id === rivalId);
   const enPie = elegido ? elegido.estadoCombate !== 'fuera_de_combate' : false;
   const investigadorEnPie = (inv?.derived?.hp ?? 1) > 0;
@@ -304,6 +322,38 @@ export function Combate({
             </button>
           )}
         </div>
+
+        {/* Hechizos de DAÑO, y sólo ésos: los otros efectos (bonificación,
+            Estabilidad, Exposición) no necesitan objetivo y se lanzan desde
+            la pestaña de Hechizos como siempre. Acá aparecen porque acá hay
+            a quién apuntarle. */}
+        {hechizosDeDano.length > 0 && (
+          <div className="sim-maniobras">
+            <span className="sim-maniobras-label">Hechizos contra {elegido?.name ?? 'el rival'}:</span>
+            {hechizosDeDano.map((h) => (
+              <React.Fragment key={h.id}>
+                <button
+                  className="ghost"
+                  onClick={() => lanzarHechizo(h.id, false)}
+                  disabled={ocupado || !enPie || !investigadorEnPie}
+                  title={h.descripcion}
+                >
+                  {h.nombre} ({h.costoPM} PM)
+                </button>
+                {elegido?.puntoDebil?.descubierto && (
+                  <button
+                    className="ghost"
+                    onClick={() => lanzarHechizo(h.id, true)}
+                    disabled={ocupado || !enPie || !investigadorEnPie}
+                    title={`${h.nombre}, dirigido a ${elegido.puntoDebil.nombre}`}
+                  >
+                    {h.nombre} → {elegido.puntoDebil.nombre}
+                  </button>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
 
         <div className="sim-maniobras">
           <span className="sim-maniobras-label">Maniobras contra {elegido?.name ?? 'el rival'}:</span>

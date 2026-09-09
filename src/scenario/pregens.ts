@@ -38,6 +38,13 @@ function make(
   luck: number,
   skills: Record<SkillId, number>,
   backstory: Investigator['backstory'],
+  /**
+   * Opcional y con default, para no tocar a Elena ni a Tomás: hasta «El
+   * Círculo Rojo» (c. 1674) todos los investigadores del proyecto eran
+   * argentinos de 1920, y "Argentina" alcanzaba. Un pregenerado de 1674 no
+   * puede ser argentino: el país no existe todavía.
+   */
+  nationality = 'Argentina',
 ): Investigator {
   const derived = computeDerived(ch, { luck, edad: age });
   // Esquivar = DEX/2 salvo que la ocupación lo suba.
@@ -51,7 +58,7 @@ function make(
     occupation,
     treatment,
     genero,
-    nationality: 'Argentina',
+    nationality,
     description,
     characteristics: ch,
     derived,
@@ -164,6 +171,107 @@ export const TOMAS: Investigator = make(
     ],
     keyConnection: 't-conexion',
   },
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EL CÍRCULO ROJO, c. 1674
+//
+// Elenco propio de la undécima aventura. NO se encadenan con Elena ni con
+// Tomás —son de doscientos cincuenta años antes—, así que esa aventura es su
+// propia campaña, sin herencia hacia ni desde ninguna otra. Misma función
+// `make()` que los otros dos, con la nacionalidad de la época.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const JUANA: Investigator = make(
+  'inv-juana',
+  'Juana Ossorio',
+  41,
+  'Comadre y curandera',
+  'la comadre', 'f',
+  'Nació de este lado del mar, de madre india y padre que no la reconoció. Atiende partos, huesos rotos y ' +
+    'lo que la gente no cuenta en confesión. Conoce el agua de la laguna desde chica y no le tuvo miedo ' +
+    'nunca, que no es lo mismo que no respetarla. La escuchan cuando hace falta y la olvidan cuando no.',
+  { STR: 50, CON: 70, SIZ: 50, DEX: 60, APP: 50, INT: 70, POW: 80, EDU: 40 },
+  50,
+  {
+    ocultismo: 55,
+    medicina: 40,
+    primeros_auxilios: 65,
+    ciencia_naturales: 45,
+    escuchar: 55,
+    descubrir: 50,
+    psicologia: 50,
+    orientarse: 55,
+    persuasion: 35,
+    sigilo: 40,
+    nadar: 40,
+    trepar: 35,
+    pelea: 30,
+    intimidar: 25,
+    historia: 15,
+  },
+  {
+    aspects: [
+      { id: 'j-conexion', kind: 'personas',
+        text: 'Los chicos que ayudó a nacer en veinte años, que ya son gente grande y la saludan de lejos.' },
+      { id: 'j-ideologia', kind: 'ideologia',
+        text: 'Que hay cosas que se cuidan sin entenderlas, y que entenderlas de más es una manera de romperlas.' },
+      { id: 'j-lugar', kind: 'lugares',
+        text: 'La orilla de la laguna a la hora en que el agua se queda quieta del todo.' },
+      { id: 'j-posesion', kind: 'posesiones',
+        text: 'Un atado de hierbas y una piedra de río que le dio su madre, y que no sirve para nada.' },
+      { id: 'j-rasgo', kind: 'rasgos',
+        text: 'No discute con nadie que no vaya a cambiar de idea.' },
+    ],
+    keyConnection: 'j-conexion',
+  },
+  'Virreinato del Perú',
+);
+
+export const FRAY_MATEO: Investigator = make(
+  'inv-mateo',
+  'Fray Mateo de Anguix',
+  36,
+  'Fraile y escribiente',
+  'fray Mateo', 'm',
+  'Vino de Sevilla a llevar cuentas y bautismos, y hace tres años que anota cosas que no van en ningún libro ' +
+    'que se pueda mandar a España. Lee latín y una lengua más que no admite en voz alta. No es un hombre de fe ' +
+    'perdida: es un hombre de fe que encontró algo que su fe no explica y decidió no mentir sobre eso.',
+  { STR: 45, CON: 55, SIZ: 60, DEX: 55, APP: 55, INT: 80, POW: 60, EDU: 80 },
+  45,
+  {
+    biblioteca: 65,
+    buscar_libros: 60,
+    persuasion: 55,
+    historia: 50,
+    ocultismo: 35,
+    psicologia: 45,
+    descubrir: 45,
+    escuchar: 40,
+    labia: 40,
+    intimidar: 30,
+    pelea: 35,
+    orientarse: 25,
+    sigilo: 25,
+    primeros_auxilios: 25,
+    nadar: 20,
+  },
+  {
+    aspects: [
+      { id: 'm-conexion', kind: 'personas',
+        text: 'Juana Ossorio, la comadre, que sabe más que él y no tiene con quién decirlo.' },
+      { id: 'm-ideologia', kind: 'ideologia',
+        text: 'Que lo que no se anota se pierde, y que perder algo por comodidad es una forma de mentir.' },
+      { id: 'm-lugar', kind: 'lugares',
+        text: 'La mesa del puesto, de noche, con la vela hasta el final y la tinta cerca del fuego para que no espese.' },
+      { id: 'm-posesion', kind: 'posesiones',
+        text: 'Un cuaderno cosido a mano, de hojas desparejas, que no le mostró a su superior.' },
+      { id: 'm-rasgo', kind: 'rasgos',
+        text: 'Escribe todo dos veces: una como pasó y otra como se podría contar.' },
+    ],
+    keyConnection: 'm-conexion',
+  },
+  'Reino de Sevilla, Corona de Castilla',
 );
 
 /**

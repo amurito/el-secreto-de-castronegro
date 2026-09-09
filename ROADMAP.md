@@ -3684,6 +3684,87 @@ Probado en `prueba-desarrollo.ts`: las nueve puntuaciones "miró de frente"
 de verdad importaba probar— que "quemar" y "pintar" puntúan distinto según
 en qué aventura aparecen.
 
+### 3.2-quattuorquadragies El Círculo Rojo — la undécima aventura, 1674 ✔ HECHO
+
+La primera que no transcurre en el siglo XX. Agua Blanca, 21 de septiembre de
+1674: seis años antes de que llegue el español que le va a poner nombre al
+lugar, y doscientos cincuenta antes de todo lo demás. Se juega con **su propio
+elenco** —Juana Ossorio, comadre y curandera, y fray Mateo de Anguix,
+escribiente—, sin herencia hacia ni desde nadie: es una campaña suelta que
+aparece primera en el catálogo por fecha y se puede jugar en cualquier momento.
+
+**El obelisco es el eje.** El canon (§8) ya fijaba que la piedra desciende de
+algo mucho más viejo y que quien la levantó **no invocaba: marcaba un límite**.
+Acá el grupo la encuentra ya antiquísima y **sin una sola capa de almagre
+encima** —las ocho o diez capas que se ven en 1928 empiezan esta tarde—, y la
+tirada central (`leer-la-piedra`, Ocultismo difícil) permite entenderla bien,
+una sola vez en toda la campaña: el pasto enfermo no lo causó la piedra, la
+piedra está sobre otra piedra más vieja en el mismo punto exacto, y no hay
+dónde apoyar nada. **Esto no es un altar. Es un cartel.**
+
+Ésa es la tragedia estructural de la aventura y la razón de escribirla: el
+Círculo entiende el obelisco *bien*, y ese entendimiento no sobrevive.
+Doscientos cinco años después Bernardo lo lee como una puerta; doscientos
+cincuenta y cuatro después, Villa Requena repinta un círculo cada San Juan sin
+que nadie sepa por qué. Quien jugó las diez aventuras lo ve degradarse de punta
+a punta.
+
+**Lo que la aventura explica el origen de**, sin contradecir nada publicado: el
+punzón del Círculo (§3.2-duoquadragies) se fabrica y se esconde acá; el primer
+círculo grabado de la piedra del alto —el que en 1679 «tiembla», y el octavo
+no— se talla acá; la costumbre de anotar lo que la parroquia no puede, que en
+1895 deja la nota marginal sobre «M. de F.», se formaliza acá; y «Contar lo que
+no se puede anotar» se aprende en su origen en vez de heredarlo de un libro dos
+veces copiado.
+
+**Lo sellado sigue sellado.** La aventura entera trata de qué recuperaron y de
+quién puso la piedra, y en ningún texto suyo se contesta quién hizo el primer
+aro ni si existe un primero. El inventario dice siempre «recuperado», nunca
+«hecho», y debajo de una tachadura: «no sé si es el primero». Los que
+levantaron la piedra quedan sin nombre y sin fecha. `prueba-circulorojo.ts`
+audita eso sobre el JSON crudo **y** sobre la prosa que producen los
+resolvedores, no sólo sobre el bundle.
+
+**Lo nuevo de sistema:**
+
+- **Un arma: la lasca tallada del monolito** (`rules/armas.ts`, 1D6, empala,
+  Pelea). Explica de paso de dónde salió `it-lasca-monolito`, la lasca suelta
+  que en 1928 sigue tirada al pie de la piedra.
+- **Un hechizo de daño: «Cerrarle el paso»** (6 PM, 2 de Cordura, 1D6+, espera
+  de dos horas). Es el primero del juego que le pega a alguien, y lo único que
+  pidió motor: `EfectoHechizo` suma `'dano'`, y `toolCastSpell` acepta `npc_id`
+  y `punto_debil` y aplica el daño **reusando `danarNpc`** —el mismo helper
+  privado de `resolve_attack`—, así que contra un rival con `invulnerabilidad`
+  declarada se cierra igual que un tajo común salvo que vaya al punto débil.
+  Cero casos especiales por NPC. Se lanza desde la pantalla de combate
+  (`combateHechizo` en `api.local.ts`, botón en `Combate.tsx`), porque la
+  pestaña de Hechizos no tiene a quién apuntarle.
+
+**Tres cosas que salieron de jugarla, no de escribirla:**
+
+1. **La espiral de Estabilidad.** Fallar `aprender-cerrar` costaba 3 de
+   Estabilidad por intento, y la Estabilidad baja agrega dados de penalización
+   a *todas* las tiradas siguientes: veinticuatro intentos, Estabilidad de 100
+   a 22, y el hechizo sin salir. Ahora fallar no cuesta Estabilidad y deja la
+   próxima más fácil (dado extra). Mismo patrón aplicado después a
+   `leer-la-piedra` y `aprender-anotar`.
+2. **El reloj que no se movía.** Ninguna escena declaraba `tiempo`, así que la
+   prosa decía «se te va la tarde» y el reloj marcaba las nueve y veinte. Peor:
+   la espera de dos horas del hechizo era **inalcanzable**, y fallar el primer
+   lanzamiento lo dejaba muerto por el resto de la aventura porque no había con
+   qué hacer pasar el tiempo. Cada escena declara ahora lo que tarda.
+3. **`aprender-anotar` era imposible para media aventura.** Pedía Biblioteca
+   difícil, y Juana tiene Biblioteca 20 —o sea 10%—. Ahora la habilidad sale de
+   quién lo esté intentando: el fraile los lee como texto, la comadre entra por
+   Ocultismo.
+
+Dos arreglos de prosa que aparecieron de paso y valen para todo el juego:
+`conA` (`scenario/acciones.ts`) bajaba a minúscula el nombre entero del lugar,
+así que «El rancho de los Quiroga» se ofrecía como «Ir al rancho de los
+quiroga» —ahora sólo baja el artículo—, y los marcadores `narrado` se comparan
+**sensibles a mayúsculas**, con lo que tres puertas `hecha` de esta aventura
+nunca cerraban y la acción se seguía ofreciendo después de hecha.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

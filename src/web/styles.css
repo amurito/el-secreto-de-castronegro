@@ -273,6 +273,10 @@ button { font-family: inherit; cursor: pointer; }
   font-family: var(--serif); font-style: italic; font-size: 0.72rem;
   color: var(--text-faint); margin: 0.2rem 0 0;
 }
+.hechizo-solo-combate {
+  font-family: var(--serif); font-style: italic; font-size: 0.74rem;
+  color: var(--text-faint); border-left: 2px solid var(--line); padding-left: 0.6rem;
+}
 .hechizo-desc { font-size: 0.8rem; color: var(--text-dim); margin: 0.5rem 0; line-height: 1.5; }
 .hechizo-costo { font-family: var(--mono); font-size: 0.65rem; color: var(--text-faint); margin-bottom: 0.6rem; }
 

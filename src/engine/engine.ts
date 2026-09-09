@@ -1073,6 +1073,33 @@ export class Turn {
       return this.reject('cast_spell', raw, 'El investigador está inconsciente o peor: no puede lanzar nada.');
     }
 
+    // ── El objetivo, sólo para los hechizos de daño ─────────────────────────
+    // Los otros tres efectos le pasan algo a quien lanza y no necesitan a
+    // nadie enfrente. Éste sí, y además necesita que haya una pelea de
+    // verdad en curso: un hechizo que baja PV fuera de combate sería una
+    // manera de matar NPCs sin que el motor de combate se entere.
+    let objetivo: Npc | null = null;
+    if (hechizo.efecto === 'dano') {
+      const npcId = String(raw.npc_id ?? '').trim();
+      if (!npcId) {
+        return this.reject('cast_spell', raw,
+          `«${hechizo.nombre}» necesita un objetivo: falta \`npc_id\`.`);
+      }
+      const combate = this.state.activeCombat;
+      if (!combate || !combate.npcIds.includes(npcId)) {
+        return this.reject('cast_spell', raw,
+          `«${hechizo.nombre}» sólo se puede lanzar contra alguien con quien ya se esté peleando.`);
+      }
+      const npc = this.state.npcs[npcId];
+      if (!npc?.combate) {
+        return this.reject('cast_spell', raw, `${npcId} no tiene ficha de combate: no hay a qué pegarle.`);
+      }
+      if (npc.combate.hp <= 0) {
+        return this.reject('cast_spell', raw, `${npc.name} ya está fuera de combate.`);
+      }
+      objetivo = npc;
+    }
+
     // ── La espera entre intentos ────────────────────────────────────────────
     // El manual dice que un lanzamiento fallido no cuesta Puntos de Magia, y
     // eso está bien; lo que no dice en ningún lado es que se pueda insistir
@@ -1143,7 +1170,7 @@ export class Turn {
       this.toolApplySanityLoss({ amount: hechizo.costoCordura, cause: `lanzar «${hechizo.nombre}»` });
     }
 
-    // ── El efecto: uno de dos tipos genéricos, nunca algo que sepa de una
+    // ── El efecto: uno de los tipos genéricos, nunca algo que sepa de una
     // aventura en particular. Ver la cabecera de rules/hechizos.ts. ──
     let bonusDiceTo: number | undefined;
     let notaEfecto = '';
@@ -1153,10 +1180,28 @@ export class Turn {
       this.toolApplyStability({ amount: hechizo.magnitud, cause: `lanzar «${hechizo.nombre}»` });
     } else if (hechizo.efecto === 'exposicion') {
       notaEfecto = ' ' + this.bajarExposicion(hechizo.magnitud, `lanzar «${hechizo.nombre}»`);
+    } else if (hechizo.efecto === 'dano' && objetivo) {
+      // Mismo `danarNpc` que usa un tajo cualquiera (`toolResolveAttack`):
+      // trae puesto el comportamiento correcto contra un rival con
+      // `invulnerabilidad` declarada —la herida se cierra sola salvo que el
+      // golpe vaya dirigido al punto débil— sin un solo caso especial acá.
+      const alPuntoDebil = String(raw.punto_debil ?? 'false') === 'true';
+      const invul = objetivo.combate!.invulnerabilidad;
+      if (alPuntoDebil && !invul) {
+        return this.reject('cast_spell', raw,
+          `${objetivo.name} no tiene un punto débil declarado: cerrarle el paso donde sea es lo mismo.`);
+      }
+      notaEfecto = ' ' + this.danarNpc(
+        objetivo, hechizo.magnitud, `«${hechizo.nombre}» de ${inv.name}`, alPuntoDebil,
+      );
     }
 
     this.emit('SPELL_CAST', { investigatorId: inv.id, spellId, provenNow, bonusDiceTo, attemptedAt });
     this.advanceTimeBy(MINUTOS_POR_LANZAMIENTO, `lanzar «${hechizo.nombre}»`);
+    // Un hechizo que baja PV puede terminar la pelea, igual que un tajo: sin
+    // esto, matar al último rival con magia dejaba `activeCombat` abierto y
+    // la pantalla de combate sin salida.
+    if (hechizo.efecto === 'dano') this.cerrarCombateSiTerminado();
 
     return {
       ok: true,

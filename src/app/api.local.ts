@@ -529,6 +529,32 @@ export function createLocalApi(): GameApi {
       }
     },
 
+    async combateHechizo(id, npcId, spellId, puntoDebil): Promise<CombateResult> {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('cast_spell', {
+          spell_id: spellId, npc_id: npcId, punto_debil: String(Boolean(puntoDebil)),
+        });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          combateActivo: Boolean(state.activeCombat),
+          options: scenario ? accionesDisponibles(state, scenario) : [],
+          intimidar: intimidarDisponible(state),
+          rivales: rivalesReales(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
     async combateIntimidar(id, npcId): Promise<CombateResult> {
       if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
       enCurso.add(id);

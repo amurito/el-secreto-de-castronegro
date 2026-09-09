@@ -31,9 +31,15 @@ const lowerFirst = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
  * punto, eso se lee peor que un bug.
  */
 const conA = (nombre: string) => {
-  const n = nombre.toLowerCase();
-  if (n.startsWith('el ')) return `al ${n.slice(3)}`;
-  return `a ${n}`;
+  // Sólo se baja el artículo, no el nombre entero: bajarlo todo convertía
+  // «El rancho de los Quiroga» en «al rancho de los quiroga», y con eso
+  // cualquier lugar con un apellido o un topónimo adentro se leía roto.
+  const [primera, ...resto] = nombre.split(' ');
+  const articulo = primera.toLowerCase();
+  const cola = resto.join(' ');
+  if (articulo === 'el') return `al ${cola}`;
+  if (['la', 'los', 'las'].includes(articulo)) return `a ${articulo} ${cola}`;
+  return `a ${nombre}`;
 };
 
 const narrado = (s: GameState, fragmento: string) =>

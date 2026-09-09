@@ -155,6 +155,13 @@ export interface GameApi {
    * la escena que abrió este combate lo configuró — ver `CombateResult.intimidar`.
    */
   combateIntimidar(id: string, npcId: string): Promise<CombateResult>;
+  /**
+   * Lanzar un hechizo de DAÑO contra un rival, dentro del combate. Vive acá
+   * y no en `castSpell` porque necesita un objetivo, y la pestaña de
+   * Hechizos no tiene a quién apuntarle: el rival ya está elegido en la
+   * pantalla de combate. `puntoDebil` va igual que en `combateAtacar`.
+   */
+  combateHechizo(id: string, npcId: string, spellId: string, puntoDebil?: boolean): Promise<CombateResult>;
 
   /**
    * Lanzar un hechizo ya aprendido, desde la pestaña "Hechizos". Igual que

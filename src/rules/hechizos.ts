@@ -23,7 +23,14 @@
  * dos cosas o nada.
  */
 
-export type EfectoHechizo = 'bono_dado' | 'estabilidad' | 'exposicion';
+/**
+ * `dano` es el único que necesita un OBJETIVO y combate activo: los otros
+ * tres le pasan algo al que lanza. Ver `toolCastSpell` en engine.ts — el
+ * daño se aplica con el mismo `danarNpc` que usa un tajo cualquiera, así
+ * que un rival con `invulnerabilidad` declarada se cura igual de un hechizo
+ * que de un facón salvo que vaya dirigido a su punto débil.
+ */
+export type EfectoHechizo = 'bono_dado' | 'estabilidad' | 'exposicion' | 'dano';
 
 export interface Hechizo {
   id: string;
@@ -34,10 +41,15 @@ export interface Hechizo {
   descripcion: string;
   efecto: EfectoHechizo;
   /**
-   * Cuánto vale el efecto: dados de bonificación, puntos de Estabilidad, o
+   * Cuánto vale el efecto: dados de bonificación, puntos de Estabilidad,
    * puntos de Exposición que se BAJAN (nunca por debajo del piso que deja el
    * pico histórico, y sin tocar los umbrales ya cruzados: ésos son memoria
-   * permanente y no los devuelve nada).
+   * permanente y no los devuelve nada), o puntos de daño.
+   *
+   * Es un número fijo a propósito, no una tirada de dados: los cuatro
+   * efectos son planos, y agregar un dado adentro del lanzamiento metería
+   * una segunda tirada en una acción que ya tiene la suya (la de PODER de
+   * la primera vez).
    */
   magnitud: number;
   /**
@@ -109,6 +121,32 @@ export const HECHIZOS: Hechizo[] = [
     // usarlo cuesta media jornada diegética — y el tiempo, en este motor,
     // abre el mundo (sube la Permeabilidad). Nunca es gratis.
     esperaMinutos: 360,
+  },
+  {
+    // El único de los cuatro que le pega a alguien, y el único que necesita
+    // un objetivo y combate activo. Sale de haber entendido el obelisco en
+    // «El Círculo Rojo» (c. 1674): si la piedra marca un borde, el borde se
+    // puede cerrar sobre algo que ya lo cruzó. No es fuego ni rayo — es el
+    // límite haciendo lo que un límite hace, con doscientos años de retraso
+    // y sobre la cosa equivocada.
+    id: 'cerrarle-el-paso',
+    nombre: 'Cerrarle el paso',
+    costoPM: 6,
+    costoCordura: 2,
+    // La descripción se imprime tal cual en el relato al lanzarlo, así que
+    // dice qué pasa y no cómo funciona: lo mecánico —que se lanza peleando y
+    // que contra lo invulnerable hay que ir al punto débil— lo dice la
+    // interfaz, no el texto de la escena.
+    descripcion:
+      'Se le cierra encima el borde que ya cruzó. No hay fuego ni luz: hay ' +
+      'algo que estaba abierto y deja de estarlo, con lo que sea que haya ' +
+      'quedado adentro.',
+    efecto: 'dano',
+    magnitud: 6,
+    // Dos horas: en la práctica, UNA SOLA VEZ por pelea. Es a propósito —un
+    // hechizo de daño repetible sería la manera obvia de ganar cualquier
+    // combate, y el combate de este proyecto está calibrado sin él.
+    esperaMinutos: 120,
   },
 ];
 

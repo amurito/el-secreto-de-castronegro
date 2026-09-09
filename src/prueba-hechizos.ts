@@ -23,6 +23,8 @@ import { join } from 'node:path';
 import { createCampaign, Turn, loadState } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { LO_QUE_BERNARDO_SABIA } from './scenario/loquebernardosabia.ts';
+import { INVIERNO_DEBIDO } from './scenario/inviernodebido.ts';
+import { EL_VIGESIMO } from './scenario/elvigesimo.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
@@ -353,6 +355,64 @@ async function main() {
     check('nunca baja del piso que dejó el pico',
       desp.umbral.exposure >= Math.round(desp.umbral.peakExposure * 0.35) - 1,
       `exp ${desp.umbral.exposure} · pico ${desp.umbral.peakExposure}`);
+  }
+
+  console.log('\n9-quater. «CERRARLE EL PASO»: EL PRIMER HECHIZO QUE LE PEGA A ALGUIEN');
+  {
+    // El único hechizo con efecto 'dano', y el único que necesita objetivo y
+    // combate activo. El daño se aplica con el MISMO `danarNpc` que un tajo
+    // cualquiera, así que hereda el comportamiento contra un rival con
+    // punto débil sin ningún caso especial. Ver «El Círculo Rojo».
+    const idBase = await createCampaign(AGUA_QUIETA, 'DANO', 'r'.repeat(64));
+    let t = await Turn.open(idBase);
+    t.executeTool('learn_spell', { spell_id: 'cerrarle-el-paso', source: 'prueba' });
+    await t.commit();
+
+    // Fuera de combate no se puede: sería matar NPCs sin que el motor de
+    // combate se entere.
+    t = await Turn.open(idBase);
+    const sinCombate = t.executeTool('cast_spell', { spell_id: 'cerrarle-el-paso', npc_id: 'npc-rosa' });
+    await t.commit();
+    check('sin combate activo, lo rechaza', !sinCombate.ok, sinCombate.message.slice(0, 90));
+
+    t = await Turn.open(idBase);
+    const sinObjetivo = t.executeTool('cast_spell', { spell_id: 'cerrarle-el-paso' });
+    await t.commit();
+    check('sin objetivo, lo rechaza', !sinObjetivo.ok, sinObjetivo.message.slice(0, 90));
+
+    // Con combate real contra un NPC con ficha de pelea, sí: baja PV.
+    // Se buscan semillas hasta que la tirada de PODER de la primera vez
+    // salga —no se puede fijar el resultado de una tirada—.
+    let bajoPv: { antes: number; despues: number; mensaje: string } | null = null;
+    for (const letra of 'abcdefghijklmnop') {
+      const id = await createCampaign(INVIERNO_DEBIDO, `DANO-${letra}`, letra.repeat(64));
+      const t2 = await Turn.open(id);
+      t2.executeTool('learn_spell', { spell_id: 'cerrarle-el-paso', source: 'prueba' });
+      t2.executeTool('start_combat', { npc_ids: 'npc-cirilo', reason: 'prueba' });
+      const antes = t2.state.npcs['npc-cirilo']?.combate?.hp ?? 0;
+      const r = t2.executeTool('cast_spell', { spell_id: 'cerrarle-el-paso', npc_id: 'npc-cirilo' });
+      await t2.commit();
+      const despues = (await Turn.open(id)).state.npcs['npc-cirilo']?.combate?.hp ?? 0;
+      if (r.ok && despues < antes) { bajoPv = { antes, despues, mensaje: r.message }; break; }
+    }
+    check('con combate activo y objetivo, baja los PV del rival de verdad',
+      bajoPv !== null, bajoPv ? `${bajoPv.antes} → ${bajoPv.despues}` : '(no salió en ninguna semilla)');
+
+    // Contra un rival con `invulnerabilidad`, el daño mágico se cierra igual
+    // que un tajo común salvo que vaya dirigido al punto débil — se hereda
+    // de `danarNpc`, sin ninguna línea especial para hechizos.
+    let seCerro = false;
+    for (const letra of 'abcdefghijklmnop') {
+      const id = await createCampaign(EL_VIGESIMO, `DANO-INVUL-${letra}`, letra.repeat(64));
+      const t3 = await Turn.open(id);
+      t3.executeTool('learn_spell', { spell_id: 'cerrarle-el-paso', source: 'prueba' });
+      t3.executeTool('start_combat', { npc_ids: 'npc-bernardo', reason: 'prueba' });
+      const r = t3.executeTool('cast_spell', { spell_id: 'cerrarle-el-paso', npc_id: 'npc-bernardo' });
+      await t3.commit();
+      const hp = (await Turn.open(id)).state.npcs['npc-bernardo']?.combate?.hp ?? 0;
+      if (r.ok && /se detiene sola/.test(r.message) && hp === 17) { seCerro = true; break; }
+    }
+    check('contra un rival invulnerable, el hechizo se cierra igual que un tajo', seCerro);
   }
 
   console.log('\n10. RETROCOMPATIBILIDAD: campaña guardada antes de que existieran spellsKnown/pendingLuckBonus');

@@ -1,0 +1,1388 @@
+{
+  "id": "circulo-rojo",
+  "title": "El Círculo Rojo",
+  "surfacePremise": "Seis años antes de que nadie funde nada en este paraje, tres personas que no deberían estar de acuerdo en nada llevan tres años anotando lo mismo: que el agua de la laguna no se porta como agua. Ahora hay un hombre que volvió mojado de ella y que ya no es el mismo, un recién nacido en un rancho al que le van a corregir la mano, y una piedra negra clavada en el campo que estaba ahí antes que todos.",
+  "items": [
+    {
+      "id": "it-aro-recuperado",
+      "name": "El aro recuperado",
+      "aliases": [
+        "aro",
+        "el aro",
+        "anillo",
+        "el anillo",
+        "sortija"
+      ],
+      "shortDescription": "Un aro de metal oscuro con una piedra roja engarzada, del tamaño de un dedo pulgar. Salió del fondo de la laguna hace once días, y desde entonces nadie lo dejó a solas con nadie.",
+      "owner": "puesto",
+      "carried": false,
+      "publicProperties": [
+        {
+          "id": "p-aro-basico",
+          "description": "Pesa menos de lo que debería pesar y está más frío de lo que está el aire. La piedra roja no tiene talla: es como si la hubieran metido ahí caliente y se hubiera enfriado sola.",
+          "disclosure": "PUBLIC"
+        }
+      ],
+      "hiddenProperties": [
+        {
+          "id": "p-aro-hechura",
+          "description": "Lo trabajó una mano humana. Eso es lo primero que se puede afirmar y lo único: hay marcas de herramienta adentro del aro, torpes, repetidas, de alguien que estaba copiando algo y no terminaba de entenderlo.\n\nLo que no se puede afirmar es de cuándo, ni de quién, ni si es el primero que se hizo así o el número treinta de una fila de intentos. Nada de lo que tenés en la mano contesta eso, y nada de lo que hay escrito en el puesto tampoco.",
+          "discoveryCondition": {
+            "kind": "skill_check",
+            "skill": "ocultismo",
+            "difficulty": "hard"
+          },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-lasca-tallada",
+      "name": "Lasca tallada del monolito",
+      "aliases": [
+        "lasca",
+        "la lasca",
+        "pedazo de piedra",
+        "piedra negra"
+      ],
+      "shortDescription": "Un pedazo de la piedra negra, desprendido de la base a golpes y trabajado hasta darle filo.",
+      "owner": "monolito",
+      "carried": false,
+      "armaId": "lasca-tallada",
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-punzon",
+      "name": "El punzón",
+      "aliases": [
+        "punzon",
+        "punzón",
+        "el punzón",
+        "lezna"
+      ],
+      "shortDescription": "Un punzón corto de hierro, con mango de cuero. Sirve para grabar piedra, que es exactamente para lo que se lo hizo.",
+      "owner": "puesto",
+      "carried": false,
+      "armaId": "punzon-circulo",
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    },
+    {
+      "id": "it-almagre-crudo",
+      "name": "Tierra colorada",
+      "aliases": [
+        "almagre",
+        "tierra colorada",
+        "tierra roja",
+        "pigmento"
+      ],
+      "shortDescription": "Un cuenco de tierra colorada de la barranca, molida en seco. Sirve para pintar. Se lava con la primera lluvia.",
+      "owner": "puesto",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-gaspar",
+      "name": "Don Gaspar de Loaces",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Cincuenta y dos años, el tercero del grupo y el único con tierra a su nombre. Puso la plata, los caballos y el puesto donde se guardan los papeles. Habla poco de Dios y mucho de lo que las cosas valen.",
+      "motivation": "Que lo recuperado sirva para algo mientras él viva. No es codicia simple: es un hombre viejo que no quiere haber gastado tres años en juntar preguntas.",
+      "fears": [
+        "Morirse habiendo cuidado un secreto que no le devolvió nada.",
+        "Que Juana tenga razón sobre el agua y él haya estado midiendo el fondo equivocado."
+      ],
+      "refusals": [
+        "No acepta devolverlo al agua sin discutirlo hasta el final.",
+        "No entra al círculo de pasto enfermo. Dice que no hace falta."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-gaspar-probo",
+          "content": "Se lo puso. Una noche, solo, once días atrás, antes de que nadie más lo tocara. No le pasó nada —o eso dice— pero desde esa noche no duerme del lado de la ventana y no vuelve a mirar el agua de frente. Sólo lo cuenta con actitud alta o si lo encaran con lo que vio el baqueano.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "patience": 5,
+      "present": true,
+      "isCompanion": false,
+      "combate": {
+        "hp": 12,
+        "maxHp": 12,
+        "pelea": 45,
+        "esquivar": 30,
+        "armaId": "facon",
+        "bonificacionDano": "1d4",
+        "defensaPorDefecto": "contraataca",
+        "dex": 45,
+        "build": 1
+      }
+    },
+    {
+      "id": "npc-melchor",
+      "name": "Melchor",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Baqueano, sin edad que se pueda calcular. Conoce el campo como se conoce una casa. Fue él quien sacó el aro del fondo, porque fue el único que se metió, y desde entonces habla todavía menos que antes.",
+      "motivation": "Que lo dejen volver a su rancho y no volver a mojarse en esa agua.",
+      "fears": [
+        "Que le pidan meterse otra vez.",
+        "Lo que vio abajo, que no cuenta ni cuando se lo preguntan bien."
+      ],
+      "refusals": [
+        "No vuelve a entrar al agua. Por ninguna plata."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-melchor-fondo",
+          "content": "Abajo, con los ojos abiertos, vio el fondo iluminado desde arriba. Pero él había entrado de noche. Sólo lo cuenta con actitud alta.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "patience": 4,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-ana",
+      "name": "Ana Quiroga",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Veintitrés años, madre de un varón de once días. El rancho es de su suegro y ella no decide casi nada adentro, salvo esto: a quién deja acercarse a la criatura.",
+      "motivation": "Que nadie le toque al chico y que nadie diga en voz alta lo que ya dijeron en voz baja.",
+      "fears": [
+        "Que le corrijan la mano al chico. Que NO se la corrijan."
+      ],
+      "refusals": [
+        "No deja que nadie escriba el nombre del chico en ningún papel de los del puesto."
+      ],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-ana-hermano",
+          "content": "Su hermano mayor nació igual y le corrigieron la mano a los cuatro años, con una cuerda y una tabla. Vivió cuarenta años sin que le pasara nada raro, y murió como cualquiera. Ana no sabe si eso prueba que la corrección sirvió o que nunca hizo falta, y esa duda es exactamente el peso que carga. Sólo lo cuenta con actitud alta.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "patience": 4,
+      "present": true,
+      "isCompanion": false
+    },
+    {
+      "id": "npc-el-que-volvio",
+      "name": "El que volvió mojado",
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "description": "Fue un peón del rancho, y hace nueve días entró a la laguna caminando, de noche, sin que nadie le pidiera nada. Volvió a la mañana siguiente. Desde entonces no come, no duerme y no habla, y la ropa no se le termina de secar.",
+      "motivation": "Volver adentro. Es lo único que hace: caminar hacia el agua, todas las noches, y a quien se le ponga en el medio lo saca del medio.",
+      "fears": [],
+      "refusals": [
+        "No contesta. No hay con quién hablar ahí adentro."
+      ],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "patience": 1,
+      "present": true,
+      "isCompanion": false,
+      "combate": {
+        "hp": 14,
+        "maxHp": 14,
+        "pelea": 55,
+        "esquivar": 25,
+        "armaId": "desarmado",
+        "bonificacionDano": "1d4",
+        "defensaPorDefecto": "contraataca",
+        "dex": 40,
+        "build": 1
+      }
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-instruccion-vieja",
+      "title": "La instrucción, copiada de otra",
+      "author": "Sin firma. Copiada por una mano que dudaba en las abreviaturas",
+      "date": "sin fecha",
+      "location": "El arca del puesto",
+      "kind": "manuscript",
+      "content": "Dos hojas, cosidas con hilo de otro color que el papel. No es un original: se nota porque el que copiaba dudaba en las abreviaturas y las resolvió distinto dos veces en la misma hoja.\n\nDice, en lo que se entiende:\n\n«Del límite. — No se pinta: se graba. La pintura se va con el agua y el asunto no se va con el agua.»\n\n«De lo que se recupera. — Se anota qué, dónde y cuándo. No se anota para quién. Lo que se anota para alguien, alguien lo viene a buscar.»\n\n«De lo que no se puede anotar. — Hay lo que se ve y no entra en el papel. Ésa es la parte que hay que poner igual, y de esa manera, y ahí está la manera.» Debajo hay ocho renglones que no son palabras: son la manera.\n\nY al pie, con la misma mano que copió todo lo demás, una línea que no es una instrucción sino una advertencia:\n\n«Yo copié esto de otro que lo había copiado. No sé de quién es. El que lo escribió primero no puso su nombre, y ahora me parece que no lo puso a propósito.»",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "doc-inventario-abierto",
+      "title": "El inventario, todavía abierto",
+      "author": "Fray Mateo de Anguix",
+      "date": "1671 – 1674",
+      "location": "El arca del puesto",
+      "kind": "file",
+      "content": "Tres años de renglones, en la letra apretada del fraile. Una columna para qué, una para dónde, una para cuándo. No hay columna para quién, y no es olvido: la instrucción dice que no la haya.\n\nCasi todo son cosas menores. Piedras con marca, un cuenco partido, dos hojas sueltas compradas a un cura de otro partido que las tenía por curiosidad.\n\nLa palabra que se repite en cada renglón es **recuperado**. Nunca «hecho», nunca «hallado por primera vez». Recuperado, como quien devuelve algo a un estante del que ya salió antes.\n\nEl último renglón está fresco, con tinta de esta semana:\n\n«Un aro de metal oscuro con piedra roja. Del fondo de la laguna, once brazas del junco grande hacia adentro. Recuperado el día de San Mateo.»\n\nDespués del renglón, y ya fuera de la columna, hay media línea escrita y tachada. Debajo de la tachadura se lee, si se insiste: «no sé si es el primero».",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "puesto": {
+      "id": "puesto",
+      "name": "El puesto",
+      "aliases": [
+        "puesto",
+        "el puesto",
+        "rancho del puesto",
+        "la mesa"
+      ],
+      "description": "Cuatro paredes de adobe y un techo de paja que don Gaspar levantó para guardar herramienta y terminó guardando otra cosa. Adentro: una mesa, dos bancos, un arca con cerradura y una vela que se enciende más de lo que se debería en un lugar sin nadie que duerma acá.",
+      "atmosphere": [
+        "Huele a sebo quemado y a tinta de agalla.",
+        "El arca está contra la pared del fondo, y todos los que entran miran para allá antes de saludar."
+      ],
+      "connections": [
+        "orilla",
+        "rancho"
+      ],
+      "itemsPresent": [
+        "it-aro-recuperado",
+        "it-punzon",
+        "it-almagre-crudo"
+      ],
+      "npcsPresent": [
+        "npc-gaspar",
+        "npc-melchor"
+      ],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": {
+        "sight": "Una mesa, un arca, y tres años de papeles que no van a ninguna parte.",
+        "sound": "El viento en la paja del techo. Nada más, y de noche ni eso.",
+        "smell": "Sebo, tinta y cuero mojado."
+      },
+      "features": [
+        {
+          "id": "f-arca",
+          "names": [
+            "arca",
+            "el arca",
+            "cofre",
+            "papeles"
+          ],
+          "description": "Un arca de madera con cerradura de hierro. Adentro está todo lo que el grupo juntó en tres años, que cabe holgado.",
+          "closerLook": "Los papeles están ordenados de una manera que no es la de un escribano: no por fecha ni por asunto, sino por CUÁNTO SE ENTIENDE. Adelante lo que se entiende. Atrás lo que no. La pila de atrás es más alta.",
+          "examineSkill": "buscar_libros",
+          "clue": {
+            "description": "El fraile ordena los papeles del Círculo por cuánto se entienden, no por fecha. La pila de lo que no se entiende es más alta que la otra.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-vela",
+          "names": [
+            "vela",
+            "la vela",
+            "sebo"
+          ],
+          "description": "Una vela de sebo, gastada de la mitad para arriba de un modo que no cierra con las horas que alguien pasó acá.",
+          "closerLook": "Se consumió más rápido de un lado que del otro, y el lado que se consumió más rápido es el que da al arca. Una vela no elige un lado. El aire tampoco entra por ahí: la pared del arca es la única sin ventana."
+        }
+      ]
+    },
+    "orilla": {
+      "id": "orilla",
+      "name": "La orilla de la laguna",
+      "aliases": [
+        "orilla",
+        "laguna",
+        "el agua",
+        "la costa"
+      ],
+      "description": "Agua baja y ancha, de pampa llana, con una costra blanca de sal en todo el borde. Once brazas hacia adentro desde el junco grande es donde Melchor se metió de noche y sacó el aro. Se ve el fondo desde la orilla, y el fondo no tiene nada.",
+      "atmosphere": [
+        "La superficie está quieta de una manera que no le corresponde a un espejo de agua de este tamaño.",
+        "Los pájaros de la costa caminan a lo largo del agua. No la cruzan volando."
+      ],
+      "connections": [
+        "puesto",
+        "monolito",
+        "piedra"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 7,
+      "senses": {
+        "sight": "Sal blanca en el borde, agua sin una arruga, y el junco grande marcando el punto.",
+        "sound": "Nada del agua. Los pájaros, lejos y a un costado.",
+        "smell": "Sal y barro. Un olor honesto, que acá suena a mentira."
+      },
+      "features": [
+        {
+          "id": "f-costra",
+          "names": [
+            "costra",
+            "sal",
+            "el borde",
+            "orilla blanca"
+          ],
+          "description": "La costra blanca del borde, dura, que cruje si se la pisa.",
+          "closerLook": "Es sal, nada más que sal: la que deja cualquier bañado que se seca y se vuelve a llenar cien veces. El agua blanca del nombre que todavía nadie le puso a este lugar es esto, y nada más que esto.",
+          "exposure": 1
+        },
+        {
+          "id": "f-junco",
+          "names": [
+            "junco",
+            "junco grande",
+            "el punto",
+            "once brazas"
+          ],
+          "description": "El junco grande, el que marca desde dónde se cuentan las once brazas.",
+          "closerLook": "Desde acá, mirando derecho al punto donde Melchor se hundió, se ve el fondo entero: barro parejo, sin un pozo, sin una piedra, sin un hueco de donde alguien pueda haber sacado algo. El aro estaba ahí. El fondo no explica cómo.",
+          "examineSkill": "descubrir",
+          "exposure": 4,
+          "clue": {
+            "description": "En el punto exacto donde se recuperó el aro, el fondo de la laguna es barro parejo: no hay pozo ni hueco del que se pueda haber sacado nada.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "monolito": {
+      "id": "monolito",
+      "name": "El claro de la piedra negra",
+      "aliases": [
+        "monolito",
+        "obelisco",
+        "piedra negra",
+        "el claro"
+      ],
+      "description": "Media legua al sudoeste, en medio de un campo llano sin una piedra en veinte leguas a la redonda, hay tres metros de piedra negra clavados derechos. Alrededor, en un círculo de unos seis pasos de radio, el pasto está enfermo: no seco, enfermo, amarillo desde la raíz.\n\nNadie la puso este siglo. Nadie de los que están vivos sabe quién.",
+      "atmosphere": [
+        "Adentro del círculo de pasto enfermo no se oye un pájaro. Afuera sí.",
+        "El aire no está ni más frío ni más caliente, y aun así tenés la sensación exacta de haber entrado en algún lado.",
+        "La sombra de la piedra cae donde tiene que caer para esta hora, y eso, después de todo lo demás, casi decepciona."
+      ],
+      "connections": [
+        "orilla"
+      ],
+      "itemsPresent": [
+        "it-lasca-tallada"
+      ],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 12,
+      "senses": {
+        "sight": "Tres metros de piedra negra, y un anillo de pasto amarillo con el borde demasiado limpio.",
+        "sound": "Adentro del círculo, nada. Afuera, el campo entero.",
+        "smell": "Tierra. Ni piedra mojada ni nada podrido: tierra a secas, que a esta altura es peor."
+      },
+      "features": [
+        {
+          "id": "f-piedra",
+          "names": [
+            "piedra",
+            "la piedra",
+            "monolito",
+            "obelisco",
+            "cara"
+          ],
+          "description": "La piedra en sí: tres metros, cuatro caras desparejas, picada y no cortada. Sin una sola marca de pintura en ningún lado.",
+          "closerLook": "Está trabajada a golpes, piedra contra piedra, por gente que no tenía metal. Las caras no son parejas porque no les importaba que lo fueran: lo que les importaba era que se viera desde lejos y que durara.\n\nY una cosa más, que sólo se ve agachándose: la base está asentada sobre otra piedra, más vieja todavía, casi enterrada. La de arriba se puso después. Alguien reemplazó una marca que ya estaba, con la misma intención y con menos herramienta.",
+          "examineSkill": "descubrir",
+          "exposure": 6,
+          "clue": {
+            "description": "La piedra negra está trabajada a golpes por gente sin metal, y está asentada sobre otra piedra más vieja y casi enterrada: reemplaza una marca anterior en el mismo lugar.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-pasto",
+          "names": [
+            "pasto",
+            "pasto enfermo",
+            "circulo",
+            "círculo",
+            "anillo de pasto"
+          ],
+          "description": "El anillo de pasto amarillo, de unos seis pasos de radio, con la piedra en el centro.",
+          "closerLook": "El borde es nítido. No se degrada: hay pasto sano y a un paso pasto amarillo, y la línea entre los dos es tan limpia que se podría seguir con el pie.\n\nUn suelo envenenado tendría el borde sucio, porque el veneno corre con el agua. Éste no corre. Éste termina donde termina.",
+          "examineSkill": "ciencia_naturales",
+          "exposure": 5,
+          "clue": {
+            "description": "El anillo de pasto enfermo alrededor de la piedra tiene el borde perfectamente nítido: no es veneno, que correría con el agua. Termina donde termina.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "piedra": {
+      "id": "piedra",
+      "name": "La piedra marcada",
+      "aliases": [
+        "piedra marcada",
+        "la otra piedra",
+        "el mojon",
+        "mojón"
+      ],
+      "description": "A media hora de la orilla, en el alto, hay una piedra de la altura de un hombre sentado, sin nada escrito, sin nada grabado, sin nada pintado. Está donde el campo cambia: de este lado el pasto es uno, del otro lado es otro, y la línea entre los dos pasa por acá.",
+      "atmosphere": [
+        "Es el único punto alto en leguas. Desde acá se ve la laguna entera y se ve el claro de la piedra negra.",
+        "No hay nada raro acá. Eso es lo que la hace útil."
+      ],
+      "connections": [
+        "orilla"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": {
+        "sight": "Una piedra lisa en el alto, y desde ella todo el campo de un vistazo.",
+        "sound": "Viento. Pájaros. Un campo que se porta como un campo.",
+        "smell": "Pasto seco."
+      },
+      "features": [
+        {
+          "id": "f-cara-lisa",
+          "names": [
+            "cara",
+            "cara lisa",
+            "la piedra",
+            "superficie"
+          ],
+          "description": "La cara norte, la única lisa, gastada por el viento y por nada más.",
+          "closerLook": "Está limpia. Nadie marcó nunca nada acá, y desde acá se ven las dos cosas que hay que ver: el agua y la piedra negra. Si alguien quisiera dejar dicho dónde termina algo, éste es el lugar desde donde se dice.",
+          "clue": {
+            "description": "La piedra del alto no tiene ninguna marca todavía, y es el único punto desde donde se ven a la vez la laguna y la piedra negra.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "rancho": {
+      "id": "rancho",
+      "name": "El rancho de los Quiroga",
+      "aliases": [
+        "rancho",
+        "el rancho",
+        "los quiroga",
+        "la casa"
+      ],
+      "description": "Adobe, cuero y un corral de palo a pique. Vive el viejo Quiroga, su hijo, la mujer del hijo —Ana— y, desde hace once días, un varón que todavía no tiene nombre puesto en ningún libro.\n\nEs el rancho de donde salió el peón que entró a la laguna. Nadie de la familia lo nombra.",
+      "atmosphere": [
+        "Hay un fuego encendido a media mañana, que en esta época del año no hace falta.",
+        "La cuna está del lado de adentro, lejos de la puerta, y Ana se para siempre entre la cuna y quien entra."
+      ],
+      "connections": [
+        "puesto"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-ana",
+        "npc-el-que-volvio"
+      ],
+      "visited": false,
+      "umbralIntensity": 5,
+      "senses": {
+        "sight": "Un fuego que sobra, una cuna que se cuida, y un hombre sentado afuera que no se movió en todo el día.",
+        "sound": "El chico, cuando llora. Y el que volvió, que no hace ningún ruido: eso es lo que se oye.",
+        "smell": "Humo, cuero y ropa que no termina de secarse."
+      },
+      "features": [
+        {
+          "id": "f-cuna",
+          "names": [
+            "cuna",
+            "el chico",
+            "la criatura",
+            "el bebe",
+            "el bebé"
+          ],
+          "description": "Un varón de once días, en una cuna de cuero estirado. Duerme.",
+          "closerLook": "Duerme con el puño izquierdo cerrado sobre el pecho y el derecho abierto, caído. Se lo ve mamar y agarrar y volver a agarrar, y las cuatro veces es la izquierda.\n\nEso es todo lo que hay. Un chico de once días que va a ser zurdo. En esta sangre, y en este partido, eso ya tiene nombre y ya tiene procedimiento, y el procedimiento no lo escribió nadie que esté vivo.",
+          "examineSkill": "medicina",
+          "exposure": 2,
+          "clue": {
+            "description": "El recién nacido de los Quiroga va a ser zurdo: agarra siempre con la izquierda. En esta familia eso ya tiene un nombre y un procedimiento heredado.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-mojado",
+          "names": [
+            "al que volvió",
+            "el que volvio",
+            "el que volvió",
+            "el peon",
+            "el peón",
+            "el mojado"
+          ],
+          "description": "Sentado contra la pared del rancho, de cara al oeste, que es para donde queda la laguna. No se movió en todo el día.",
+          "closerLook": "La ropa está mojada. Llovió hace seis días por última vez y él está mojado ahora, de una manera pareja, como quien acaba de salir del agua.\n\nNo parpadea seguido. Cuando parpadea, lo hace con los dos ojos a destiempo, primero uno y después el otro, y eso es lo que te queda cuando cerrás los tuyos a la noche.",
+          "examineSkill": "descubrir",
+          "exposure": 8,
+          "clue": {
+            "description": "El peón que entró a la laguna volvió mojado y sigue mojado nueve días después, sin que haya llovido. Parpadea con un ojo y después con el otro.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    }
+  },
+  "startLocation": "puesto",
+  "startTime": {
+    "iso": "1674-09-21T09:00:00",
+    "precision": "minute",
+    "display": "la mañana del día de San Mateo, 1674"
+  },
+  "startUmbralPermeability": 20,
+  "timeline": [
+    {
+      "id": "te-recuperacion",
+      "description": "Melchor entra de noche a la laguna y saca el aro del fondo.",
+      "when": {
+        "iso": "1674-09-10T23:00:00",
+        "precision": "day",
+        "display": "once días atrás"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-peon",
+      "description": "Un peón del rancho entra caminando a la laguna, de noche, y vuelve a la mañana siguiente.",
+      "when": {
+        "iso": "1674-09-12T22:00:00",
+        "precision": "day",
+        "display": "nueve días atrás"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    },
+    {
+      "id": "te-nacimiento",
+      "description": "Nace el varón de los Quiroga.",
+      "when": {
+        "iso": "1674-09-10T00:00:00",
+        "precision": "day",
+        "display": "once días atrás"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "g-aro",
+      "npc": "npc-gaspar",
+      "orden": 10,
+      "etiqueta": "Preguntarle a Gaspar qué piensa hacer con el aro",
+      "intencion": "Le pregunto a don Gaspar qué piensa hacer con el aro",
+      "claves": [
+        "que piensa hacer",
+        "el aro",
+        "que hacemos con el aro",
+        "el anillo"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Guardarlo no es hacer nada. —Don Gaspar no levanta la vista del arca—. Tres años, comadre. Tres años de anotar piedras partidas y comprarle hojas sueltas a curas de otro partido, y la primera cosa que aparece de verdad la vamos a tirar otra vez al barro.\n\n—Yo no digo usarlo. Digo entenderlo. Y para entender una cosa hay que tenerla."
+        ],
+        "pista": {
+          "description": "Don Gaspar no quiere devolver el aro al agua: sostiene que entender algo exige tenerlo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "Guardarlo no es hacer nada"
+      }
+    },
+    {
+      "id": "g-probo",
+      "npc": "npc-gaspar",
+      "orden": 12,
+      "etiqueta": "Preguntarle si ya se lo puso",
+      "intencion": "Le pregunto a don Gaspar si ya se puso el aro",
+      "claves": [
+        "si ya se puso el aro",
+        "usted se lo puso",
+        "se lo probo",
+        "se lo probó"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "razon": "leerle la cara a un hombre acostumbrado a que no se la lean"
+      },
+      "cede": {
+        "actitud": 5,
+        "texto": [
+          "Tarda. Cierra el arca antes de contestar, que es una respuesta en sí misma.\n\n—Una noche. Solo. Antes de que ustedes lo tocaran. —Se mira la mano derecha, no la izquierda—. No pasó nada. Ni una cosa. Me lo saqué y me acosté.\n\n—Y desde esa noche duermo del lado de la pared, y no sé por qué se lo estoy diciendo."
+        ],
+        "pista": {
+          "description": "Don Gaspar se puso el aro una noche, solo, antes que nadie. Dice que no pasó nada, y desde entonces no duerme del lado de la ventana.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-gaspar-probo",
+        "exposicion": 4,
+        "cordura": 1
+      },
+      "esquiva": {
+        "texto": [
+          "—No. —Y sigue acomodando papeles que ya estaban acomodados."
+        ]
+      },
+      "disponible": {
+        "op": "narrado",
+        "contiene": "Guardarlo no es hacer nada"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "duerme del lado de la ventana"
+      }
+    },
+    {
+      "id": "m-fondo",
+      "npc": "npc-melchor",
+      "orden": 20,
+      "etiqueta": "Preguntarle a Melchor qué vio abajo",
+      "intencion": "Le pregunto a Melchor qué vio abajo del agua",
+      "claves": [
+        "que vio abajo",
+        "abajo del agua",
+        "cuando se metio",
+        "cuando se metió"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 5,
+        "razon": "que cuente lo que no contó ni cuando le pagaron por contarlo"
+      },
+      "cede": {
+        "actitud": 6,
+        "texto": [
+          "Melchor se toma su tiempo, y cuando arranca mira el piso.\n\n—Entré de noche. Sin luna. Abajo abrí los ojos porque uno abre los ojos.\n\n—Y se veía. Se veía el fondo, se veían mis manos, se veía todo. —Levanta la vista una sola vez—. Yo entré de noche, patrón. Abajo había luz de arriba, y arriba no había nada."
+        ],
+        "pista": {
+          "description": "Melchor entró de noche y sin luna, y abajo del agua se veía todo, iluminado desde arriba. Arriba no había luz.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-melchor-fondo",
+        "exposicion": 6,
+        "cordura": 2
+      },
+      "esquiva": {
+        "texto": [
+          "—Barro. —Se encoge de hombros—. Abajo hay barro, y yo no vuelvo a entrar."
+        ]
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "iluminado desde arriba"
+      }
+    },
+    {
+      "id": "m-peon",
+      "npc": "npc-melchor",
+      "orden": 22,
+      "etiqueta": "Preguntarle por el que volvió mojado",
+      "intencion": "Le pregunto a Melchor por el peón que volvió mojado",
+      "claves": [
+        "el peon",
+        "el peón",
+        "el que volvio",
+        "el que volvió",
+        "el mojado"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Ése entró dos noches después que yo. —Melchor lo dice como quien reconoce una deuda—. Y yo se lo conté. Le conté lo de la luz, porque me lo preguntó bien, igual que usted.\n\n—No digo que sea mi culpa. Digo que hay cosas que uno cuenta y después el otro va."
+        ],
+        "pista": {
+          "description": "El peón entró a la laguna dos noches después de Melchor, justo después de que Melchor le contara lo que había visto abajo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "dos noches después"
+      }
+    },
+    {
+      "id": "a-chico",
+      "npc": "npc-ana",
+      "orden": 30,
+      "etiqueta": "Preguntarle a Ana por el chico",
+      "intencion": "Le pregunto a Ana por el chico",
+      "claves": [
+        "por el chico",
+        "la criatura",
+        "el bebe",
+        "el bebé",
+        "su hijo"
+      ],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Está sano. —Ana lo dice antes de que termines de preguntar, porque ya la preguntaron otras veces—. Come, duerme, llora cuando tiene que llorar.\n\nSe queda un momento entre la cuna y vos.\n\n—Y agarra con la izquierda. Ya lo vieron todos, no hace falta que se agachen a mirar."
+        ],
+        "pista": {
+          "description": "Ana ya sabe que el chico es zurdo, y sabe que en el rancho todos lo vieron.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "narrado",
+        "contiene": "agarra con la izquierda"
+      }
+    },
+    {
+      "id": "a-correccion",
+      "npc": "npc-ana",
+      "orden": 32,
+      "etiqueta": "Preguntarle qué van a hacer con la mano",
+      "intencion": "Le pregunto a Ana qué van a hacer con la mano del chico",
+      "claves": [
+        "la mano",
+        "corregir la mano",
+        "que van a hacer con la mano",
+        "la correccion",
+        "la corrección"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "preguntarle por lo que ya decidieron otros en su casa"
+      },
+      "cede": {
+        "actitud": 6,
+        "texto": [
+          "—Mi suegro dice que a los cuatro años. Con una cuerda y una tabla, como se hizo siempre.\n\n—Mi hermano nació igual. Se la corrigieron. Vivió cuarenta años, murió de una coz de mula y no le pasó nunca nada de lo otro. —Y acá se le va la voz de lugar—. Y yo no sé si eso quiere decir que sirvió, o que nunca hizo falta. Nadie sabe. Se hace y ya.\n\n—Si ustedes lo anotan en un papel, va a hacer falta para siempre."
+        ],
+        "pista": {
+          "description": "A Ana le corrigieron la mano a su hermano y nunca pasó nada: no sabe si eso prueba que sirvió o que nunca hizo falta. Teme que anotarlo lo vuelva obligatorio para siempre.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-ana-hermano",
+        "cordura": 1
+      },
+      "esquiva": {
+        "actitud": -2,
+        "texto": [
+          "—Eso lo decide su abuelo. —Y se corre medio paso, de manera que la cuna queda otra vez detrás de ella."
+        ]
+      },
+      "disponible": {
+        "op": "narrado",
+        "contiene": "agarra con la izquierda"
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "no sabe si eso prueba que sirvió"
+      }
+    },
+    {
+      "id": "a-peon",
+      "npc": "npc-ana",
+      "orden": 34,
+      "etiqueta": "Preguntarle por el que volvió mojado",
+      "intencion": "Le pregunto a Ana por el que volvió mojado",
+      "claves": [
+        "el que volvio",
+        "el que volvió",
+        "el peon",
+        "el peón",
+        "el de afuera"
+      ],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—No lo nombramos. —Baja la voz sin bajar la guardia—. No por miedo: porque cuando lo nombran, se da vuelta.\n\n—Se sienta ahí todo el día mirando para el agua. De noche camina para allá y hay que traerlo. La primera noche lo trajo mi marido solo. La cuarta hicieron falta tres.\n\n—Ustedes tienen papeles. ¿Hay algún papel que diga qué hacer con esto?"
+        ],
+        "pista": {
+          "description": "El que volvió camina hacia la laguna cada noche y cada vez hacen falta más hombres para traerlo. Se da vuelta si lo nombran.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "cada vez hacen falta más hombres"
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-instruccion",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "leo la instruccion|leo la instrucción|las dos hojas|la instruccion vieja|la instrucción vieja"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "puesto"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-inventario",
+      "prioridad": 70,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "leo el inventario|el inventario|los renglones"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "puesto"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-aro",
+      "prioridad": 68,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "objetivo",
+            "id": "it-aro-recuperado"
+          },
+          {
+            "op": "verbo",
+            "es": [
+              "mirar",
+              "examinar",
+              "usar"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-la-piedra",
+      "prioridad": 72,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "que es esta piedra|qué es esta piedra|para que la pusieron|para qué la pusieron|leo la piedra"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "monolito"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "sacar-lasca",
+      "prioridad": 66,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "saco una lasca|desprendo un pedazo|golpeo la piedra|tallo la lasca"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "monolito"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "tocar-agua",
+      "prioridad": 64,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "verbo",
+            "es": [
+              "tocar",
+              "usar"
+            ]
+          },
+          {
+            "op": "objetivo",
+            "kind": "water"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hacer-punzon",
+      "prioridad": 62,
+      "cuando": {
+        "op": "texto",
+        "patron": "hago el punzon|hago el punzón|preparo el punzon|preparo el punzón"
+      }
+    },
+    {
+      "id": "grabar-primero",
+      "prioridad": 74,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "grabo el circulo|grabo el círculo|marco la piedra|grabo la piedra"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "piedra"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "aprender-anotar",
+      "prioridad": 60,
+      "cuando": {
+        "op": "texto",
+        "patron": "sigo los ocho renglones|los ocho renglones|pruebo la manera"
+      }
+    },
+    {
+      "id": "aprender-cerrar",
+      "prioridad": 60,
+      "cuando": {
+        "op": "texto",
+        "patron": "cerrarle el paso|le cierro el borde|el borde se cierra"
+      }
+    },
+    {
+      "id": "enfrentar-al-que-volvio",
+      "prioridad": 76,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "lo enfrento|le corto el paso|lo paro antes|le salgo al paso"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "rancho"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-guardar",
+      "prioridad": 95,
+      "cuando": {
+        "op": "texto",
+        "patron": "lo devuelvo al agua|devolverlo al agua|lo tiro al agua"
+      }
+    },
+    {
+      "id": "fin-anotar",
+      "prioridad": 95,
+      "cuando": {
+        "op": "texto",
+        "patron": "dejo la costumbre escrita|fundo la costumbre|que quede anotado para siempre"
+      }
+    },
+    {
+      "id": "fin-corregir",
+      "prioridad": 95,
+      "cuando": {
+        "op": "texto",
+        "patron": "anoto lo del chico|dejo escrito lo del chico|la correccion queda escrita|la corrección queda escrita"
+      }
+    },
+    {
+      "id": "fin-dispersar",
+      "prioridad": 94,
+      "cuando": {
+        "op": "texto",
+        "patron": "disuelvo el circulo|disuelvo el círculo|nos separamos|se termina el circulo|se termina el círculo"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "leer-instruccion",
+      "grupo": "observar",
+      "lugar": "puesto",
+      "orden": 1,
+      "intencion": "Leo la instrucción vieja, las dos hojas cosidas",
+      "etiqueta": "Leer la instrucción copiada",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-instruccion-vieja"
+      }
+    },
+    {
+      "id": "leer-inventario",
+      "grupo": "observar",
+      "lugar": "puesto",
+      "orden": 2,
+      "intencion": "Leo el inventario, los renglones de tres años",
+      "etiqueta": "Leer el inventario del Círculo",
+      "hecha": {
+        "op": "documento",
+        "id": "doc-inventario-abierto"
+      }
+    },
+    {
+      "id": "mirar-aro",
+      "grupo": "observar",
+      "lugar": "puesto",
+      "orden": 3,
+      "intencion": "Examino el aro recuperado",
+      "etiqueta": "Examinar el aro"
+    },
+    {
+      "id": "leer-la-piedra",
+      "grupo": "observar",
+      "lugar": "monolito",
+      "orden": 10,
+      "intencion": "Qué es esta piedra y para qué la pusieron",
+      "etiqueta": "Entender para qué está puesta la piedra",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "no es un altar"
+      }
+    },
+    {
+      "id": "sacar-lasca",
+      "grupo": "usar",
+      "lugar": "monolito",
+      "orden": 12,
+      "intencion": "Golpeo la piedra y saco una lasca del borde de la base",
+      "etiqueta": "Sacar una lasca de la base",
+      "hecha": {
+        "op": "lleva",
+        "item": "it-lasca-tallada"
+      }
+    },
+    {
+      "id": "tocar-agua",
+      "grupo": "usar",
+      "lugar": "orilla",
+      "orden": 20,
+      "intencion": "Meto la mano en el agua",
+      "etiqueta": "Meter la mano en el agua",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "La sacás más rápido"
+      }
+    },
+    {
+      "id": "hacer-punzon",
+      "grupo": "usar",
+      "lugar": "puesto",
+      "orden": 30,
+      "intencion": "Preparo el punzón para grabar",
+      "etiqueta": "Preparar el punzón",
+      "visible": {
+        "op": "narrado",
+        "contiene": "no es un altar"
+      },
+      "hecha": {
+        "op": "lleva",
+        "item": "it-punzon"
+      }
+    },
+    {
+      "id": "aprender-anotar",
+      "grupo": "usar",
+      "lugar": "puesto",
+      "orden": 32,
+      "intencion": "Sigo los ocho renglones de la instrucción, uno por uno",
+      "etiqueta": "Probar los ocho renglones de la instrucción",
+      "visible": {
+        "op": "documento",
+        "id": "doc-instruccion-vieja"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Queda hecho y no se deshace"
+      }
+    },
+    {
+      "id": "aprender-cerrar",
+      "grupo": "usar",
+      "orden": 34,
+      "intencion": "Si la piedra marca un borde, el borde se cierra: cerrarle el paso",
+      "etiqueta": "Sacar del límite una manera de cerrarlo",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "no es un altar"
+          },
+          {
+            "op": "documento",
+            "id": "doc-instruccion-vieja"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Se puede cerrar sobre algo"
+      }
+    },
+    {
+      "id": "grabar-primero",
+      "grupo": "usar",
+      "lugar": "piedra",
+      "orden": 40,
+      "intencion": "Grabo el círculo en la piedra del alto",
+      "etiqueta": "Grabar el primer círculo",
+      "visible": {
+        "op": "lleva",
+        "item": "it-punzon"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "El primero tiembla"
+      }
+    },
+    {
+      "id": "enfrentar-al-que-volvio",
+      "grupo": "usar",
+      "lugar": "rancho",
+      "orden": 50,
+      "intencion": "Lo enfrento antes de que llegue al agua",
+      "etiqueta": "Salirle al paso",
+      "visible": {
+        "op": "pista",
+        "contiene": "cada vez hacen falta más hombres"
+      }
+    },
+    {
+      "id": "fin-guardar",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Lo devuelvo al agua, donde estaba",
+      "etiqueta": "Devolver el aro al agua",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      }
+    },
+    {
+      "id": "fin-anotar",
+      "grupo": "decidir",
+      "orden": 91,
+      "final": true,
+      "intencion": "Dejo la costumbre escrita para los que vengan",
+      "etiqueta": "Dejar la costumbre escrita",
+      "visible": {
+        "op": "pistas",
+        "minimo": 3
+      }
+    },
+    {
+      "id": "fin-corregir",
+      "grupo": "decidir",
+      "orden": 92,
+      "final": true,
+      "intencion": "Dejo escrito lo del chico, y cómo se corrige",
+      "etiqueta": "Dejar escrito lo del chico",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pistas",
+            "minimo": 3
+          },
+          {
+            "op": "pista",
+            "contiene": "va a ser zurdo"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fin-dispersar",
+      "grupo": "decidir",
+      "orden": 93,
+      "final": true,
+      "intencion": "Se termina el Círculo: nos separamos y no queda nada escrito",
+      "etiqueta": "Disolver el Círculo",
+      "visible": {
+        "op": "pistas",
+        "minimo": 1
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "guardar",
+      "title": "Lo que se devuelve",
+      "condition": "El Círculo devuelve el aro al fondo de la laguna, decidiendo que nadie debería tenerlo."
+    },
+    {
+      "id": "anotar",
+      "title": "Lo que queda escrito",
+      "condition": "El Círculo formaliza la costumbre: grabar el límite y anotar lo que no se puede anotar, para quien venga."
+    },
+    {
+      "id": "corregir",
+      "title": "Lo que se corrige",
+      "condition": "El Círculo deja escrito el caso del chico y el procedimiento, y con eso funda una obligación sobre una familia entera."
+    },
+    {
+      "id": "dispersar",
+      "title": "Lo que no queda",
+      "condition": "El Círculo se disuelve sin dejar nada escrito ni nada marcado."
+    }
+  ],
+  "opening": "Tres años de anotar cosas menores, y once días de tener una que no lo es.\n\nEl aro está sobre la mesa del puesto, encima de un paño, y don Gaspar no lo pierde de vista mientras habla de otra cosa. Melchor está en el rincón y no habla de nada. Afuera hay campo hasta donde da la vista: ni un pueblo, ni una loma, ni una casa de dos plantas — nada de lo que va a haber acá dentro de seis años, cuando llegue un español con plata y con libros que no son suyos y le ponga nombre a este lugar.\n\nHoy es 21 de septiembre de 1674. Hay tres cosas para resolver antes de que se haga de noche: qué se hace con lo que salió del agua, qué se hace con el hombre del rancho que volvió mojado hace nueve días y camina para la laguna todas las noches, y qué se hace con un chico de once días que agarra con la izquierda.\n\nLo que se decida hoy no lo va a leer nadie por doscientos cincuenta años. Después sí."
+}

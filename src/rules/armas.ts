@@ -135,6 +135,26 @@ export const ARMAS: Arma[] = [
     nota: 'A dos manos. Pesada, lenta y terminante.',
   },
 
+  // ── Piedra trabajada, siglo XVII ──────────────────────────────────────────
+  // La lasca del monolito, tallada a golpes hasta darle filo — «picada, no
+  // cortada, herramienta de piedra contra piedra», que es la técnica que el
+  // propio contenido de 1928 ya le atribuye al monolito y a la estatua
+  // (`agua-blanca.contenido.json`). Es de El Círculo Rojo (c. 1674) y de paso
+  // explica de dónde salió `it-lasca-monolito`, la lasca suelta que sigue
+  // tirada al pie de la piedra doscientos cincuenta años después.
+  //
+  // Arma física normal, con Pelea: el nicho de «arma que se usa con otra
+  // habilidad» ya lo ocupa el punzón más abajo, y duplicarlo le sacaría
+  // sentido a los dos.
+  {
+    id: 'lasca-tallada', nombre: 'Lasca tallada del monolito', habilidad: 'pelea',
+    dano: { cantidad: 1, caras: 6, suma: 0 },
+    aporteBonificacion: 'completa', empala: true, alcance: 0,
+    nota:
+      'Un pedazo de la piedra negra, desprendido de la base y trabajado a golpes. Corta mejor de lo que ' +
+      'debería cortar una piedra, y pesa menos de lo que debería pesar.',
+  },
+
   // ── Fuera de catálogo: objeto de una aventura concreta ────────────────────
   // Único caso del catálogo con `habilidad` distinta de 'pelea'/'armas_fuego':
   // el motor no sabe nada de esto —`toolResolveAttack` sólo lee

@@ -26,6 +26,7 @@ import { AGUA_BLANCA } from './aguablanca.ts';
 import { EL_VIGESIMO } from './elvigesimo.ts';
 import { LO_QUE_BERNARDO_SABIA } from './loquebernardosabia.ts';
 import { EL_HOMBRE_QUE_MIRABA_EL_AGUA } from './hombreagua.ts';
+import { EL_CIRCULO_ROJO } from './circulorojo.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -51,6 +52,22 @@ export interface EntradaCatalogo {
 }
 
 const ENTRADAS: EntradaCatalogo[] = [
+  {
+    scenario: EL_CIRCULO_ROJO,
+    // La ÚNICA fechada de verdad fuera del siglo XX, y la única a la que no
+    // hace falta la fecha-trampa de «El Hombre que Miraba el Agua»: aquélla
+    // es una visión recibida en 1928 y se ordena por cuándo se recibe; ésta
+    // se juega con gente de 1674, así que su fecha diegética es 1674 y punto.
+    // Queda primera en la pantalla de inicio, que es donde va: es un prólogo,
+    // y se puede jugar antes o después del resto sin romper nada.
+    cuando: '1674-09-21',
+    epoca: 'Septiembre de 1674 · el paraje, seis años antes del pueblo',
+    duracion: 'Una hora aproximadamente',
+    // Sin `requiere` y sin `continuacion`: no depende de nada y no encadena
+    // investigador con nadie —su elenco es de doscientos cincuenta años antes
+    // que Elena—. Los cabos con las otras diez los ata el jugador leyendo
+    // (`jugadorNota`), no el motor.
+  },
   {
     scenario: AGUA_QUIETA,
     cuando: '1924-10-26',
