@@ -126,6 +126,12 @@ export interface GameApi {
   /** Una maniobra contra alguien que puede pelear: desarmar, derribar, sujetar. */
   maniobra(id: string, npcId: string, tipo: 'desarmar' | 'derribar' | 'sujetar'): Promise<AttackResult>;
   /**
+   * Acercarse o alejarse de un rival con distancia declarada. Sin efecto
+   * (rechazado por el motor) contra un rival sin `distancia` — cuerpo a
+   * cuerpo, como cualquier otro rival de hoy.
+   */
+  ajustarDistancia(id: string, npcId: string, direction: 'acercar' | 'alejar'): Promise<AttackResult>;
+  /**
    * Deja el galpón como estaba: rivales enteros, investigador curado.
    *
    * DEVUELVE UN `campaignId` NUEVO, y quien llama tiene que quedárselo. El log
@@ -150,6 +156,8 @@ export interface GameApi {
   /** A diferencia del simulador, no recibe `npcId`: huir es contra todos los presentes. */
   combateHuir(id: string, armaId: string): Promise<CombateResult>;
   combateManiobra(id: string, npcId: string, tipo: 'desarmar' | 'derribar' | 'sujetar'): Promise<CombateResult>;
+  /** Ver `ajustarDistancia` (simulador). Misma herramienta del motor, versión combate real: narra y no aísla al resto del cuarto. */
+  combateAjustarDistancia(id: string, npcId: string, direction: 'acercar' | 'alejar'): Promise<CombateResult>;
   /**
    * Intentar que el rival se calme y la pelea termine en paz. Sólo existe si
    * la escena que abrió este combate lo configuró — ver `CombateResult.intimidar`.
@@ -190,6 +198,14 @@ export interface RivalReal {
    * antes: enterarse es parte de la pelea—.
    */
   puntoDebil?: { nombre: string; descubierto: boolean; requiereCortante: boolean };
+  /**
+   * Metros hasta el investigador. `undefined` es el caso de siempre —cuerpo
+   * a cuerpo, sin nada que mostrar—; se muestra tal cual, a diferencia del
+   * PV, porque es algo que cualquiera vería a simple vista en la escena.
+   */
+  distanciaMetros?: number;
+  /** Sólo si lleva o no —nunca el número, mismo criterio que oculta el PV exacto. */
+  tieneArmadura?: boolean;
 }
 
 /** Un arma que el investigador realmente puede usar en este combate. */
@@ -226,6 +242,9 @@ export interface CombateResult {
 export interface Rival {
   id: string; name: string; hp: number; maxHp: number; arma: string;
   derribado?: boolean; agarrado?: boolean;
+  /** Ver `RivalReal.distanciaMetros`. Acá se muestra el número crudo, como el resto del simulador. */
+  distanciaMetros?: number;
+  armadura?: number;
 }
 
 /** Sólo importan con arma de fuego; el motor los ignora en cuerpo a cuerpo. */

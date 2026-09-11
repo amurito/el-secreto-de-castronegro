@@ -209,6 +209,12 @@ export function validarContenido(
     }
     if (c.maxHp <= 0) problemas.push(`npcs.${npc.id}.combate.maxHp: tiene que ser mayor que cero.`);
     if (c.hp > c.maxHp) problemas.push(`npcs.${npc.id}.combate.hp: arranca por encima de su máximo.`);
+    if (c.distancia !== undefined && c.distancia < 0) {
+      problemas.push(`npcs.${npc.id}.combate.distancia: no puede ser negativa.`);
+    }
+    if (c.armadura !== undefined && c.armadura < 0) {
+      problemas.push(`npcs.${npc.id}.combate.armadura: no puede ser negativa.`);
+    }
   }
 
   // ── Condiciones: forma y referencias ────────────────────────────────────

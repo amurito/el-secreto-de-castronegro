@@ -20,10 +20,10 @@ import type {
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
 import { dieValues, damageDice, generateSeed, commitmentOf } from './rng.ts';
-import { ARMAS, ARMA_POR_ID, dadosQuePide, type Arma } from '../rules/armas.ts';
+import { ARMAS, ARMA_POR_ID, dadosQuePide, nivelDeAlcance, type Arma } from '../rules/armas.ts';
 import { HECHIZO_POR_ID } from '../rules/hechizos.ts';
 import { OCUPACION_POR_ID } from '../scenario/ocupaciones.ts';
-import { resolverEnfrentamiento, danoDeAtaque, type Defensa } from '../rules/combate.ts';
+import { resolverEnfrentamiento, danoDeAtaque, aplicarArmadura, type Defensa } from '../rules/combate.ts';
 import {
   combineD100, degreeFor, meetsDifficulty, tensDiceNeeded, thresholdsFor,
   DEGREE_LABEL, DIFFICULTY_LABEL, canPush,
@@ -767,6 +767,7 @@ export class Turn {
         case 'resolve_attack': return this.toolResolveAttack(raw);
         case 'resolve_flee': return this.toolResolveFlee(raw);
         case 'resolve_maneuver': return this.toolResolveManeuver(raw);
+        case 'adjust_distance': return this.toolAdjustDistance(raw);
         case 'start_combat': return this.toolStartCombat(raw);
         case 'end_combat': return this.toolEndCombat(raw);
         case 'resolve_intimidate': return this.toolResolveIntimidate(raw);
@@ -1403,6 +1404,45 @@ export class Turn {
   }
 
   /**
+   * Cuánto protege lo que el investigador lleva puesto ahora mismo. Un solo
+   * ítem con `puntosArmadura` cuenta —no hay concepto de «capas» de ropa en
+   * este motor, y no hace falta inventarlo para esto—; si lleva varios, se
+   * usa el que más proteja, no la suma (un saco de cuero bajo un chaleco
+   * antibalas no suma los dos puntajes, protege el que más aguanta).
+   */
+  private armaduraDelInvestigador(): number {
+    const inv = this.investigator;
+    let mejor = 0;
+    for (const item of Object.values(this.state.items)) {
+      if (item.owner === inv.id && item.carried && item.puntosArmadura) {
+        mejor = Math.max(mejor, item.puntosArmadura);
+      }
+    }
+    return mejor;
+  }
+
+  /**
+   * Aplica al investigador un daño que ya se sabe que entró, descontando su
+   * armadura primero. Centraliza lo que antes cada rama de daño-al-
+   * investigador hacía por su cuenta llamando a `toolApplyDamage` directo —
+   * agregar armadura sin esto habría significado repetir el descuento en
+   * cuatro lugares y, tarde o temprano, olvidarlo en el quinto.
+   */
+  private danarInvestigador(amount: number, cause: string): ToolOutcome {
+    const armadura = this.armaduraDelInvestigador();
+    const neto = aplicarArmadura(amount, armadura);
+    // `toolApplyDamage` rechaza `amount === 0` porque normalmente eso es un
+    // error del llamador (nadie pide aplicar cero daño). Acá SÍ puede pasar
+    // de verdad —la armadura absorbió el golpe entero— y no es un error: es
+    // el resultado correcto, y hay que decirlo en vez de dejar pasar el
+    // rechazo del motor como si algo hubiera salido mal.
+    if (neto <= 0) {
+      return { ok: true, message: `La armadura absorbe el golpe entero (${amount} de daño, ${armadura} de armadura). No pasa nada.` };
+    }
+    return this.toolApplyDamage({ amount: neto, cause });
+  }
+
+  /**
    * El ataque de UN rival contra el investigador, fuera del intercambio
    * declarado. La usan dos casos: los rivales presentes más rápidos que el
    * investigador —les toca antes de que el golpe declarado siquiera
@@ -1422,13 +1462,51 @@ export class Turn {
     const c = atacante.combate!;
     const arma = ARMA_POR_ID[c.armaId] ?? ARMA_POR_ID['desarmado']!;
 
+    // Misma lógica de distancia que `toolResolveAttack`, en la otra
+    // dirección: no-op si este NPC no declaró `distancia`.
+    let dificultadAtacante: Difficulty = 'regular';
+    let quemarropa = true;
+    if (c.distancia !== undefined) {
+      const nivel = nivelDeAlcance(arma, c.distancia, c.dex ?? 50);
+      if (nivel.tipo === 'necesita_cerrar') {
+        // Cuerpo a cuerpo y todavía no llegó: gasta el asalto en cerrar
+        // distancia en vez de pegar. `distancia: 0` es lo mismo que hoy
+        // asume todo NPC sin este campo: adyacente.
+        this.emit('NPC_COMBATE_CHANGED', {
+          npcId: atacante.id, changes: { distancia: 0 }, cause: 'corre a cerrar distancia',
+        });
+        return `${atacante.name} corre a cerrar distancia con ${inv.name} en vez de atacar este asalto.`;
+      }
+      if (nivel.tipo === 'fuera_de_alcance') {
+        return `${atacante.name} está demasiado lejos para atacar con ${arma.nombre.toLowerCase()} este asalto.`;
+      }
+      if (nivel.tipo === 'a_distancia') {
+        dificultadAtacante = nivel.dificultad;
+        quemarropa = nivel.quemarropa;
+        if (dificultadAtacante === 'hard') modificadores = [...modificadores, { kind: 'penalty_die', count: 1, reason: 'largo alcance' }];
+        if (dificultadAtacante === 'extreme') modificadores = [...modificadores, { kind: 'penalty_die', count: 2, reason: 'muy largo alcance' }];
+        if (quemarropa) modificadores = [...modificadores, { kind: 'bonus_die', count: 1, reason: 'a quemarropa' }];
+      }
+    }
+
     const ataque = this.tiradaInterna(
       atacante.id, atacante.name, 'Pelea', c.pelea, `atacar a ${inv.name}`, modificadores);
     const indice = this.state.rng.nextIndex - 1;
-    const defensa = this.tiradaInterna(
-      inv.id, inv.name, 'Pelea', this.valorHabilidadInv('pelea'), 'defenderse');
 
-    const fallo = resolverEnfrentamiento({ atacante: ataque.degree, defensor: defensa.degree, defensa: 'contraataca' });
+    // Mismo criterio que del otro lado (p. 113): un arma de fuego disparada
+    // desde lejos no se contraataca a mano, se esquiva —salvo a quemarropa,
+    // que ya es forcejeo—. Sin esto, el investigador le devolvía un facón a
+    // una bala tirada desde 40 metros.
+    const defensaModo: Defensa = arma.habilidad === 'armas_fuego' && !quemarropa ? 'esquiva' : 'contraataca';
+    const defensaSkill = defensaModo === 'esquiva' ? 'esquivar' : 'pelea';
+    const defensa = this.tiradaInterna(
+      inv.id, inv.name, defensaModo === 'esquiva' ? 'Esquivar' : 'Pelea',
+      this.valorHabilidadInv(defensaSkill),
+      defensaModo === 'esquiva' ? 'esquivar el disparo' : 'defenderse');
+
+    const fallo = resolverEnfrentamiento({
+      atacante: ataque.degree, defensor: defensa.degree, defensa: defensaModo, dificultadAtacante,
+    });
     const encabezado =
       `${atacante.name} ataca a ${inv.name} con ${arma.nombre.toLowerCase()}. ` +
       `${DEGREE_LABEL[ataque.degree]} contra ${DEGREE_LABEL[defensa.degree]}. ${fallo.razon}`;
@@ -1436,13 +1514,13 @@ export class Turn {
     if (fallo.golpea === null) return `${encabezado}\nNadie sale lastimado en este cruce.`;
     if (fallo.golpea === 'defensor') {
       const dano = this.tirarDano(arma, c.bonificacionDano, indice, fallo.extremo);
-      const golpe = this.toolApplyDamage({ amount: dano.total, cause: `${arma.nombre} de ${atacante.name}` });
+      const golpe = this.danarInvestigador(dano.total, `${arma.nombre} de ${atacante.name}`);
       return `${encabezado}\n${dano.total} de daño (${dano.detalle}). ${golpe.message}`;
     }
     const armaInv = ARMA_POR_ID[armaInvId] ?? ARMA_POR_ID['desarmado']!;
     const dano = this.tirarDano(armaInv, inv.derived.damageBonus, indice, false);
     return `${encabezado}\n${inv.name} lo contraataca: ${dano.total} de daño (${dano.detalle}). ` +
-      `${this.danarNpc(atacante, dano.total, `${armaInv.nombre} de ${inv.name}`)}`;
+      `${this.danarNpc(atacante, aplicarArmadura(dano.total, atacante.combate!.armadura ?? 0), `${armaInv.nombre} de ${inv.name}`)}`;
   }
 
   /**
@@ -1566,6 +1644,31 @@ export class Turn {
         `No existe el arma «${armaId}». Disponibles: ${ARMAS.map((a) => a.id).join(', ')}.`);
     }
 
+    // ── Distancia y alcance (rules/armas.ts, `nivelDeAlcance`) ──
+    // Sólo entra en juego si ESTE NPC declaró `distancia`: sin eso —el 100%
+    // del contenido de hoy— cero cambios, cuerpo a cuerpo para todos como
+    // siempre. `quemarropaPorDistancia` reemplaza el checkbox manual de
+    // punto en blanco cuando hay distancia real de la que calcularlo; si no
+    // hay distancia declarada, sigue siendo el jugador quien lo declara.
+    const distancia = npc.combate.distancia;
+    let dificultadPorDistancia: Difficulty = 'regular';
+    let quemarropaPorDistancia: boolean | null = null;
+    if (distancia !== undefined) {
+      const nivel = nivelDeAlcance(arma, distancia, this.investigator.characteristics.DEX);
+      if (nivel.tipo === 'necesita_cerrar') {
+        return this.reject('resolve_attack', raw,
+          `${npc.name} está a ${distancia} metros: ${arma.nombre.toLowerCase()} no llega ahí. Acercate primero.`);
+      }
+      if (nivel.tipo === 'fuera_de_alcance') {
+        return this.reject('resolve_attack', raw,
+          `${npc.name} está a ${distancia} metros: eso es más de lo que ${arma.nombre.toLowerCase()} alcanza, ni con un tiro desesperado.`);
+      }
+      if (nivel.tipo === 'a_distancia') {
+        dificultadPorDistancia = nivel.dificultad;
+        quemarropaPorDistancia = nivel.quemarropa;
+      }
+    }
+
     const bloques: string[] = [];
 
     // ── 0. El resto del cuarto, si hay más de dos peleando ──
@@ -1611,7 +1714,7 @@ export class Turn {
     // un balazo tirado desde lejos, lo cual no es una regla de CoC 7e: es
     // que el motor no distinguía qué arma usó quien ataca. Reportado
     // jugando, en el simulador.
-    const puntoBlanco = String(raw.punto_blanco ?? 'false') === 'true';
+    const puntoBlanco = quemarropaPorDistancia ?? (String(raw.punto_blanco ?? 'false') === 'true');
     const defensa: Defensa =
       arma.habilidad === 'armas_fuego' && !puntoBlanco
         ? 'esquiva'
@@ -1623,6 +1726,9 @@ export class Turn {
     // viene. Es una simplificación conocida, no un error.
     let bonusFuego = 0, penaltyFuego = 0;
     const notasFuego: string[] = [];
+    if (distancia !== undefined && dificultadPorDistancia !== 'regular') {
+      notasFuego.push(`a ${distancia} metros (${dificultadPorDistancia === 'hard' ? 'largo alcance' : 'muy largo alcance'})`);
+    }
     if (arma.habilidad === 'armas_fuego') {
       if (String(raw.apuntando ?? 'false') === 'true') { bonusFuego++; notasFuego.push('apuntando'); }
       if (puntoBlanco) { bonusFuego++; notasFuego.push('a quemarropa'); }
@@ -1668,7 +1774,7 @@ export class Turn {
     // ── 1. El investigador ataca ──
     const ataque = this.toolRequestRoll({
       skill: arma.habilidad,
-      difficulty: 'regular',
+      difficulty: dificultadPorDistancia,
       reason: razon || `atacar a ${npc.name} con ${arma.nombre.toLowerCase()}`,
       stakes_success: 'el golpe llega',
       stakes_failure: 'el golpe no llega',
@@ -1701,6 +1807,7 @@ export class Turn {
     // ── 3. Quién le pega a quién ──
     const fallo = resolverEnfrentamiento({
       atacante: gradoAtacante, defensor: defensor.degree, defensa,
+      dificultadAtacante: dificultadPorDistancia,
     });
 
     const encabezado =
@@ -1712,17 +1819,18 @@ export class Turn {
       bloques.push(`${encabezado}\nNadie sale lastimado. Narralo como el intercambio que fue, no como una pausa.`);
     } else if (fallo.golpea === 'defensor') {
       const dano = this.tirarDano(arma, inv.derived.damageBonus, indiceAtaque, fallo.extremo);
+      const armaduraNpc = npc.combate.armadura ?? 0;
+      const netoNpc = aplicarArmadura(dano.total, armaduraNpc);
+      const notaArmadura = armaduraNpc > 0 ? ` (${armaduraNpc} de armadura descontada)` : '';
       bloques.push(
         `${encabezado}\n${fallo.extremo ? (arma.empala ? 'ENTRÓ DE LLENO: ' : 'GOLPE CERTERO: ') : ''}` +
-        `${dano.total} de daño (${dano.detalle}). ${this.danarNpc(npc, dano.total, `${arma.nombre} de ${inv.name}`, alPuntoDebil)}`,
+        `${dano.total} de daño (${dano.detalle})${notaArmadura}. ${this.danarNpc(npc, netoNpc, `${arma.nombre} de ${inv.name}`, alPuntoDebil)}`,
       );
     } else {
       // El contraataque: le pega a quien empezó, con el arma del NPC.
       const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
       const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, indiceDefensa, false);
-      const golpe = this.toolApplyDamage({
-        amount: dano.total, cause: `${armaNpc.nombre} de ${npc.name}`,
-      });
+      const golpe = this.danarInvestigador(dano.total, `${armaNpc.nombre} de ${npc.name}`);
       bloques.push(
         `${encabezado}\n${npc.name} se la devuelve con ${armaNpc.nombre.toLowerCase()}: ` +
         `${dano.total} de daño (${dano.detalle}).\n${golpe.message}`,
@@ -1877,7 +1985,7 @@ export class Turn {
       // Se defendió mejor de lo que forcejearon: conecta un golpe normal.
       const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
       const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, indiceDefensa, false);
-      const golpe = this.toolApplyDamage({ amount: dano.total, cause: `${armaNpc.nombre} de ${npc.name}, al resistir la maniobra` });
+      const golpe = this.danarInvestigador(dano.total, `${armaNpc.nombre} de ${npc.name}, al resistir la maniobra`);
       this.cerrarCombateSiTerminado();
       return {
         ok: true,
@@ -1906,6 +2014,101 @@ export class Turn {
     });
     this.cerrarCombateSiTerminado();
     return { ok: true, message: `${encabezado}\nQueda sujeto: su próximo intento de pelear o de escapar sale con desventaja.` };
+  }
+
+  /**
+   * Acercarse o alejarse de un rival con `distancia` declarada (rules/armas.ts
+   * — sin eso, este tool no tiene nada que ajustar). Alejarse no arriesga
+   * nada: retirarse no expone más de lo que ya se está. Acercarse contra
+   * alguien que dispara sí —cruzar campo abierto hacia un arma de fuego es
+   * justamente lo que el manual no modela con un número, así que esto es
+   * regla casera, igual de franca que el atasco de arma de fuego en
+   * `toolResolveAttack`—: una tirada de Esquivar. Si sale bien, cierra sin
+   * pagar nada; si sale mal, el rival dispara un tiro libre a la distancia
+   * VIEJA antes de que el investigador termine de cruzar, pero de todos
+   * modos llega —cruzó, sólo que le costó—.
+   */
+  private toolAdjustDistance(raw: Record<string, unknown>): ToolOutcome {
+    const npcId = String(raw.npc_id ?? '').trim();
+    const direction = String(raw.direction ?? '').trim();
+    if (!['acercar', 'alejar'].includes(direction)) {
+      return this.reject('adjust_distance', raw, 'La dirección tiene que ser "acercar" o "alejar".');
+    }
+
+    const npc = this.state.npcs[npcId];
+    if (!npc) return this.reject('adjust_distance', raw, `El personaje «${npcId}» no existe.`);
+    if (!npc.combate) {
+      return this.reject('adjust_distance', raw, `${npc.name} no tiene estadísticas de combate: no hay distancia que ajustar.`);
+    }
+    if (!npc.present || npc.status === 'dead') {
+      return this.reject('adjust_distance', raw, `${npc.name} no está acá.`);
+    }
+    if (npc.combate.hp <= 0) {
+      return this.reject('adjust_distance', raw, `${npc.name} ya está fuera de combate.`);
+    }
+    const distancia = npc.combate.distancia;
+    if (distancia === undefined) {
+      return this.reject('adjust_distance', raw, `${npc.name} ya está cuerpo a cuerpo: no tiene una distancia declarada de la que alejarse o acercarse.`);
+    }
+
+    const inv = this.investigator;
+
+    if (direction === 'alejar') {
+      const PASO_METROS = 15; // un tramo de campo cruzado en un asalto, ver rules/armas.ts
+      this.emit('NPC_COMBATE_CHANGED', {
+        npcId: npc.id, changes: { distancia: distancia + PASO_METROS }, cause: `${inv.name} se aleja de ${npc.name}`,
+      });
+      this.cerrarCombateSiTerminado();
+      return { ok: true, message: `${inv.name} retrocede. Ahora hay ${distancia + PASO_METROS} metros hasta ${npc.name}.` };
+    }
+
+    // acercar
+    if (distancia <= 0) {
+      return this.reject('adjust_distance', raw, `${npc.name} ya está encima: no hay distancia que cerrar.`);
+    }
+    const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
+    if (armaNpc.alcance === 0) {
+      // No dispara: cruzar hacia alguien que también quiere el cuerpo a
+      // cuerpo no arriesga nada aparte, así que cierra sin tirar.
+      this.emit('NPC_COMBATE_CHANGED', {
+        npcId: npc.id, changes: { distancia: 0 }, cause: `${inv.name} cierra distancia con ${npc.name}`,
+      });
+      this.cerrarCombateSiTerminado();
+      return { ok: true, message: `${inv.name} cierra distancia con ${npc.name}: quedan cuerpo a cuerpo.` };
+    }
+
+    const cruce = this.toolRequestRoll({
+      skill: 'esquivar',
+      difficulty: 'regular',
+      reason: `cruzar campo abierto hacia ${npc.name}`,
+      stakes_success: 'cierra sin que le acierten',
+      stakes_failure: `${npc.name} dispara mientras cruza`,
+    });
+    if (!cruce.ok) return cruce;
+    const cruzoLimpio = this.ctx.lastRollSucceeded;
+
+    this.emit('NPC_COMBATE_CHANGED', {
+      npcId: npc.id, changes: { distancia: 0 }, cause: `${inv.name} cierra distancia con ${npc.name}`,
+    });
+
+    if (cruzoLimpio) {
+      this.cerrarCombateSiTerminado();
+      return { ok: true, message: `${inv.name} cruza y llega hasta ${npc.name} sin que le acierten un tiro.` };
+    }
+
+    // Un tiro libre a la distancia VIEJA, antes de que termine de cruzar.
+    const disparo = this.tiradaInterna(
+      npc.id, npc.name, 'Pelea', npc.combate.pelea, `disparar a ${inv.name} mientras cruza`);
+    let mensaje = `${inv.name} cruza, pero ${npc.name} le dispara en el camino. `;
+    if (meetsDifficulty(disparo.degree, 'regular')) {
+      const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, this.state.rng.nextIndex - 1, false);
+      const golpe = this.danarInvestigador(dano.total, `${armaNpc.nombre} de ${npc.name}, cruzando bajo fuego`);
+      mensaje += `${dano.total} de daño (${dano.detalle}). ${golpe.message}`;
+    } else {
+      mensaje += 'Falla el tiro. De todos modos, ya está encima.';
+    }
+    this.cerrarCombateSiTerminado();
+    return { ok: true, message: mensaje };
   }
 
   /**
@@ -1974,7 +2177,7 @@ export class Turn {
     if (fallo.golpea === 'atacante') {
       const armaNpc = ARMA_POR_ID[npc.combate.armaId] ?? ARMA_POR_ID['desarmado']!;
       const dano = this.tirarDano(armaNpc, npc.combate.bonificacionDano, indiceDefensa, false);
-      const golpe = this.toolApplyDamage({ amount: dano.total, cause: `${armaNpc.nombre} de ${npc.name}, al no dejarse intimidar` });
+      const golpe = this.danarInvestigador(dano.total, `${armaNpc.nombre} de ${npc.name}, al no dejarse intimidar`);
       this.cerrarCombateSiTerminado();
       return {
         ok: true,

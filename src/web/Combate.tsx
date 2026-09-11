@@ -166,6 +166,18 @@ export function Combate({
     }
   }
 
+  async function ajustarDistancia(direction: 'acercar' | 'alejar') {
+    setOcupado(true);
+    setError(null);
+    try {
+      agregarAlRegistro(await api.combateAjustarDistancia(campaignId, rivalId, direction));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
   async function intimidarClick() {
     setOcupado(true);
     setError(null);
@@ -248,10 +260,16 @@ export function Combate({
                   <input type="checkbox" checked={apuntando} onChange={(e) => setApuntando(e.target.checked)} />
                   Venía apuntando (bonificación)
                 </label>
-                <label className="sim-check">
-                  <input type="checkbox" checked={puntoBlanco} onChange={(e) => setPuntoBlanco(e.target.checked)} />
-                  A quemarropa (bonificación)
-                </label>
+                {elegido?.distanciaMetros === undefined ? (
+                  <label className="sim-check">
+                    <input type="checkbox" checked={puntoBlanco} onChange={(e) => setPuntoBlanco(e.target.checked)} />
+                    A quemarropa (bonificación)
+                  </label>
+                ) : (
+                  <div className="sim-ayuda">
+                    Quemarropa se calcula solo, a partir de la distancia declarada de este rival.
+                  </div>
+                )}
                 <label className="sim-check">
                   <input type="checkbox" checked={cubierto} onChange={(e) => setCubierto(e.target.checked)} />
                   El blanco se cubre (penalización)
@@ -278,6 +296,10 @@ export function Combate({
                     <b>{r.name}</b>
                     <span className="sim-rival-arma">{r.arma}</span>
                     <span className="sim-rival-hp">{ETIQUETA_ESTADO[r.estadoCombate]}</span>
+                    {r.tieneArmadura && <span className="sim-rival-marca">lleva protección</span>}
+                    {r.distanciaMetros !== undefined && (
+                      <span className="sim-rival-marca">a {r.distanciaMetros} metros</span>
+                    )}
                     {(r.derribado || r.agarrado) && (
                       <span className="sim-rival-marca">
                         {r.derribado ? 'derribado' : ''}{r.derribado && r.agarrado ? ' · ' : ''}{r.agarrado ? 'sujeto' : ''}
@@ -367,6 +389,18 @@ export function Combate({
             Sujetar
           </button>
         </div>
+
+        {elegido?.distanciaMetros !== undefined && (
+          <div className="sim-maniobras">
+            <span className="sim-maniobras-label">Distancia con {elegido?.name}: {elegido?.distanciaMetros} metros.</span>
+            <button className="ghost" onClick={() => ajustarDistancia('acercar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+              Acercarse
+            </button>
+            <button className="ghost" onClick={() => ajustarDistancia('alejar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+              Alejarse
+            </button>
+          </div>
+        )}
 
         {!investigadorEnPie && (
           <div className="sim-aviso">Tu investigador está fuera de combate.</div>

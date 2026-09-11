@@ -56,6 +56,7 @@ const rivalesDe = (state: GameState) =>
       hp: n.combate!.hp, maxHp: n.combate!.maxHp,
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
       derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
+      distanciaMetros: n.combate!.distancia, armadura: n.combate!.armadura,
     }));
 
 /**
@@ -80,6 +81,8 @@ function rivalesReales(state: GameState): RivalReal[] {
       estadoCombate: estadoDeCombate(n.combate!.hp, n.combate!.maxHp),
       arma: ARMA_POR_ID[n.combate!.armaId]?.nombre ?? n.combate!.armaId,
       derribado: n.combate!.derribado, agarrado: n.combate!.agarrado,
+      distanciaMetros: n.combate!.distancia,
+      tieneArmadura: Boolean(n.combate!.armadura),
       ...(n.combate!.invulnerabilidad ? {
         puntoDebil: {
           nombre: n.combate!.invulnerabilidad!.puntoDebil,
@@ -421,6 +424,25 @@ export function createLocalApi(): GameApi {
       }
     },
 
+    async ajustarDistancia(id, npcId, direction) {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        aislarRival(turn, npcId);
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('adjust_distance', { npc_id: npcId, direction });
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll), rivales: rivalesDe(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
     async reiniciarSimulador(id) {
       // Se descarta la campaña y se abre otra: el log es append-only a
       // propósito —no hay «deshacer» en este motor— así que reiniciar es
@@ -526,6 +548,30 @@ export function createLocalApi(): GameApi {
         const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
         const antes = turn.state.rolls.length;
         const r = turn.executeTool('resolve_maneuver', { npc_id: npcId, type: tipo });
+        turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
+        await turn.commit();
+        const { state } = await loadState(id);
+        return {
+          ok: r.ok, mensaje: r.message, state: sanitizeForClient(state),
+          tiradas: state.rolls.slice(antes).map(toClientRoll),
+          combateActivo: Boolean(state.activeCombat),
+          options: opcionesConRiesgo(state, scenario),
+          intimidar: intimidarDisponible(state),
+          rivales: rivalesReales(state),
+        };
+      } finally {
+        enCurso.delete(id);
+      }
+    },
+
+    async combateAjustarDistancia(id, npcId, direction): Promise<CombateResult> {
+      if (enCurso.has(id)) throw new Error('Ya hay una acción en curso.');
+      enCurso.add(id);
+      try {
+        const turn = await Turn.open(id);
+        const scenario = SCENARIOS[turn.state.scenarioId as keyof typeof SCENARIOS];
+        const antes = turn.state.rolls.length;
+        const r = turn.executeTool('adjust_distance', { npc_id: npcId, direction });
         turn.narrate(r.message.replace('RECHAZADO POR EL MOTOR: ', ''), []);
         await turn.commit();
         const { state } = await loadState(id);

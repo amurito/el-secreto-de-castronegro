@@ -4076,12 +4076,77 @@ del combate quedó escrito, y el juego pasó a ofrecer continuar con un
 investigador de la reserva — exactamente el camino que ya existía para
 cualquier muerte, sin nada especial para el combate.
 
-**No entra por ahora, a propósito:** escopetas y rifles largos, porque su
-daño depende del tramo de distancia y el motor no tiene distancias dentro de
-una escena; meterlas con un solo número sería inventar una regla. Armas de
-guerra (Thompson, granadas, lanzacohetes), que no van a aparecer en una
-estancia bonaerense en 1925. Y una herramienta de reanimar a un inconsciente
-—hoy no existe ninguna, ni para Herida Grave ni para llegar a 0 PV—.
+**No entra por ahora, a propósito:** armas de guerra (Thompson, granadas,
+lanzacohetes), que no van a aparecer en una estancia bonaerense en 1925. Y una
+herramienta de reanimar a un inconsciente —hoy no existe ninguna, ni para
+Herida Grave ni para llegar a 0 PV—.
+
+**HECHO (2026-09-10): distancia real, alcance de las armas de fuego, y
+armadura.** Antes de escribir la octava aventura, con enemigos armados y
+blindados de verdad. Verificado contra el manual (cap. 6, pp. 111-116 y
+400-402, Tabla XVII): la distancia decide la DIFICULTAD del disparo, no el
+daño del arma —esa es la excepción de la escopeta, que sigue afuera (ver
+abajo)—.
+
+- `CombateNpc.distancia?: number` (metros) y `CombateNpc.armadura?: number`
+  (puntos) — los dos opcionales, los dos no-op si no están: el 100% del
+  contenido de hoy no los declara y se comporta exactamente igual que antes.
+  `distancia` es POR NPC, no por combate entero: un tirador puede quedarse
+  lejos mientras otro rival cierra a cuerpo a cuerpo, a propósito.
+- `Item.puntosArmadura?: number` — la armadura del investigador vive en un
+  ítem `carried`, igual que un arma vive en `Item.armaId`. Sin capas de ropa:
+  si lleva varios, protege el que más aguante, no la suma.
+- `nivelDeAlcance(arma, distancia, dex)` (`rules/armas.ts`, pura): banda de
+  dificultad por múltiplos del alcance base (regular / difícil hasta 2x /
+  extrema hasta 4x / fuera de alcance más allá) y quemarropa calculado —1/5
+  de la DEX del tirador, en pies, convertido a metros— en vez del checkbox
+  manual de siempre. No depende de `armas_fuego`: se basa en `arma.alcance`,
+  que ya era un campo genérico (incluye la piedra arrojadiza).
+- **La dificultad exigida ahora importa de verdad.** `resolverEnfrentamiento`
+  (`rules/combate.ts`) aceptaba siempre 'regular' como umbral del atacante,
+  así que la `difficulty` que ya se pasaba a `request_roll` era cosmética
+  para el combate: un éxito regular a dificultad Extrema igual contaba como
+  acierto. Se agregó `dificultadAtacante` al enfrentamiento —vía
+  `meetsDifficulty`— para que un tiro a muy largo alcance necesite de verdad
+  un éxito extremo, no cualquier acierto. Y a esa dificultad, sólo un
+  crítico empala (p. 112: «an impale only occurs with a critical hit»), no
+  cualquier extremo.
+- `aplicarArmadura(dano, armadura)` — resta fija, nunca negativa (p. 108). Se
+  aplica al NPC golpeado y al investigador golpeado, por los cuatro caminos
+  distintos por los que un NPC puede dañarlo (`danarInvestigador`, helper
+  nuevo que centraliza el descuento en vez de repetirlo cuatro veces).
+- **`adjust_distance`** (tool nuevo) — acercarse o alejarse de un rival con
+  `distancia` declarada. Alejarse no arriesga nada, sin tirar. Acercarse
+  contra alguien que dispara sí: regla casera, tan franca como el atasco de
+  arma de fuego de más arriba —Esquivar; si sale mal, un tiro libre a la
+  distancia VIEJA antes de terminar de cruzar, pero de todos modos llega—.
+  Contra un rival cuerpo a cuerpo, cierra gratis: no hay riesgo en acercarse
+  a alguien que también quiere el cuerpo a cuerpo.
+- `ataqueDeNpcContraInvestigador` (rivales de fondo) recibió la misma lógica
+  en la otra dirección: un NPC cuerpo a cuerpo lejos gasta el asalto en
+  cerrar distancia en vez de atacar, en vez de quedar pegado a un
+  `fuera_de_alcance` que antes lo dejaba mudo para siempre (bug encontrado
+  escribiendo la prueba, no jugando: `nivelDeAlcance` no distinguía «cuerpo a
+  cuerpo que todavía no llegó» de «ningún tiro alcanza esa distancia» — dos
+  casos con nombres distintos ahora, `necesita_cerrar` y `fuera_de_alcance`).
+  También adoptó, simétricamente, la regla de que un disparo lejano no se
+  contraataca a mano.
+- Simulador: cuarto rival, `npc-tirador` (revólver .38, a 20 metros, para
+  probar alcance y `adjust_distance` jugando), y `armadura: 2` en el
+  cuchillero — probado a mano en el navegador antes de darlo por bueno.
+- **Corregido de paso, no relacionado:** `reiniciarSimulador` cura los PV
+  pero no restaura `status` a `'alive'` — un investigador que murió y se
+  «reinició» queda con `status: 'dead'` heredado, inutilizable. Encontrado
+  jugando esta misma sesión; queda anotado para arreglar aparte, no se tocó
+  acá para no mezclar dos cambios.
+
+**Sigue sin entrar, a propósito, y ahora por una razón más específica:**
+escopetas y rifles largos. Antes faltaban porque faltaba la distancia entera;
+ahora lo que falta es una mecánica propia que el manual sólo describe para la
+escopeta (p. 116): el daño se tira en D6 sueltos por tramo (4D6/2D6/1D6 según
+la distancia) y la armadura se descuenta DE CADA DADO, no una vez del total
+—cada perdigón atraviesa por su cuenta—. Es un diseño aparte, no una
+extensión de lo que ya existe; entra cuando haga falta, con su propio caso.
 
 ### 4.5 Móvil ✔ HECHO
 

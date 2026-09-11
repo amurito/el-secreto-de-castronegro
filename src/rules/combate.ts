@@ -40,8 +40,8 @@
  * es un golpe de reacción, no un momento propio.
  */
 
-import type { SuccessDegree } from '../shared/types.ts';
-import { DEGREE_RANK } from './dice.ts';
+import type { Difficulty, SuccessDegree } from '../shared/types.ts';
+import { DEGREE_RANK, meetsDifficulty } from './dice.ts';
 import { bonificacionAplicada, maximoDelArma, type Arma } from './armas.ts';
 
 /** Qué hace quien es atacado. Es una elección, no una tirada distinta. */
@@ -51,6 +51,16 @@ export interface Enfrentamiento {
   atacante: SuccessDegree;
   defensor: SuccessDegree;
   defensa: Defensa;
+  /**
+   * Qué grado necesitaba alcanzar el ATACANTE para que su tirada cuente
+   * como acierto. Por defecto `'regular'` —el caso de siempre—: un disparo a
+   * largo o muy largo alcance (p. 112, `nivelDeAlcance` en rules/armas.ts)
+   * exige `'hard'`/`'extreme'`, y ahí un éxito regular deja de ser un
+   * acierto, por más que su rango le gane al del defensor. La dificultad del
+   * DEFENSOR nunca cambia por esto: esquivar o devolver el golpe sigue
+   * midiéndose contra `'regular'`, sea cual sea la distancia del tirador.
+   */
+  dificultadAtacante?: Difficulty;
 }
 
 export interface ResultadoEnfrentamiento {
@@ -62,7 +72,7 @@ export interface ResultadoEnfrentamiento {
   razon: string;
 }
 
-const exito = (g: SuccessDegree) => DEGREE_RANK[g] >= DEGREE_RANK.regular;
+const exito = (g: SuccessDegree, dificultad: Difficulty = 'regular') => meetsDifficulty(g, dificultad);
 
 /**
  * Resuelve la tirada enfrentada. `golpea: 'defensor'` significa que el daño
@@ -72,8 +82,17 @@ const exito = (g: SuccessDegree) => DEGREE_RANK[g] >= DEGREE_RANK.regular;
 export function resolverEnfrentamiento(e: Enfrentamiento): ResultadoEnfrentamiento {
   const a = DEGREE_RANK[e.atacante];
   const d = DEGREE_RANK[e.defensor];
-  const atacanteAcerto = exito(e.atacante);
+  const dificultadAtacante = e.dificultadAtacante ?? 'regular';
+  const atacanteAcerto = exito(e.atacante, dificultadAtacante);
   const defensorLogro = exito(e.defensor);
+
+  // Un éxito extremo es «de más» salvo que la dificultad exigida YA fuera
+  // extrema: ahí un éxito extremo es apenas lo mínimo para pegar, no un
+  // golpe de más —hace falta un crítico para además empalar/rematar (p. 112:
+  // «At very long range, when only an Extreme success will hit the target,
+  // an impale only occurs with a critical hit»).
+  const esExtremo = (g: SuccessDegree) =>
+    dificultadAtacante === 'extreme' ? g === 'critical' : (g === 'extreme' || g === 'critical');
 
   if (!atacanteAcerto && !defensorLogro) {
     return { golpea: null, extremo: false, razon: 'Los dos fallan: nadie toca a nadie.' };
@@ -85,18 +104,23 @@ export function resolverEnfrentamiento(e: Enfrentamiento): ResultadoEnfrentamien
     if (atacanteAcerto && a > d) {
       return {
         golpea: 'defensor',
-        extremo: e.atacante === 'extreme' || e.atacante === 'critical',
+        extremo: esExtremo(e.atacante),
         razon: 'El ataque llega antes de que el otro termine de moverse.',
       };
     }
-    return { golpea: null, extremo: false, razon: 'Esquivó. En un empate, esquivar gana.' };
+    return {
+      golpea: null, extremo: false,
+      razon: !atacanteAcerto && a > d
+        ? 'El tiro no alcanza el nivel de éxito que exige la distancia: no llega, aunque en otro alcance hubiera bastado.'
+        : 'Esquivó. En un empate, esquivar gana.',
+    };
   }
 
   // Contraatacar: el que gana pega, sea quien sea.
   if (atacanteAcerto && a >= d) {
     return {
       golpea: 'defensor',
-      extremo: e.atacante === 'extreme' || e.atacante === 'critical',
+      extremo: esExtremo(e.atacante),
       razon: a === d
         ? 'Los dos aciertan igual de bien, y en ese empate gana quien empezó.'
         : 'Le gana de mano al que quiso devolvérsela.',
@@ -167,3 +191,12 @@ export function danoDeAtaque(
     detalle: `${maxArma} (máximo del arma)${maxBon ? ` + ${maxBon} de corpulencia` : ''} + ${extra} porque atravesó`,
   };
 }
+
+/**
+ * «Armor reduces the damage received: deduct the number of armor points from
+ * the damage» (p. 108). Una resta simple, pero con nombre propio porque el
+ * motor la aplica en varios lugares (NPC golpeado, investigador golpeado por
+ * distintos caminos) y todos tienen que coincidir en no dejar daño negativo.
+ */
+export const aplicarArmadura = (dano: number, armadura: number): number =>
+  Math.max(0, dano - armadura);

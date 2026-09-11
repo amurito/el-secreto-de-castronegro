@@ -460,6 +460,8 @@ export interface Item {
   armaId?: string;
   /** Si es true, este ítem ya no sirve como arma —se rompió, típicamente por una pifia con arma de fuego—. `armaId` se conserva a propósito: sigue siendo, narrativamente, esa arma, sólo que inútil. */
   roto?: boolean;
+  /** Si está definido y el ítem está `carried`, protege como la `armadura` de un NPC: resta puntos de cada golpe que reciba el investigador. Ningún ítem de ninguna aventura lo declara todavía. */
+  puntosArmadura?: number;
   /**
    * Valor de referencia, en la moneda del momento (pesos de 1928 o el que
    * corresponda). No hay economía todavía —nadie compra ni vende nada—, así
@@ -754,6 +756,22 @@ export interface CombateNpc {
     seCierra: string;
     requiereCortante?: boolean;
   };
+  /**
+   * Metros hasta el investigador. `undefined` —el caso de todo el contenido
+   * de hoy— es el comportamiento de siempre: cuerpo a cuerpo, sin bandas de
+   * dificultad ni chequeo de alcance. Sólo declarándolo un NPC entra en la
+   * lógica de `nivelDeAlcance` (rules/armas.ts): dificultad por distancia,
+   * quemarropa calculado en vez de tildado a mano, y el rechazo de un ataque
+   * cuerpo a cuerpo que no llega. Es por NPC, no por combate entero, a
+   * propósito: un tirador puede quedarse lejos mientras otro rival cierra.
+   */
+  distancia?: number;
+  /**
+   * Puntos que se restan de cada golpe que este NPC recibe (manual, p. 108:
+   * «Armor reduces the damage received»). Ausente/`undefined` es 0 — un NPC
+   * de hoy sin este campo no cambia en nada.
+   */
+  armadura?: number;
 }
 
 export type NpcSeed =

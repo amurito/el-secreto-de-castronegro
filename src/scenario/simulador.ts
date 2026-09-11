@@ -11,15 +11,19 @@
  * es exactamente lo que va a pasar allá; si fuera una simulación aparte no
  * probaría nada.
  *
- * Los tres rivales cubren el rango que importa:
+ * Los cuatro rivales cubren el rango que importa:
  *
  *   DÉBIL    alguien que no quiere pelear y trata de zafar. Esquiva, así que
  *            no devuelve golpes: se le puede ganar sin cobrar nada.
  *   NORMAL   un hombre grande con un palo. Devuelve. Contra un investigador
  *            que no es peleador, la pelea está pareja y duele.
- *   FUERTE   alguien que sabe pelear y tiene un cuchillo. Contra la mayoría
- *            de los investigadores esto NO es una pelea: es una mala idea, y
- *            la idea es que se note en el primer asalto.
+ *   FUERTE   alguien que sabe pelear y tiene un cuchillo, y encima lleva
+ *            protección: contra la mayoría de los investigadores esto NO es
+ *            una pelea, y la armadura hace que ni ganando duela menos.
+ *   TIRADOR  se queda lejos con un revólver. Es el único con `distancia`
+ *            declarada: existe para probar alcance, dificultad por rango y
+ *            «acercarse bajo fuego» jugando, antes de que ninguna aventura
+ *            real dependa de que la mecánica se sienta bien.
  */
 
 import type { Scenario } from './types.ts';
@@ -51,7 +55,7 @@ const galpon: GameLocation = {
   atmosphere: ['Nadie dice nada. Están esperando.'],
   connections: [],
   itemsPresent: [],
-  npcsPresent: ['npc-debil', 'npc-normal', 'npc-fuerte'],
+  npcsPresent: ['npc-debil', 'npc-normal', 'npc-fuerte', 'npc-tirador'],
   visited: false,
   umbralIntensity: 0,
   features: [],
@@ -79,10 +83,19 @@ export const SIMULADOR: Scenario = {
         armaId: 'palo-grande', bonificacionDano: '+1D4', defensaPorDefecto: 'contraataca',
       }),
     rival('npc-fuerte', 'Un hombre con un cuchillo',
-      'No es más grande que el otro. Se para distinto, y tiene un facón que no es para carnear.',
+      'No es más grande que el otro. Se para distinto, tiene un facón que no es para carnear, y ' +
+      'algo grueso bajo la campera que no es sólo abrigo.',
       {
         hp: 15, maxHp: 15, pelea: 75, esquivar: 40, dex: 70, build: 0,
         armaId: 'facon', bonificacionDano: '+1D4', defensaPorDefecto: 'contraataca',
+        armadura: 2,
+      }),
+    rival('npc-tirador', 'Un hombre con un revólver',
+      'Se quedó junto a la puerta, lejos de todos, con el revólver ya en la mano. No tiene apuro.',
+      {
+        hp: 10, maxHp: 10, pelea: 40, esquivar: 25, dex: 55, build: 0,
+        armaId: 'revolver-38', bonificacionDano: '0', defensaPorDefecto: 'esquiva',
+        distancia: 20,
       }),
   ],
   documents: [],

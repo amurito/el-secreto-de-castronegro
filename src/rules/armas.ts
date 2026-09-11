@@ -19,14 +19,18 @@
  * ─────────────────────────────────────────────────────────────────────────
  * LO QUE FALTA A PROPÓSITO
  *
- * Escopetas y rifles largos NO están todavía. No es olvido: el daño de una
- * escopeta depende del tramo de distancia (4D6 / 2D6 / 1D6 según a cuántos
- * metros esté el blanco) y este motor no tiene posiciones ni distancias
- * dentro de una escena. Meterla con un solo número sería declarar una regla
- * que el manual no dice. Entra cuando exista el alcance.
+ * Escopetas y rifles largos siguen sin entrar, aunque el motor ya tiene
+ * distancia real (`nivelDeAlcance`, más abajo). No es lo mismo que faltaba
+ * antes: antes faltaba la distancia entera; ahora lo que falta es una
+ * mecánica aparte que el manual sí describe para la escopeta en particular
+ * (p. 116) y que nada más usa —el daño se tira en D6 sueltos (4D6/2D6/1D6
+ * según el tramo) y la ARMADURA se descuenta POR CADA DADO, no una vez del
+ * total, porque cada perdigón tiene que atravesar por su cuenta—. Meterla
+ * junto con esto sería resolver dos diseños distintos de una vez. Entra
+ * cuando haga falta, con su propio caso.
  */
 
-import type { SkillId } from '../shared/types.ts';
+import type { Difficulty, SkillId } from '../shared/types.ts';
 
 /** Cuánto de la bonificación de daño (STR+SIZ) se suma a esta arma. */
 export type AporteBonificacion = 'completa' | 'mitad' | 'ninguna';
@@ -251,3 +255,51 @@ export function dadosQuePide(
 /** El máximo posible del arma sola, sin bonificación. Para el empalamiento. */
 export const maximoDelArma = (arma: Arma): number =>
   arma.dano.cantidad * arma.dano.caras + arma.dano.suma;
+
+/**
+ * Qué tan lejos está el blanco, traducido a lo único que el manual dice que
+ * cambia con la distancia: la dificultad del tiro (p. 112, «Range and
+ * Firearms Difficulty Levels») y si hay bonificación por quemarropa (p. 113,
+ * «Point-Blank Range»). El daño del arma NO varía con la distancia —esa es
+ * la excepción de la escopeta, que a propósito no está en este catálogo
+ * (ver el comentario de cabecera).
+ *
+ * No depende de `arma.habilidad`: se basa en `arma.alcance`, que ya es un
+ * campo genérico de cualquier arma —incluye la piedra arrojadiza, no sólo
+ * las de fuego—. Un arma con `alcance: 0` (cuerpo a cuerpo, «Touch» en la
+ * tabla) sólo puede pegar a distancia 0; a cualquier otra distancia es
+ * `necesita_cerrar` —hay que acercarse primero, no es un tiro imposible—.
+ * `fuera_de_alcance` es un caso distinto, propio de las armas con alcance
+ * real: ni el tiro más desesperado llega tan lejos. Conviene no confundir
+ * los dos: un rival cuerpo a cuerpo lejos tiene que CERRAR distancia en su
+ * propio turno (ver `ataqueDeNpcContraInvestigador` en engine.ts); uno que
+ * dispara y ya está fuera de su cuádruple alcance, en cambio, no tiene nada
+ * que cerrar, sólo puede acercarse o esperar.
+ */
+export type NivelDeAlcance =
+  | { tipo: 'cuerpo_a_cuerpo' }
+  | { tipo: 'necesita_cerrar' }
+  | { tipo: 'fuera_de_alcance' }
+  | { tipo: 'a_distancia'; dificultad: Difficulty; quemarropa: boolean };
+
+export function nivelDeAlcance(
+  arma: Arma,
+  distanciaMetros: number,
+  dexTirador: number,
+): NivelDeAlcance {
+  if (arma.alcance === 0) {
+    return distanciaMetros <= 0 ? { tipo: 'cuerpo_a_cuerpo' } : { tipo: 'necesita_cerrar' };
+  }
+
+  // «Point-blank range--within a fifth of the shooter's DEX in feet» (p. 113).
+  // La DEX es un puntaje 0-100, no una distancia: se toma el número tal cual
+  // fueran pies, se lo divide 5 y se convierte a metros porque este catálogo
+  // ya declara `alcance` en metros, no en las yardas del manual original.
+  const quemarropaMetros = (dexTirador / 5) * 0.3048;
+  const quemarropa = distanciaMetros <= quemarropaMetros;
+
+  if (distanciaMetros <= arma.alcance) return { tipo: 'a_distancia', dificultad: 'regular', quemarropa };
+  if (distanciaMetros <= arma.alcance * 2) return { tipo: 'a_distancia', dificultad: 'hard', quemarropa };
+  if (distanciaMetros <= arma.alcance * 4) return { tipo: 'a_distancia', dificultad: 'extreme', quemarropa };
+  return { tipo: 'fuera_de_alcance' };
+}

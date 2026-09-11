@@ -16,8 +16,8 @@ import { createCampaign, Turn } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
-import { ARMAS, ARMA_POR_ID, bonificacionAplicada, dadosQuePide, maximoDelArma } from './rules/armas.ts';
-import { resolverEnfrentamiento, danoDeAtaque } from './rules/combate.ts';
+import { ARMAS, ARMA_POR_ID, bonificacionAplicada, dadosQuePide, maximoDelArma, nivelDeAlcance } from './rules/armas.ts';
+import { resolverEnfrentamiento, danoDeAtaque, aplicarArmadura } from './rules/combate.ts';
 import { damageDice, hmacForIndex } from './engine/rng.ts';
 import { SKILL_BY_ID } from './rules/skills.ts';
 import type { SuccessDegree, NpcSeed } from './shared/types.ts';
@@ -700,6 +700,276 @@ async function main() {
         !/se traba/.test(r.message), r.message.slice(0, 80));
     }
     check('se vio al menos una pifia cuerpo a cuerpo en 40 intentos', vistaPifia);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // DISTANCIA, ALCANCE Y ARMADURA
+  // ═══════════════════════════════════════════════════════════════════════
+
+  console.log('\nDISTANCIA Y ALCANCE (PURO): nivelDeAlcance');
+  {
+    const revolver38 = ARMA_POR_ID['revolver-38']!; // alcance 14 metros
+    const dentro = nivelDeAlcance(revolver38, 10, 55);
+    check('dentro del alcance base: regular',
+      dentro.tipo === 'a_distancia' && dentro.dificultad === 'regular', JSON.stringify(dentro));
+    const hasta2x = nivelDeAlcance(revolver38, 20, 55);
+    check('hasta el doble del alcance base: difícil',
+      hasta2x.tipo === 'a_distancia' && hasta2x.dificultad === 'hard', JSON.stringify(hasta2x));
+    const hasta4x = nivelDeAlcance(revolver38, 50, 55);
+    check('hasta el cuádruple: extrema',
+      hasta4x.tipo === 'a_distancia' && hasta4x.dificultad === 'extreme', JSON.stringify(hasta4x));
+    check('más allá del cuádruple: fuera de alcance, ni con un tiro desesperado',
+      nivelDeAlcance(revolver38, 57, 55).tipo === 'fuera_de_alcance');
+
+    // Quemarropa: 1/5 de la DEX en pies, convertido a metros. DEX 55 → 11 pies ≈ 3.35 m.
+    const cerca = nivelDeAlcance(revolver38, 3, 55);
+    check('a 3 metros con DEX 55, es quemarropa',
+      cerca.tipo === 'a_distancia' && cerca.quemarropa === true, JSON.stringify(cerca));
+    const lejos = nivelDeAlcance(revolver38, 10, 55);
+    check('a 10 metros con la misma DEX, ya no es quemarropa',
+      lejos.tipo === 'a_distancia' && lejos.quemarropa === false, JSON.stringify(lejos));
+
+    const facon = ARMA_POR_ID['facon']!; // alcance 0 (touch)
+    check('cuerpo a cuerpo a distancia 0: cuerpo_a_cuerpo',
+      nivelDeAlcance(facon, 0, 55).tipo === 'cuerpo_a_cuerpo');
+    check('cuerpo a cuerpo con cualquier distancia mayor a 0: necesita cerrar, no es un tiro imposible',
+      nivelDeAlcance(facon, 1, 55).tipo === 'necesita_cerrar');
+  }
+
+  console.log('\nARMADURA (PURA): resta puntos fijos, nunca deja daño negativo');
+  {
+    check('resta directa', aplicarArmadura(10, 3) === 7);
+    check('nunca negativo', aplicarArmadura(2, 5) === 0);
+    check('sin armadura, no cambia nada', aplicarArmadura(8, 0) === 8);
+  }
+
+  console.log('\nSIN `distancia` DECLARADA, EL COMBATE ES IDÉNTICO A ANTES');
+  {
+    // El caso de TODO el contenido de hoy: si esto cambiara, sería una
+    // regresión silenciosa para las cuatro aventuras publicadas.
+    const id = await createCampaign(conMaton, 'DIST-SIN-DECLARAR-REG', 'nd'.repeat(32));
+    const t = await Turn.open(id);
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'revolver-38' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    const tir = s.rolls.find((x) => x.investigatorId === s.activeInvestigator);
+    check('sin distancia, la dificultad sigue siendo regular, como siempre',
+      tir?.commitment.difficulty === 'regular', tir?.commitment.difficulty);
+    check('un rechazo por distancia no existe si no hay distancia declarada', r.ok || !/metros/.test(r.message));
+  }
+
+  console.log('\nDISTANCIA DECLARADA: LA DIFICULTAD SUBE CON EL RANGO, Y MÁS ALLÁ DEL CUÁDRUPLE NI SE INTENTA');
+  {
+    const tiradorConDistancia = (distancia: number): NpcSeed => ({
+      ...MATON, id: 'npc-tirador-dist',
+      combate: {
+        ...MATON.combate!, armaId: 'revolver-38', defensaPorDefecto: 'esquiva' as const, distancia,
+      },
+    });
+    const escenarioCon = (distancia: number, idc: string): Scenario => ({
+      ...AGUA_QUIETA, id: idc, npcs: [...AGUA_QUIETA.npcs, tiradorConDistancia(distancia)],
+    });
+
+    async function dificultadDelTiro(distancia: number, idc: string, semilla: string) {
+      const id = await createCampaign(escenarioCon(distancia, idc), idc, semilla);
+      const t = await Turn.open(id);
+      t.executeTool('resolve_attack', { npc_id: 'npc-tirador-dist', weapon_id: 'revolver-38' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      return s.rolls.find((x) => x.investigatorId === s.activeInvestigator)?.commitment.difficulty;
+    }
+
+    check('a 10 metros (dentro de los 14 de alcance base): regular',
+      (await dificultadDelTiro(10, 'DIST-REG', 'dr'.repeat(32))) === 'regular');
+    check('a 20 metros (hasta el doble): difícil',
+      (await dificultadDelTiro(20, 'DIST-HARD', 'dh'.repeat(32))) === 'hard');
+    check('a 50 metros (hasta el cuádruple): extrema',
+      (await dificultadDelTiro(50, 'DIST-EXT', 'de'.repeat(32))) === 'extreme');
+
+    const idLejos = await createCampaign(escenarioCon(60, 'DIST-FUERA'), 'DIST-FUERA', 'df'.repeat(32));
+    const rLejos = (await Turn.open(idLejos)).executeTool(
+      'resolve_attack', { npc_id: 'npc-tirador-dist', weapon_id: 'revolver-38' },
+    );
+    check('a 60 metros (más del cuádruple): se rechaza', !rLejos.ok, rLejos.message.slice(0, 90));
+
+    const idMelee = await createCampaign(escenarioCon(20, 'DIST-MELEE'), 'DIST-MELEE', 'dm'.repeat(32));
+    const rMelee = (await Turn.open(idMelee)).executeTool(
+      'resolve_attack', { npc_id: 'npc-tirador-dist', weapon_id: 'facon' },
+    );
+    check('un arma cuerpo a cuerpo contra un rival a distancia declarada: se rechaza',
+      !rMelee.ok && /acercate|no llega/i.test(rMelee.message), rMelee.message.slice(0, 90));
+  }
+
+  console.log('\nARMADURA DE NPC: RESTA DEL DAÑO RECIBIDO');
+  {
+    async function pvTrasAtaque(armadura: number, idc: string, semilla: string): Promise<number> {
+      const escenario: Scenario = {
+        ...AGUA_QUIETA, id: idc,
+        npcs: [...AGUA_QUIETA.npcs, {
+          ...MATON, id: 'npc-armado',
+          combate: { ...MATON.combate!, defensaPorDefecto: 'esquiva' as const, armadura },
+        }],
+      };
+      const id = await createCampaign(escenario, idc, semilla);
+      const t = await Turn.open(id);
+      t.executeTool('resolve_attack', { npc_id: 'npc-armado', weapon_id: 'facon' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      return s.npcs['npc-armado']!.combate!.hp;
+    }
+
+    let vistoGolpeGrande = false;
+    for (let n = 0; n < 30 && !vistoGolpeGrande; n++) {
+      const semilla = `ar${n}`.padEnd(4, '0').repeat(16);
+      const danoSin = 12 - (await pvTrasAtaque(0, `ARM-0-${n}`, semilla));
+      if (danoSin <= 5) continue; // necesitamos un golpe que la armadura sí note
+      vistoGolpeGrande = true;
+      const danoCon = 12 - (await pvTrasAtaque(5, `ARM-5-${n}`, semilla));
+      check(`  · semilla ${n}: con la misma tirada, 5 de armadura restan 5 de daño`,
+        danoCon === danoSin - 5, `sin armadura ${danoSin}, con armadura ${danoCon}`);
+    }
+    check('se vio al menos un golpe de más de 5 puntos para probar la resta', vistoGolpeGrande);
+
+    const pvConMuchaArmadura = await pvTrasAtaque(999, 'ARM-TOTAL', 'at'.repeat(32));
+    check('con armadura enorme, el golpe no baja ningún PV', pvConMuchaArmadura === 12);
+  }
+
+  console.log('\nARMADURA DEL INVESTIGADOR: TAMBIÉN RESTA DEL DAÑO QUE RECIBE');
+  {
+    const elena = AGUA_QUIETA.investigators[0]!;
+    const chaleco = (puntosArmadura: number) => ({
+      id: 'it-chaleco-prueba', name: 'Chaleco', shortDescription: 'x',
+      owner: elena.id, carried: true, puntosArmadura,
+      publicProperties: [], hiddenProperties: [], discoveredProperties: [],
+      conditionalProperties: [], temporalProperties: [],
+      canon: { truth: 'CANON_SETTING' as const, disclosure: 'PUBLIC' as const, source: 'scenario' as const },
+      usageCount: 0,
+    });
+
+    async function pvInvestigadorTras(puntosArmadura: number, idc: string, semilla: string): Promise<number> {
+      const escenario: Scenario = {
+        ...AGUA_QUIETA, id: idc,
+        items: [...AGUA_QUIETA.items, chaleco(puntosArmadura)],
+        npcs: [...AGUA_QUIETA.npcs, { ...MATON, id: 'npc-bruto2', combate: { ...MATON.combate!, pelea: 95, hp: 40, maxHp: 40 } }],
+      };
+      const id = await createCampaign(escenario, idc, semilla);
+      const t = await Turn.open(id);
+      t.executeTool('resolve_attack', { npc_id: 'npc-bruto2', weapon_id: 'desarmado' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      return s.investigators[s.activeInvestigator]!.derived.hp;
+    }
+
+    let vistoGolpe = false;
+    for (let n = 0; n < 30 && !vistoGolpe; n++) {
+      const semilla = `iv${n}`.padEnd(4, '0').repeat(16);
+      const danoSin = elena.derived.maxHp - (await pvInvestigadorTras(0, `INV-ARM-0-${n}`, semilla));
+      if (danoSin <= 5) continue;
+      vistoGolpe = true;
+      const danoCon = elena.derived.maxHp - (await pvInvestigadorTras(5, `INV-ARM-5-${n}`, semilla));
+      check(`  · semilla ${n}: el chaleco resta 5 puntos del golpe que recibe el investigador`,
+        danoCon === danoSin - 5, `sin chaleco ${danoSin}, con chaleco ${danoCon}`);
+    }
+    check('se vio al menos un golpe de más de 5 puntos para probar la resta', vistoGolpe);
+  }
+
+  console.log('\nACERCARSE/ALEJARSE: SIN DISTANCIA DECLARADA, NO HAY NADA QUE AJUSTAR');
+  {
+    const id = await createCampaign(conMaton, 'DIST-AJUSTE-SIN-DECLARAR', 'sd'.repeat(32));
+    const t = await Turn.open(id);
+    const r = t.executeTool('adjust_distance', { npc_id: 'npc-maton', direction: 'alejar' });
+    check('se rechaza: el matón no tiene distancia declarada', !r.ok, r.message.slice(0, 80));
+  }
+
+  console.log('\nALEJARSE SIEMPRE FUNCIONA, SIN TIRAR NADA');
+  {
+    const conDistancia: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-alejar',
+      npcs: [...AGUA_QUIETA.npcs, {
+        ...MATON, id: 'npc-tirador-alejar',
+        combate: { ...MATON.combate!, armaId: 'revolver-38', defensaPorDefecto: 'esquiva' as const, distancia: 20 },
+      }],
+    };
+    const id = await createCampaign(conDistancia, 'DIST-ALEJAR', 'al'.repeat(32));
+    const t = await Turn.open(id);
+    const antes = t.state.rolls.length;
+    const r = t.executeTool('adjust_distance', { npc_id: 'npc-tirador-alejar', direction: 'alejar' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('alejarse no tira nada', s.rolls.length === antes);
+    check('la distancia sube 15 metros',
+      s.npcs['npc-tirador-alejar']!.combate!.distancia === 35, `${s.npcs['npc-tirador-alejar']!.combate!.distancia}`);
+    check('el asalto se resuelve', r.ok);
+  }
+
+  console.log('\nACERCARSE A ALGUIEN CUERPO A CUERPO CIERRA SIN TIRAR NADA');
+  {
+    const conMeleeLejos: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-acercar-melee',
+      npcs: [...AGUA_QUIETA.npcs, { ...MATON, id: 'npc-melee-lejos', combate: { ...MATON.combate!, distancia: 10 } }],
+    };
+    const id = await createCampaign(conMeleeLejos, 'DIST-ACERCAR-MELEE', 'am'.repeat(32));
+    const t = await Turn.open(id);
+    const antes = t.state.rolls.length;
+    const r = t.executeTool('adjust_distance', { npc_id: 'npc-melee-lejos', direction: 'acercar' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('cerrar contra alguien que no dispara no tira nada', s.rolls.length === antes);
+    check('queda a distancia 0', s.npcs['npc-melee-lejos']!.combate!.distancia === 0);
+    check('el asalto se resuelve', r.ok);
+  }
+
+  console.log('\nACERCARSE BAJO FUEGO: TIRADA DE ESQUIVAR, Y SI FALLA, UN TIRO LIBRE');
+  {
+    const conTiradorAcercar = (idc: string): Scenario => ({
+      ...AGUA_QUIETA, id: idc,
+      npcs: [...AGUA_QUIETA.npcs, {
+        ...MATON, id: 'npc-tirador-acercar',
+        combate: { ...MATON.combate!, armaId: 'revolver-38', defensaPorDefecto: 'esquiva' as const, distancia: 20 },
+      }],
+    });
+    let vioExito = false, vioFallo = false;
+    for (let n = 0; n < 60 && !(vioExito && vioFallo); n++) {
+      const semilla = `ac${n}`.padEnd(4, '0').repeat(16);
+      const idc = `DIST-ACERCAR-${n}`;
+      const id = await createCampaign(conTiradorAcercar(idc), idc, semilla);
+      const t = await Turn.open(id);
+      const r = t.executeTool('adjust_distance', { npc_id: 'npc-tirador-acercar', direction: 'acercar' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      const distanciaFinal = s.npcs['npc-tirador-acercar']!.combate!.distancia;
+      if (/sin que le acierten/.test(r.message) && !vioExito) {
+        vioExito = true;
+        check(`  · semilla ${n}: cruza limpio, distancia queda en 0`, distanciaFinal === 0, `${distanciaFinal}`);
+      } else if (/dispara en el camino/.test(r.message) && !vioFallo) {
+        vioFallo = true;
+        check(`  · semilla ${n}: cruza bajo fuego, distancia igual queda en 0`, distanciaFinal === 0, `${distanciaFinal}`);
+      }
+    }
+    check('se vio la rama en la que cruza limpio', vioExito);
+    check('se vio la rama en la que le disparan cruzando', vioFallo);
+  }
+
+  console.log('\nUN RIVAL DE FONDO CUERPO A CUERPO Y LEJOS CIERRA DISTANCIA EN VEZ DE ATACAR');
+  {
+    // Mismo patrón que «ORDEN DE ASALTO POR DES»: un rival de fondo, además
+    // del blanco declarado. Éste, en vez de pegar, gasta el asalto cerrando.
+    const conLentoLejos: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-lento-lejos',
+      npcs: [...AGUA_QUIETA.npcs, MATON, {
+        ...MATON, id: 'npc-lento-lejos', name: 'Otro, lejos y a pie',
+        combate: { ...MATON.combate!, dex: 5, hp: 8, maxHp: 8, distancia: 10 },
+      }],
+    };
+    const id = await createCampaign(conLentoLejos, 'DIST-LENTO-LEJOS', 'll'.repeat(32));
+    const t = await Turn.open(id);
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('el mensaje dice que el rival de fondo corre a cerrar distancia',
+      /corre a cerrar distancia/.test(r.message), r.message.slice(0, 200));
+    check('su distancia queda en 0 después de cerrar',
+      s.npcs['npc-lento-lejos']!.combate!.distancia === 0);
   }
 
   console.log('\nINTIMIDAR EN COMBATE: SÓLO SI LA ESCENA LO CONFIGURÓ');

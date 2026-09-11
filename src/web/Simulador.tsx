@@ -18,7 +18,8 @@ import { Sheet, RollCard } from './components.tsx';
 const NOTA_RIVAL: Record<string, string> = {
   'npc-debil': 'Esquiva en vez de devolver: se le puede ganar sin cobrar nada.',
   'npc-normal': 'Devuelve el golpe. Contra alguien que no es peleador, duele.',
-  'npc-fuerte': 'Sabe pelear y tiene un facón. Para casi cualquier investigador, esto no es una pelea.',
+  'npc-fuerte': 'Sabe pelear, tiene un facón, y lleva armadura: hasta acertándole, pega menos de lo que pega.',
+  'npc-tirador': 'Se queda lejos con un revólver. Acercarse bajo su fuego es una tirada, no un paso gratis.',
 };
 
 export function Simulador({
@@ -97,6 +98,18 @@ export function Simulador({
     }
   }
 
+  async function ajustarDistancia(direction: 'acercar' | 'alejar') {
+    setOcupado(true);
+    setError(null);
+    try {
+      agregarAlRegistro(await api.ajustarDistancia(campaignId, rival, direction));
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setOcupado(false);
+    }
+  }
+
   async function reiniciar() {
     setOcupado(true);
     try {
@@ -157,10 +170,16 @@ export function Simulador({
                   <input type="checkbox" checked={apuntando} onChange={(e) => setApuntando(e.target.checked)} />
                   Venía apuntando (bonificación)
                 </label>
-                <label className="sim-check">
-                  <input type="checkbox" checked={puntoBlanco} onChange={(e) => setPuntoBlanco(e.target.checked)} />
-                  A quemarropa (bonificación)
-                </label>
+                {elegido?.distanciaMetros === undefined ? (
+                  <label className="sim-check">
+                    <input type="checkbox" checked={puntoBlanco} onChange={(e) => setPuntoBlanco(e.target.checked)} />
+                    A quemarropa (bonificación)
+                  </label>
+                ) : (
+                  <div className="sim-ayuda">
+                    Quemarropa se calcula solo, a partir de la distancia declarada de este rival.
+                  </div>
+                )}
                 <label className="sim-check">
                   <input type="checkbox" checked={cubierto} onChange={(e) => setCubierto(e.target.checked)} />
                   El blanco se cubre (penalización)
@@ -188,6 +207,10 @@ export function Simulador({
                   <span className="sim-rival-hp">
                     {r.hp <= 0 ? 'en el piso' : `${r.hp}/${r.maxHp} PV`}
                   </span>
+                  {r.armadura ? <span className="sim-rival-marca">{r.armadura} de armadura</span> : null}
+                  {r.distanciaMetros !== undefined && (
+                    <span className="sim-rival-marca">a {r.distanciaMetros} metros</span>
+                  )}
                   {(r.derribado || r.agarrado) && (
                     <span className="sim-rival-marca">
                       {r.derribado ? 'derribado' : ''}{r.derribado && r.agarrado ? ' · ' : ''}{r.agarrado ? 'sujeto' : ''}
@@ -228,6 +251,18 @@ export function Simulador({
             Sujetar
           </button>
         </div>
+
+        {elegido?.distanciaMetros !== undefined && (
+          <div className="sim-maniobras">
+            <span className="sim-maniobras-label">Distancia con {elegido?.name}: {elegido?.distanciaMetros} metros.</span>
+            <button className="ghost" onClick={() => ajustarDistancia('acercar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+              Acercarse
+            </button>
+            <button className="ghost" onClick={() => ajustarDistancia('alejar')} disabled={ocupado || !enPie || !investigadorEnPie}>
+              Alejarse
+            </button>
+          </div>
+        )}
 
         {!investigadorEnPie && (
           <div className="sim-aviso">

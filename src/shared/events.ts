@@ -264,10 +264,10 @@ export interface NpcDamagedPayload {
   heridaGrave: boolean;
 }
 
-/** Cambios directos a las estadísticas de combate: desarmar, derribar, sujetar. */
+/** Cambios directos a las estadísticas de combate: desarmar, derribar, sujetar, acercarse/alejarse. */
 export interface NpcCombateChangedPayload {
   npcId: NpcId;
-  changes: Partial<Pick<import('./types.ts').CombateNpc, 'armaId' | 'derribado' | 'agarrado' | 'invulnerabilidad'>>;
+  changes: Partial<Pick<import('./types.ts').CombateNpc, 'armaId' | 'derribado' | 'agarrado' | 'invulnerabilidad' | 'distancia'>>;
   cause: string;
 }
 
