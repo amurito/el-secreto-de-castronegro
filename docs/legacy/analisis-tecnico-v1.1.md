@@ -1,6 +1,8 @@
 # EL SECRETO DE CASTRONEGRO
 ## ANÁLISIS TÉCNICO Y ARQUITECTÓNICO — v1.1
 
+> **LEGACY.** Propuesta de arquitectura escrita para la etapa del proyecto con Keeper IA (servidor Node, SDK de Anthropic, narración por modelo). Ese camino se eliminó por completo — ver [`../../README.md`](../../README.md) § "Hubo un Keeper que narraba con Claude, y se eliminó". La arquitectura real y vigente está descrita en [`../../CLAUDE.md`](../../CLAUDE.md) y en el propio código (`src/`). Se conserva como registro de cómo se pensó el problema antes de simplificarlo.
+
 Documento derivado de:
 - Biblia de Canon Definitiva **v0.7**
 - Biblia Operativa del Keeper **v0.8**

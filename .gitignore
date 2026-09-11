@@ -25,6 +25,13 @@ partidas/
 # Si los querés versionar, lo natural es un repo privado aparte.
 # ─────────────────────────────────────────────────────────────────────────────
 *.docx
-biblia.md
-castronegro.md
-adaptacion.md
+docs/legacy/biblia-v0.7.md
+docs/modulo-original-castronegro.md
+docs/legacy/adaptacion-argentina-borrador.md
+
+# Exports de lore para lectura fuera del código: prosa completa, secretos y
+# finales de las once aventuras. Mismo motivo que arriba — spoilean el juego
+# entero de una sentada, cosa que el resto del proyecto evita a propósito.
+docs/castronegro-resumenes.md
+docs/castronegro-aventuras.md
+docs/castronegro-especificaciones.md

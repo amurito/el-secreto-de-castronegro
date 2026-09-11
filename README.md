@@ -2,7 +2,7 @@
 
 Motor narrativo interactivo de investigación y horror cósmico, para *La Llamada de Cthulhu* 7ª edición. **Determinístico: sin IA, sin servidor y sin cuentas.**
 
-Deriva de: Canon **v0.7** · Operativa **v0.8** · Motor **v0.9** · Análisis Técnico **v1.1**. El canon de la campaña está en [CANON.md](CANON.md).
+Deriva de: Canon **v0.7** · Operativa **v0.8** · Motor **v0.9** · Análisis Técnico **v1.1**. El canon de la campaña está en [docs/CANON.md](docs/CANON.md).
 
 ---
 
@@ -33,7 +33,7 @@ Para probarlo localmente antes de publicar: `npm run preview` → http://localho
 
 El juego es **determinístico de punta a punta**: dados reales, estado real, reglas reales, gates reales, consecuencias reales, guardado real, y la prosa escrita a mano en el contenido de cada aventura. El motor arbitra y narra solo.
 
-> **Hubo un Keeper que narraba con Claude, y se eliminó** (marzo de 2026). El estado del juego nunca dependió de él —el modelo escribía las oraciones, el motor decidía todo lo demás— así que sacarlo no cambió una sola regla ni un solo desenlace. Lo que se fue con él: el servidor Node, el SDK de Anthropic, la necesidad de una clave, y el cuadro de escritura libre, que sólo aparecía en ese modo. El canon que le servía de contexto se conservó como documento en [CANON.md](CANON.md).
+> **Hubo un Keeper que narraba con Claude, y se eliminó** (marzo de 2026). El estado del juego nunca dependió de él —el modelo escribía las oraciones, el motor decidía todo lo demás— así que sacarlo no cambió una sola regla ni un solo desenlace. Lo que se fue con él: el servidor Node, el SDK de Anthropic, la necesidad de una clave, y el cuadro de escritura libre, que sólo aparecía en ese modo. El canon que le servía de contexto se conservó como documento en [docs/CANON.md](docs/CANON.md).
 >
 > Quedan **botones**: el repertorio lo calcula el motor desde el estado, así que nunca ofrece algo que las reglas todavía no permiten.
 
@@ -85,7 +85,7 @@ src/
   rules/      CoC 7e + Umbral. PURO: sin I/O, sin azar, sin red
   engine/     event log · RNG · cripto · reducers · gates · herramientas
               store.ts (interfaz) + store.node.ts (JSONL) + store.browser.ts (IndexedDB)
-  scenario/   las seis aventuras + investigadores
+  scenario/   las once aventuras + investigadores
               <aventura>.contenido.json ← lugares, NPC, temas, escenas, desenlaces
               <aventura>.logica.ts      ← sólo el `resolver` de cada escena
   keeper/     intent · narrator · offline (el motor que arbitra y narra)
@@ -109,7 +109,7 @@ Tres cambios lo hicieron posible, y ninguno es un parche:
 
 `truth_level` (qué tan verdadero) × `disclosure` (quién puede saberlo). Ejes independientes, porque un hecho puede ser **canon y secreto a la vez** — la existencia del Primer Rostro es exactamente eso.
 
-Lo marcado `SEALED` no se escribe en el contenido de ninguna aventura publicada, y `npm run revisar:bundle` lo comprueba antes de publicar. Ver [CANON.md](CANON.md).
+Lo marcado `SEALED` no se escribe en el contenido de ninguna aventura publicada, y `npm run revisar:bundle` lo comprueba antes de publicar. Ver [docs/CANON.md](docs/CANON.md).
 
 ### Las acciones
 
@@ -129,7 +129,7 @@ Tres familias se generan solas desde el estado —detalles sin mirar, objetos qu
 
 Tres piezas en `src/keeper/`:
 
-**`intent.ts`** descompone la intención de cada botón en verbo + objetivo + matices, contra una tabla de ~31 verbos con sus raíces en español. Es una lista cerrada y a mano: un verbo que no está ahí no se reconoce. `npm run prueba:auditoria` comprueba que las intenciones de todos los temas de conversación de las seis aventuras clasifiquen bien — un bug real, encontrado escribiendo la sexta y presente en dos aventuras ya publicadas.
+**`intent.ts`** descompone la intención de cada botón en verbo + objetivo + matices, contra una tabla de ~31 verbos con sus raíces en español. Es una lista cerrada y a mano: un verbo que no está ahí no se reconoce. `npm run prueba:auditoria` comprueba que las intenciones de todos los temas de conversación de las once aventuras clasifiquen bien — un bug real, encontrado escribiendo la sexta y presente en dos aventuras ya publicadas.
 
 **`narrator.ts`** compone la prosa desde el estado, no desde cadenas fijas. Nunca repite el mismo párrafo: `pickVariant` lleva cuenta de lo dicho. La hora, la exposición al Umbral y la estabilidad tiñen las descripciones — a exposición alta el mundo empieza a fallar en el texto.
 
@@ -159,7 +159,7 @@ La semilla se revela sólo al final: antes permitiría predecir las tiradas que 
 
 ## Estado
 
-**Funciona:** motor completo · dados D100 con grados, dificultades y dados de bonificación/penalización · las tres variables de cordura · inventario con propiedades ocultas y gates · tablero de investigación · tiempo diegético · muerte permanente con continuidad · consecuencias persistentes · guardado · auditoría del azar · seis aventuras encadenadas.
+**Funciona:** motor completo · dados D100 con grados, dificultades y dados de bonificación/penalización · las tres variables de cordura · inventario con propiedades ocultas y gates · tablero de investigación · tiempo diegético · muerte permanente con continuidad · consecuencias persistentes · guardado · auditoría del azar · diez aventuras encadenadas, más una suelta (El Círculo Rojo, 1674).
 
 **Falta (post-MVP):** combate completo · bestiario · magia · los Siete Umbrales · multijugador · mapas · imágenes · Nueva Partida+ · generación procedural · creación de investigador.
 

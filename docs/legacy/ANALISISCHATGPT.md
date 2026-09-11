@@ -1,3 +1,5 @@
+> **LEGACY.** Auditoría externa puntual (ChatGPT), de una etapa muy anterior del proyecto — anterior al motor determinístico actual y a la eliminación del Keeper IA. Se conserva como registro histórico, no como referencia de arquitectura vigente: para eso ver [`../../README.md`](../../README.md) y [`../CANON.md`](../CANON.md).
+
 Ahora sí. Con el ZIP puedo hacer una auditoría bastante más seria, y **el proyecto está mucho más avanzado de lo que parecía por la web**.
 
 Lo primero que te digo es: **Claude hizo un trabajo técnicamente muy bueno**. No está construyendo simplemente una interfaz de chatbot; ya hay una arquitectura de motor bastante coherente con lo que definimos.
