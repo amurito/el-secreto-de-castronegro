@@ -7,11 +7,14 @@
  * POR QUÉ ESTE SUBCONJUNTO Y NO LA TABLA ENTERA
  *
  * La tabla del manual cubre desde una piedra hasta un cañón de 120mm. Este
- * juego pasa en estancias de la provincia de Buenos Aires en 1924-25: lo que
- * hay a mano es lo que hay en un galpón —un hacha, un facón, un palo— y, en
- * el peor caso, el revólver que alguien guarda en un cajón. Un subfusil
- * Thompson o un lanzacohetes no van a aparecer, y meterlos «por completitud»
- * sería invitar a escribir una escena que el juego no quiere tener.
+ * juego pasa en estancias de la provincia de Buenos Aires en 1924-25 —lo que
+ * hay a mano es lo que hay en un galpón, y en el peor caso el revólver que
+ * alguien guarda en un cajón— y, desde *La Merced de las Ánimas* (1710), en
+ * el Corregimiento de Cuyo colonial, con sus propias armas de época (mosquete
+ * y pistola de chispa, espada) y las de un par de criaturas de esa aventura.
+ * Un subfusil Thompson o un lanzacohetes no van a aparecer, y meterlos «por
+ * completitud» sería invitar a escribir una escena que el juego no quiere
+ * tener.
  *
  * Cuando haga falta más, se agrega una fila acá y nada más: el resolvedor de
  * combate no conoce ningún arma en particular.
@@ -203,6 +206,56 @@ export const ARMAS: Arma[] = [
     dano: { cantidad: 1, caras: 10, suma: 2 },
     aporteBonificacion: 'ninguna', empala: true, alcance: 14,
     nota: 'De la guerra. Siete tiros y un culatazo que se siente.',
+  },
+
+  // ── Armas coloniales, San Juan de la Frontera, 1710 ───────────────────────
+  // Sin número de recarga ni de atasco: el catálogo no modela balas (tampoco
+  // lo hace con el revólver de arriba), y este motor no tiene ningún campo
+  // para eso todavía. «Tarda en recargar» queda como sabor de la nota y, si
+  // hace falta que pese en una escena puntual (Don Gonzalo, en *La Merced de
+  // las Ánimas*), lo resuelve el `.logica.ts` de esa aventura cambiándole el
+  // arma a mitad de combate (`NPC_COMBATE_CHANGED` con `armaId` nuevo), no el
+  // motor. Alcance de mosquete y pistola tomados del análogo histórico del
+  // manual (Tabla XVII, apéndice de armas históricas: mosquete de chispa ≈ 30
+  // yardas, pistola de chispa ≈ 10 yardas — misma conversión ya usada arriba,
+  // yardas reales del manual vueltas metros de este catálogo). Los dados de
+  // daño son originales, no transcriptos de esa tabla: un proyectil de
+  // avancarga de calibre grande pega más fuerte que un revólver moderno chico
+  // pero es mucho más lento e impreciso, que es la relación que importa acá.
+  {
+    id: 'mosquete-chispa', nombre: 'Mosquete español de chispa', habilidad: 'armas_fuego',
+    dano: { cantidad: 2, caras: 6, suma: 0 },
+    aporteBonificacion: 'ninguna', empala: true, alcance: 30,
+    nota: 'De avancarga. Tarda en recargar — un tiro, y después toca acercarse o repensar.',
+  },
+  {
+    id: 'pistola-chispa', nombre: 'Pistola española de chispa', habilidad: 'armas_fuego',
+    dano: { cantidad: 1, caras: 8, suma: 0 },
+    aporteBonificacion: 'ninguna', empala: true, alcance: 10,
+    nota: 'Más corta que el mosquete. Igual de lenta para recargar.',
+  },
+  {
+    id: 'espada-ropera', nombre: 'Espada', habilidad: 'pelea',
+    dano: { cantidad: 1, caras: 8, suma: 0 },
+    aporteBonificacion: 'completa', empala: true, alcance: 0,
+    nota: 'La de Don Gonzalo, cuando se le acaba la pólvora o se le acaba la paciencia.',
+  },
+
+  // ── Armas de criatura, sin ficha de investigador ──────────────────────────
+  // No necesitan estar pensadas para que un investigador las empuñe —nadie va
+  // a elegirlas de un inventario—; sólo necesitan un `id` que un `CombateNpc`
+  // pueda declarar en `armaId`, igual que `rebenque` para Cirilo Sosa.
+  {
+    id: 'rafaga-viento', nombre: 'Ráfaga de viento', habilidad: 'pelea',
+    dano: { cantidad: 2, caras: 6, suma: 0 },
+    aporteBonificacion: 'completa', empala: false, alcance: 0,
+    nota: 'Del Pólipo Septentrional. No hay filo que esquivar, sólo presión que empuja y arranca.',
+  },
+  {
+    id: 'garras-vagabundo', nombre: 'Garras', habilidad: 'pelea',
+    dano: { cantidad: 1, caras: 6, suma: 0 },
+    aporteBonificacion: 'completa', empala: true, alcance: 0,
+    nota: 'Del Vagabundo Dimensional. Piel arrugada, garras que parecen momificadas y no lo están.',
   },
 ];
 

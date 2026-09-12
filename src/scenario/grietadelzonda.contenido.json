@@ -1,0 +1,517 @@
+{
+  "id": "la-grieta-del-zonda",
+  "title": "La Grieta del Zonda",
+  "surfacePremise": "La crisis del treinta reabrió una mensura vieja en el Valle de Zonda, San Juan: una empresa de riego quiere dinamitar y nivelar el lecho de piedra de una acequia que hace años no corre. El último que la cuidó no tiene fuerzas para explicar por qué no hay que tocarla, y el ingeniero a cargo no tiene tiempo para escuchar por qué sí.",
+  "items": [
+    {
+      "id": "it-frasco-almagre",
+      "name": "Frasco de almagre",
+      "aliases": ["almagre", "el almagre", "frasco", "tierra colorada", "pintura roja"],
+      "shortDescription": "Un frasco de vidrio con tierra colorada molida en aceite, tapado con un corcho. La etiqueta, escrita a mano hace mucho, dice sólo «para la piedra».",
+      "owner": "rancho-eusebio",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-eusebio",
+      "name": "Eusebio Sosa",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Ochenta y tantos años, sentado porque ya no puede estar mucho tiempo parado. Las manos le tiemblan más de lo que le gustaría admitir. Sigue mirando hacia la acequia aunque no pueda caminar hasta ahí.",
+      "motivation": "Que alguien más sepa hacer lo que él ya no puede, antes de que sea tarde. No le importa si le creen: le importa que alguien lo haga.",
+      "fears": ["Morirse sin que nadie sepa repintar la piedra.", "Que le pregunten para qué sirve, y no tener una respuesta que no suene a locura de viejo."],
+      "refusals": ["No va a decir que inventó nada de esto: dice que lo recibió, y que lo recibió sin manual."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-valenzuela",
+      "name": "Ingeniero Valenzuela",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Cuarenta y pocos años, traje que ya no está limpio, papeles del ministerio bajo el brazo. Contratado desde Buenos Aires para terminar algo que otro empezó y que la crisis no deja demorar.",
+      "motivation": "Que la obra se termine a tiempo. Si no se termina, no cobra él, no cobran los peones, y la empresa busca otro ingeniero menos escrupuloso para el próximo tramo.",
+      "fears": ["Que lo culpen de algo que decidieron en un escritorio de Buenos Aires.", "Que tenga razón el viejo, y que él lo haya sabido y haya volado la piedra igual."],
+      "refusals": ["No va a frenar la obra por una corazonada, ni la suya ni la de nadie más."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-petrona",
+      "name": "Petrona",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Dueña de la pulpería desde antes de que hubiera un camino hasta ella. Vende de todo un poco y sabe de todo el doble.",
+      "motivation": "Que el pueblo siga siendo el pueblo, tenga canal nuevo o no lo tenga.",
+      "fears": [],
+      "refusals": ["No opina sobre Eusebio delante de la gente de la empresa."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-telegrama",
+      "title": "El telegrama de encargo",
+      "author": "Sin firma personal, membrete de un estudio de Buenos Aires",
+      "date": "3 de febrero de 1930",
+      "location": "Estación de Zonda",
+      "kind": "letter",
+      "content": "«VERIFICAR INTERRUPCION TRABAJOS CANAL RIEGO VALLE ZONDA STOP EMPRESA RECLAMA DEMORAS INJUSTIFICADAS DE UN PUESTERO LOCAL STOP DISCRECION STOP VIATICOS INCLUIDOS STOP»\n\nAbajo, a mano, alguien agregó una línea que no estaba en el telegrama original: «Preguntá por la piedra pintada antes de preguntar por el canal.» La letra no es la del estudio.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+    },
+    {
+      "id": "doc-recorte-familia",
+      "title": "Una hoja suelta de partida",
+      "author": "Parroquia de Zonda",
+      "date": "1861-1930, varias manos",
+      "location": "Rancho de Eusebio Sosa",
+      "kind": "file",
+      "content": "Una hoja doblada muchas veces, guardada entre dos tejas. Es una lista de nacimientos de la familia Sosa, copiada de memoria más que del registro parroquial real: fechas que no coinciden entre sí, nombres repetidos generación tras generación.\n\nAl margen de tres nombres distintos, en tintas distintas, la misma anotación corta: «zurdo, se corrigió». El último de los tres tiene, además, una fecha de 1901 y una nota final, de otra mano, más reciente: «éste se fue para Buenos Aires y no volvió a escribir. Que Dios sepa si allá también le tocó.»",
+      "authenticity": "authentic",
+      "accuracy": "partially_accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+    }
+  ],
+  "locations": {
+    "estacion-zonda": {
+      "id": "estacion-zonda",
+      "name": "Estación de Zonda",
+      "aliases": ["estacion", "estación", "la estación", "el andén"],
+      "description": "Un andén corto y un galpón de chapa. El tren para acá dos veces por semana, y hoy no es uno de esos días: el investigador llegó en un camión de la empresa que volvía vacío.",
+      "atmosphere": [
+        "El viento levanta polvo de la vía y lo vuelve a bajar en otro lado.",
+        "Un cartel de la empresa de riego, nuevo y ya torcido por el viento, promete «PROGRESO PARA EL VALLE»."
+      ],
+      "connections": ["obras-canal", "pulperia-zonda"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": { "sound": ["El viento entre los durmientes de la vía."], "smell": ["Polvo caliente y aceite de máquina."] },
+      "features": [
+        {
+          "id": "f-cartel-empresa",
+          "names": ["cartel", "el cartel", "afiche"],
+          "description": "Un cartel pintado con letras grandes: «PROGRESO PARA EL VALLE — Compañía de Riego del Zonda». El viento ya le arrancó una esquina.",
+          "closerLook": "Debajo de la pintura nueva se alcanza a leer, apenas, un cartel viejo tapado: el nombre de otra empresa, de otro año, que prometía lo mismo.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "No es la primera vez que alguien viene a prometerle progreso al Valle de Zonda con un cartel nuevo encima de uno viejo.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "pulperia-zonda": {
+      "id": "pulperia-zonda",
+      "name": "La pulpería de Petrona",
+      "aliases": ["pulperia", "pulpería", "el almacén", "lo de petrona"],
+      "description": "Un mostrador de algarrobo gastado por los codos de cuarenta años de clientes. Detrás, botellas, cajones y una radio que agarra una sola emisora, mal.",
+      "atmosphere": [
+        "Huele a yerba y a cuero curtido.",
+        "Petrona atiende sin apurarse, aunque no haya nadie más esperando."
+      ],
+      "connections": ["estacion-zonda", "rancho-eusebio"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-petrona"],
+      "visited": false,
+      "umbralIntensity": 2,
+      "senses": { "sound": ["Una radio con más ruido de fondo que música."], "smell": ["Yerba, cuero, algo friéndose atrás."] }
+    },
+    "rancho-eusebio": {
+      "id": "rancho-eusebio",
+      "name": "El rancho de Eusebio Sosa",
+      "aliases": ["rancho", "el rancho de eusebio", "la casa de eusebio", "lo de eusebio"],
+      "description": "Adobe y una galería angosta que mira derecho hacia la acequia vieja, como si la casa se hubiera construido ahí a propósito para no perderla de vista. Adentro, poco más que una cama, un fogón y un baúl.",
+      "atmosphere": [
+        "Eusebio no se levanta cuando entra alguien: hace tiempo que dejó de poder hacerlo rápido.",
+        "En la pared, colgado de un clavo, hay un pincel gastado hasta la mitad de las cerdas."
+      ],
+      "connections": ["pulperia-zonda", "acequia-vieja"],
+      "itemsPresent": ["it-frasco-almagre"],
+      "npcsPresent": ["npc-eusebio"],
+      "visited": false,
+      "umbralIntensity": 5,
+      "senses": { "sound": ["La respiración de Eusebio, más trabajosa de lo que debería a media tarde."], "smell": ["Humo de fogón viejo y aceite de linaza."] },
+      "features": [
+        {
+          "id": "f-pincel",
+          "names": ["pincel", "el pincel"],
+          "description": "Un pincel de cerda gastada hasta la mitad, colgado de un clavo como si fuera a usarse mañana.",
+          "closerLook": "Las cerdas que quedan están duras de pintura seca de un solo color: colorado. No hay otro pincel en toda la casa.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "Eusebio tiene un solo pincel, y lo usó para una sola cosa durante años.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "acequia-vieja": {
+      "id": "acequia-vieja",
+      "name": "La acequia vieja",
+      "aliases": ["acequia", "la acequia vieja", "el brocal", "el cauce seco"],
+      "description": "Un zanjón de piedra seca, más ancho y más prolijo de lo que necesitaría un canal de riego cualquiera. En el punto más alto del brocal, un círculo pintado en almagre, descascarado pero todavía rojo.",
+      "atmosphere": [
+        "El viento entra por el cauce vacío con un silbido parejo, como si el zanjón mismo respirara.",
+        "No hay pasto en el fondo, ni siquiera el pasto duro que crece en cualquier lado."
+      ],
+      "connections": ["rancho-eusebio", "obras-canal"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 12,
+      "senses": { "sound": ["Un silbido parejo, que sube cuando el viento sube."], "touch": ["El aire acá abajo es varios grados más frío que arriba, incluso a pleno sol."] },
+      "features": [
+        {
+          "id": "f-circulo-almagre",
+          "names": ["circulo", "círculo", "el circulo pintado", "la marca", "la piedra pintada"],
+          "description": "Un círculo pintado en almagre sobre la piedra del brocal, en la cara que mira contra el viento. Descascarado por años de sol, pero repintado tantas veces que el rojo no llegó a desaparecer del todo.",
+          "closerLook": "Debajo de la última mano de pintura hay otras, una encima de la otra, en el mismo lugar exacto, durante más años de los que Eusebio puede haber vivido. La piedra de abajo, donde la pintura saltó del todo, tiene una marca más vieja: no pintada. Grabada.",
+          "examineSkill": "ocultismo",
+          "exposure": 4,
+          "clue": {
+            "description": "Debajo de las capas de almagre, la piedra del brocal de la acequia tiene una marca más vieja que ninguna de las manos de pintura: está grabada, no pintada.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
+    },
+    "obras-canal": {
+      "id": "obras-canal",
+      "name": "Las obras del canal nuevo",
+      "aliases": ["obras", "las obras", "el campamento", "el obraje"],
+      "description": "Carpas, un galpón de herramientas y cajones apilados con el sello de la empresa. Un grupo de peones trabaja sin muchas ganas alrededor de un desnivel recién marcado con estacas.",
+      "atmosphere": [
+        "Hay más cajones de dinamita apilados de los que hacen falta para un desnivel tan chico.",
+        "Los peones bajan la voz cada vez que alguien nombra la acequia vieja."
+      ],
+      "connections": ["acequia-vieja", "estacion-zonda"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-valenzuela"],
+      "visited": false,
+      "umbralIntensity": 3,
+      "senses": { "sound": ["Picos y palas, y una discusión en voz baja que se corta cuando alguien se acerca."], "smell": ["Tierra recién removida."] }
+    }
+  },
+  "startLocation": "estacion-zonda",
+  "startTime": {
+    "iso": "1930-02-10T16:00:00",
+    "precision": "minute",
+    "display": "una tarde de febrero de 1930"
+  },
+  "startUmbralPermeability": 15,
+  "timeline": [
+    {
+      "id": "te-ultima-mano",
+      "description": "La última vez que Eusebio Sosa pudo subir hasta el brocal y repintar el círculo de almagre con su propia mano, sin ayuda.",
+      "when": { "iso": "1928-06-01T00:00:00", "precision": "vague", "display": "hace dos inviernos" },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "e-salud",
+      "npc": "npc-eusebio",
+      "orden": 1,
+      "etiqueta": "Preguntarle cómo está",
+      "intencion": "Le pregunto a Eusebio cómo está de salud",
+      "claves": ["como esta", "cómo está", "su salud", "se lo ve mal"],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Como tengo que estar. —No es queja: es un dato—. El médico de Ullum dice que es el corazón. Yo digo que es que ya usé el que tenía.\n\nSe queda mirando la puerta, hacia donde se ve un pedazo de la acequia.\n\n—Lo que me preocupa no soy yo."
+        ]
+      }
+    },
+    {
+      "id": "e-ritual",
+      "npc": "npc-eusebio",
+      "orden": 2,
+      "etiqueta": "Preguntarle por el círculo pintado",
+      "intencion": "Le pregunto a Eusebio por el círculo pintado en la acequia",
+      "claves": ["el circulo", "círculo pintado", "la piedra pintada", "el almagre", "para que sirve la pintura"],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Eso lo pintaba mi padre, y antes mi abuelo, y yo hace dos inviernos que no puedo subir hasta ahí. —Se mira las manos—. No le voy a decir para qué sirve, porque nadie de mi familia lo supo nunca del todo. Se los decían así: hay que hacerlo, y hay que hacerlo así, y no hay que preguntar más.\n\n—Pero le voy a decir lo otro. Hoy no hay nadie más que sepa cómo se hace, y yo no voy a poder subir de nuevo."
+        ],
+        "pista": {
+          "description": "Eusebio Sosa ya no tiene fuerzas para subir hasta el brocal y repintar el círculo de almagre, y hoy no hay nadie más que sepa cómo se hace.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "e-familia",
+      "npc": "npc-eusebio",
+      "orden": 3,
+      "etiqueta": "Preguntarle por su familia",
+      "intencion": "Le pregunto a Eusebio por su familia",
+      "claves": ["su familia", "los sosa", "sus hijos", "sus parientes"],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Tuve tres. Una se murió chica, uno se fue a Buenos Aires hace treinta años y no volvió a escribir, y la última se casó para el lado de Mendoza. Ninguno se quedó a aprender esto, y no se lo reproché a ninguno.\n\n—Uno no le desea a un hijo que se quede a cuidar una piedra que no le va a agradecer nada."
+        ],
+        "pista": {
+          "description": "Uno de los hijos de Eusebio se fue a Buenos Aires hace treinta años y no volvió a escribir.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "v-plan",
+      "npc": "npc-valenzuela",
+      "orden": 1,
+      "etiqueta": "Preguntarle por el plan de obras",
+      "intencion": "Le pregunto a Valenzuela por el plan de las obras",
+      "claves": ["el plan", "las obras", "el canal nuevo", "que van a hacer"],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Nivelamos el lecho viejo, ampliamos la sección y lo conectamos al canal madre. Con eso el Valle riega el doble de hectáreas.\n\n—La empresa tiene fecha fija para dinamitar el lecho de piedra de la acequia vieja: pasado mañana al amanecer, antes de que el calor haga imposible trabajar con explosivos. No la puse yo. No la puedo mover."
+        ],
+        "pista": {
+          "description": "La empresa tiene fecha fija para dinamitar el lecho de piedra de la acequia vieja: pasado mañana al amanecer.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "v-duda",
+      "npc": "npc-valenzuela",
+      "orden": 2,
+      "etiqueta": "Preguntarle si tiene dudas",
+      "intencion": "Le pregunto a Valenzuela si tiene dudas sobre volar la piedra",
+      "claves": ["dudas", "esta seguro", "está seguro", "le da miedo"],
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "Tarda en contestar.\n\n—Los peones no quieren acercarse al brocal después de las cinco de la tarde. Dicen que el viento cambia ahí adentro antes que en cualquier otro lado del Valle. Yo les digo que es la forma del zanjón.\n\n—¿Le creo a un ingeniero de Buenos Aires que nunca vio un Zonda de verdad, o le creo a treinta hombres que nacieron acá? Todavía no lo decidí. Pero la orden es la orden."
+        ],
+        "pista": {
+          "description": "Los peones de la obra no quieren acercarse al brocal después de las cinco de la tarde: dicen que el viento cambia ahí adentro antes que en cualquier otro lado del Valle.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "p-eusebio",
+      "npc": "npc-petrona",
+      "orden": 1,
+      "etiqueta": "Preguntarle por Eusebio",
+      "intencion": "Le pregunto a Petrona por Eusebio Sosa",
+      "claves": ["eusebio", "el viejo sosa", "el puestero"],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Eusebio no está loco, si es eso lo que le dijeron en la empresa. —Petrona seca un vaso que ya estaba seco—. Está viejo, que es distinto. Su familia pintó esa piedra desde antes que yo naciera, y la mía vino después que la de él.\n\n—Nadie del pueblo se ríe de eso delante de los de afuera. Adentro, tampoco tanto."
+        ],
+        "pista": {
+          "description": "La familia Sosa pinta el círculo de la acequia desde antes de que naciera la gente más vieja del pueblo, y nadie en Zonda se ríe de eso delante de los de afuera.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "p-viento",
+      "npc": "npc-petrona",
+      "orden": 2,
+      "etiqueta": "Preguntarle por el viento Zonda",
+      "intencion": "Le pregunto a Petrona por el viento Zonda",
+      "claves": ["el viento", "el zonda", "el viento zonda"],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—El Zonda no es viento nomás, es fiebre. Sube la temperatura diez grados en una hora y a la gente se le sube algo más que la temperatura. Acá cuando viene el Zonda fuerte, se cierran puertas y se guardan cuchillos.\n\n—Y esta semana viene fuerte. Se le nota en cómo ladran los perros antes de que uno sienta nada."
+        ],
+        "pista": {
+          "description": "Esta semana viene un Zonda fuerte: se le nota en cómo ladran los perros antes de que la gente sienta nada.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-telegrama",
+      "prioridad": 50,
+      "cuando": { "op": "texto", "patron": "leo el telegrama|el telegrama de encargo" }
+    },
+    {
+      "id": "revisar-baul",
+      "prioridad": 50,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "reviso el baul|reviso el baúl|abro el baul|abro el baúl|busco entre las tejas" },
+          { "op": "lugar", "es": ["rancho-eusebio"] }
+        ]
+      }
+    },
+    {
+      "id": "pedir-que-ensene",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "que me ensene|que me enseñe|ayudarlo a repintar|le pido que me explique" },
+          { "op": "pista", "contiene": "hoy no hay nadie más que sepa cómo se hace" }
+        ]
+      }
+    },
+    {
+      "id": "convencer-valenzuela",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "que frene la voladura|que no dinamite|convencerlo de que pare|le pido que frene todo" },
+          { "op": "pista", "contiene": "fecha fija para dinamitar" }
+        ]
+      }
+    },
+    {
+      "id": "ver-obras",
+      "prioridad": 80,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "veo que pasa con las obras|que esta pasando en las obras|voy a ver la voladura|me quedo a ver que hacen" },
+          { "op": "narrado", "contiene": "Ya no hay más que preguntarle" },
+          { "op": "narrado", "contiene": "no va a cambiar por nada que digas" }
+        ]
+      }
+    },
+    {
+      "id": "caminar-la-grieta",
+      "prioridad": 95,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "camino hacia la grieta|bajo al cauce agrietado|entro en la grieta|cruzo la grieta" },
+          { "op": "narrado", "contiene": "una grieta abierta al pie del brocal" }
+        ]
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "leer-telegrama",
+      "grupo": "observar",
+      "lugar": "estacion-zonda",
+      "orden": 1,
+      "intencion": "Leo el telegrama de encargo",
+      "etiqueta": "Leer el telegrama de encargo",
+      "hecha": { "op": "documento", "id": "doc-telegrama" }
+    },
+    {
+      "id": "revisar-baul",
+      "grupo": "observar",
+      "lugar": "rancho-eusebio",
+      "orden": 10,
+      "intencion": "Reviso el baúl de Eusebio",
+      "etiqueta": "Revisar el baúl",
+      "hecha": { "op": "documento", "id": "doc-recorte-familia" }
+    },
+    {
+      "id": "pedir-que-ensene",
+      "grupo": "usar",
+      "lugar": "rancho-eusebio",
+      "orden": 20,
+      "intencion": "Le pido a Eusebio que me enseñe, y lo ayudo a repintar el círculo",
+      "etiqueta": "Pedirle que le enseñe el procedimiento del almagre",
+      "visible": { "op": "pista", "contiene": "hoy no hay nadie más que sepa cómo se hace" },
+      "hecha": { "op": "narrado", "contiene": "Ya no hay más que preguntarle" }
+    },
+    {
+      "id": "convencer-valenzuela",
+      "grupo": "usar",
+      "lugar": "obras-canal",
+      "orden": 20,
+      "intencion": "Le pido a Valenzuela que frene la voladura",
+      "etiqueta": "Convencer a Valenzuela de frenar la voladura",
+      "visible": { "op": "pista", "contiene": "fecha fija para dinamitar" },
+      "hecha": { "op": "narrado", "contiene": "no va a cambiar por nada que digas" }
+    },
+    {
+      "id": "ver-obras",
+      "grupo": "observar",
+      "lugar": "obras-canal",
+      "orden": 30,
+      "intencion": "Voy a ver qué está pasando en las obras",
+      "etiqueta": "Ver qué está pasando en las obras",
+      "visible": {
+        "op": "y",
+        "de": [
+          { "op": "narrado", "contiene": "Ya no hay más que preguntarle" },
+          { "op": "narrado", "contiene": "no va a cambiar por nada que digas" }
+        ]
+      },
+      "hecha": { "op": "narrado", "contiene": "una grieta abierta al pie del brocal" }
+    },
+    {
+      "id": "caminar-la-grieta",
+      "grupo": "decidir",
+      "orden": 90,
+      "final": true,
+      "intencion": "Camino hacia la grieta y bajo al cauce agrietado",
+      "etiqueta": "Caminar la grieta",
+      "visible": { "op": "narrado", "contiene": "una grieta abierta al pie del brocal" }
+    }
+  ],
+  "endings": [
+    {
+      "id": "caminar-la-grieta",
+      "title": "Caminar la Grieta",
+      "condition": "Después de la voladura, el investigador desciende al cauce agrietado durante el apogeo del viento Zonda y camina hacia la distorsión."
+    }
+  ],
+  "opening": "Hace once meses que el mundo tiene menos plata que antes, y la Compañía de Riego del Zonda decidió que la crisis es buen momento para terminar lo que otros empezaron y dejaron a medio hacer: nivelar el lecho de piedra de una acequia vieja que hace años no lleva agua, y conectarla al canal nuevo.\n\nUn estudio de Buenos Aires mandó a alguien a averiguar por qué las obras se atrasan. Dicen que es un puestero viejo que se para en el medio del camino. El puestero viejo se llama Eusebio Sosa, y en su rancho hay un pincel gastado que no se usó para otra cosa en toda su vida más que para pintar, cada tanto, un círculo en una piedra.\n\nEl camión de la empresa lo dejó en la estación, vacío y con ganas de volver antes de que oscurezca. El viento ya se siente distinto de lo que es un viento cualquiera.",
+  "bloqueoDecision": { "op": "narrado", "contiene": "una grieta abierta al pie del brocal" }
+}

@@ -241,6 +241,45 @@ async function main() {
     check('"Lo que Bernardo sabía" queda en el tramo genérico por pistas (1D8 con 8)', bernardoSabia.caras === 8, JSON.stringify(bernardoSabia));
   }
 
+  console.log('\nENTRENAMIENTO A MITAD DE AVENTURA (train_skill)');
+  {
+    // Genérico: no es la fase de desarrollo (fin de escenario), es un tool
+    // que cualquier aventura puede invocar en plena partida — pensado para
+    // "alguien te enseña algo" (mosquete, esgrima, lo que sea), reusando la
+    // MISMA regla de mejora que el resto del proyecto (p. 94), no un "+10%
+    // fijo" de homebrew.
+    const idEntreno = await createCampaign(AGUA_QUIETA, 'ENTRENAR', 'y'.repeat(64));
+
+    const malos = await Turn.open(idEntreno);
+    check('rechaza una característica que no sea DEX/INT',
+      !malos.executeTool('train_skill', { skill: 'armas_fuego', check_characteristic: 'pod', sessions: 4, cap: 50 }).ok);
+    check('rechaza sesiones <= 0',
+      !malos.executeTool('train_skill', { skill: 'armas_fuego', check_characteristic: 'dex', sessions: 0, cap: 50 }).ok);
+    check('rechaza un tope fuera de 1-100',
+      !malos.executeTool('train_skill', { skill: 'armas_fuego', check_characteristic: 'dex', sessions: 4, cap: 150 }).ok);
+    check('rechaza una habilidad inexistente',
+      !malos.executeTool('train_skill', { skill: 'volar', check_characteristic: 'dex', sessions: 4, cap: 50 }).ok);
+
+    const turnoEntreno = await Turn.open(idEntreno);
+    const invAntesEntreno = turnoEntreno.investigator;
+    const baseAntes = invAntesEntreno.skills['armas_fuego' as never]?.base ?? 20; // defaultBase de armas_fuego
+    const r = turnoEntreno.executeTool('train_skill', {
+      skill: 'armas_fuego', check_characteristic: 'dex', sessions: 20, cap: 50, teacher: 'un baqueano',
+    });
+    check('un entrenamiento largo (20 sesiones) responde ok', r.ok, r.ok ? '' : JSON.stringify(r));
+    await turnoEntreno.commit();
+
+    const turnoDespuesEntreno = await Turn.open(idEntreno);
+    const armasFuegoDespues = turnoDespuesEntreno.investigator.skills['armas_fuego' as never]?.base ?? 0;
+    console.log(`   Armas de Fuego: ${baseAntes}% → ${armasFuegoDespues}% (tope 50%)`);
+    check('nunca supera el tope declarado', armasFuegoDespues <= 50, `${armasFuegoDespues}%`);
+    check('no baja de lo que tenía', armasFuegoDespues >= baseAntes, `${baseAntes}% → ${armasFuegoDespues}%`);
+
+    const verifEntreno = verifyRollChain(turnoDespuesEntreno.meta.seed, turnoDespuesEntreno.state.rolls);
+    check('las tiradas del entrenamiento también verifican contra la semilla', verifEntreno.ok,
+      verifEntreno.ok ? `${turnoDespuesEntreno.state.rolls.length} tiradas` : JSON.stringify(verifEntreno).slice(0, 120));
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

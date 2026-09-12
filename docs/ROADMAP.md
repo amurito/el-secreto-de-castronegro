@@ -3765,6 +3765,61 @@ quiroga» —ahora sólo baja el artículo—, y los marcadores `narrado` se com
 **sensibles a mayúsculas**, con lo que tres puertas `hecha` de esta aventura
 nunca cerraban y la acción se seguía ofreciendo después de hecha.
 
+### 3.2-quinquadragies La Grieta del Zonda — la duodécima aventura, primer acto ✔ HECHA
+
+Primera aventura de la campaña que sale del partido de Castronegro: Valle de
+Zonda, San Juan, febrero de 1930. Diseño conversado a fondo con el usuario
+antes de escribir nada (ver §4.4 para el motor que hizo falta primero:
+`train_skill`, la variante huarpe de «Cerrarle el paso», las armas
+coloniales). Cinco lugares, tres NPC, dos documentos, siete temas de
+conversación, cinco escenas, un solo desenlace.
+
+**Final único, a propósito.** Es la primera aventura de la campaña sin
+bifurcación de desenlace: la voladura de la acequia pasa sí o no, gane o
+pierda el investigador cada intento. La textura sí varía —dos escenas,
+«pedir-que-ensene» (persuadir a Eusebio Sosa de enseñar el procedimiento del
+almagre antes de perder las fuerzas) y «convencer-valenzuela» (intentar
+frenar la voladura)— y cada una deja una consecuencia de campaña distinta
+según el resultado, que *La Merced de las Ánimas* podrá leer sin exigir
+ninguna en particular. Mismo criterio que toda la campaña.
+
+**La excepción de canon, en juego.** El Umbral transporta físicamente por
+primera vez (`CANON.md`, invariante acotada y fechada). La escena
+`caminar-la-grieta` registra la consecuencia de campaña que es el punto
+entero del Acto I: el investigador sabe que Castronegro no es el único nodo
+— pista parcial, sin confirmar nada más.
+
+**Bug real encontrado jugando en el navegador, no en los tests:** la
+condición de gateo (`{op:'narrado', contiene:'la grieta abierta al pie del
+brocal'}`, usada en tres lugares — el `hecha` de «ver-obras», su `visible`
+encadenado, y el `bloqueoDecision` de toda la aventura) decía «**la** grieta»
+y la prosa real de la escena dice «**una** grieta». El operador `narrado`
+compara sensible a mayúsculas Y a la palabra exacta — no hay tolerancia de
+ningún tipo—, así que el botón de cerrar el Acto I nunca se ofrecía y
+`bloqueoDecision` nunca se activaba. Los tests no lo cazan porque
+`prueba-auditoria.ts` verifica que cada escena declarada tenga un CAMINO
+—que exista una acción que la dispare—, no que las cadenas de `narrado`
+coincidan carácter por carácter con la prosa real del `.logica.ts`. Se
+corrigió la condición para que diga lo mismo que la prosa, y de paso quedó
+anotado acá como recordatorio de por qué el operador es sensible a
+mayúsculas a propósito (ver `condiciones.ts`): más vale un bug así,
+silencioso pero detectable jugando, que una coincidencia parcial que
+dispare una escena antes de tiempo.
+
+**Otro bug real, de paso, no de esta aventura:** la pantalla de cierre
+(`Epilogo`, `App.tsx`) tenía una nota fija — «Ninguno de los cinco es ganar
+y ninguno es perder. Los Álamos sigue ahí en todos.» — escrita para *Agua
+Quieta* (cinco desenlaces, la estancia Los Álamos) pero reusada tal cual en
+el cierre de las doce aventuras de la campaña. Con un desenlace único acá
+quedó imposible no notarlo. Corregida a una frase genérica, sin número ni
+lugar: el componente ya calculaba bien cuántos desenlaces tiene CADA
+aventura (`entradaDe(scenarioId)`), sólo la frase de abajo se había quedado
+pegada a la primera.
+
+`npm run prueba:todo` completo, jugada de punta a punta en el navegador
+(ambas ramas de cada intento, gateo, bloqueo de decisión, pantalla de
+desenlace).
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
@@ -4147,6 +4202,57 @@ escopeta (p. 116): el daño se tira en D6 sueltos por tramo (4D6/2D6/1D6 según
 la distancia) y la armadura se descuenta DE CADA DADO, no una vez del total
 —cada perdigón atraviesa por su cuenta—. Es un diseño aparte, no una
 extensión de lo que ya existe; entra cuando haga falta, con su propio caso.
+
+**HECHO (2026-09-11): armas coloniales de 1710, y un tool nuevo para
+entrenar a mitad de aventura.** Preparación de motor y contenido para la
+duodécima y decimotercera entradas del catálogo (*La Grieta del Zonda* / *La
+Merced de las Ánimas*, todavía sin escribir): un investigador de 1930
+transportado a San Juan colonial, con enemigos armados de época y un
+antagonista con armadura de verdad. Diseño completo —canon, geografía,
+personajes, ramas— conversado con el usuario antes de tocar código; ver el
+plan de esa conversación para el detalle narrativo, acá sólo lo mecánico.
+
+- **Cinco armas nuevas** (`rules/armas.ts`): `mosquete-chispa` (2D6, alcance
+  30, avancarga), `pistola-chispa` (1D8, alcance 10), `espada-ropera` (1D8,
+  cuerpo a cuerpo) para Don Gonzalo de Estrada; `rafaga-viento` y
+  `garras-vagabundo`, sin ficha de investigador, para los dos monstruos de la
+  aventura. Alcances tomados del análogo histórico del manual (mosquete de
+  chispa ≈ 30 yardas, pistola de chispa ≈ 10 yardas, Tabla XVII, apéndice de
+  armas históricas); los dados de daño son originales, no transcriptos de esa
+  tabla —mismo criterio de «original, no copiado» que ya rige `hechizos.ts`—.
+  Sin número de recarga ni de atasco: el tipo `Arma` no los tiene y no hacía
+  falta agregarlos (el catálogo tampoco los modela para el revólver de
+  arriba). El «tarda en recargar» del mosquete, si hace falta que pese en una
+  escena puntual, se resuelve cambiándole el `armaId` a mitad de combate
+  (`NPC_COMBATE_CHANGED` ya acepta ese campo) — sin inventar tracking de
+  balas en el motor.
+- **`train_skill`, tool de motor genérico nuevo** (`engine.ts`) — entrenar
+  una habilidad a mitad de partida, cosa que no existía: la única mejora de
+  habilidades era la fase de desarrollo completa de fin de escenario
+  (`runDevelopmentPhase`), no invocable en plena aventura. No sabe nada de
+  mosquetes: recibe `skill`, `check_characteristic` (DEX o INT), `sessions`
+  y un `cap`, y por cada sesión tira la característica (dificultad regular,
+  p. 94) y, si sale, aplica la MISMA `mejora()` que ya usa la fase de
+  desarrollo —sube 1D10 si el 1D100 supera el valor actual o pasa de 95—, no
+  un «+10% fijo» de homebrew. Emite `SKILL_IMPROVED`, el mismo evento que la
+  fase de fin de escenario: para el resto del motor, una habilidad entrenada
+  a mitad de aventura es indistinguible de una ganada por currarla. Usa
+  `rollDie` directo, no `toolRequestRoll` —que rechaza una segunda tirada
+  dentro de la misma intención—, mismo criterio que ya usa
+  `runDevelopmentPhase` para sus propias tiradas. Probado extendiendo
+  `prueba-desarrollo.ts`: rechazos de parámetros inválidos, que nunca supere
+  el tope declarado, y que la cadena de tiradas siga verificando contra la
+  semilla.
+- **Variante de «Cerrarle el paso» enseñada por Takillpa** (`rules/hechizos.ts`,
+  id `cerrarle-el-paso-huarpe`) — mismo daño, mismo costo de PM, misma
+  espera que el original de 1674 (`cerrarle-el-paso`): un hechizo de daño más
+  fuerte o más barato seguiría rompiendo la calibración de «usable una sola
+  vez por pelea» sin importar quién lo enseñe. La única diferencia real es la
+  Cordura: 1 en vez de 2 — no es «más fuerte», es más respetuoso de lo que se
+  cierra. Probado extendiendo `prueba-hechizos.ts`.
+- **Canon** (`CANON.md`): la invariante «el Umbral NO es una puerta física
+  convencional» gana una excepción acotada y fechada (San Juan, 1930/1710) en
+  vez de reescribirse — sigue sin ser, en general, una puerta.
 
 ### 4.5 Móvil ✔ HECHO
 

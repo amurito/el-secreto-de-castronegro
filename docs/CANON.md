@@ -163,7 +163,12 @@ proyecto.
 - El obelisco **NO** fue construido originalmente para invocar a Yog-Sothoth.
 - **NO** existe una única tribu histórica que haya custodiado Agua Blanca
   durante milenios.
-- El Umbral **NO** es una puerta física convencional.
+- El Umbral **NO** es una puerta física convencional — con una única
+  excepción conocida, acotada y fechada (San Juan, 1930/1710, *La Grieta del
+  Zonda* / *La Merced de las Ánimas*): agua contenida durante siglos y
+  perdida de golpe puede, en esas condiciones extremas, transportar
+  físicamente. No se generaliza a ningún otro caso sin nueva evidencia en
+  juego — sigue sin ser, en general, una puerta.
 - Yog-Sothoth **NO** es un jefe final de combate.
 - El anillo **NO** permite controlar libremente el tiempo.
 - **NO** se confirma que las visiones sean siempre futuros inevitables.

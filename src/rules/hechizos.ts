@@ -148,6 +148,29 @@ export const HECHIZOS: Hechizo[] = [
     // combate, y el combate de este proyecto está calibrado sin él.
     esperaMinutos: 120,
   },
+  {
+    // La misma idea de «cerrarle el paso» —un borde que se cierra sobre lo
+    // que ya lo cruzó—, enseñada del otro lado: sin papel, sin latín, de
+    // memoria y de mano en mano. Mecánicamente es casi idéntico a propósito
+    // (mismo daño, mismo costo de PM, misma espera: un hechizo de daño
+    // repetible seguiría rompiendo el combate sea quien sea que lo enseñó,
+    // ver el comentario de `cerrarle-el-paso`). La única diferencia real es
+    // la Cordura que cuesta lanzarlo: 1 en vez de 2. No es "más fuerte" —es
+    // más respetuoso de lo que se está cerrando, y eso pesa menos en la
+    // cabeza de quien lo lanza que la versión que lo trata como una
+    // herramienta de control.
+    id: 'cerrarle-el-paso-huarpe',
+    nombre: 'Cerrarle el paso (como lo aprendió Takillpa)',
+    costoPM: 6,
+    costoCordura: 1,
+    descripcion:
+      'Se le cierra encima el borde que ya cruzó, igual que la otra vez — pero ' +
+      'sin la prisa de quien necesita que sirva para algo más. No hay fuego ni ' +
+      'luz: hay algo que estaba abierto y deja de estarlo.',
+    efecto: 'dano',
+    magnitud: 6,
+    esperaMinutos: 120,
+  },
 ];
 
 export const HECHIZO_POR_ID: Record<string, Hechizo> = Object.fromEntries(

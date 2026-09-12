@@ -768,6 +768,7 @@ export class Turn {
         case 'resolve_flee': return this.toolResolveFlee(raw);
         case 'resolve_maneuver': return this.toolResolveManeuver(raw);
         case 'adjust_distance': return this.toolAdjustDistance(raw);
+        case 'train_skill': return this.toolTrainSkill(raw);
         case 'start_combat': return this.toolStartCombat(raw);
         case 'end_combat': return this.toolEndCombat(raw);
         case 'resolve_intimidate': return this.toolResolveIntimidate(raw);
@@ -2014,6 +2015,90 @@ export class Turn {
     });
     this.cerrarCombateSiTerminado();
     return { ok: true, message: `${encabezado}\nQueda sujeto: su próximo intento de pelear o de escapar sale con desventaja.` };
+  }
+
+  /**
+   * Entrenamiento acelerado de una habilidad, a mitad de aventura — no la
+   * fase de desarrollo completa de fin de escenario (`runDevelopmentPhase`),
+   * que exige que la aventura haya cerrado. Genérico a propósito: no sabe
+   * nada de mosquetes ni de 1710, sólo de habilidades, sesiones y un tope.
+   * La escena que lo llama decide cuántas `sessions` hay (p. ej. 1D4 tiradas
+   * antes de invocar el tool) y con qué característica se aprende.
+   *
+   * Cada sesión son DOS tiradas, igual de fieles al manual que el resto del
+   * motor: una tirada de la característica (p. 94, dificultad regular, éxito
+   * si el 1D100 cae en el rango que corresponde) decide si la práctica
+   * "prende"; si prende, se aplica la MISMA regla de mejora que usa la fase
+   * de desarrollo (`mejora()`, p. 94: sube 1D10 si el 1D100 supera el valor
+   * actual o pasa de 95) — no el "+10% fijo" que se suele ver en homebrew de
+   * entrenamientos exprés. Emite `SKILL_IMPROVED`, el mismo evento que ya usa
+   * `runDevelopmentPhase`: para el resto del motor una habilidad entrenada acá
+   * es indistinguible de una entrenada por currar el escenario.
+   *
+   * Usa `this.rollDie` directamente, no `toolRequestRoll`: esta última
+   * rechaza una segunda tirada dentro de la misma intención («una tirada por
+   * intención», ver ahí), y acá una sola llamada puede tirar varias sesiones.
+   * Mismo criterio que ya usa `runDevelopmentPhase` para sus propias tiradas.
+   */
+  private toolTrainSkill(raw: Record<string, unknown>): ToolOutcome {
+    const skill = String(raw.skill ?? '').trim() as SkillId;
+    const checkCharacteristic = String(raw.check_characteristic ?? '').trim().toUpperCase();
+    const sessions = Number(raw.sessions ?? 0);
+    const cap = Number(raw.cap ?? 0);
+    const teacher = String(raw.teacher ?? '').trim();
+
+    if (!['DEX', 'INT'].includes(checkCharacteristic)) {
+      return this.reject('train_skill', raw, 'La característica de aprendizaje tiene que ser DEX o INT.');
+    }
+    if (!Number.isInteger(sessions) || sessions <= 0) {
+      return this.reject('train_skill', raw, 'Hacen falta una o más sesiones de práctica (`sessions` entero positivo).');
+    }
+    if (!Number.isInteger(cap) || cap <= 0 || cap > 100) {
+      return this.reject('train_skill', raw, 'El tope de este entrenamiento (`cap`) tiene que ser un número entre 1 y 100.');
+    }
+    if (!SKILL_BY_ID[skill]) {
+      return this.reject('train_skill', raw, `"${skill}" no es una habilidad válida.`);
+    }
+
+    const inv = this.investigator;
+    const charValue = inv.characteristics[checkCharacteristic as CharacteristicId];
+    const label = labelFor(skill);
+    const bloques: string[] = [];
+
+    for (let sesion = 1; sesion <= sessions; sesion++) {
+      const actual = this.investigator.skills[skill]?.base ?? SKILL_BY_ID[skill]!.defaultBase;
+      if (actual >= cap) {
+        bloques.push(`Sesión ${sesion}: ${label} ya está en el tope de este entrenamiento (${cap}%).`);
+        break;
+      }
+
+      const tiradaCaracteristica = this.rollDie(100).value;
+      const grado = degreeFor(tiradaCaracteristica, charValue);
+      if (['failure', 'fumble'].includes(grado)) {
+        bloques.push(`Sesión ${sesion}: no sale (${tiradaCaracteristica} contra ${checkCharacteristic} ${charValue}).`);
+        continue;
+      }
+
+      const check = this.rollDie(100).value;
+      if (!mejora(actual, check)) {
+        bloques.push(`Sesión ${sesion}: la práctica sale bien, pero no queda nada nuevo (comprobación ${check}).`);
+        continue;
+      }
+
+      const gainRaw = this.rollDie(10).value;
+      const despues = Math.min(cap, actual + gainRaw);
+      const gain = despues - actual;
+      this.emit('SKILL_IMPROVED', {
+        investigatorId: inv.id, skill, label, from: actual, to: despues, check, gain,
+        proof: { index: this.state.rng.nextIndex - 1, hmac: '' },
+      });
+      bloques.push(
+        `Sesión ${sesion}: ${teacher ? `${teacher} le enseña algo nuevo` : 'la práctica rinde'} — ` +
+        `${label} sube de ${actual}% a ${despues}%.`,
+      );
+    }
+
+    return { ok: true, message: bloques.join('\n') };
   }
 
   /**

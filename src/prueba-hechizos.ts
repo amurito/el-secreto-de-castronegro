@@ -415,6 +415,46 @@ async function main() {
     check('contra un rival invulnerable, el hechizo se cierra igual que un tajo', seCerro);
   }
 
+  console.log('\n9-quinquies. LA VARIANTE HUARPE DE «CERRARLE EL PASO»: MISMO DAÑO, MENOS CORDURA');
+  {
+    // Mismo hechizo en espíritu, enseñado del otro lado (ver rules/hechizos.ts):
+    // igual daño/PM/espera que el original —para no romper la calibración de
+    // "un hechizo de daño usable una sola vez por pelea"—, pero cuesta 1 de
+    // Cordura en vez de 2. Se verifica que la diferencia sea EXACTAMENTE ésa,
+    // ni más ni menos.
+    const defHuarpe = HECHIZO_POR_ID['cerrarle-el-paso-huarpe']!;
+    check('mismo daño que el original', defHuarpe.magnitud === HECHIZO_POR_ID['cerrarle-el-paso']!.magnitud);
+    check('mismo costo de PM que el original', defHuarpe.costoPM === HECHIZO_POR_ID['cerrarle-el-paso']!.costoPM);
+    check('misma espera que el original', defHuarpe.esperaMinutos === HECHIZO_POR_ID['cerrarle-el-paso']!.esperaMinutos);
+    check('cuesta 1 de Cordura, no 2', defHuarpe.costoCordura === 1, String(defHuarpe.costoCordura));
+
+    let bajoPvHuarpe: { antes: number; despues: number } | null = null;
+    let sanAntesHuarpe = 0;
+    let sanDespuesHuarpe = 0;
+    for (const letra of 'abcdefghijklmnop') {
+      const id = await createCampaign(INVIERNO_DEBIDO, `DANO-HUARPE-${letra}`, letra.repeat(64));
+      const t2 = await Turn.open(id);
+      t2.executeTool('learn_spell', { spell_id: 'cerrarle-el-paso-huarpe', source: 'prueba' });
+      t2.executeTool('start_combat', { npc_ids: 'npc-cirilo', reason: 'prueba' });
+      const antesHp = t2.state.npcs['npc-cirilo']?.combate?.hp ?? 0;
+      const antesSan = invDe(t2.state).derived.san;
+      const r = t2.executeTool('cast_spell', { spell_id: 'cerrarle-el-paso-huarpe', npc_id: 'npc-cirilo' });
+      await t2.commit();
+      const s2 = (await Turn.open(id)).state;
+      const despuesHp = s2.npcs['npc-cirilo']?.combate?.hp ?? 0;
+      if (r.ok && despuesHp < antesHp) {
+        bajoPvHuarpe = { antes: antesHp, despues: despuesHp };
+        sanAntesHuarpe = antesSan;
+        sanDespuesHuarpe = invDe(s2).derived.san;
+        break;
+      }
+    }
+    check('con combate activo y objetivo, baja los PV del rival de verdad',
+      bajoPvHuarpe !== null, bajoPvHuarpe ? `${bajoPvHuarpe.antes} → ${bajoPvHuarpe.despues}` : '(no salió en ninguna semilla)');
+    check('cobró exactamente 1 de Cordura al lanzarla (no 2)',
+      sanDespuesHuarpe === sanAntesHuarpe - 1, `${sanAntesHuarpe} → ${sanDespuesHuarpe}`);
+  }
+
   console.log('\n10. RETROCOMPATIBILIDAD: campaña guardada antes de que existieran spellsKnown/pendingLuckBonus');
   {
     // Bug real, reportado jugando el 2026-09-14: una campaña vieja no tiene

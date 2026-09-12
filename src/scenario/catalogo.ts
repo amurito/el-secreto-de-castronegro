@@ -29,6 +29,7 @@ import { EL_VIGESIMO } from './elvigesimo.ts';
 import { LO_QUE_BERNARDO_SABIA } from './loquebernardosabia.ts';
 import { EL_HOMBRE_QUE_MIRABA_EL_AGUA } from './hombreagua.ts';
 import { EL_CIRCULO_ROJO } from './circulorojo.ts';
+import { LA_GRIETA_DEL_ZONDA } from './grietadelzonda.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -208,8 +209,34 @@ const ENTRADAS: EntradaCatalogo[] = [
     // pregunta antes de hacerla.
     epoca: 'Noviembre de 1928 · una visión',
     duracion: 'Treinta a cuarenta minutos',
-    requiere: ['el-vigesimo'],
+    // `requiere: ['lo-que-bernardo-sabia']`, NO `['el-vigesimo']` directo —
+    // reportado jugando, 2026-09-12: con las dos apuntando a El Vigésimo,
+    // `siguientesDe('el-vigesimo')` devolvía las dos y la pantalla de
+    // «Continuar» forzaba a elegir una, perdiendo la otra para siempre con
+    // ese investigador. Nada en el canon pide que sean alternativas
+    // excluyentes —la visión (noviembre) es cronológicamente posterior al
+    // epílogo de Bernardo (tres semanas después de octubre)—, así que la
+    // cadena real es lineal: El Vigésimo → Lo que Bernardo sabía → El
+    // Hombre que Miraba el Agua, sin bifurcación. Las escenas que leen
+    // `{op:'consecuencia'}` del desenlace de El Vigésimo (anillo puesto o
+    // cortado) siguen funcionando igual: las consecuencias se acumulan en
+    // toda la campaña, no sólo en la aventura inmediata anterior.
+    requiere: ['lo-que-bernardo-sabia'],
     continuacion: true,
+  },
+  {
+    scenario: LA_GRIETA_DEL_ZONDA,
+    cuando: '1930-02-10',
+    epoca: 'Febrero de 1930 · Valle de Zonda, San Juan',
+    duracion: 'Una hora aproximadamente',
+    // Primera vez que la campaña sale del partido de Castronegro — a
+    // propósito: es la pista de que Castronegro es un nodo entre varios, no
+    // el único lugar donde el Umbral se manifiesta (pista parcial, ver
+    // CANON.md). Sin `continuacion`: a diferencia de Sueño Debido/Orden
+    // Debido/El Vigésimo, nada de este Acto I exige el estado heredado —se
+    // puede jugar sola de verdad—. `requiere` es sólo informativo, como
+    // siempre.
+    requiere: ['el-hombre-que-miraba-el-agua'],
   },
 ];
 
@@ -226,10 +253,15 @@ export const entradaDe = (id: string): EntradaCatalogo | undefined =>
   CATALOGO.find((e) => e.scenario.id === id);
 
 /**
- * Las aventuras que siguen a ésta en la línea del universo — casi siempre
- * una sola, pero El Vigésimo se bifurca en dos epílogos independientes
- * («Lo que Bernardo sabía» y «El Hombre que Miraba el Agua», los dos con
- * `requiere: ['el-vigesimo']` y ninguno requiriéndose entre sí).
+ * Las aventuras que siguen a ésta en la línea del universo — hoy siempre una
+ * sola: ninguna entrada del catálogo bifurca de verdad. («El Vigésimo» lo
+ * hizo hasta 2026-09-12: «Lo que Bernardo sabía» y «El Hombre que Miraba el
+ * Agua» apuntaban las dos con `requiere: ['el-vigesimo']`, sin requerirse
+ * entre sí, y la pantalla de «Continuar» forzaba a elegir una perdiendo la
+ * otra para siempre con ese investigador — reportado jugando. Corregido
+ * encadenándolas: la segunda ahora requiere la primera, cadena lineal.) La
+ * función sigue devolviendo una lista, no un valor único, por si una
+ * aventura futura bifurca de verdad.
  *
  * Por RELACIÓN (`requiere`), no por posición en el array. Antes se tomaba
  * la posición siguiente en el orden por fecha, y eso coincidía con la

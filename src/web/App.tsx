@@ -697,7 +697,7 @@ export function App() {
           <div className="menu-inicio">
             <button className="menu-opcion" onClick={() => setVista('aventuras')} disabled={!api}>
               <span className="menu-opcion-titulo">Aventuras</span>
-              <span className="menu-opcion-nota">Once historias, en su orden.</span>
+              <span className="menu-opcion-nota">Doce historias, en su orden.</span>
             </button>
             <button className="menu-opcion" onClick={() => setVista('continuar')} disabled={!api}>
               <span className="menu-opcion-titulo">Continuar</span>
@@ -1248,7 +1248,7 @@ function Epilogo({
         ))}
       </div>
       <p className="epilogo-nota">
-        Ninguno de los cinco es ganar y ninguno es perder. Los Álamos sigue ahí en todos.
+        Ninguno de los desenlaces es ganar y ninguno es perder.
       </p>
     </div>
   );
@@ -1690,10 +1690,15 @@ function Continuar({
 }) {
   const [ocupado, setOcupado] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Plural: El Vigésimo se bifurca en dos epílogos independientes, y antes
-  // de siguientesDe() (siguienteDe relación-real, no posición) esto sólo
-  // podía ofrecer uno —el que quedara primero por fecha— dejando al otro
-  // alcanzable nomás si arrancabas esa aventura suelta desde el catálogo.
+  // Plural a propósito: `siguientesDe` es por relación (`requiere`), no por
+  // posición en el array, así que una aventura con más de un desenlace real
+  // hacia adelante (bifurcación de verdad, no dos epílogos que en realidad
+  // son lineales) puede ofrecer más de un "Continuar" acá. Hoy ninguna
+  // entrada del catálogo bifurca de esta manera —El Vigésimo→Bernardo→
+  // Hombre que Miraba el Agua es una cadena lineal, corregida 2026-09-12
+  // porque antes las dos últimas apuntaban directo a El Vigésimo y forzaban
+  // a elegir una perdiendo la otra para siempre—, pero el soporte queda para
+  // cuando haga falta de verdad.
   const siguientes = siguientesDe(scenarioId);
 
   if (siguientes.length === 0) {

@@ -834,6 +834,45 @@ async function main() {
     check('con armadura enorme, el golpe no baja ningún PV', pvConMuchaArmadura === 12);
   }
 
+  console.log('\nUN NPC CON ARMA, DISTANCIA Y ARMADURA A LA VEZ (LAS TRES MECÁNICAS JUNTAS)');
+  {
+    // Otro hueco real: cada mecánica nueva se probó por separado, pero ningún
+    // NPC del proyecto junta las tres —arma, `distancia` Y `armadura`— hasta
+    // Don Gonzalo de Estrada en "La Merced de las Ánimas" (coleto de cuero +
+    // pistola + arranca lejos). Confirma que declarar `distancia` no rompe ni
+    // interfiere con el descuento de `armadura` de siempre.
+    async function pvTrasAtaqueADistancia(armadura: number, idc: string, semilla: string): Promise<number> {
+      const escenario: Scenario = {
+        ...AGUA_QUIETA, id: idc,
+        npcs: [...AGUA_QUIETA.npcs, {
+          ...MATON, id: 'npc-armado-lejos',
+          combate: {
+            ...MATON.combate!, armaId: 'pistola-chispa', distancia: 8,
+            defensaPorDefecto: 'esquiva' as const, armadura,
+          },
+        }],
+      };
+      const id = await createCampaign(escenario, idc, semilla);
+      const t = await Turn.open(id);
+      t.executeTool('resolve_attack', { npc_id: 'npc-armado-lejos', weapon_id: 'revolver-38' });
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      return s.npcs['npc-armado-lejos']!.combate!.hp;
+    }
+
+    let vistoGolpeGrande = false;
+    for (let n = 0; n < 40 && !vistoGolpeGrande; n++) {
+      const semilla = `dg${n}`.padEnd(4, '0').repeat(16);
+      const danoSin = 12 - (await pvTrasAtaqueADistancia(0, `DIST-ARM-0-${n}`, semilla));
+      if (danoSin <= 3) continue; // necesitamos un golpe que la armadura sí note
+      vistoGolpeGrande = true;
+      const danoCon = 12 - (await pvTrasAtaqueADistancia(1, `DIST-ARM-1-${n}`, semilla));
+      check(`  · semilla ${n}: con distancia Y arma de fuego declaradas, la armadura sigue restando`,
+        danoCon === danoSin - 1, `sin armadura ${danoSin}, con 1 de armadura ${danoCon}`);
+    }
+    check('se vio al menos un golpe para probar la combinación de las tres mecánicas', vistoGolpeGrande);
+  }
+
   console.log('\nARMADURA DEL INVESTIGADOR: TAMBIÉN RESTA DEL DAÑO QUE RECIBE');
   {
     const elena = AGUA_QUIETA.investigators[0]!;
@@ -970,6 +1009,41 @@ async function main() {
       /corre a cerrar distancia/.test(r.message), r.message.slice(0, 200));
     check('su distancia queda en 0 después de cerrar',
       s.npcs['npc-lento-lejos']!.combate!.distancia === 0);
+  }
+
+  console.log('\nUN RIVAL DE FONDO CON ARMA DE FUEGO Y DISTANCIA DISPARA DE VERDAD (NO SÓLO CIERRA)');
+  {
+    // Hueco real detectado explorando el código antes de escribir "La Merced
+    // de las Ánimas": todos los tests de "NPC dispara mientras cruzo" pasaban
+    // por `adjust_distance` (tiro libre al fallar la tirada de cruzar). Este
+    // es el camino normal de un rival de fondo armado —el caso de Don
+    // Gonzalo si en algún momento es él quien dispara en vez de ser el
+    // blanco— vía `ataqueDeNpcContraInvestigador`.
+    const conTiradorFondo: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-tirador-fondo',
+      npcs: [...AGUA_QUIETA.npcs, MATON, {
+        ...MATON, id: 'npc-tirador-fondo', name: 'Otro, con un revólver, lejos',
+        combate: {
+          ...MATON.combate!, armaId: 'revolver-38', distancia: 10,
+          defensaPorDefecto: 'esquiva' as const,
+        },
+      }],
+    };
+    let vistoDisparo = false;
+    let vistoGolpe = false;
+    for (let n = 0; n < 40 && !(vistoDisparo && vistoGolpe); n++) {
+      const semilla = `tf${n}`.padEnd(4, '0').repeat(16);
+      const id = await createCampaign(conTiradorFondo, `TIRADOR-FONDO-${n}`, semilla);
+      const t = await Turn.open(id);
+      const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+      await t.commit();
+      if (/Otro, con un revólver, lejos ataca a .* con revólver \.38/.test(r.message)) {
+        vistoDisparo = true;
+        if (/de daño/.test(r.message)) vistoGolpe = true;
+      }
+    }
+    check('el rival de fondo armado dispara de verdad, no corre a cerrar distancia', vistoDisparo);
+    check('al menos una vez el disparo conectó y bajó PV del investigador', vistoGolpe);
   }
 
   console.log('\nINTIMIDAR EN COMBATE: SÓLO SI LA ESCENA LO CONFIGURÓ');
