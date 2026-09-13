@@ -250,6 +250,21 @@ export interface EfectoEscena {
    * el tool no cobra nada por sí solo, igual que `jugadorNota` tampoco.
    */
   aprenderHechizo?: { id: string; source: string };
+  /**
+   * Entrenamiento acelerado de una habilidad a mitad de aventura
+   * (`toolTrainSkill` en engine.ts) — no la fase de desarrollo de fin de
+   * escenario. Igual que `combate`: el mensaje del motor (qué sesión salió,
+   * cuánto subió) ES la narración, porque los dados no se pueden predecir de
+   * antemano. La escena decide cuántas sesiones hay y con qué característica
+   * se aprende; el motor no sabe qué habilidad es ni por qué.
+   */
+  entrenar?: {
+    skill: string;
+    checkCharacteristic: 'dex' | 'int';
+    sessions: number;
+    cap: number;
+    teacher?: string;
+  };
 }
 
 export interface ContextoEscena {

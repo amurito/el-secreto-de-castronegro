@@ -189,6 +189,19 @@ function aplicarEfecto(
   if (efecto.aprenderHechizo) {
     run('learn_spell', { spell_id: efecto.aprenderHechizo.id, source: efecto.aprenderHechizo.source });
   }
+  if (efecto.entrenar) {
+    // Mismo criterio que `combate`: el mensaje del motor —qué sesión salió,
+    // cuánto subió la habilidad— ES la narración, no algo que la prosa
+    // pueda anticipar.
+    const r = run('train_skill', {
+      skill: efecto.entrenar.skill,
+      check_characteristic: efecto.entrenar.checkCharacteristic,
+      sessions: efecto.entrenar.sessions,
+      cap: efecto.entrenar.cap,
+      teacher: efecto.entrenar.teacher ?? '',
+    });
+    out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+  }
   if (efecto.mitos) {
     run('apply_mythos_knowledge', {
       amount: efecto.mitos.amount, source: efecto.mitos.source,

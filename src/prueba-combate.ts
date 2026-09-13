@@ -1046,6 +1046,42 @@ async function main() {
     check('al menos una vez el disparo conectó y bajó PV del investigador', vistoGolpe);
   }
 
+  console.log('\nHUIR SÓLO PELEA CONTRA QUIEN ESTÁ EN ESTE CUARTO, NO CONTRA TODO EL MAPA');
+  {
+    // Reportado jugando "La Merced de las Ánimas": huir de un Pólipo en la
+    // ciénaga hacía que Don Gonzalo, a un mapa entero de distancia, se
+    // sumara al ataque. `ordenDeAsalto` ya se había corregido para esto
+    // mismo en 2026 (Bernardo Díaz peleando desde el laboratorio mientras
+    // custodiaban el sótano, El Vigésimo) — pero `toolResolveFlee` tenía su
+    // PROPIO filtro, sin la corrección, así que el bug seguía vivo del otro
+    // lado del combate. Ver `combatientesAqui` en engine.ts.
+    const conDosRivalesLejos: Scenario = {
+      ...AGUA_QUIETA, id: 'prueba-combate-huir-lejos',
+      npcs: [...AGUA_QUIETA.npcs, {
+        ...MATON, id: 'npc-aqui', name: 'El que está en el patio',
+        combate: { ...MATON.combate!, defensaPorDefecto: 'esquiva' as const },
+      }, {
+        ...MATON, id: 'npc-lejos', name: 'El que está en la orilla, lejos',
+        combate: { ...MATON.combate!, defensaPorDefecto: 'esquiva' as const },
+      }],
+      locations: {
+        ...AGUA_QUIETA.locations,
+        patio: { ...AGUA_QUIETA.locations.patio!, npcsPresent: [...AGUA_QUIETA.locations.patio!.npcsPresent, 'npc-aqui'] },
+        orilla: { ...AGUA_QUIETA.locations.orilla!, npcsPresent: [...AGUA_QUIETA.locations.orilla!.npcsPresent, 'npc-lejos'] },
+      },
+    };
+    const id = await createCampaign(conDosRivalesLejos, 'HUIR-LEJOS', 'hl'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('start_combat', { npc_ids: 'npc-aqui', reason: 'prueba' });
+    const r = t.executeTool('resolve_flee', { weapon_id: 'desarmado' });
+    await t.commit();
+    check('huir responde ok', r.ok, r.ok ? '' : JSON.stringify(r));
+    check('el rival de ESTE cuarto participa del intento de huida',
+      r.message.includes('El que está en el patio'), r.message.slice(0, 200));
+    check('el rival de OTRO lugar del mapa NO participa', !r.message.includes('El que está en la orilla'),
+      r.message.slice(0, 300));
+  }
+
   console.log('\nINTIMIDAR EN COMBATE: SÓLO SI LA ESCENA LO CONFIGURÓ');
   {
     // Sin `salidaPacifica` (el caso de siempre, incluido el simulador), no

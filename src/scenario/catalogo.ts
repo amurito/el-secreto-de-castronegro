@@ -30,6 +30,7 @@ import { LO_QUE_BERNARDO_SABIA } from './loquebernardosabia.ts';
 import { EL_HOMBRE_QUE_MIRABA_EL_AGUA } from './hombreagua.ts';
 import { EL_CIRCULO_ROJO } from './circulorojo.ts';
 import { LA_GRIETA_DEL_ZONDA } from './grietadelzonda.ts';
+import { LA_MERCED_DE_LAS_ANIMAS } from './mercedanimas.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -237,6 +238,21 @@ const ENTRADAS: EntradaCatalogo[] = [
     // puede jugar sola de verdad—. `requiere` es sólo informativo, como
     // siempre.
     requiere: ['el-hombre-que-miraba-el-agua'],
+  },
+  {
+    scenario: LA_MERCED_DE_LAS_ANIMAS,
+    // FECHADA POR EL HECHO DE 1930, NO POR 1710, a propósito — mismo truco
+    // que ya usa `EL_HOMBRE_QUE_MIRABA_EL_AGUA` más arriba: cruzar la grieta
+    // es instantáneo, así que ordena junto a *La Grieta del Zonda* (misma
+    // fecha) y no doscientos veinte años antes en la pantalla de inicio.
+    cuando: '1930-02-10',
+    epoca: 'San Juan colonial, 1710',
+    duracion: 'Una hora y media aproximadamente',
+    // `continuacion: true`: literalmente sigue del instante en que termina
+    // La Grieta del Zonda —cruzar la grieta— igual que Agua Blanca → El
+    // Vigésimo comparten la misma noche.
+    requiere: ['la-grieta-del-zonda'],
+    continuacion: true,
   },
 ];
 

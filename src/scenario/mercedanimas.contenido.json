@@ -1,0 +1,787 @@
+{
+  "id": "la-merced-de-las-animas",
+  "title": "La Merced de las Ánimas",
+  "surfacePremise": "San Juan de la Frontera, Corregimiento de Cuyo, 1710. La Corona quiere desecar la Ciénaga de las Ánimas para ganar tierra de cultivo, y eso significa romper el equilibrio que una familia lleva generaciones sosteniendo con almagre. Nadie de este siglo sabe que el investigador viene de doscientos veinte años en el futuro — y él tampoco sabe todavía si va a poder volver.",
+  "items": [
+    {
+      "id": "it-manuscrito-1674",
+      "name": "El manuscrito de Fray Ignacio",
+      "aliases": ["manuscrito", "el manuscrito", "las actas de 1674", "el legajo"],
+      "shortDescription": "Un legajo cosido a mano, con la letra apretada de un escribano. Copia —o copia de una copia— de algo escrito treinta y seis años atrás, a mil trescientas leguas de acá.",
+      "owner": "npc-ignacio",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [
+        {
+          "id": "p-manuscrito-deformado",
+          "description": "No es la instrucción original. Donde el texto de 1674 decía «no se pinta: se graba», acá alguien agregó al margen, con tinta más nueva: «pintar alcanza, si se pinta con fe y con constancia». Es la misma letra que la del resto del legajo — el propio Fray Ignacio hizo el agregado, convencido de que estaba corrigiendo un error de quien escribió antes que él.",
+          "discoveryCondition": { "kind": "skill_check", "skill": "ocultismo", "difficulty": "hard" },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-almagre-colonial",
+      "name": "Almagre molido",
+      "aliases": ["almagre", "el almagre", "tierra colorada"],
+      "shortDescription": "Un cuenco de tierra colorada de la barranca, molida en aceite. Igual a la que se usa doscientos veinte años más adelante, en otra punta del país, sin que nadie de acá pueda saberlo.",
+      "owner": "convento-merced",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-mosquete-guardia",
+      "name": "Mosquete de la guardia",
+      "aliases": ["mosquete", "el mosquete", "fusil"],
+      "shortDescription": "El mosquete que uno de los soldados de la guardia le prestó para las prácticas. Nadie se lo pidió de vuelta todavía.",
+      "owner": "obras-cofradia",
+      "carried": false,
+      "armaId": "mosquete-chispa",
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    }
+  ],
+  "npcs": [
+    {
+      "id": "npc-ignacio",
+      "name": "Fray Ignacio de la Cruz",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Mercedario, escribano del Cabildo, cuarenta años bien llevados. Habla con la calma de quien está seguro de tener razón, y con la paciencia de quien lleva quince años solo con esa certeza.",
+      "motivation": "Que lo que el Círculo entendió en 1674 no se pierda, y que él sea quien lo complete. Cree que corregir el error de sus antecesores —«pintar alcanza»— es servir mejor a la verdad que ellos.",
+      "fears": ["Que el Cabildo lo declare hereje antes de que termine su obra.", "Que el forastero de ropa extraña sea, después de todo, una prueba de que se equivocó."],
+      "refusals": ["No va a admitir en voz alta que el legajo que custodia ya no dice lo mismo que el original."],
+      "knowledge": [],
+      "secrets": [
+        {
+          "id": "s-ignacio-corrigio",
+          "content": "El agregado al margen del manuscrito lo escribió él mismo, hace ocho años, convencido de que el escriba original de 1674 se había equivocado. No fue el primero en tocar el legajo — apenas el más reciente. Sólo lo cuenta con actitud alta.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=40",
+          "revealed": false
+        }
+      ],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-gonzalo",
+      "name": "Don Gonzalo de Estrada",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Capitán de la rastrillería, encomendero, cerca de los cincuenta. Administra la Encomienda de las Ánimas con mano dura porque le aterra cualquier señal de insurrección o de brujería que atraiga a la Inquisición de Lima hasta su puerta.",
+      "motivation": "Que nadie —ni un indio, ni un forastero de ropa rara— le dé motivo a la Corona para pensar que perdió el control de su encomienda.",
+      "fears": ["Que lo denuncien por brujería ante el Santo Oficio.", "Un malón que nunca llega a tiempo a esperar."],
+      "refusals": ["No negocia con nadie que sospeche de hereje, aunque le convenga."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "combate": {
+        "hp": 14, "maxHp": 14, "pelea": 55, "esquivar": 35,
+        "armaId": "pistola-chispa", "bonificacionDano": "0",
+        "defensaPorDefecto": "contraataca",
+        "dex": 60, "build": 1,
+        "distancia": 15, "armadura": 1
+      }
+    },
+    {
+      "id": "npc-takillpa",
+      "name": "Takillpa",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Los españoles lo llaman «el viejo Gregorio». Sobrevivió a dos levas de mita hacia Chile y volvió las dos veces. Sabe cómo respira la fosa seca antes de que el viento se note en la piel.",
+      "motivation": "Que la ciénaga siga contenida, tenga o no tenga quien la entienda del otro lado. No necesita que le crean: necesita que no la sequen.",
+      "fears": ["Otra leva de mita, para él o para los pocos que quedan.", "Morirse sin que nadie sepa escuchar la fosa después de él."],
+      "refusals": ["No va a decir el nombre de nadie más del lado huarpe, ni bajo tortura se lo pidieran a otro."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-josefa",
+      "name": "Josefa Sosa",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "status": "alive",
+      "description": "Veintidós años, madre de un varón de tres semanas. Vive de la caridad del convento desde que enviudó. A quien la deje, le va a preguntar lo mismo.",
+      "motivation": "Que nadie le toque la mano al hijo. Ya escuchó lo que dicen que hay que hacerle, y no sabe si negarse es protegerlo o condenar a todo lo que venga después de él.",
+      "fears": ["Que le corrijan la mano al chico.", "Que no se la corrijan, y que eso también sea un error."],
+      "refusals": ["No deja que Fray Ignacio se quede a solas con la criatura."],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio"
+    },
+    {
+      "id": "npc-polipo",
+      "name": "Pólipo Septentrional",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" },
+      "status": "alive",
+      "description": "No tiene forma que se pueda describir de una vez: es presión, es viento con demasiado peso, es algo que se mueve por dentro de la tierra removida como si la tierra fuera agua.",
+      "motivation": "Nada que se pueda llamar motivación. Reacciona a la desecación como reacciona una herida a la sal.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "combate": {
+        "hp": 20, "maxHp": 20, "pelea": 60, "esquivar": 30,
+        "armaId": "rafaga-viento", "bonificacionDano": "+2D6",
+        "defensaPorDefecto": "contraataca",
+        "dex": 65, "build": 3, "armadura": 6
+      }
+    },
+    {
+      "id": "npc-vagabundo",
+      "name": "Vagabundo Dimensional",
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" },
+      "status": "alive",
+      "description": "Piel arrugada como cuero viejo, garras que parecen momificadas sin estarlo. No caminó hasta la ciénaga: apareció en ella, como si el barro perturbado fuera una puerta que no sabía que tenía.",
+      "motivation": "Cazar lo que se mueve entre pliegues del tiempo removidos. El investigador es, para esto, exactamente eso.",
+      "fears": [],
+      "refusals": [],
+      "knowledge": [],
+      "secrets": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "combate": {
+        "hp": 15, "maxHp": 15, "pelea": 30, "esquivar": 40,
+        "armaId": "garras-vagabundo", "bonificacionDano": "+1D6",
+        "defensaPorDefecto": "contraataca",
+        "dex": 50, "build": 2, "armadura": 3
+      }
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-carta-ignacio",
+      "title": "La carta con sello de cera roja",
+      "author": "Fray Ignacio de la Cruz",
+      "date": "1710",
+      "location": "Convento de la Merced",
+      "kind": "letter",
+      "content": "«Hermano del futuro: los agrimensores de la Corona fijaron el primer barrenado de la ciénaga para el amanecer. Venid al scriptorium antes de la medianoche. Tengo desplegadas las actas de 1674 y las pautas para la primera capa de almagre. Si nos ayudáis a dirigir el trazado del canal, el Cabildo archivará los cargos de hereje contra vos y os dará salvoconducto.»\n\nNo dice cómo supo que había cargos que archivar. No dice, tampoco, cómo lo llama: «hermano del futuro» no es una fórmula que se use en ninguna carta de este siglo.",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": { "truth": "CANON_SETTING", "disclosure": "DISCOVERABLE", "source": "scenario" }
+    }
+  ],
+  "locations": {
+    "orilla-1710": {
+      "id": "orilla-1710",
+      "name": "La orilla del cauce",
+      "aliases": ["orilla", "el cauce", "el barro"],
+      "description": "Barro fresco, húmedo, de un río que corre de verdad. No hay campamento, no hay estación, no hay cartel torcido. El aire huele a agua y a algo verde que en 1930 no existe en ningún lado cerca de acá.",
+      "atmosphere": [
+        "El silbido del viento Zonda todavía se escucha, más lejos, más bajo, como si viniera de adentro de la tierra en vez de encima.",
+        "La ropa está mojada de un barro que no debería estar ahí y que, sin embargo, es lo único sólido bajo los pies."
+      ],
+      "connections": ["plaza-mayor"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 15,
+      "senses": { "sound": ["Agua corriendo de verdad, en algún lado."], "smell": ["Barro, juncos, algo verde y vivo."] }
+    },
+    "plaza-mayor": {
+      "id": "plaza-mayor",
+      "name": "La Plaza Mayor",
+      "aliases": ["plaza", "la plaza", "plaza mayor"],
+      "description": "Casas de adobe bajas alrededor de una plaza de tierra apisonada. La iglesia matriz de un lado, el Cabildo del otro. Nadie viste como el investigador, y todos lo notan sin decir nada — todavía.",
+      "atmosphere": [
+        "Un pregonero lee algo sobre la obra del canal que nadie escucha del todo.",
+        "Josefa Sosa cruza la plaza con el hijo envuelto, sin mirar a nadie a los ojos."
+      ],
+      "connections": ["orilla-1710", "convento-merced", "canaverales"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-josefa"],
+      "visited": false,
+      "umbralIntensity": 8,
+      "senses": { "sound": ["Un pregonero, lejos.", "Cascos de caballo sobre tierra apisonada."], "smell": ["Estiércol, pan recién horneado, polvo."] }
+    },
+    "canaverales": {
+      "id": "canaverales",
+      "name": "Los cañaverales",
+      "aliases": ["cañaverales", "los cañaverales", "el canal viejo"],
+      "description": "Una red de acequias prehispánicas, angostas, corriendo entre cañaverales altos. El agua acá todavía se mueve, pero apenas.",
+      "atmosphere": [
+        "Algo se mueve entre las cañas sin hacer ruido de pisada.",
+        "El agua de la acequia refleja el cielo de un modo que tarda una fracción de segundo de más en seguir a las nubes."
+      ],
+      "connections": ["plaza-mayor"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-takillpa"],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": { "sound": ["Cañas moviéndose sin viento que las mueva."], "sight": ["Un reflejo en el agua que no coincide del todo con lo que hay arriba."] }
+    },
+    "convento-merced": {
+      "id": "convento-merced",
+      "name": "El Convento de la Merced",
+      "aliases": ["convento", "el convento", "la merced"],
+      "description": "Adobe grueso, vigas de algarrobo. Fray Ignacio recibe en el locutorio con una calma que no se explica sólo con la fe.",
+      "atmosphere": [
+        "Una lámpara de sebo parpadea con cada ráfaga que se filtra por las persianas.",
+        "El legajo de 1674 está sobre la mesa, abierto, como si lo hubiera estado dejando ahí a propósito para que alguien lo viera."
+      ],
+      "connections": ["plaza-mayor", "celda-convento"],
+      "itemsPresent": ["it-almagre-colonial"],
+      "npcsPresent": ["npc-ignacio"],
+      "visited": false,
+      "umbralIntensity": 12,
+      "senses": { "smell": ["Sebo quemado, papel viejo, incienso."] }
+    },
+    "celda-convento": {
+      "id": "celda-convento",
+      "name": "La celda del convento",
+      "aliases": ["celda", "la celda"],
+      "description": "Tercera noche desde la llegada. El viento Zonda sube, sofocante, y una lámpara de sebo parpadea sobre la mesa. Dos cosas pasan al mismo tiempo, y no hay tiempo para las dos.\n\nUn novicio desliza por debajo de la puerta una nota con sello de cera roja: Fray Ignacio convoca al scriptorium antes de la medianoche, con las actas de 1674 desplegadas.\n\nAl mismo tiempo, al acercarse a la ventana a airear el cuarto, hay una marca fresca de barro húmedo en el marco exterior — la misma línea cruzada por un semicírculo que se ve en la piedra del brocal, doscientos años más adelante— y, abajo, entre los naranjos del patio, una figura agazapada hace una seña hacia los cerros.\n\nNo hay forma de atender las dos cosas. Elegir una cierra la otra, esta noche y todas las que vengan.",
+      "atmosphere": [
+        "La lámpara se apaga sola con la próxima ráfaga, y nadie la vuelve a encender todavía."
+      ],
+      "connections": ["scriptorium", "canaverales-fuga"],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 14,
+      "senses": {}
+    },
+    "scriptorium": {
+      "id": "scriptorium",
+      "name": "El scriptorium",
+      "aliases": ["scriptorium", "el estudio de fray ignacio"],
+      "description": "Estantes de cuero y papel, una mesa larga cubierta de legajos. Fray Ignacio espera con las actas de 1674 ya abiertas, como si llevara toda la noche esperando a que alguien más las leyera.",
+      "atmosphere": ["El viento golpea las persianas cerradas con una regularidad que no tiene nada de casual."],
+      "connections": ["obras-cofradia"],
+      "itemsPresent": ["it-manuscrito-1674"],
+      "npcsPresent": ["npc-ignacio"],
+      "visited": false,
+      "umbralIntensity": 14,
+      "senses": { "smell": ["Papel viejo, cera, tinta de agalla."] }
+    },
+    "obras-cofradia": {
+      "id": "obras-cofradia",
+      "name": "La desecación de la ciénaga",
+      "aliases": ["obras", "las obras", "la desecacion", "el desagüe"],
+      "description": "Zanjas nuevas cortando la ciénaga en franjas, peones y esclavos trabajando bajo la mirada de dos soldados de la rastrillería. El agua ya bajó más de lo que bajó en cien años.",
+      "atmosphere": [
+        "El barro que queda al descubierto tiene un olor que no es a barro.",
+        "De noche, dicen los peones, algo respira debajo del lodo removido."
+      ],
+      "connections": [],
+      "itemsPresent": ["it-mosquete-guardia"],
+      "npcsPresent": ["npc-polipo"],
+      "visited": false,
+      "umbralIntensity": 20,
+      "senses": { "smell": ["Barro removido, algo más debajo del barro."] }
+    },
+    "canaverales-fuga": {
+      "id": "canaverales-fuga",
+      "name": "El escondite entre las cañas",
+      "aliases": ["cañaverales de noche", "el escondite", "escondite entre las canas"],
+      "description": "Takillpa espera agazapado, y detrás, en el patio del convento, los perros de la guardia empiezan a ladrar. No hay tiempo para explicaciones largas.",
+      "atmosphere": ["Los ladridos se alejan hacia el otro lado del pueblo, por ahora."],
+      "connections": ["cienaga-sabotaje"],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-takillpa"],
+      "visited": false,
+      "umbralIntensity": 14,
+      "senses": { "sound": ["Perros, lejos y acercándose de a ratos."] }
+    },
+    "cienaga-sabotaje": {
+      "id": "cienaga-sabotaje",
+      "name": "La Ciénaga de las Ánimas",
+      "aliases": ["cienaga", "la ciénaga", "las ánimas"],
+      "description": "El corazón del humedal, todavía intacto. Una piedra caliza asoma entre los juncos, con marcas que no son de picapedrero. A lo lejos, del otro lado del agua, una ronda de la rastrillería de Don Gonzalo pasa cada tanto con un farol.",
+      "atmosphere": [
+        "El agua acá se ve completamente quieta, sin una onda, aunque el viento no para.",
+        "Takillpa dice que hay que actuar esta misma noche, antes de que el desagüe llegue hasta acá.",
+        "Nada se mueve del lado del barro removido. Todavía."
+      ],
+      "connections": [],
+      "itemsPresent": [],
+      "npcsPresent": ["npc-gonzalo", "npc-vagabundo"],
+      "visited": false,
+      "umbralIntensity": 22,
+      "senses": { "sound": ["Silencio de agua quieta que no debería estar tan quieta."] }
+    }
+  },
+  "startLocation": "orilla-1710",
+  "startTime": {
+    "iso": "1710-11-03T06:00:00",
+    "precision": "vague",
+    "display": "una mañana de 1710"
+  },
+  "startUmbralPermeability": 25,
+  "timeline": [
+    {
+      "id": "te-corrgir-manuscrito",
+      "description": "Fray Ignacio agrega al margen del manuscrito de 1674 la línea «pintar alcanza, si se pinta con fe y con constancia», convencido de estar corrigiendo un error.",
+      "when": { "iso": "1702-01-01T00:00:00", "precision": "vague", "display": "ocho años atrás" },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "i-manuscrito",
+      "npc": "npc-ignacio",
+      "orden": 1,
+      "etiqueta": "Preguntarle por el manuscrito",
+      "intencion": "Le pregunto a Fray Ignacio por el manuscrito que tiene sobre la mesa",
+      "claves": ["el manuscrito", "las actas", "el legajo", "que es ese papel"],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Esto lo recuperó un grupo, hace treinta y seis años, en un paraje que no tiene nombre en ningún mapa que yo haya visto. Le dicen el Círculo. Yo soy el último eslabón que le queda por estos lados.\n\n—No sé si queda alguno más, en algún otro lado. Pero si usted viene de donde dice venir, y sabe lo que parece saber, no sería el primer indicio de que no somos los únicos."
+        ],
+        "pista": {
+          "description": "Fray Ignacio custodia un manuscrito de 1674 recuperado por un grupo llamado el Círculo, y se considera el último eslabón de ese grupo en San Juan.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "i-doctrina",
+      "npc": "npc-ignacio",
+      "orden": 2,
+      "etiqueta": "Preguntarle qué hay que hacer con el hijo de Josefa",
+      "intencion": "Le pregunto a Fray Ignacio qué hay que hacer con el hijo de Josefa Sosa",
+      "claves": ["el hijo de josefa", "el chico zurdo", "la correccion", "corregirle la mano"],
+      "prueba": { "skill": "persuasion", "difficulty": "regular", "actitudMinima": 3, "razon": "que hable de esto sin cerrarse" },
+      "cede": {
+        "actitud": -2,
+        "texto": [
+          "—El manuscrito lo dice, entre líneas: hay una sangre que hay que vigilar. La de esa criatura es una de ellas, y nace zurda, como nacieron otras antes.\n\n—Corregirle la mano no es crueldad: es asegurarse de que la mano que escriba, cuando llegue el momento, sea la que el resto del mundo espera ver. No sé para qué momento. Pero el manuscrito no se equivocó en nada más, y no voy a dudar de esto."
+        ],
+        "pista": {
+          "description": "Fray Ignacio quiere corregir la mano del hijo de Josefa Sosa porque el manuscrito de 1674 dice que hay una sangre que hay que vigilar, «para que la mano que escriba sea la que el resto del mundo espera ver».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—No es una conversación para tener con alguien que todavía no probó de qué lado está."]
+      }
+    },
+    {
+      "id": "i-castronegro",
+      "npc": "npc-ignacio",
+      "orden": 3,
+      "etiqueta": "Preguntarle si conoce otro lugar como éste",
+      "intencion": "Le pregunto a Fray Ignacio si conoce otro lugar donde pase algo parecido",
+      "claves": ["otro lugar", "otro paraje", "en otra parte tambien pasa"],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—El manuscrito habla de un paraje, muy al este, cerca del mar, donde el agua se porta igual de mal. No dice el nombre. Dice que ahí también hay quien vigila, aunque no sepan que lo hacen por lo mismo que nosotros.\n\n—Si usted viene de ahí, o de después de ahí, no me sorprende del todo. Empiezo a pensar que esto no es un secreto de acá: es un secreto que tiene sucursales."
+        ],
+        "pista": {
+          "description": "El manuscrito de 1674 menciona otro paraje, lejos, cerca del mar, donde el agua también «se porta mal» y hay quien la vigila sin saber por qué.",
+          "kind": "testimonial",
+          "reliability": "unreliable"
+        }
+      }
+    },
+    {
+      "id": "i-margen",
+      "npc": "npc-ignacio",
+      "orden": 4,
+      "etiqueta": "Preguntarle por el agregado al margen del manuscrito",
+      "intencion": "Le pregunto a Fray Ignacio por el agregado al margen del manuscrito",
+      "claves": ["el agregado", "esa letra distinta", "quien escribio eso al margen", "quién escribió eso al margen"],
+      "disponible": { "op": "propiedad", "item": "it-manuscrito-1674", "prop": "p-manuscrito-deformado" },
+      "prueba": { "skill": "persuasion", "difficulty": "hard", "actitudMinima": 2, "razon": "que admita haber tocado él mismo el legajo original" },
+      "cede": {
+        "actitud": -3,
+        "texto": [
+          "Tarda en contestar, y cuando lo hace ya no suena tan seguro como antes.\n\n—Lo escribí yo. Hace ocho años. El original decía que había que grabar, no pintar, y a mí me pareció una crueldad innecesaria pedirle eso a gente sin herramienta ni tiempo. Pinté lo que hacía falta y anoté que alcanzaba.\n\n—No lo hice para engañar a nadie. Lo hice porque estaba seguro de que tenía razón. Sigo estándolo, la mayoría de los días."
+        ],
+        "revelaSecreto": "s-ignacio-corrigio",
+        "pista": {
+          "description": "Fray Ignacio admite haber agregado él mismo, hace ocho años, la línea que dice que «pintar alcanza» — convencido de estar corrigiendo un error del manuscrito original.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—No sé de qué me habla. El legajo es el que siempre fue."]
+      }
+    },
+    {
+      "id": "t-fosa",
+      "npc": "npc-takillpa",
+      "orden": 1,
+      "etiqueta": "Preguntarle qué es la fosa",
+      "intencion": "Le pregunto a Takillpa qué es la fosa que respira",
+      "claves": ["la fosa", "que respira", "el aire que sube"],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—No es una boca, aunque respire como una. Es un borde. De este lado, el mundo se porta como el mundo. Del otro, no. La ciénaga lo mantiene cerrado, quieta, pesada, sin que nadie tenga que entenderla para que funcione.\n\n—Los hombres de capa blanca creen que la tierra está muerta porque no habla en su idioma. Si abren la boca de la fosa, el aire se va a comer las casas."
+        ],
+        "pista": {
+          "description": "Takillpa dice que la ciénaga mantiene cerrado un borde entre este mundo y otro, y que desecarla lo va a abrir.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "t-cerrar",
+      "npc": "npc-takillpa",
+      "orden": 2,
+      "etiqueta": "Preguntarle cómo se cierra un borde así",
+      "intencion": "Le pregunto a Takillpa cómo se cierra un borde así",
+      "claves": ["como se cierra", "cerrarle el paso", "hay manera de cerrarlo"],
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Hay una manera. Se la enseñaron a los que enseñaron a los que me enseñaron a mí, de la gente que vivía acá antes de que hubiera acequias con nombre de santo. No hace falta papel ni fuego. Hace falta saber dónde está el borde y decirle, con las manos, que se cierre.\n\n—No es un arma. Es devolver algo a su lugar."
+        ],
+        "pista": {
+          "description": "Takillpa conoce una manera de «cerrarle el paso» a lo que cruza un borde, aprendida de generaciones de guardianes anteriores a las acequias coloniales — sin papel ni fuego, con las manos.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "t-mita",
+      "npc": "npc-takillpa",
+      "orden": 3,
+      "etiqueta": "Preguntarle por la mita",
+      "intencion": "Le pregunto a Takillpa por la mita",
+      "claves": ["la mita", "las levas", "chile"],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Dos veces me llevaron a Chile a trabajar la tierra de otro. Dos veces volví. La mayoría no vuelve ninguna. Los que quedamos acá somos los que sabemos las cosas viejas, y cada vez somos menos.\n\n—Por eso hago esto solo, si hace falta. No porque quiera. Porque no queda con quién más hacerlo."
+        ],
+        "pista": {
+          "description": "Takillpa sobrevivió dos levas de mita hacia Chile; la mayoría de los que se llevan no vuelve, y los guardianes huarpes de la ciénaga son cada vez menos.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "j-hijo",
+      "npc": "npc-josefa",
+      "orden": 1,
+      "etiqueta": "Preguntarle por el hijo",
+      "intencion": "Le pregunto a Josefa por su hijo",
+      "claves": ["su hijo", "el chico", "la criatura", "el bebe", "el bebé"],
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Agarra con la izquierda. Ya lo vio el fraile, ya lo comentó en el Cabildo sin que yo lo autorizara. Dicen que hay que corregirlo, con una tabla y una cuerda, antes de que cumpla un año.\n\n—Mi abuela lo vivió con un hermano suyo. Vivió cuarenta años sin que le pasara nada raro después. No sé si eso prueba que sirve o que nunca hizo falta, y esa duda no me deja dormir."
+        ],
+        "pista": {
+          "description": "Josefa Sosa sabe que su hijo nació zurdo y que el Cabildo, instigado por Fray Ignacio, quiere corregirle la mano antes de que cumpla un año.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "j-familia",
+      "npc": "npc-josefa",
+      "orden": 2,
+      "etiqueta": "Preguntarle por su familia",
+      "intencion": "Le pregunto a Josefa por su familia",
+      "claves": ["su familia", "los sosa", "de donde es"],
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Los Sosa estamos en este valle desde antes de que yo pueda contar. Mi marido decía que veníamos de más al norte todavía, de antes de la mita. No sé si es cierto. Sé que esto —se toca la mano del hijo— no es la primera vez que pasa en la familia, y que nadie nunca me explicó bien por qué."
+        ],
+        "pista": {
+          "description": "La familia Sosa de Josefa está en el Valle de Zonda desde antes de lo que ella puede contar, y la zurdera del hijo «no es la primera vez que pasa en la familia».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      }
+    },
+    {
+      "id": "g-orden",
+      "npc": "npc-gonzalo",
+      "orden": 1,
+      "etiqueta": "Preguntarle por la desecación",
+      "intencion": "Le pregunto a Don Gonzalo por la desecación de la ciénaga",
+      "claves": ["la desecacion", "las obras", "por que secan la cienaga"],
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Tierra nueva para cultivo, órdenes del Corregidor, y una excusa menos para que los indios tengan dónde esconderse. No necesito otra razón, y usted tampoco la necesita para no meterse."
+        ]
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "leer-carta-ignacio",
+      "prioridad": 50,
+      "cuando": { "op": "texto", "patron": "leo la carta|la carta con sello|el sello de cera" }
+    },
+    {
+      "id": "manuscrito-hondo",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "leo el manuscrito de cerca|estudio el manuscrito|reviso el manuscrito con cuidado" },
+          { "op": "lugar", "es": ["scriptorium"] }
+        ]
+      }
+    },
+    {
+      "id": "entrenar-mosquete",
+      "prioridad": 55,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "que me ensene a disparar|que me enseñe a disparar|aprender a disparar un arma de fuego" },
+          { "op": "lugar", "es": ["obras-cofradia"] }
+        ]
+      }
+    },
+    {
+      "id": "combate-polipo",
+      "prioridad": 90,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "ayudo a dirigir.*desague|dirijo.*desague|superviso el ultimo tramo" },
+          { "op": "lugar", "es": ["obras-cofradia"] }
+        ]
+      }
+    },
+    {
+      "id": "pintar-circulo",
+      "prioridad": 85,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "pinto el circulo|pinto el círculo|ayudo a fray ignacio a pintar" },
+          { "op": "consecuencia", "contiene": "entró en combate real contra el Pólipo Septentrional" }
+        ]
+      }
+    },
+    {
+      "id": "firmar-actas",
+      "prioridad": 95,
+      "cuando": {
+        "op": "texto",
+        "patron": "firmo las actas del cabildo|firmo como testigo"
+      }
+    },
+    {
+      "id": "sabotaje-obras",
+      "prioridad": 90,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "saboteo las obras|altero las mediciones|inutilizo las herramientas" },
+          { "op": "lugar", "es": ["cienaga-sabotaje"] }
+        ]
+      }
+    },
+    {
+      "id": "combate-vagabundo",
+      "prioridad": 88,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "grabo la marca|empiezo a grabar|marco la piedra caliza" },
+          { "op": "lugar", "es": ["cienaga-sabotaje"] }
+        ]
+      }
+    },
+    {
+      "id": "cerrarle-el-paso-ritual",
+      "prioridad": 92,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "termino de grabar|cierro el borde|completo la marca" },
+          { "op": "consecuencia", "contiene": "entró en combate real contra el Vagabundo Dimensional" }
+        ]
+      }
+    },
+    {
+      "id": "fuga-final",
+      "prioridad": 95,
+      "cuando": {
+        "op": "texto",
+        "patron": "me arrojo a la fosa|cruzo la fosa|salto a la grieta con takillpa"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "leer-carta-ignacio",
+      "grupo": "observar",
+      "lugar": "celda-convento",
+      "orden": 1,
+      "intencion": "Leo la carta con sello de cera",
+      "etiqueta": "Leer la carta con sello de cera",
+      "hecha": { "op": "documento", "id": "doc-carta-ignacio" }
+    },
+    {
+      "id": "manuscrito-hondo",
+      "grupo": "usar",
+      "lugar": "scriptorium",
+      "orden": 5,
+      "intencion": "Estudio el manuscrito con cuidado",
+      "etiqueta": "Estudiar el manuscrito de cerca",
+      "hecha": { "op": "propiedad", "item": "it-manuscrito-1674", "prop": "p-manuscrito-deformado" }
+    },
+    {
+      "id": "entrenar-mosquete",
+      "grupo": "usar",
+      "lugar": "obras-cofradia",
+      "orden": 8,
+      "intencion": "Le pido a la guardia que me enseñe a disparar un arma de fuego",
+      "etiqueta": "Pedirle a la guardia que le enseñe a disparar",
+      "hecha": { "op": "narrado", "contiene": "Es lo que se puede aprender en tres tardes" }
+    },
+    {
+      "id": "combate-polipo",
+      "grupo": "usar",
+      "lugar": "obras-cofradia",
+      "orden": 10,
+      "intencion": "Ayudo a dirigir el último tramo del desagüe",
+      "etiqueta": "Dirigir el último tramo del desagüe",
+      "hecha": { "op": "consecuencia", "contiene": "entró en combate real contra el Pólipo Septentrional" }
+    },
+    {
+      "id": "pintar-circulo",
+      "grupo": "usar",
+      "lugar": "obras-cofradia",
+      "orden": 20,
+      "intencion": "Ayudo a Fray Ignacio a pintar el círculo",
+      "etiqueta": "Ayudar a pintar el primer círculo de almagre",
+      "visible": { "op": "consecuencia", "contiene": "entró en combate real contra el Pólipo Septentrional" },
+      "hecha": { "op": "narrado", "contiene": "El primero de este lado tiembla" }
+    },
+    {
+      "id": "firmar-actas",
+      "grupo": "decidir",
+      "lugar": "obras-cofradia",
+      "orden": 90,
+      "final": true,
+      "intencion": "Firmo las actas del Cabildo como testigo",
+      "etiqueta": "Firmar las actas del Cabildo",
+      "visible": { "op": "narrado", "contiene": "El primero de este lado tiembla" }
+    },
+    {
+      "id": "sabotaje-obras",
+      "grupo": "usar",
+      "lugar": "cienaga-sabotaje",
+      "orden": 10,
+      "intencion": "Saboteo las obras alterando las mediciones",
+      "etiqueta": "Sabotear las obras",
+      "hecha": { "op": "narrado", "contiene": "No queda tiempo para otro intento" }
+    },
+    {
+      "id": "combate-vagabundo",
+      "grupo": "usar",
+      "lugar": "cienaga-sabotaje",
+      "orden": 20,
+      "intencion": "Empiezo a grabar la marca en la piedra caliza",
+      "etiqueta": "Empezar a grabar la marca en la piedra",
+      "visible": { "op": "narrado", "contiene": "No queda tiempo para otro intento" },
+      "hecha": { "op": "consecuencia", "contiene": "entró en combate real contra el Vagabundo Dimensional" }
+    },
+    {
+      "id": "cerrarle-el-paso-ritual",
+      "grupo": "usar",
+      "lugar": "cienaga-sabotaje",
+      "orden": 30,
+      "intencion": "Termino de grabar la marca y cierro el borde",
+      "etiqueta": "Terminar la marca y cerrar el borde",
+      "visible": { "op": "consecuencia", "contiene": "entró en combate real contra el Vagabundo Dimensional" },
+      "hecha": { "op": "narrado", "contiene": "La marca queda cerrada, honda, terminante" }
+    },
+    {
+      "id": "fuga-final",
+      "grupo": "decidir",
+      "lugar": "cienaga-sabotaje",
+      "orden": 90,
+      "final": true,
+      "intencion": "Me arrojo a la fosa con Takillpa, perseguido por la rastrillería",
+      "etiqueta": "Arrojarse a la fosa, perseguido",
+      "visible": { "op": "narrado", "contiene": "La marca queda cerrada, honda, terminante" }
+    }
+  ],
+  "endings": [
+    {
+      "id": "firmar-actas",
+      "title": "Lo que queda escrito",
+      "condition": "El investigador colabora con Fray Ignacio y el Círculo Rojo temprano, sella el borde con almagre colonial, y firma las actas del Cabildo como testigo antes de cruzar de vuelta."
+    },
+    {
+      "id": "fuga-final",
+      "title": "Lo que queda grabado",
+      "condition": "El investigador se alía con Takillpa y los guardianes huarpes, graba la marca en la piedra caliza, y huye como fugitivo antes de cruzar de vuelta."
+    }
+  ],
+  "opening": "El barro es fresco, y corre agua de verdad donde en 1930 hace décadas que no corre nada. El silbido del viento Zonda todavía se escucha, más bajo, más lejos, como si viniera de debajo de la tierra.\n\nNo hay campamento, no hay vía de tren, no hay cartel de ninguna empresa. Hay un valle seco y árido, casas de adobe a lo lejos, y ropa de 1930 empapada de un barro que no debería estar ahí.\n\nEs 1710. San Juan de la Frontera, Corregimiento de Cuyo, Capitanía General de Chile. Ningún reloj de acá va a decir la hora exacta, y nadie de este siglo sabe todavía que existe alguien como el investigador — ni que ya lo cruzó una vez alguien más, doscientos veinte años antes de que naciera.",
+  "conexionesOcultas": [
+    {
+      "desde": "convento-merced",
+      "hasta": "celda-convento",
+      "hastaQue": {
+        "op": "y",
+        "de": [
+          { "op": "pista", "contiene": "el último eslabón de ese grupo en San Juan" },
+          { "op": "pista", "contiene": "mantiene cerrado un borde entre este mundo y otro" }
+        ]
+      }
+    }
+  ]
+}

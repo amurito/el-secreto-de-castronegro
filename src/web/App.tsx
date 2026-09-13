@@ -697,7 +697,7 @@ export function App() {
           <div className="menu-inicio">
             <button className="menu-opcion" onClick={() => setVista('aventuras')} disabled={!api}>
               <span className="menu-opcion-titulo">Aventuras</span>
-              <span className="menu-opcion-nota">Doce historias, en su orden.</span>
+              <span className="menu-opcion-nota">Trece historias, en su orden.</span>
             </button>
             <button className="menu-opcion" onClick={() => setVista('continuar')} disabled={!api}>
               <span className="menu-opcion-titulo">Continuar</span>

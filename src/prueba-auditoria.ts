@@ -117,6 +117,46 @@ function estadosDeBanco(s: GameState, esc: Scenario): GameState[] {
  * Ahora agota lo que hay ACÁ y recién entonces se mueve, con preferencia por
  * lo que no visitó.
  */
+/**
+ * El primer paso de un camino más corto desde `desde` hasta CUALQUIER
+ * localización todavía no visitada, respetando `conexionOculta` (una
+ * conexión oculta no es un camino real todavía).
+ *
+ * Sin esto, el andador de acá abajo sólo miraba un salto: si los vecinos
+ * INMEDIATOS de la localización actual ya estaban todos visitados, caía al
+ * primer movimiento disponible sin importar adónde llevara. Con una
+ * localización de un solo vecino —el punto de partida, por ejemplo— eso
+ * puede formar un rebote de dos nodos que dura para siempre: cada uno vuelve
+ * al otro, ninguno de los dos tiene un vecino nuevo, y lo no visitado que
+ * hay dos o más saltos más allá —detrás de una conexión que recién se
+ * destrabó— nunca se alcanza aunque el mapa sí lo permita. Reportado por
+ * esta misma auditoría al escribir *La Merced de las Ánimas* (bifurcación
+ * detrás de un hub con un lugar de arranque de un solo vecino).
+ */
+function pasoHaciaLoNoVisitado(esc: Scenario, s: GameState): string | null {
+  const inicio = s.world.currentLocation;
+  const previo = new Map<string, string>();
+  const visitadosBfs = new Set<string>([inicio]);
+  const cola = [inicio];
+  while (cola.length) {
+    const actual = cola.shift()!;
+    if (actual !== inicio && !s.world.locations[actual]?.visited) {
+      // Reconstruir el primer paso desde `inicio`.
+      let paso = actual;
+      while (previo.get(paso) !== inicio) paso = previo.get(paso)!;
+      return paso;
+    }
+    for (const v of s.world.locations[actual]?.connections ?? []) {
+      if (esc.conexionOculta?.(s, actual, v)) continue;
+      if (visitadosBfs.has(v)) continue;
+      visitadosBfs.add(v);
+      previo.set(v, actual);
+      cola.push(v);
+    }
+  }
+  return null;
+}
+
 async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
   const id = await createCampaign(esc, 'AUDIT', semilla.repeat(64).slice(0, 64));
   const veces = new Map<string, number>();
@@ -158,13 +198,14 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
     let sig: (typeof disp)[number] | undefined = aqui[0];
 
     if (!sig) {
-      // Nada nuevo acá: caminar, prefiriendo lo no visitado.
+      // Nada nuevo acá: caminar, prefiriendo lo no visitado — y si lo no
+      // visitado más cercano queda a dos o más saltos (detrás de un vecino
+      // ya visitado), moverse hacia allá en vez de rebotar sin rumbo entre
+      // los vecinos inmediatos, todos ya vistos. Ver `pasoHaciaLoNoVisitado`.
       const salidas = disp.filter((o) => o.grupo === 'mover');
-      const noVisitado = salidas.find((o) => {
-        const destino = o.id.replace(/^ir:/, '');
-        return !t.state.world.locations[destino]?.visited;
-      });
-      sig = noVisitado ?? salidas.find(sinAgotar);
+      const haciaLoNoVisitado = pasoHaciaLoNoVisitado(esc, t.state);
+      sig = (haciaLoNoVisitado !== null ? salidas.find((o) => o.id === `ir:${haciaLoNoVisitado}`) : undefined)
+        ?? salidas.find(sinAgotar);
     }
     if (!sig) {
       // Mismo espíritu que `murio`: si lo único que queda es elegir un
@@ -236,9 +277,21 @@ async function auditar(esc: Scenario) {
   // (ROADMAP §3.2-duovicies) — una vez que se baja, no hay caminar de vuelta.
   // No es un lugar inalcanzable ni un accidente: está declarado así porque
   // la aventura decide que ya dejó de ser una investigación en ese punto.
-  const IDA_CONOCIDA = new Set(esc.id === 'el-vigesimo'
-    ? ['cocina→trastero-sotano', 'trastero-sotano→entrada-laberinto', 'entrada-laberinto→laboratorio']
-    : []);
+  // La Merced de las Ánimas: la celda del convento bifurca hacia dos ramas
+  // que no vuelven a ningún lugar compartido — mismo criterio que el sótano
+  // de El Vigésimo, ver arriba, aplicado a una bifurcación real en vez de un
+  // pasaje único.
+  const IDA_CONOCIDA = new Set(
+    esc.id === 'el-vigesimo'
+      ? ['cocina→trastero-sotano', 'trastero-sotano→entrada-laberinto', 'entrada-laberinto→laboratorio']
+      : esc.id === 'la-merced-de-las-animas'
+        ? [
+          'convento-merced→celda-convento',
+          'celda-convento→scriptorium', 'celda-convento→canaverales-fuga',
+          'scriptorium→obras-cofradia', 'canaverales-fuga→cienaga-sabotaje',
+        ]
+        : [],
+  );
   const ida = conexionesDeIda(esc).filter((c) => !IDA_CONOCIDA.has(`${c.desde}→${c.hasta}`));
   for (const c of ida) console.log(`   ⚠ ${c.desde} → ${c.hasta} sin vuelta`);
   check('ninguna conexión es de ida sin vuelta declarada (fuera de las conocidas)', ida.length === 0,

@@ -1576,30 +1576,44 @@ export class Turn {
     if (todosCaidos) this.emit('COMBAT_ENDED', { reason: 'npc_derrotado', npcIds: ac.npcIds });
   }
 
-  private ordenDeAsalto(excluirId: string): { masRapidos: Npc[]; masLentos: Npc[] } {
-    const dexInv = this.investigator.characteristics.DEX;
-    // `n.present` es «sigue en la historia» —no se murió, no se fue para
-    // siempre— y NO es «está en este cuarto». Sin filtrar además por
-    // `loc.npcsPresent`, cualquier NPC con estadísticas de combate que exista
-    // en otra parte del mapa entraba a pelear en TODOS los asaltos: en El
-    // Vigésimo, Bernardo Díaz —que está en el laboratorio, dos cuartos más
-    // abajo— repartía facazos durante la pelea contra el que custodia la
-    // puerta del sótano, y el jugador veía los dos combates encimados.
-    // Reportado jugando. Es el mismo error que ya estaba documentado en
-    // `keeper/intent.ts` para el objetivo de una conversación, en otro lugar
-    // del motor y por la misma confusión entre las dos clases de «presente».
-    //
-    // Los NPC creados durante la partida (`create_npc`) no figuran en la lista
-    // de ninguna localización —los rivales sintéticos del simulador son todos
-    // así— y ésos sí cuentan: aparecieron donde está el investigador. Misma
-    // excepción, y por el mismo motivo, que la de `narrator.ts`.
+  /**
+   * Quién tiene con qué pelear y está realmente EN ESTE CUARTO, ahora mismo.
+   *
+   * `n.present` es «sigue en la historia» —no se murió, no se fue para
+   * siempre— y NO es «está en este cuarto». Sin filtrar además por
+   * `loc.npcsPresent`, cualquier NPC con estadísticas de combate que exista
+   * en otra parte del mapa entraba a pelear en TODOS los asaltos: en El
+   * Vigésimo, Bernardo Díaz —que está en el laboratorio, dos cuartos más
+   * abajo— repartía facazos durante la pelea contra el que custodia la
+   * puerta del sótano, y el jugador veía los dos combates encimados.
+   * Reportado jugando. Es el mismo error que ya estaba documentado en
+   * `keeper/intent.ts` para el objetivo de una conversación, en otro lugar
+   * del motor y por la misma confusión entre las dos clases de «presente».
+   *
+   * Extraído de `ordenDeAsalto` cuando el mismo bug reapareció en
+   * `toolResolveFlee` —huir de un Pólipo en *La Merced de las Ánimas* hacía
+   * que Don Gonzalo, a kilómetros de ahí en la Ciénaga, se sumara al
+   * ataque—: la corrección de 2026 sólo se había aplicado a un lado del
+   * combate, no al otro. Un solo filtro, dos lugares que lo necesitan.
+   *
+   * Los NPC creados durante la partida (`create_npc`) no figuran en la lista
+   * de ninguna localización —los rivales sintéticos del simulador son todos
+   * así— y ésos sí cuentan: aparecieron donde está el investigador. Misma
+   * excepción, y por el mismo motivo, que la de `narrator.ts`.
+   */
+  private combatientesAqui(excluirId?: string): Npc[] {
     const aqui = this.state.world.locations[this.state.world.currentLocation];
     const conLugarPropio = new Set(
       Object.values(this.state.world.locations).flatMap((l) => l.npcsPresent),
     );
-    const otros = Object.values(this.state.npcs).filter((n) =>
+    return Object.values(this.state.npcs).filter((n) =>
       n.id !== excluirId && n.combate && n.combate.hp > 0 && n.present && n.status !== 'dead'
       && ((aqui?.npcsPresent.includes(n.id) ?? false) || !conLugarPropio.has(n.id)));
+  }
+
+  private ordenDeAsalto(excluirId: string): { masRapidos: Npc[]; masLentos: Npc[] } {
+    const dexInv = this.investigator.characteristics.DEX;
+    const otros = this.combatientesAqui(excluirId);
     const porDex = (a: Npc, b: Npc) => (b.combate!.dex ?? 0) - (a.combate!.dex ?? 0);
     return {
       masRapidos: otros.filter((n) => (n.combate!.dex ?? 0) > dexInv).sort(porDex),
@@ -1882,8 +1896,7 @@ export class Turn {
   private toolResolveFlee(raw: Record<string, unknown>): ToolOutcome {
     const inv = this.investigator;
     const armaId = String(raw.weapon_id ?? 'desarmado').trim();
-    const hostiles = Object.values(this.state.npcs).filter((n) =>
-      n.combate && n.combate.hp > 0 && n.present && n.status !== 'dead');
+    const hostiles = this.combatientesAqui();
 
     if (hostiles.length === 0) {
       this.cerrarCombateSiTerminado();

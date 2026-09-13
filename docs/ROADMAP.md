@@ -3820,6 +3820,100 @@ pegada a la primera.
 (ambas ramas de cada intento, gateo, bloqueo de decisión, pantalla de
 desenlace).
 
+### 3.2-sexquadragies La Merced de las Ánimas — la decimotercera aventura, segundo y tercer acto ✔ HECHA
+
+Cierra el arco que abrió *La Grieta del Zonda*: San Juan de la Frontera,
+Corregimiento de Cuyo, 1710. Nueve lugares, seis NPC (Fray Ignacio de la
+Cruz, Don Gonzalo de Estrada, Takillpa, Josefa Sosa, y los dos monstruos),
+diez temas de conversación, diez escenas, dos desenlaces. Bifurcación de un
+solo camino en `celda-convento` — dos conexiones ocultas hacia `scriptorium`
+(Rama A) y `canaverales-fuga` (Rama B), ninguna vuelve a un lugar
+compartido, mismo patrón de mapa asimétrico que el sótano de *El Vigésimo* —
+y `pasoHaciaLoNoVisitado` nuevo en `prueba-auditoria.ts` (ver más abajo) para
+que el andador de la auditoría supiera cruzarla sola.
+
+Fray Ignacio es agente temprano del Círculo Rojo real (`ROADMAP.md`
+§3.2-ter, no una "Cofradía" inventada), y Josefa Sosa es la misma sangre que
+Eusebio Sosa (*La Grieta del Zonda*) y Ramona/Cirilo Sosa (*El Invierno
+Debido*, 1926) — la «corrección de zurdera» de *La Firma Ajena* pasa acá, en
+su origen, con las mismas palabras.
+
+**Jugada de punta a punta en el navegador, y encontrados ahí cinco bugs
+reales — ninguno lo cazó `prueba-auditoria.ts` por sí sola, porque cada uno
+necesitaba jugar la aventura, no sólo probar que cada escena tuviera un
+camino:**
+
+1. **Dos pisos de actitud inalcanzables.** `i-doctrina` pedía actitud 10 y
+   `i-margen` pedía 40, pero los únicos temas que suben la actitud de Fray
+   Ignacio antes de esos dos suman +4 como máximo. Los dos temas quedaban
+   ofrecidos en la auditoría estática (`accionesDisponibles` no sabe cuánta
+   actitud junta un jugador real) pero inalcanzables jugando — el mismo
+   `⚠ no cedió en este recorrido` que la auditoría ya imprime, sólo que acá
+   no era una cuestión de suerte con los dados, era matemáticamente
+   imposible. Bajados a 3 y 2.
+2. **Un tool de motor nuevo (`train_skill`, ver §4.4) nunca llegó a
+   conectarse con el contenido.** Existía el tool y sus pruebas, pero
+   ninguna `EfectoEscena` sabía invocarlo — el mismo hueco que ya resuelven
+   `combate`/`iniciaCombate` para otros tools. Agregado `EfectoEscena.entrenar`
+   (`escena.ts`) y su traducción a `train_skill` en `keeper/escenas.ts`
+   (`aplicarEfecto`), mismo patrón exacto que `combate`: el mensaje del
+   motor es la narración, no algo que la prosa prediga.
+3. **La intención de una acción puede chocar con el alias de un ítem
+   presente.** «Le pido a la guardia que me enseñe a disparar el mosquete»
+   se clasificaba como intento de TOMAR el mosquete (verbo inferido
+   `tomar`, por mencionar un alias de ítem sin un verbo explícito más
+   fuerte) en cuanto el ítem `it-mosquete-guardia` existía en el lugar —
+   antes de agregarlo, la frase disparaba bien la escena de entrenamiento;
+   después, `escenaPara` la excluía por la regla de "agarrando un objeto
+   concreto" (`keeper/escenas.ts`, ver su comentario). Renombrada la
+   intención para no nombrar el ítem («...un arma de fuego» en vez de
+   «...el mosquete»): sin el alias en la frase, no hay ambigüedad.
+4. **Nombre de lugar con coma, alias sin ella.** `El escondite entre las
+   cañas` se llamaba `Los cañaverales, de noche`, con el alias `cañaverales
+   de noche` (sin coma). `classify()` arma los candidatos de una
+   localización dividiendo su `name` en PALABRAS sueltas (≥4 letras) y
+   dejando sus `aliases` enteros — así que la coma nunca dejaba que el
+   alias completo apareciera como substring de la frase con coma, y el
+   candidato ganador terminaba siendo la palabra suelta «cañaverales»,
+   compartida con la localización DISTINTA de los cañaverales de día.
+   Resultado: «Voy a los cañaverales, de noche» te dejaba exactamente donde
+   estabas, sin aviso de error. Renombrado el lugar para no compartir
+   ninguna palabra con el otro.
+5. **El más grave: `toolResolveFlee` peleaba contra el mapa entero, no
+   contra el cuarto.** Éste ya se había arreglado una vez —`ordenDeAsalto`
+   tiene desde 2026 un filtro por `loc.npcsPresent` para exactamente este
+   bug, con Bernardo Díaz peleando desde el laboratorio mientras se
+   custodiaba el sótano en El Vigésimo, documentado ahí mismo—, pero
+   `toolResolveFlee` tenía su PROPIO filtro, sin la corrección, porque nadie
+   había vuelto a tocarlo desde que se escribió. Con Don Gonzalo `present`
+   en la Ciénaga y el Pólipo en la desecación —los primeros dos NPC de
+   combate simultáneos que tiene la campaña, ninguna aventura anterior
+   necesitó más de uno a la vez—, huir del Pólipo hacía que Don Gonzalo, a
+   un mapa entero de distancia, se sumara al ataque. Extraído el filtro
+   correcto a `combatientesAqui()` (engine.ts), usado por los dos lugares
+   ahora. Test de regresión nuevo en `prueba-combate.ts` que arma dos
+   rivales en dos lugares distintos y confirma que huir sólo pelea contra
+   el de acá.
+
+**Lo nuevo de motor, además de `EfectoEscena.entrenar`:** `pasoHaciaLoNoVisitado`
+en `prueba-auditoria.ts` — el andador de la auditoría sólo miraba un salto
+hacia adelante para decidir hacia dónde caminar cuando no le quedaba nada
+más que hacer en el lugar actual; con `orilla-1710` de un solo vecino como
+punto de partida, eso formaba un rebote de dos nodos que duraba los 260
+turnos enteros sin nunca cruzar hacia la celda del convento, aunque la
+conexión ya estuviera destrabada. Ahora hace BFS hasta lo no visitado más
+cercano antes de rendirse. Corrige el andador para cualquier aventura
+futura con esta forma de mapa, no sólo para ésta.
+
+`npm run prueba:todo` completo. Jugadas ambas ramas de punta a punta en el
+navegador (bifurcación, `train_skill` en vivo con el mosquete, combate con
+armadura del Pólipo, huida corregida) y las dos verificadas además con un
+recorrido scriptado por el motor real (`runOfflineTurn`, no sólo
+`accionesDisponibles`) en varias semillas: *Rama A* llega a `firmar-actas`
+con vida en dos de tres corridas (la tercera, el investigador muere en el
+combate contra el Pólipo — resultado legítimo, no un bug); *Rama B* llega a
+`fuga-final` con vida en una de tres.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
