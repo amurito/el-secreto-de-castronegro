@@ -225,6 +225,15 @@ export interface EfectoEscena {
     id: string;
     attitudeDelta?: number;
     patienceDelta?: number;
+    /**
+     * Hace aparecer o desaparecer a un NPC de la historia. Sin esto, un NPC
+     * tenía que estar `present: true` desde el arranque de la aventura para
+     * que `npcsPresent` lo muestre alguna vez — no había forma de que algo
+     * "no estuviera todavía" y apareciera recién cuando la escena lo trae.
+     * El tool (`toolChangeNpcState`, engine.ts) ya soportaba esto desde
+     * siempre; lo que faltaba era que una escena pudiera pedirlo.
+     */
+    present?: boolean;
     cause: string;
   };
   /**

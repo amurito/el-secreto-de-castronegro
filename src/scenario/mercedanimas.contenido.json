@@ -17,6 +17,12 @@
           "description": "No es la instrucción original. Donde el texto de 1674 decía «no se pinta: se graba», acá alguien agregó al margen, con tinta más nueva: «pintar alcanza, si se pinta con fe y con constancia». Es la misma letra que la del resto del legajo — el propio Fray Ignacio hizo el agregado, convencido de que estaba corrigiendo un error de quien escribió antes que él.",
           "discoveryCondition": { "kind": "skill_check", "skill": "ocultismo", "difficulty": "hard" },
           "disclosure": "DISCOVERABLE"
+        },
+        {
+          "id": "p-manuscrito-autentico",
+          "description": "El papel, la tinta de agalla y la costura del legajo son consistentes con una copia andina genuina de comienzos del siglo, no con una falsificación reciente: esto viajó de verdad 1300 leguas en treinta y seis años. El Círculo del que habla Fray Ignacio no es un cuento que se inventó para impresionar a un forastero.",
+          "discoveryCondition": { "kind": "skill_check", "skill": "historia", "difficulty": "regular" },
+          "disclosure": "DISCOVERABLE"
         }
       ],
       "discoveredProperties": [],
@@ -177,7 +183,7 @@
       "secrets": [],
       "relationships": [],
       "attitude": {},
-      "present": true,
+      "present": false,
       "isCompanion": false,
       "createdAt": "inicio",
       "combate": {
@@ -228,7 +234,8 @@
       "description": "Casas de adobe bajas alrededor de una plaza de tierra apisonada. La iglesia matriz de un lado, el Cabildo del otro. Nadie viste como el investigador, y todos lo notan sin decir nada — todavía.",
       "atmosphere": [
         "Un pregonero lee algo sobre la obra del canal que nadie escucha del todo.",
-        "Josefa Sosa cruza la plaza con el hijo envuelto, sin mirar a nadie a los ojos."
+        "Josefa Sosa cruza la plaza con el hijo envuelto, sin mirar a nadie a los ojos.",
+        "Alguien murmura, sin que se le pregunte, que los que todavía trabajan las acequias viejas —lo que queda del pueblo huarpe, en los cañaverales— saben de esta tierra cosas que ni el Cabildo ni el convento quieren escuchar."
       ],
       "connections": ["orilla-1710", "convento-merced", "canaverales"],
       "itemsPresent": [],
@@ -251,7 +258,21 @@
       "npcsPresent": ["npc-takillpa"],
       "visited": false,
       "umbralIntensity": 10,
-      "senses": { "sound": ["Cañas moviéndose sin viento que las mueva."], "sight": ["Un reflejo en el agua que no coincide del todo con lo que hay arriba."] }
+      "senses": { "sound": ["Cañas moviéndose sin viento que las mueva."], "sight": ["Un reflejo en el agua que no coincide del todo con lo que hay arriba."] },
+      "features": [
+        {
+          "id": "f-reflejo-acequia",
+          "names": ["el reflejo", "el agua", "la acequia", "el canal"],
+          "description": "El agua de la acequia refleja el cielo de un modo que tarda una fracción de segundo de más en seguir a las nubes.",
+          "closerLook": "El retraso no es parejo: se acorta y se alarga con un ritmo, como si algo debajo del agua respirara despacio y el reflejo tuviera que esperar su turno para acomodarse. No es el viento: no hay viento acá abajo.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "El reflejo de la acequia de los cañaverales se retrasa con un ritmo parejo, como una respiración — el mismo fenómeno que después, en la ciénaga, los peones van a describir como «algo que respira debajo del lodo».",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
     },
     "convento-merced": {
       "id": "convento-merced",
@@ -341,7 +362,21 @@
       "npcsPresent": ["npc-gonzalo", "npc-vagabundo"],
       "visited": false,
       "umbralIntensity": 22,
-      "senses": { "sound": ["Silencio de agua quieta que no debería estar tan quieta."] }
+      "senses": { "sound": ["Silencio de agua quieta que no debería estar tan quieta."] },
+      "features": [
+        {
+          "id": "f-piedra-caliza",
+          "names": ["la piedra", "piedra caliza", "las marcas", "el monolito"],
+          "description": "Una piedra caliza asoma entre los juncos, con marcas que no son de picapedrero.",
+          "closerLook": "Las marcas no coinciden con nada del repertorio huarpe que Takillpa reconocería como propio, ni con ninguna herramienta de hierro colonial: el desgaste de los bordes es de siglos, no de décadas, y el estilo del tallado no se parece a ningún otro que el investigador haya visto documentado. Sea quien sea que grabó esto primero, no fue nadie de este siglo, ni del anterior, ni de ningún pueblo que conste en un mapa.",
+          "examineSkill": "arqueologia",
+          "clue": {
+            "description": "La piedra caliza de la Ciénaga de las Ánimas tiene marcas grabadas de un estilo y una antigüedad que no coinciden con ninguna cultura documentada de la región — más viejas que cualquier ocupación humana conocida del valle.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
     }
   },
   "startLocation": "orilla-1710",
@@ -375,7 +410,8 @@
       "cede": {
         "actitud": 3,
         "texto": [
-          "—Esto lo recuperó un grupo, hace treinta y seis años, en un paraje que no tiene nombre en ningún mapa que yo haya visto. Le dicen el Círculo. Yo soy el último eslabón que le queda por estos lados.\n\n—No sé si queda alguno más, en algún otro lado. Pero si usted viene de donde dice venir, y sabe lo que parece saber, no sería el primer indicio de que no somos los únicos."
+          "—Esto lo recuperó un grupo, hace treinta y seis años, en un paraje que no tiene nombre en ningún mapa que yo haya visto. Le dicen el Círculo. Yo soy el último eslabón que le queda por estos lados.\n\n—No sé si queda alguno más, en algún otro lado. Pero si usted viene de donde dice venir, y sabe lo que parece saber, no sería el primer indicio de que no somos los únicos.",
+          "—Y no busque confirmar esto sólo en mi legajo. Los que trabajan las acequias viejas, en los cañaverales, conocen esta tierra de un modo que ningún papel europeo explica. Yo mismo fui a preguntarles, antes de estar seguro de lo que tenía entre manos."
         ],
         "pista": {
           "description": "Fray Ignacio custodia un manuscrito de 1674 recuperado por un grupo llamado el Círculo, y se considera el último eslabón de ese grupo en San Juan.",
@@ -547,6 +583,31 @@
       }
     },
     {
+      "id": "j-patron",
+      "npc": "npc-josefa",
+      "orden": 3,
+      "etiqueta": "Preguntarle si conoce a alguien más a quien le haya pasado esto",
+      "intencion": "Le pregunto a Josefa si conoce a alguien más, en otro lugar, a quien le haya pasado lo mismo con su sangre",
+      "claves": ["alguien mas", "en otro lugar", "otra familia", "le paso a alguien mas"],
+      "disponible": { "op": "pista", "contiene": "no es la primera vez que pasa en la familia" },
+      "prueba": { "skill": "antropologia", "difficulty": "regular", "actitudMinima": 2, "razon": "reconocer el patrón detrás de lo que ella describe como una rareza de sangre" },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "Lo que Josefa describe no es una superstición aislada de esta casa: es el mismo patrón —una «sangre que hay que vigilar», la misma frase casi con las mismas palabras— que se repite en más de una familia, en más de un lugar, a través de generaciones que no tienen forma de haberse hablado entre sí.",
+          "—¿Usted sabe de otra familia? —pregunta Josefa, y por primera vez no suena resignada: suena esperanzada, como si no estar sola en esto cambiara algo."
+        ],
+        "pista": {
+          "description": "El rasgo de la sangre Sosa —lo que Fray Ignacio llama «corregir la mano»— no es una superstición local: es un patrón documentable, reconocible en más de una familia y más de una generación, demasiado consistente para ser casualidad.",
+          "kind": "experiential",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["Nada en lo que dice permite distinguir todavía si esto es un patrón real o sólo el miedo de una madre buscando compañía en su miedo."]
+      }
+    },
+    {
       "id": "g-orden",
       "npc": "npc-gonzalo",
       "orden": 1,
@@ -558,6 +619,31 @@
         "texto": [
           "—Tierra nueva para cultivo, órdenes del Corregidor, y una excusa menos para que los indios tengan dónde esconderse. No necesito otra razón, y usted tampoco la necesita para no meterse."
         ]
+      }
+    },
+    {
+      "id": "g-miedo",
+      "npc": "npc-gonzalo",
+      "orden": 2,
+      "etiqueta": "Notar qué hay detrás de tanta insistencia",
+      "intencion": "Le pregunto a Don Gonzalo por qué le urge tanto secar la ciénaga si sólo es tierra de cultivo",
+      "claves": ["por que le urge", "por que insiste tanto", "que le preocupa de verdad"],
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "razon": "notar qué hay debajo de la bravata de un hombre que repite la misma razón demasiadas veces" },
+      "cede": {
+        "actitud": -1,
+        "texto": [
+          "No es la tierra. Es algo en cómo evita mirar hacia el barro removido, en cómo la mano se le va sola al puño de la espada cada vez que alguien menciona la palabra «brujería» sin que él la haya dicho primero.",
+          "No teme lo que hay en la ciénaga. Teme lo que pasa si alguien más se entera de que él ya sabe que hay algo, y se lo cuenta a quien no debe antes que él pueda decir que nunca lo supo.",
+          "—Termine esto rápido, y en silencio —dice, y ya no suena a orden: suena a un hombre pidiéndole un favor a alguien que podría hundirlo."
+        ],
+        "pista": {
+          "description": "Don Gonzalo de Estrada no le teme a lo que hay en la ciénaga: le teme a que el Santo Oficio se entere de que él ya sospechaba algo y calló. Su urgencia es la de un hombre protegiéndose de una denuncia, no la de un administrador cumpliendo una orden.",
+          "kind": "experiential",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Ya le di mi razón. No necesito una segunda."]
       }
     }
   ],
@@ -574,6 +660,17 @@
         "op": "y",
         "de": [
           { "op": "texto", "patron": "leo el manuscrito de cerca|estudio el manuscrito|reviso el manuscrito con cuidado" },
+          { "op": "lugar", "es": ["scriptorium"] }
+        ]
+      }
+    },
+    {
+      "id": "manuscrito-fisico",
+      "prioridad": 61,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "examino el papel|el papel, la tinta|la costura del manuscrito" },
           { "op": "lugar", "es": ["scriptorium"] }
         ]
       }
@@ -642,6 +739,17 @@
       }
     },
     {
+      "id": "atender-takillpa",
+      "prioridad": 89,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "reviso.*la herida de takillpa|reviso rapido la herida|le reviso la herida" },
+          { "op": "lugar", "es": ["cienaga-sabotaje"] }
+        ]
+      }
+    },
+    {
       "id": "cerrarle-el-paso-ritual",
       "prioridad": 92,
       "cuando": {
@@ -679,6 +787,16 @@
       "intencion": "Estudio el manuscrito con cuidado",
       "etiqueta": "Estudiar el manuscrito de cerca",
       "hecha": { "op": "propiedad", "item": "it-manuscrito-1674", "prop": "p-manuscrito-deformado" }
+    },
+    {
+      "id": "manuscrito-fisico",
+      "grupo": "usar",
+      "lugar": "scriptorium",
+      "orden": 6,
+      "intencion": "Examino el papel, la tinta y la costura del manuscrito",
+      "etiqueta": "Examinar el papel y la costura del manuscrito",
+      "visible": { "op": "propiedad", "item": "it-manuscrito-1674", "prop": "p-manuscrito-deformado" },
+      "hecha": { "op": "propiedad", "item": "it-manuscrito-1674", "prop": "p-manuscrito-autentico" }
     },
     {
       "id": "entrenar-mosquete",
@@ -736,6 +854,16 @@
       "etiqueta": "Empezar a grabar la marca en la piedra",
       "visible": { "op": "narrado", "contiene": "No queda tiempo para otro intento" },
       "hecha": { "op": "consecuencia", "contiene": "entró en combate real contra el Vagabundo Dimensional" }
+    },
+    {
+      "id": "atender-takillpa",
+      "grupo": "usar",
+      "lugar": "cienaga-sabotaje",
+      "orden": 25,
+      "intencion": "Reviso rápido la herida de Takillpa antes de seguir",
+      "etiqueta": "Revisar la herida de Takillpa",
+      "visible": { "op": "consecuencia", "contiene": "entró en combate real contra el Vagabundo Dimensional" },
+      "hecha": { "op": "narrado", "contiene": "No es nada que vaya a impedirle grabar el resto de la marca" }
     },
     {
       "id": "cerrarle-el-paso-ritual",

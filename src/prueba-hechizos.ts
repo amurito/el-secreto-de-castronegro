@@ -25,6 +25,7 @@ import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { LO_QUE_BERNARDO_SABIA } from './scenario/loquebernardosabia.ts';
 import { INVIERNO_DEBIDO } from './scenario/inviernodebido.ts';
 import { EL_VIGESIMO } from './scenario/elvigesimo.ts';
+import { EL_HOMBRE_QUE_MIRABA_EL_AGUA } from './scenario/hombreagua.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
@@ -314,6 +315,44 @@ async function main() {
     const tercero = t.executeTool('cast_spell', { spell_id: 'sostener-el-aire' });
     await t.commit();
     check('pasado el tiempo del mundo, vuelve a poder lanzarse', tercero.ok, tercero.message.slice(0, 60));
+  }
+
+  console.log('\n9-bis-dos. LA ESPERA, CUANDO EL RELOJ DEL MUNDO RETROCEDE DE VERDAD');
+  {
+    // Reportado jugando "La Merced de las Ánimas": cruzar la grieta lleva de
+    // 1930 a 1710, y un hechizo aprendido antes del viaje quedaba
+    // inutilizable para siempre — la resta de minutos daba un número
+    // negativo (~220 años) y `esperaMinutos - negativo` se convertía en una
+    // espera de casi dos millones de horas. No es exclusivo de esa
+    // aventura: la campaña YA tenía este caso —*El Vigésimo* (1928) → *El
+    // Hombre que Miraba el Agua*, fechada por el hecho pero ambientada en
+    // 1679— y nadie lo había notado porque nadie insistió en lanzar el
+    // mismo hechizo de los dos lados del salto.
+    const idVigesimo = await createCampaign(EL_VIGESIMO, 'RETROCESO-VIGESIMO', 'q'.repeat(64));
+    let t = await Turn.open(idVigesimo);
+    t.executeTool('learn_spell', { spell_id: 'adivinar-la-forma', source: 'prueba' });
+    await t.commit();
+    t = await Turn.open(idVigesimo);
+    t.executeTool('cast_spell', { spell_id: 'adivinar-la-forma' });
+    await t.commit();
+    const previo = (await loadState(idVigesimo)).state;
+    const conocidoAntes = invDe(previo).spellsKnown.find((h) => h.id === 'adivinar-la-forma');
+    check('quedó un intento registrado en 1928, antes de saltar', Boolean(conocidoAntes?.lastAttemptAt),
+      JSON.stringify(conocidoAntes));
+
+    const idVision = await createCampaign(EL_HOMBRE_QUE_MIRABA_EL_AGUA, 'RETROCESO-VISION', 'r'.repeat(64), {
+      estadoAnterior: previo, mesesTranscurridos: 1,
+    });
+    const enLaVision = (await loadState(idVision)).state;
+    check('el reloj del mundo retrocedió de verdad (1679 antes que 1928)',
+      new Date(enLaVision.world.time.iso).getTime() < new Date(previo.world.time.iso).getTime(),
+      `${previo.world.time.iso} → ${enLaVision.world.time.iso}`);
+
+    const t2 = await Turn.open(idVision);
+    const r = t2.executeTool('cast_spell', { spell_id: 'adivinar-la-forma' });
+    await t2.commit();
+    check('lanzarlo del otro lado del salto NO choca con una espera absurda',
+      r.ok || !/esperar/.test(r.message), r.message.slice(0, 120));
   }
 
   console.log('\n9-ter. «CONTAR LO QUE NO SE PUEDE ANOTAR» BAJA EXPOSICIÓN');

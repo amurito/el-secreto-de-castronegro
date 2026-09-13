@@ -61,6 +61,35 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    id: 'manuscrito-fisico',
+    prueba: () => ({
+      skill: 'historia', difficulty: 'regular',
+      reason: 'ubicar el papel, la tinta y la costura del legajo en su época y su origen',
+      stakes_success: 'confirmás que el material es lo que Fray Ignacio dice que es',
+      stakes_failure: 'no sabés distinguir esto de una falsificación reciente',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return {
+          texto: [
+            'El papel es viejo, la tinta también, la costura no se ve nueva. Más allá de eso, no hay con qué comparar: nunca tuvo en las manos otro legajo de este siglo para saber qué es normal y qué no.',
+          ],
+        };
+      }
+      return {
+        texto: [
+          'El papel tiene la textura y el gramaje de una manufactura andina de comienzos de siglo, no la de nada hecho en los últimos años. La tinta es de agalla, envejecida de verdad, no ennegrecida a propósito. La costura del lomo es la de un taller, no la de alguien imitando un taller.',
+          'Esto no es un cuento que Fray Ignacio armó para impresionar a un forastero: viajó de verdad 1300 leguas en treinta y seis años, de mano en mano, hasta llegar a esta mesa.',
+        ],
+        descubre: {
+          itemId: 'it-manuscrito-1674', propertyId: 'p-manuscrito-autentico',
+          how: 'comparando el papel, la tinta y la costura con lo que se sabe de manufactura de la época',
+        },
+      };
+    },
+  },
+
+  {
     id: 'entrenar-mosquete',
     resolver: ({ estado }) => ({
       texto: [
@@ -204,11 +233,44 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
         'Takillpa no retrocede.\n\n—Siga grabando. Yo lo distraigo.',
       ],
       iniciaCombate: { npcIds: ['npc-vagabundo'], reason: 'el Vagabundo Dimensional aparece atraído por la perturbación' },
+      // Estaba `present: false` desde el arranque de la escena: hasta este
+      // momento no había forma de que el jugador lo viera ni le hablara,
+      // aunque figurara en `npcsPresent` de `cienaga-sabotaje` (lo exige el
+      // validador: un NPC de combate necesita lugar propio antes de existir).
+      // Reportado jugando: aparecía ya sentado junto a Don Gonzalo desde que
+      // se llega a la ciénaga, mucho antes del sabotaje.
+      npc: { id: 'npc-vagabundo', present: true, cause: 'apareció atraído por la perturbación en la piedra' },
       consecuencia: {
         description: 'En 1710, en la Ciénaga de las Ánimas, un investigador entró en combate real contra el Vagabundo Dimensional.',
         scope: 'scene', permanent: false, worldReminder: '',
       },
     }),
+  },
+
+  {
+    id: 'atender-takillpa',
+    prueba: () => ({
+      skill: 'primeros_auxilios', difficulty: 'regular',
+      reason: 'contener el sangrado de Takillpa sin herramientas y sin poder detenerse del todo',
+      stakes_success: 'el sangrado para antes de que importe',
+      stakes_failure: 'no alcanza el tiempo para hacer más que un vendaje improvisado',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return {
+          texto: [
+            'Takillpa se sienta apenas termina la pelea, con la mano prensada contra el costado. No se quejó ni una vez mientras duró.',
+            'No hay tiempo para hacer más que un vendaje improvisado con lo que hay a mano, y no alcanza para saber si va a aguantar la carrera que falta. No es nada que vaya a impedirle grabar el resto de la marca — ahora mismo, al menos.',
+          ],
+        };
+      }
+      return {
+        texto: [
+          'Takillpa se sienta apenas termina la pelea, con la mano prensada contra el costado. No se quejó ni una vez mientras duró.',
+          'El corte es superficial, más susto que herida, y el sangrado para en cuanto se le hace presión donde corresponde. No es nada que vaya a impedirle grabar el resto de la marca, ni la carrera que falta después.',
+        ],
+      };
+    },
   },
 
   {

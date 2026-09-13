@@ -1228,6 +1228,14 @@ export class Turn {
     const ahora = new Date(this.state.world.time.iso).getTime();
     if (!Number.isFinite(desde) || !Number.isFinite(ahora)) return 0;
     const pasados = Math.floor((ahora - desde) / 60000);
+    // El reloj del mundo puede retroceder de verdad —cruzar la grieta en *La
+    // Grieta del Zonda* lleva de 1930 a 1710—, y ahí `pasados` da un número
+    // negativo enorme (220 años en minutos). Sin este chequeo, la resta de
+    // abajo lo convertía en una espera de casi dos millones de horas: un
+    // hechizo aprendido antes del viaje quedaba inutilizable para siempre en
+    // el pasado. Retroceder en el tiempo cuenta como "pasó de sobra": no hay
+    // una noción de "esperar menos que cero minutos" que tenga sentido acá.
+    if (pasados < 0) return 0;
     return Math.max(0, esperaMinutos - pasados);
   }
 

@@ -249,7 +249,8 @@ function aplicarEfecto(
   if (efecto.pregunta) run('raise_question', { question: efecto.pregunta });
   if (efecto.npc) {
     run('change_npc_state', {
-      npc_id: efecto.npc.id, status: 'unchanged', present: 'unchanged',
+      npc_id: efecto.npc.id, status: 'unchanged',
+      present: efecto.npc.present === undefined ? 'unchanged' : String(efecto.npc.present),
       attitude_delta: efecto.npc.attitudeDelta ?? 0,
       patience_delta: efecto.npc.patienceDelta ?? 0,
       dodged_topic: '', cause: efecto.npc.cause,

@@ -103,7 +103,12 @@ function esperaRestante(
   const desde = new Date(lastAttemptAt).getTime();
   const ahora = new Date(worldIso).getTime();
   if (!Number.isFinite(desde) || !Number.isFinite(ahora)) return 0;
-  return Math.max(0, esperaMinutos - Math.floor((ahora - desde) / 60000));
+  const pasados = Math.floor((ahora - desde) / 60000);
+  // Mismo caso límite que `minutosHastaPoderLanzar` en engine.ts: el reloj
+  // del mundo puede retroceder de verdad (viajar en el tiempo), y ahí no hay
+  // "esperar menos que cero minutos" — cuenta como que ya pasó de sobra.
+  if (pasados < 0) return 0;
+  return Math.max(0, esperaMinutos - pasados);
 }
 
 function textoEspera(minutos: number): string {

@@ -3914,6 +3914,141 @@ con vida en dos de tres corridas (la tercera, el investigador muere en el
 combate contra el Pólipo — resultado legítimo, no un bug); *Rama B* llega a
 `fuga-final` con vida en una de tres.
 
+### 3.2-septquadragies Segunda ronda de playtesting: el jugador prueba el sitio publicado ✔ HECHA
+
+Tres bugs reales encontrados por el jugador jugando el sitio ya desplegado
+(commits `1b089c5`/`4f9dbe7`), ninguno detectable sin jugar con un
+investigador que arrastra estado real de una aventura a otra — exactamente
+el mismo motivo por el que la ronda anterior (§3.2-sexquadragies) encontró
+lo que encontró.
+
+1. **Cadena de continuación rota: *El Vigésimo* dejaba elegir entre dos
+   aventuras futuras, perdiendo una para siempre.** `El Hombre que Miraba el
+   Agua` y `Lo que Bernardo sabía` compartían `requiere: ['el-vigesimo']`
+   en `catalogo.ts`, así que eran mutuamente excluyentes con el mismo
+   investigador — jugar una tachaba la otra del catálogo para siempre.
+   Reportado jugando: "actualmente no se puede hacer vigésimo, lo que
+   bernardo sabía y de ahí al hombre que miraba el agua, siempre debería ser
+   un camino lineal". Corregido encadenando: `El Hombre que Miraba el Agua`
+   ahora exige `lo-que-bernardo-sabia`, no `el-vigesimo` — la cadena queda
+   estrictamente lineal, como el resto de la campaña.
+2. **El más grave: un hechizo aprendido antes de un salto de época quedaba
+   incastable para siempre.** `minutosHastaPoderLanzar` (`engine.ts`) y su
+   espejo en la UI, `esperaRestante` (`App.tsx`), calculan cuánto falta para
+   volver a lanzar un hechizo restando `ahora - desde` en minutos. Ninguno
+   de los dos contemplaba que `ahora` pudiera ser MENOR que `desde`: la
+   ficción sí lo permite —un investigador de 1930 puede continuar en una
+   aventura ambientada en 1710, el tiempo del mundo retrocede al cruzar de
+   acto, y `advance_time` sólo prohíbe retroceder DENTRO de una aventura, no
+   ENTRE aventuras—. Con `ahora - desde` negativo, la resta daba una espera
+   de ~1.922.098 horas (los ~220 años exactos entre 1930 y 1710), y como
+   `minutosHastaPoderLanzar` no sólo se mostraba: BLOQUEABA `cast_spell` de
+   verdad en el motor. Reportado jugando *La Merced de las Ánimas*: "los
+   días quedaron mal en los hechizos", con captura mostrando el número
+   absurdo. Confirmado que el bug es preexistente y no exclusivo del
+   contenido nuevo: `El Hombre que Miraba el Agua` ya tenía
+   `startTime.iso: '1679-11-14...'`, anterior a *El Vigésimo* (1928), desde
+   antes de esta sesión — cualquier hechizo aprendido en El Vigésimo y
+   continuado ahí ya estaba roto en producción. Arreglado con
+   `if (pasados < 0) return 0;` en ambas funciones. Test de regresión nuevo
+   en `prueba-hechizos.ts` usando el par real *El Vigésimo* → *El Hombre que
+   Miraba el Agua* (no un escenario sintético) para probar el bug con
+   contenido que ya estaba en producción.
+3. **Un NPC de combate aparecía en pantalla antes de que la historia lo
+   trajera.** `npc-vagabundo` (Vagabundo Dimensional, *La Merced de las
+   Ánimas*) tenía que estar en `npcsPresent` de `cienaga-sabotaje` desde el
+   arranque de la escena —lo exige el validador: un NPC sin lugar propio en
+   ningún `npcsPresent` es contenido roto (§3.2, "Todo NPC del escenario
+   vive en algún lado")—, pero eso lo hacía visible y hablable desde que se
+   llega a la ciénaga, mucho antes del sabotaje que en la prosa lo hace
+   aparecer. Reportado jugando: "no tiene lógica que el vagabundo esté ahí
+   mientras hablo con gonzalo". La causa raíz es que `EfectoEscena.npc`
+   —el único gancho de contenido hacia `change_npc_state`— sólo exponía
+   `attitudeDelta`/`patienceDelta`/`cause`, y `aplicarEfecto` mandaba
+   siempre `present: 'unchanged'` al tool; el tool de motor
+   (`toolChangeNpcState`) sí soporta togglear `present` desde antes, sólo
+   que ninguna escena podía pedírselo. Agregado `EfectoEscena.npc.present?:
+   boolean` (`escena.ts`) y su traducción real en `aplicarEfecto`
+   (`keeper/escenas.ts`). Contenido: `npc-vagabundo` arranca con
+   `"present": false` (sigue en `npcsPresent` para el validador, pero
+   invisible), y la escena `combate-vagabundo` —el momento en que el punzón
+   toca la piedra caliza— lo pone en `present: true` en el mismo efecto que
+   dispara `iniciaCombate`. El orden entre `npc` e `iniciaCombate` dentro de
+   `aplicarEfecto` no importa acá: `COMBAT_STARTED` no lee `present` al
+   arrancar, sólo lo lee `combatientesAqui()` en el turno siguiente cuando
+   el jugador ataca de verdad, y para entonces el turno ya commiteó los dos
+   cambios.
+
+`npm run prueba:todo` completo tras los tres arreglos, incluida
+`prueba-auditoria.ts` (el andador scriptado atraviesa el combate contra el
+Vagabundo sin problema con `present: false` inicial).
+
+### 3.2-octoquadragies Más tiradas y señales narrativas en La Merced de las Ánimas ✔ HECHA
+
+Dos quejas más del mismo jugador, sobre el mismo contenido: "casi no hay
+tiradas" y "no tiene lógica la parte de ir a la celda, la bifurcación se
+siente forzada". Verificado antes de tocar nada: cierto que sólo 4 de 10
+escenas tenían `prueba`, y cero `LocationFeature` en todo el archivo tenía
+`examineSkill` — una tabla de seis chequeos posibles, hecha en paralelo por
+el usuario con otra sesión de Claude sin acceso a este código, resultó tener
+la premisa correcta aunque no hubiera visto el archivo. Revisados y
+adaptados los seis, no copiados literales — dos no encajaban como venían
+propuestos y se resolvieron distinto de lo sugerido:
+
+1. **Arqueología, la piedra caliza (`cienaga-sabotaje`).** `LocationFeature`
+   nueva: el examen revela que el grabado es más viejo que cualquier cultura
+   documentada del valle — refuerza, con una tirada en vez de con prosa
+   dada, el punto central de la aventura (Castronegro es un nodo entre
+   varios, no el único).
+2. **Descubrir, el reflejo del agua (`canaverales`).** Ya existía como línea
+   de `atmosphere` sin tirada; convertida en `LocationFeature` con
+   `closerLook` que conecta el retraso del reflejo con "algo respira debajo
+   del lodo" de `obras-cofradia` — la misma anomalía, dos lugares.
+3. **Antropología, el patrón hereditario de Josefa.** No encajaba como
+   `LocationFeature` —es sobre una persona, no un lugar—, así que se armó
+   como tema de conversación nuevo (`j-patron`), gateado tras `j-familia`,
+   con `prueba` en vez de sólo diálogo: la diferencia entre que Josefa lo
+   *diga* y que el investigador lo *reconozca* como patrón documentable.
+4. **Psicología, el miedo real de Don Gonzalo (`g-miedo`).** Mismo criterio:
+   tema de conversación con `prueba`, no detalle de lugar. Usa campos que
+   el NPC ya tenía declarados y sin usar (`fears`: denuncia por brujería
+   ante el Santo Oficio) — la bravata de `g-orden` ("no necesito otra
+   razón") ahora tiene una segunda capa debajo, si se sabe mirar.
+5. **Historia, la datación física del manuscrito.** Ya existía
+   `p-manuscrito-deformado` (ocultismo/difícil, contenido textual del
+   margen); agregada `p-manuscrito-autentico` (historia/regular) como
+   SEGUNDA propiedad oculta del mismo ítem, con su propia acción
+   (`manuscrito-fisico`, visible recién tras la primera) — confirma con una
+   tirada, no con la sola palabra de Fray Ignacio, que el legajo viajó de
+   verdad 1300 leguas en 36 años.
+6. **Primeros Auxilios, después de un combate.** La sugerencia original
+   pedía "sanar" tras el combate, pero el motor no tiene NINGÚN mecanismo de
+   curación de PV en trece aventuras —`toolApplyDamage` sólo resta, nunca
+   suma— y construir uno de cero para una sola escena era exactamente el
+   tipo de alcance que este pedido no justificaba. Resuelto sin tocar el
+   motor: `atender-takillpa`, un chequeo diagnóstico puro (mismo patrón que
+   `mirar-aurelio` en *El Sueño Debido*) sobre la herida de Takillpa tras
+   `combate-vagabundo` — cambia la prosa, no una estadística.
+
+**La bifurcación forzada**, sin tocar el gateo en sí (dos pistas de
+conversación, en dos lugares separados, siguen siendo la condición real):
+el problema no era el mecanismo, era que nada en la prosa apuntaba hacia la
+segunda pista antes de que el jugador tropezara con Takillpa por curiosidad.
+Agregada una línea de rumor en la llegada a `plaza-mayor` (los que trabajan
+las acequias viejas saben algo que el Cabildo no quiere oír) y una línea de
+Fray Ignacio en `i-manuscrito` que manda explícitamente al jugador a los
+cañaverales a confirmar lo que cuenta. Dos señales narrativas reforzándose,
+la decisión de ir a hablar con Takillpa deja de ser tropiezo y pasa a ser
+una pista seguida a propósito.
+
+Verificado con un recorrido scriptado por el motor real (no sólo
+`accionesDisponibles`) forzando ambas ramas a pasar por los seis chequeos
+nuevos: ninguno explota, los gateos de `visible`/`hecha` encadenados
+(`manuscrito-hondo` → `manuscrito-fisico`, `combate-vagabundo` →
+`atender-takillpa`) se abren en el orden correcto y no antes.
+`npm run prueba:todo` completo, `prueba-auditoria.ts` en verde (12 escenas,
+12 temas, 2 propiedades ocultas, 13 pistas, todo alcanzable).
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
