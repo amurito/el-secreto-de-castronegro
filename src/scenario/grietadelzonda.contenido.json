@@ -375,6 +375,30 @@
           "reliability": "reliable"
         }
       }
+    },
+    {
+      "id": "p-cartel",
+      "npc": "npc-petrona",
+      "orden": 3,
+      "etiqueta": "Preguntarle por la otra empresa que ya vino antes",
+      "intencion": "Le pregunto a Petrona por la otra empresa que ya vino antes a prometer lo mismo",
+      "claves": ["la otra empresa", "antes de esta empresa", "quien vino antes", "el cartel viejo"],
+      "disponible": { "op": "pista", "contiene": "No es la primera vez que alguien viene a prometerle progreso" },
+      "prueba": { "skill": "labia", "difficulty": "regular", "razon": "que suelte algo que no cuenta gratis delante de cualquiera" },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "Petrona deja el vaso a un lado, como si esto mereciera las dos manos libres.\n\n—Vinieron hace quince años, con otro nombre y el mismo cartel de siempre. Un día, sin avisarle a nadie, se fueron todos de golpe. Ni siquiera volvieron a cobrar lo que les debían, que en esta zona ya es decir bastante.\n\n—Nadie preguntó mucho por qué. Cuando alguien se va así de rápido de un lugar como éste, preguntar es la forma más segura de que no te contesten."
+        ],
+        "pista": {
+          "description": "Quince años atrás, otra empresa vino con el mismo plan y el mismo cartel, y se fue de golpe una noche sin cobrar lo que le debían — y nadie en el pueblo preguntó por qué.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Eso es agua pasada. No tengo por qué contárselo a cualquiera que pregunta."]
+      }
     }
   ],
   "scenes": [
@@ -413,6 +437,28 @@
         "de": [
           { "op": "texto", "patron": "que frene la voladura|que no dinamite|convencerlo de que pare|le pido que frene todo" },
           { "op": "pista", "contiene": "fecha fija para dinamitar" }
+        ]
+      }
+    },
+    {
+      "id": "sabotear-dinamita",
+      "prioridad": 65,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "aflojar.*cargas|inutilizar.*cargas|sabotear.*dinamita|saboteo las cargas" },
+          { "op": "lugar", "es": ["obras-canal"] }
+        ]
+      }
+    },
+    {
+      "id": "notar-silencio-peones",
+      "prioridad": 55,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "por que bajan la voz|el silencio de los peones|noto como los peones" },
+          { "op": "lugar", "es": ["obras-canal"] }
         ]
       }
     },
@@ -478,6 +524,31 @@
       "etiqueta": "Convencer a Valenzuela de frenar la voladura",
       "visible": { "op": "pista", "contiene": "fecha fija para dinamitar" },
       "hecha": { "op": "narrado", "contiene": "no va a cambiar por nada que digas" }
+    },
+    {
+      "id": "sabotear-dinamita",
+      "grupo": "usar",
+      "lugar": "obras-canal",
+      "orden": 25,
+      "intencion": "Trato de aflojar o inutilizar algunas de las cargas de dinamita sin que nadie me vea",
+      "etiqueta": "Sabotear en secreto las cargas de dinamita",
+      "visible": {
+        "op": "y",
+        "de": [
+          { "op": "pista", "contiene": "fecha fija para dinamitar" },
+          { "op": "no", "de": { "op": "narrado", "contiene": "una grieta abierta al pie del brocal" } }
+        ]
+      },
+      "hecha": { "op": "narrado", "contiene": "No hay tiempo para otro intento antes del amanecer" }
+    },
+    {
+      "id": "notar-silencio-peones",
+      "grupo": "observar",
+      "lugar": "obras-canal",
+      "orden": 5,
+      "intencion": "Me fijo por qué los peones bajan la voz cuando alguien nombra la acequia",
+      "etiqueta": "Fijarse por qué los peones bajan la voz",
+      "hecha": { "op": "narrado", "contiene": "Los peones bajan la voz cada vez que alguien nombra la acequia vieja" }
     },
     {
       "id": "ver-obras",

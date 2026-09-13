@@ -1,18 +1,26 @@
 /**
  * LA GRIETA DEL ZONDA — lógica de escenas.
  *
- * Cinco escenas nada más, a propósito: es el Acto I, corto, de un final
- * único. Las dos primeras («pedir-que-ensene», «convencer-valenzuela») son
- * las «soluciones lógicas» que el investigador puede intentar — ninguna
- * cambia el desenlace macro (la voladura pasa igual), pero las dos dejan una
- * consecuencia de campaña distinta según cómo salieron, que es lo que hace
- * que el camino hasta la grieta se sienta decidido y no impuesto. Ver el
- * plan de la conversación con el usuario para el porqué completo.
+ * Acto I, corto, de un final único. Las dos primeras («pedir-que-ensene»,
+ * «convencer-valenzuela») son las «soluciones lógicas» que el investigador
+ * puede intentar — ninguna cambia el desenlace macro (la voladura pasa
+ * igual), pero las dos dejan una consecuencia de campaña distinta según
+ * cómo salieron, que es lo que hace que el camino hasta la grieta se sienta
+ * decidido y no impuesto. Ver el plan de la conversación con el usuario
+ * para el porqué completo.
  *
- * Las dos escenas de gateo comparten una frase de cierre EXACTA en las dos
- * ramas de su resolver («Ya no hay más que preguntarle.» / «...no va a
- * cambiar por nada que digas.») — es el gancho que usa `ver-obras` para
- * saber que ambos intentos ya se hicieron, sea cual sea el resultado. El
+ * `sabotear-dinamita` es una TERCERA vía, agregada después de jugarla y
+ * recibir el comentario de que "casi no hay tiradas": mismo criterio que
+ * las otras dos (no cambia la voladura, deja su propia consecuencia de
+ * campaña), pero de acción directa en vez de conversación — el hueco que
+ * el comentario del párrafo anterior ya dejaba entrever al llamarlas «las
+ * soluciones lógicas», dos nada más.
+ *
+ * Las escenas de gateo comparten una frase de cierre EXACTA en sus dos
+ * ramas de resolver («Ya no hay más que preguntarle.» / «...no va a
+ * cambiar por nada que digas.» / «No hay tiempo para otro intento antes
+ * del amanecer.») — es el gancho que usan las condiciones de otras escenas
+ * para saber que un intento ya se hizo, sea cual sea el resultado. El
  * operador `narrado` compara sensible a mayúsculas (ver ROADMAP), así que
  * las frases están copiadas tal cual entre escena y condición.
  */
@@ -165,6 +173,90 @@ export const LA_GRIETA_DEL_ZONDA_LOGICA: LogicaDeEscenas = [
           permanent: true,
           worldReminder: 'Valenzuela se rió de él delante de los peones, y voló la piedra igual.',
         },
+      };
+    },
+  },
+
+  {
+    id: 'sabotear-dinamita',
+    prueba: () => ({
+      skill: 'mecanica', difficulty: 'hard',
+      reason: 'aflojar la mecha de unas cargas y mojar la pólvora de otras sin que ningún peón lo note',
+      stakes_success: 'gana un día entero: la voladura no puede hacerse mañana como estaba previsto',
+      stakes_failure: 'un peón lo sorprende a tiempo, o la manipulación queda evidente antes de irse',
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: [
+            'Nadie mira dos veces a alguien que revisa cajones en un campamento: es sospechoso sólo si alguien ya sospecha. Aflojar la mecha de unas cargas y mojar la pólvora de otras lleva menos tiempo del que hacía falta para que se note.',
+            'No va a impedir la voladura. Va a impedir que sea mañana.',
+            'No hay tiempo para otro intento antes del amanecer.',
+          ],
+          consecuencia: {
+            description: 'Un investigador de 1930 saboteó en secreto varias cargas de dinamita en las obras del canal, sin que nadie lo notara — demoró la voladura, no la evitó.',
+            scope: 'campaign',
+            permanent: true,
+            worldReminder: 'Nadie sabe todavía que fue él quien demoró la voladura.',
+          },
+        };
+      }
+      return {
+        texto: [
+          'La mecha se le resbala de los dedos justo cuando un peón dobla la esquina del galpón con una carretilla. No hace falta que diga nada: la cara que pone alcanza.',
+          '—Yo no vi nada —dice, después de un silencio demasiado largo—. Pero si esto se sabe, no fui yo el que se lo dijo.',
+          'No hay tiempo para otro intento antes del amanecer.',
+        ],
+        consecuencia: {
+          description: 'Un peón de las obras del canal sorprendió a un investigador de 1930 manipulando las cargas de dinamita, y calló a cambio de no verse mezclado.',
+          scope: 'campaign',
+          permanent: true,
+          worldReminder: 'Un peón sabe que el investigador tocó las cargas de dinamita, y calla por ahora.',
+        },
+      };
+    },
+  },
+
+  {
+    id: 'notar-silencio-peones',
+    // ANTROPOLOGÍA es cara —ninguna ficha pregenerada la trae, así que sale
+    // en base 1— y por eso NO GATEA NADA: el dato de que los peones tratan
+    // la acequia como un asunto de familia se entrega igual, falle o
+    // acierte la tirada. Lo que cambia con el éxito es cuánto se entiende
+    // de por qué, no si se nota el silencio. Mismo criterio documentado en
+    // `suenodebido.logica.ts` para el mismo problema con la misma habilidad.
+    prueba: () => ({
+      skill: 'antropologia', difficulty: 'regular',
+      reason: 'reconocer qué tipo de silencio es, más allá de notar que existe',
+      stakes_success: 'entendés que es un silencio de familia, no de respeto genérico',
+      stakes_failure: 'notás el silencio, pero no sabés ubicar de qué clase es',
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: [
+            'Los peones bajan la voz cada vez que alguien nombra la acequia vieja.',
+            'No es el respeto genérico de alguien que prefiere no meterse en nada: es el mismo silencio reservado que se guarda por un pariente muerto, o por algo de familia que no se cuenta afuera. Tratan la acequia como un asunto de sangre, no como una obra pública, y eso no se aprende trabajando la tierra tres temporadas.',
+          ],
+          pistas: [{
+            description: 'El silencio de los peones sobre la acequia vieja no es respeto genérico ni miedo a la empresa: es el mismo tipo de silencio reservado para un asunto de familia, o para un muerto reciente — heredado, no aprendido en el trabajo.',
+            kind: 'experiential',
+            source: 'observar a los peones de las obras del canal',
+            reliability: 'reliable',
+          }],
+        };
+      }
+      return {
+        texto: [
+          'Los peones bajan la voz cada vez que alguien nombra la acequia vieja.',
+          'Hay algo particular en cómo lo hacen, pero no alcanza a ubicar qué: podría ser respeto, podría ser miedo a la empresa, podría ser otra cosa. Se queda con la certeza de que no es casualidad, nada más.',
+        ],
+        pistas: [{
+          description: 'Los peones de la obra bajan la voz de un modo particular cada vez que se nombra la acequia vieja, aunque no está claro todavía si es respeto, miedo, o algo más.',
+          kind: 'experiential',
+          source: 'observar a los peones de las obras del canal',
+          reliability: 'unreliable',
+        }],
       };
     },
   },

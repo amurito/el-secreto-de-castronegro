@@ -604,7 +604,12 @@
         }
       },
       "esquiva": {
-        "texto": ["Nada en lo que dice permite distinguir todavía si esto es un patrón real o sólo el miedo de una madre buscando compañía en su miedo."]
+        "texto": ["Nada en lo que dice permite distinguir todavía si esto es un patrón real o sólo el miedo de una madre buscando compañía en su miedo."],
+        "pista": {
+          "description": "El rasgo de sangre que preocupa a Josefa podría ser un patrón real repetido en otras familias, o podría ser sólo el miedo de una madre buscando no estar sola con eso — todavía no hay forma de saber cuál de las dos cosas es.",
+          "kind": "experiential",
+          "reliability": "unreliable"
+        }
       }
     },
     {

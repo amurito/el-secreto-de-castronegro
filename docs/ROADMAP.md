@@ -4049,6 +4049,71 @@ nuevos: ninguno explota, los gateos de `visible`/`hecha` encadenados
 `npm run prueba:todo` completo, `prueba-auditoria.ts` en verde (12 escenas,
 12 temas, 2 propiedades ocultas, 13 pistas, todo alcanzable).
 
+### 3.2-novemquadragies Tres tiradas más en La Grieta del Zonda, y un problema de fondo con Antropología
+
+Una tabla nueva, armada por el usuario en paralelo con otra sesión sin
+acceso a este código, proponía seis chequeos de habilidad para *La Grieta
+del Zonda* (sólo 3 de 6 escenas tenían `prueba`). Verificada contra el
+archivo real antes de tocar nada: tres de las seis premisas eran exactas
+(cita textual de la aventura), dos tenían la cita mal ubicada o mal
+atribuida, y una directamente inventaba un dato que no está escrito en
+ningún lado. Implementadas las tres bien fundamentadas:
+
+1. **Mecánica, sabotear la dinamita (`obras-canal`).** El propio comentario
+   de `grietadelzonda.logica.ts` ya llamaba a `pedir-que-ensene` y
+   `convencer-valenzuela` "las soluciones lógicas" — dos, dejando implícita
+   una tercera. Acción nueva (`sabotear-dinamita`, mecánica/difícil): no
+   cambia el desenlace macro (la voladura pasa igual, como pide el diseño
+   del Acto I), pero deja su propia consecuencia de campaña según el
+   resultado — la única de las tres que le da al jugador una forma de
+   *intervenir* en vez de sólo leer mejor lo que ya está.
+2. **Antropología, el silencio de los peones (`obras-canal`).** La frase
+   ("Los peones bajan la voz cada vez que alguien nombra la acequia vieja")
+   ya estaba en `atmosphere`, sin ningún chequeo atado.
+3. **Labia, la empresa anterior (Petrona).** Tema de conversación nuevo
+   (`p-cartel`), gateado tras examinar `f-cartel-empresa`: la empresa que
+   vino antes con el mismo cartel se fue de golpe, sin cobrar lo que le
+   debían, y nadie preguntó por qué.
+
+**El hallazgo real de esta ronda no estaba en la tabla.** Al implementar
+#2 como `LocationFeature` con `examineSkill: 'antropologia'` —el patrón
+usado en toda la sesión anterior—, `prueba-auditoria.ts` empezó a fallar de
+verdad (no un `⚠`, un `✗`): el recorrido scriptado intentaba la tirada 6
+veces y fallaba las 6, agotando los reintentos. Investigado el motivo:
+`antropologia` tiene `defaultBase: 1` en `rules/skills.ts`, y NINGÚN
+pregen (`pregens.ts`) le asigna puntos — con dificultad `regular` eso es
+1% de probabilidad real, para el andador de la auditoría y para cualquier
+jugador humano por igual. Este problema YA estaba documentado y resuelto
+una vez en el proyecto (`suenodebido.logica.ts`, comentario en la escena
+que usa la misma habilidad): la solución establecida es que el chequeo NO
+GATEE nada — el dato se entrega en las dos ramas, y el éxito sólo cambia
+cuánto se entiende, no si se consigue algo. Corregido en dos lugares:
+   - `notar-silencio-peones` (Grieta del Zonda): dejó de ser
+     `LocationFeature` y pasó a ser una acción con escena propia en
+     `.logica.ts`, con el mismo criterio que `suenodebido.logica.ts` —
+     texto y pista en ambas ramas de la tirada.
+   - `j-patron` (Merced de las Ánimas, agregado en la ronda anterior,
+     §3.2-octoquadragies): mismo problema retroactivo, mismo síntoma
+     (`antropologia`/`regular`, sin puntos en ningún pregen). Agregada una
+     `pista` también en su rama `esquiva`, más débil que la de `cede`,
+     para que no quede en cero si la tirada falla — que es lo que le
+     pasaría a cualquier jugador real, no sólo al andador.
+
+Reproducido el fallo con un script que corre el motor real con la misma
+semilla que usa `prueba-auditoria.ts` (`'j'.repeat(64)`) antes de decidir
+la causa, para no adivinar: confirmó los 6 fallos consecutivos de la
+tirada de antropología, no un problema de alcanzabilidad del botón.
+`npm run prueba:todo` completo tras el arreglo, `prueba-auditoria.ts` en
+verde para las dos aventuras (Zonda: 3/3 pistas de detalles del mapa,
+antes 2/4; Merced: sin cambios, ya pasaba por tener un pasaje sin retorno
+que exime ese chequeo).
+
+**Lección para cualquier `examineSkill`/`prueba` nueva de acá en más:**
+antes de usar una habilidad, comprobar en `pregens.ts` que algún
+investigador la trae con un valor jugable — si no, o se cambia de
+habilidad, o el chequeo se diseña para no gatear nada (mismo criterio que
+`suenodebido.logica.ts`), nunca dejarlo como gate duro de una pista.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de
