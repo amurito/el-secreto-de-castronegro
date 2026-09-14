@@ -131,6 +131,17 @@ export interface DerivedStats {
   /** Tabla propietaria de CoC 7e — verificar contra el manual licenciado. */
   damageBonus: string;
   build: number;
+  /**
+   * Efectivo a mano, en la moneda del momento. Es una desviación consciente
+   * del manual: CoC 7e no lleva la cuenta de monedas, resuelve el dinero con
+   * Crédito y niveles de gasto. Acá hace falta un saldo real porque el juego
+   * tiene compra Y VENTA, y vender sin que cambie ningún número no es vender.
+   *
+   * Arranca derivado del Crédito del investigador (ver `efectivoInicial` en
+   * `rules/dinero.ts`) y cruza entre aventuras encadenadas, igual que el
+   * inventario.
+   */
+  efectivo: number;
 }
 
 export interface SkillValue {
@@ -438,6 +449,30 @@ export interface TemporalProperty extends ItemProperty {
   }>;
 }
 
+/**
+ * En qué parte del bolso va esto. Existe para agrupar el inventario cuando
+ * deja de ser «lo que junté en esta aventura» y pasa a ser «lo que vengo
+ * arrastrando de siete aventuras» — sin categorías, una lista de veinte
+ * objetos sueltos no se lee.
+ *
+ * Es deliberadamente corta y sin jerarquía: cinco cajones, no una taxonomía.
+ * Un objeto sin categoría declarada cae en `hallazgo`, que es el cajón de lo
+ * que no es ni arma ni papel ni herramienta.
+ */
+export type CategoriaItem =
+  /** Sirve para pelear: lo dice su `armaId`. */
+  | 'arma'
+  /** Papel escrito: libretas, cuadernos, cartas, mapas, fotografías. */
+  | 'documento'
+  /** Se usa para hacer algo: un farol, una rueda de agrimensor, un punzón. */
+  | 'herramienta'
+  /** Se gasta o se aplica: almagre, tierra colorada, querosén. */
+  | 'material'
+  /** Ropa y efectos propios del investigador. */
+  | 'personal'
+  /** Todo lo demás: lo que se encontró y todavía no se sabe qué es. */
+  | 'hallazgo';
+
 export interface Item {
   id: ItemId;
   name: string;
@@ -464,12 +499,33 @@ export interface Item {
   puntosArmadura?: number;
   /**
    * Valor de referencia, en la moneda del momento (pesos de 1928 o el que
-   * corresponda). No hay economía todavía —nadie compra ni vende nada—, así
-   * que hoy es sólo un dato declarado en el contenido, sin ningún tool que
-   * lo lea. Existe para no tener que volver a cada ítem cuando esa economía
-   * se construya.
+   * corresponda). Lo que CUESTA comprarlo; lo que pagan por él al venderlo
+   * sale de ahí y del margen del comerciante (`rules/dinero.ts`).
+   *
+   * Sin `value`, un objeto no se compra ni se vende: no tiene precio porque
+   * nadie le puso uno, que es el caso de casi todo lo que se junta jugando.
    */
   value?: number;
+  /**
+   * Este objeto toca el Umbral, y desprenderse de él no es una transacción
+   * cualquiera: venderlo deja una consecuencia permanente de campaña —queda
+   * suelto en el mundo, en manos de alguien que no sabe lo que tiene—.
+   *
+   * El juego no lo impide. Lo cobra, que es distinto.
+   */
+  cargado?: boolean;
+  /** En qué cajón del inventario va. Ver `CategoriaItem`. Sin esto, `hallazgo`. */
+  categoria?: CategoriaItem;
+  /**
+   * Si es `true`, este objeto NO cruza a la aventura siguiente aunque el
+   * investigador lo lleve encima al terminar. Para lo que es de otro y se
+   * devuelve, lo que se consume en la escena, o lo que sólo tiene sentido
+   * dentro de su propia historia.
+   *
+   * Por defecto —sin declarar nada— un objeto que se lleva encima SÍ cruza:
+   * es lo que hace que el inventario sea de la campaña y no de la aventura.
+   */
+  noSeHereda?: boolean;
 
   publicProperties: ItemProperty[];
   hiddenProperties: ItemProperty[];
@@ -628,6 +684,29 @@ export interface Secret {
   revealed: boolean;
 }
 
+/**
+ * Un mostrador. Lo declara el contenido por NPC: la pulpera del Valle de
+ * Zonda vende faroles y compra casi cualquier cosa porque no sabe qué está
+ * comprando; un anticuario de ciudad pagaría mejor y preguntaría más.
+ */
+export interface ComercioNpc {
+  /** Qué tiene para vender. Objetos que ya existen y son de este NPC. */
+  vende?: ItemId[];
+  /**
+   * Qué categorías acepta comprar. Sin esto, no compra nada — hay quien
+   * vende y no compra. Un objeto sin `value` no se compra nunca, aunque su
+   * categoría esté acá: no tiene precio porque nadie le puso uno.
+   */
+  compra?: CategoriaItem[];
+  /**
+   * Qué fracción del valor paga al comprar. Sin esto, `MARGEN_POR_DEFECTO`
+   * (la mitad). Ver `rules/dinero.ts`.
+   */
+  margen?: number;
+  /** Cómo habla del precio. Para que no suene a caja registradora. */
+  nota?: string;
+}
+
 export interface Npc {
   id: NpcId;
   name: string;
@@ -669,6 +748,14 @@ export interface Npc {
    * Sin esto, el motor rechaza cualquier ataque contra este personaje.
    */
   combate?: CombateNpc;
+  /**
+   * Con qué comercia, si es que comercia. Ausente en casi todos: que alguien
+   * te conteste preguntas no lo convierte en un mostrador, y darle
+   * `comercio` «por las dudas» a cualquier NPC haría que el juego ofrezca
+   * comprarle cosas a un fraile en 1710. Sin esto, el motor rechaza
+   * cualquier compra o venta con este personaje.
+   */
+  comercio?: ComercioNpc;
   present: boolean;
   isCompanion: boolean;
   stats?: { hp: number; skills: Record<SkillId, number> };

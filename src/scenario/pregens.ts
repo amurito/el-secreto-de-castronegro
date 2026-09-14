@@ -46,7 +46,7 @@ function make(
    */
   nationality = 'Argentina',
 ): Investigator {
-  const derived = computeDerived(ch, { luck, edad: age });
+  const derived = computeDerived(ch, { luck, edad: age, credito: skills.credito ?? 0 });
   // Esquivar = DEX/2 salvo que la ocupación lo suba.
   const finalSkills = buildSkills({ ...skills, esquivar: skills.esquivar ?? Math.floor(ch.DEX / 2) });
   return {
@@ -107,6 +107,10 @@ export const ELENA: Investigator = make(
     fotografia: 10,
     intimidar: 20,
     labia: 15,
+    // Médico rural: la ocupación admite Crédito 30-80. 45 la deja cómoda sin
+    // hacerla rica — vive de lo que le pagan en un campo donde a veces le
+    // pagan con gallinas. De acá sale su efectivo de arranque (`dinero.ts`).
+    credito: 45,
   },
   {
     // Trasfondo. No es color: es de acá que sale la Cordura que se recupera
@@ -155,6 +159,10 @@ export const TOMAS: Investigator = make(
     primeros_auxilios: 35,
     intimidar: 30,
     nadar: 30,
+    // Periodista de diario de provincia que le paga tarde y mal: la
+    // ocupación admite 9-30, y 15 es exactamente eso. Arranca con menos de
+    // la mitad del efectivo de Elena, que es la idea.
+    credito: 15,
   },
   {
     aspects: [
@@ -292,6 +300,7 @@ export const ITEMS_DE_OCUPACION: Item[] = [
   {
     id: 'it-maletin-medico',
     name: 'Maletín médico',
+    categoria: 'herramienta',
     shortDescription: 'Cuero gastado, instrumental básico y un frasco de láudano que nunca usó y no piensa tirar. ' +
       'Lo abre siempre de la misma manera, aunque nadie la esté mirando.',
     owner: ELENA.id,
@@ -308,6 +317,7 @@ export const ITEMS_DE_OCUPACION: Item[] = [
   {
     id: 'it-camara-fotografica',
     name: 'Cámara de placas',
+    categoria: 'herramienta',
     shortDescription: 'Heredada, más vieja que él y mejor que él. Placas de vidrio, no película: cada toma cuesta ' +
       'tiempo y no se repite fácil.',
     owner: TOMAS.id,

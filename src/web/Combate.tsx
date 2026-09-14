@@ -254,30 +254,23 @@ export function Combate({
               ))}
             </select>
             {armaActual?.nota && <div className="sim-ayuda">{armaActual.nota}</div>}
-            {armaActual?.habilidad === 'armas_fuego' && (
-              <div className="sim-fuego">
-                <label className="sim-check">
-                  <input type="checkbox" checked={apuntando} onChange={(e) => setApuntando(e.target.checked)} />
-                  Venía apuntando (bonificación)
-                </label>
-                {elegido?.distanciaMetros === undefined ? (
-                  <label className="sim-check">
-                    <input type="checkbox" checked={puntoBlanco} onChange={(e) => setPuntoBlanco(e.target.checked)} />
-                    A quemarropa (bonificación)
-                  </label>
-                ) : (
-                  <div className="sim-ayuda">
-                    Quemarropa se calcula solo, a partir de la distancia declarada de este rival.
-                  </div>
-                )}
-                <label className="sim-check">
-                  <input type="checkbox" checked={cubierto} onChange={(e) => setCubierto(e.target.checked)} />
-                  El blanco se cubre (penalización)
-                </label>
-                <label className="sim-check">
-                  <input type="checkbox" checked={blancoMovil} onChange={(e) => setBlancoMovil(e.target.checked)} />
-                  El blanco se mueve rápido (penalización)
-                </label>
+            {/* Acá NO van los cuatro checkboxes de bonificación y penalización
+                que sí tiene el simulador (`Simulador.tsx`). Reportado jugando:
+                «me dejaba elegir a mí los bonificadores o penalizaciones
+                dentro del combate». Tenía razón — nadie marca nunca «el
+                blanco se cubre» ni «el blanco se mueve rápido», y todo el
+                mundo marca siempre «venía apuntando»: eso no es una decisión
+                táctica, es elegirse la dificultad propia. En el simulador
+                tiene sentido, porque el punto ahí es armar el escenario a
+                mano para probar una regla. En una pelea de verdad, lo que
+                modifica la tirada tiene que salir del estado del mundo. Hoy
+                el único que sale del estado es «a quemarropa», que el motor
+                calcula solo a partir de la distancia declarada del rival
+                (`nivelDeAlcance`, engine.ts). */}
+            {armaActual?.habilidad === 'armas_fuego' && elegido?.distanciaMetros !== undefined && (
+              <div className="sim-ayuda">
+                A {elegido.distanciaMetros} metros. El alcance, el largo tiro y el quemarropa
+                los calcula el motor con esa distancia: no hay nada que declarar acá.
               </div>
             )}
           </div>

@@ -16,7 +16,7 @@ import type { GameState, LocationFeature, Item, Npc, LocationId } from '../share
 export type Verb =
   | 'mirar' | 'examinar' | 'buscar'
   | 'escuchar' | 'oler' | 'tocar'
-  | 'tomar' | 'soltar' | 'usar'
+  | 'tomar' | 'soltar' | 'descartar' | 'comprar' | 'vender' | 'usar'
   | 'hablar' | 'preguntar' | 'mostrar' | 'mentir'
   | 'ir' | 'entrar' | 'salir' | 'bajar' | 'subir'
   | 'romper' | 'forzar' | 'cavar' | 'tapar'
@@ -93,6 +93,17 @@ const VERBS: Array<[Verb, string[]]> = [
   ['oler', ['huel', 'oler', 'olfate', 'aroma']],
   ['tocar', ['toc', 'palp', 'tante', 'acaricio', 'paso la mano', 'siento la textura']],
   ['tomar', ['agarr', 'tom', 'llev', 'guard', 'levanto', 'recojo', 'me quedo con', 'alzo']],
+  // Los dos del mostrador, antes que 'tomar'/'soltar': «compro el farol» no
+  // es agarrarlo y «vendo el reloj» no es soltarlo, y las raíces `tom`/`dej`
+  // no aparecen en ninguna de las dos frases — pero `llev` sí («me llevo el
+  // farol»), así que el orden importa igual.
+  ['comprar', ['compro', 'comprar', 'le compro', 'me lo vende']],
+  ['vender', ['vendo', 'vender', 'le vendo', 'se lo vendo']],
+  // ANTES que 'soltar', porque «me deshago de» y «tiro» tienen que ganarle a
+  // cualquier «dejo» que aparezca en la misma frase: descartar es definitivo
+  // y soltar no, y confundirlos en esa dirección pierde un objeto para
+  // siempre. Ver `discardItem` en `keeper/offline.ts`.
+  ['descartar', ['me deshago de', 'descarto', 'abandono para siempre']],
   ['soltar', ['suelto', 'dejo', 'devuelvo', 'apoyo']],
   ['mostrar', ['muestro', 'mostrar', 'le enseño', 'le ense']],
   ['mentir', ['mien', 'engan', 'le digo que no', 'oculto']],

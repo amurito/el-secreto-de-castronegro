@@ -6,10 +6,11 @@
 
 import type { Characteristics, DerivedStats } from '../shared/types.ts';
 import { efectoEdad } from './creacion.ts';
+import { efectivoInicial } from './dinero.ts';
 
 export function computeDerived(
   ch: Characteristics,
-  opts: { luck: number; mythos?: number; edad?: number } = { luck: 50 },
+  opts: { luck: number; mythos?: number; edad?: number; credito?: number } = { luck: 50 },
 ): DerivedStats {
   const maxHp = Math.floor((ch.CON + ch.SIZ) / 10);
   const maxMp = Math.floor(ch.POW / 5);
@@ -27,6 +28,11 @@ export function computeDerived(
     move: computeMove(ch, opts.edad ?? 30),
     damageBonus: damageBonus(ch.STR + ch.SIZ),
     build: build(ch.STR + ch.SIZ),
+    // El efectivo no es un derivado de las características como los otros:
+    // sale del Crédito, que es una habilidad y se reparte en la creación.
+    // Vive acá igual porque es lo que la ficha muestra y lo que cambia en
+    // juego, como los PV o la Suerte. Sin Crédito conocido, cero.
+    efectivo: efectivoInicial(opts.credito ?? 0),
   };
 }
 

@@ -214,6 +214,51 @@ async function main() {
   }
   check('en las 3.000 combinaciones, el ganador explica el resultado', coinciden);
 
+  console.log('\nLO QUE UN NPC TIENE EN LA MANO, ACÁ MISMO, SE PUEDE ESTUDIAR');
+  {
+    // El gate de descubrimiento (`gates.ts`, `isReachable`) sólo aceptaba
+    // objetos del investigador o del lugar. Un objeto cuyo dueño es un NPC
+    // —el legajo que Fray Ignacio tiene abierto sobre la mesa— quedaba
+    // fuera de alcance para siempre, y el rechazo se NARRABA AL JUGADOR con
+    // el texto escrito para el Keeper-LLM que ya no existe. Reportado
+    // jugando La Merced de las Ánimas, con captura de pantalla.
+    const merced = CATALOGO.find((e) => e.scenario.id === 'la-merced-de-las-animas')!.scenario;
+    const id = await createCampaign(merced, 'ALCANCE-NPC', 'na'.repeat(32));
+    const t = await Turn.open(id);
+    // El mapa sólo deja moverse entre lugares conectados, así que se camina.
+    for (const paso of ['plaza-mayor', 'convento-merced', 'celda-convento', 'scriptorium']) {
+      t.executeTool('move_to_location', { location_id: paso, reason: 'prueba' });
+    }
+    // La propiedad pide una tirada de Ocultismo en el mismo turno: se pide
+    // primero, y el gate se evalúa con lo que haya salido. Lo que importa
+    // acá NO es si la tirada sale bien —eso es suerte— sino que el motivo
+    // del rechazo, si lo hay, no sea nunca «no está al alcance».
+    t.executeTool('request_roll', {
+      skill: 'ocultismo', difficulty: 'hard', reason: 'estudiar el legajo',
+      stakes_success: 'ver el agregado', stakes_failure: 'no ver nada',
+    });
+    const r = t.executeTool('discover_property', {
+      item_id: 'it-manuscrito-1674', property_id: 'p-manuscrito-deformado',
+      how: 'prueba', compared_with: '',
+    });
+    check('el legajo de Fray Ignacio ya no rebota por «no está al alcance»',
+      !/no está al alcance/.test(r.message), r.message.slice(0, 90));
+
+    // Y el alcance sigue siendo alcance: desde otro lugar, no.
+    const t2 = await Turn.open(id);
+    t2.executeTool('move_to_location', { location_id: 'obras-cofradia', reason: 'prueba' });
+    t2.executeTool('request_roll', {
+      skill: 'ocultismo', difficulty: 'hard', reason: 'estudiar el legajo de memoria',
+      stakes_success: 'ver el agregado', stakes_failure: 'no ver nada',
+    });
+    const r2 = t2.executeTool('discover_property', {
+      item_id: 'it-manuscrito-1674', property_id: 'p-manuscrito-deformado',
+      how: 'prueba', compared_with: '',
+    });
+    check('pero desde otro lugar, donde Fray Ignacio no está, sigue sin alcance',
+      /no está al alcance/.test(r2.message), r2.message.slice(0, 90));
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

@@ -112,9 +112,33 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
     resolver: () => ({
       texto: [
         'El último tramo del desagüe corta directo por el punto más bajo de la ciénaga, donde el barro lleva sin ver el sol más tiempo que cualquiera de los presentes.',
-        'La pala de un peón se hunde más de lo que debería, y lo que sale a la superficie con el barro no es agua: es presión, viento con demasiado peso, algo que se mueve por dentro de la tierra removida como si la tierra fuera agua.',
-        'Los peones sueltan las herramientas y corren. Fray Ignacio grita que no se puede parar ahora, que el círculo tiene que pintarse mientras la cosa siga afuera, no después.',
+        'La pala de un peón se hunde más de lo que debería. No sale barro: sale aire, de golpe, con un ruido que no es de aire, y el agua de las zanjas de alrededor se levanta entera medio metro sin que nada la empuje.',
+        'Lo que sube después no tiene forma que se pueda sostener con la vista. Es presión. Es viento con demasiado peso. Es algo que se mueve por dentro de la tierra removida como si la tierra fuera agua, y donde pasa, la luz de la mañana llega tarde.',
+        'Un peón que no alcanzó a soltar la pala se va con ella hacia arriba, y arriba se acaba antes de lo que debería. No grita. Eso es lo peor: que no grita.',
+        'Los demás sueltan las herramientas y corren. Fray Ignacio no corre. Grita que no se puede parar ahora, que el círculo tiene que pintarse mientras la cosa siga afuera, no después.',
       ],
+      // El Pólipo arranca `present: false` y aparece ACÁ. Antes estaba
+      // presente desde que se llegaba a `obras-cofradia`: el jugador leía
+      // «Pólipo Septentrional está acá» junto al botón de pedirle a la
+      // guardia que le enseñe a disparar, con la barra de combate llena,
+      // media hora antes de que la aventura lo hiciera emerger. Mismo bug
+      // —y mismo arreglo— que el Vagabundo Dimensional (ROADMAP
+      // §3.2-septquadragies): se corrigió uno de los dos y no el otro.
+      npc: { id: 'npc-polipo', present: true, cause: 'emergió del barro removido de la desecación' },
+      // Ver esto cuesta, y hasta ahora no costaba nada: la escena abría el
+      // combate sin una sola tirada de Cordura de por medio. Reportado
+      // jugando: «la aparición debería ser algo épico, que necesita su
+      // tirada de cordura también».
+      cordura: {
+        amount: 5,
+        cause: 'ver salir de la tierra algo que no tiene forma que la vista pueda sostener, y llevarse a un hombre sin que alcance a gritar',
+        crisis: {
+          nombre: 'Pánico al aire que se mueve mal',
+          descripcion: 'Una ráfaga que levanta polvo en círculo, una puerta que sopla al abrirse, el aire caliente subiendo de una chapa: por un instante es otra vez la mañana de la ciénaga, y algo está por salir del suelo.',
+          tipo: 'phobia',
+          afecta: [{ skill: 'esquivar', dados: 1 }],
+        },
+      },
       iniciaCombate: { npcIds: ['npc-polipo'], reason: 'el Pólipo Septentrional emerge de la desecación' },
       consecuencia: {
         description: 'En 1710, en la desecación de la Ciénaga de las Ánimas, un investigador entró en combate real contra el Pólipo Septentrional.',
@@ -157,21 +181,26 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
         'Fray Ignacio no le pregunta si quiere firmar: se lo pone adelante, ya escrito, con un espacio en blanco al pie.',
         '—Testigo de lo actuado. Así, sin más nombre que ése, nadie que lea esto en cien años va a poder decir que no estuvo.',
         'Firma. La letra sale con el pulso de quien no durmió, pero es una letra del siglo veinte en un libro del Cabildo de 1710.',
-        'Esa misma noche, con el Zonda en su apogeo, el investigador vuelve al zanjón partido y se arroja a la grieta.',
+        'Esa misma noche, con el Zonda en su apogeo, vuelve al zanjón partido a buscar la grieta.',
+        'No está.',
+        'Donde el aire se plegaba sobre sí mismo hay ahora piedra y barro seco, y una capa de almagre todavía fresca sobre la cara que mira contra el viento. El borde quedó cerrado. Eso era, exactamente, lo que había que hacer.',
+        'Fray Ignacio lo encuentra ahí cuando ya aclara, sentado en el fondo del zanjón, con la mano apoyada en la piedra pintada como quien espera que algo la vuelva a abrir desde el otro lado.\n\n—Sabía que iba a pasar esto —dice, y no suena a triunfo—. Se lo habría dicho, si me hubiera creído que yo también leí el legajo entero.',
       ],
       exposicion: { amount: 6, source: 'mercedanimas:firmar', cause: 'dejar, a propósito, un rastro de sí mismo doscientos veinte años antes de nacer' },
       consecuencia: {
-        description: 'En 1710, el investigador firmó las actas del Cabildo de San Juan como testigo, ayudando al Círculo Rojo temprano a sellar el borde de la Ciénaga de las Ánimas con almagre colonial.',
+        description: 'En 1710, el investigador firmó las actas del Cabildo de San Juan como testigo, ayudó al Círculo Rojo temprano a sellar el borde de la Ciénaga de las Ánimas con almagre colonial, y al cerrarlo se quedó de este lado: la grieta por la que había cruzado ya no existe.',
         scope: 'campaign', permanent: true,
-        worldReminder: 'Firmó un libro del Cabildo en 1710. Esa firma sigue ahí, esperando que alguien la encuentre en 1930.',
+        worldReminder: 'Cerró el borde y se quedó en 1710, del lado del Círculo. La grieta del Zonda no está más.',
       },
       desenlace: {
         id: 'firmar-actas',
         title: 'Lo que queda escrito',
         text: [
-          'El Cabildo de San Juan archiva las actas sin que a nadie le llame la atención una firma más entre tantas. Fray Ignacio muere convencido de haber corregido un error que en realidad cometió él mismo, y nadie después de él vuelve a comparar la letra del margen con el resto del legajo.',
+          'Nadie le explicó nunca —ni Eusebio, ni Fray Ignacio, ni el legajo— que el borde es uno solo, y que cerrarlo lo cierra en las dos direcciones. Era la única forma de salvar el valle, y era también la única forma de no volver.',
+          'El Cabildo de San Juan archiva las actas sin que a nadie le llame la atención una firma más entre tantas. Fray Ignacio muere unos años después, convencido de haber corregido un error que en realidad cometió él mismo, y deja el legajo en manos del único hombre de San Juan que sabe leerlo entero: uno que llegó de ninguna parte, con ropa que nadie supo nombrar, y que nunca explicó de dónde venía.',
           'El borde queda sellado —del modo controlador y a medias que el Círculo entendió, no del modo que Takillpa hubiera preferido— y eso alcanza, por ahora.',
-          'Doscientos veinte años más tarde, en un archivo de San Juan que casi nadie visita, hay un libro de actas de 1710 con una firma que un investigador de 1930 reconoce como propia, escrita con una letra que en 1710 no debería haber existido.',
+          'Doscientos veinte años más tarde, en un archivo de San Juan que casi nadie visita, hay un libro de actas de 1710 con una firma escrita con una letra que en 1710 no debería haber existido. Nadie la mira dos veces.',
+          'Y en el Valle de Zonda, en 1930, un pozo de acequia vuelve a secarse sin que nadie recuerde por qué hubo que pintarlo todos esos años.',
         ],
       },
     }),
@@ -315,21 +344,24 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
       texto: [
         'Los perros de la rastrillería ya cruzaron el puente de troncos cuando Takillpa lo empuja hacia el cauce seco al pie de los cerros.',
         '—Por acá el viento ya está caliente. Va a alcanzar.',
-        'La fosa se abre exactamente donde Takillpa dijo que iba a estar, respirando un aire que huele a antes de que hubiera acequias con nombre de santo. El investigador salta, perseguido por gritos que se van quedando atrás.',
+        'La fosa está exactamente donde Takillpa dijo que iba a estar. Pero ya no respira.',
+        'El aire que sale de ella es aire de acá, de esta noche, con olor a barro y a perro mojado. Nada se pliega. Nada llega tarde. El investigador se para al borde con los gritos de la rastrillería acercándose por atrás, y lo entiende sin que nadie se lo diga: la marca que acaba de grabar hace exactamente lo que tenía que hacer.',
+        'Takillpa lo agarra del brazo y lo tira hacia las cañas antes de que los faroles doblen el recodo.\n\n—Cerrar es cerrar —dice—. De los dos lados. Nadie le prometió otra cosa.',
       ],
-      exposicion: { amount: 6, source: 'mercedanimas:fuga', cause: 'cruzar la fosa como fugitivo, sin el permiso ni la bendición de nadie' },
+      exposicion: { amount: 6, source: 'mercedanimas:fuga', cause: 'entender, parado al borde de la fosa, que la cerró con uno mismo de este lado' },
       consecuencia: {
-        description: 'En 1710, el investigador se alió con Takillpa y los guardianes huarpes, grabó la marca en la piedra caliza de la Ciénaga de las Ánimas, y cruzó de vuelta como fugitivo de la justicia colonial.',
+        description: 'En 1710, el investigador se alió con Takillpa y los guardianes huarpes, grabó la marca en la piedra caliza de la Ciénaga de las Ánimas, y al cerrar el borde se quedó de este lado: la fosa por la que había cruzado dejó de respirar.',
         scope: 'campaign', permanent: true,
-        worldReminder: 'Grabó una marca con sus propias manos en 1710, y se fue de esa época como un prófugo, sin firmar nada.',
+        worldReminder: 'Cerró el borde y se quedó en 1710, prófugo, del lado de los guardianes huarpes.',
       },
       desenlace: {
         id: 'fuga-final',
         title: 'Lo que queda grabado',
         text: [
-          'El Cabildo de San Juan declara prófugo a un forastero de ropa extraña, y la causa se cierra sola con el tiempo, sin sentencia y sin nombre completo que anotar.',
-          'La ciénaga queda contenida del modo que Takillpa entendía que había que contenerla: sin papel, sin firma, sin nadie que la use para predecir cosechas.',
-          'Doscientos veinte años más tarde, en el mismo Valle de Zonda, un investigador camina el cauce seco de una acequia y encuentra, en una piedra caliza que nadie más mira dos veces, una marca grabada que él mismo hizo con sus propias manos — erosionada por dos siglos de viento Zonda, pero todavía legible para quien sepa qué está mirando.',
+          'Nadie le explicó nunca —ni Eusebio, ni Takillpa, ni la piedra— que el borde es uno solo, y que cerrarlo lo cierra en las dos direcciones. Era la única forma de salvar el valle, y era también la única forma de no volver.',
+          'El Cabildo de San Juan declara prófugo a un forastero de ropa extraña, y la causa se cierra sola con el tiempo, sin sentencia y sin nombre completo que anotar. Lo buscan tres meses en los caminos a Chile y a Córdoba, que son los caminos por los que se va la gente. Nadie piensa en buscarlo en la ranchada de los que cuidan una ciénaga que la Corona quiso secar.',
+          'La ciénaga queda contenida del modo que Takillpa entendía que había que contenerla: sin papel, sin firma, sin nadie que la use para predecir cosechas. Y queda, por primera vez en tres generaciones, alguien más a quien enseñarle cómo se hace.',
+          'Doscientos veinte años más tarde, en el mismo Valle de Zonda, en una piedra caliza que nadie mira dos veces, hay una marca grabada erosionada por dos siglos de viento Zonda. La hizo alguien que en 1930 todavía no había nacido, y que no llegó a verla envejecer desde el otro lado.',
         ],
       },
     }),

@@ -6,12 +6,80 @@
     {
       "id": "it-frasco-almagre",
       "name": "Frasco de almagre",
+      "cargado": true,
+      "value": 4,
+      "categoria": "material",
       "aliases": ["almagre", "el almagre", "frasco", "tierra colorada", "pintura roja"],
       "shortDescription": "Un frasco de vidrio con tierra colorada molida en aceite, tapado con un corcho. La etiqueta, escrita a mano hace mucho, dice sólo «para la piedra».",
       "owner": "rancho-eusebio",
       "carried": false,
       "publicProperties": [],
       "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-pincel-eusebio",
+      "name": "El pincel de Eusebio",
+      "cargado": true,
+      "value": 2,
+      "categoria": "herramienta",
+      "aliases": ["pincel", "el pincel", "la brocha"],
+      "shortDescription": "Cerda gastada hasta la mitad, mango de madera lustrado por el uso de una sola mano. Colgaba de un clavo en la pared como si fuera a usarse mañana.",
+      "owner": "rancho-eusebio",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [
+        {
+          "id": "p-pincel-un-solo-color",
+          "description": "Las cerdas que quedan están duras de pintura seca de un solo color: colorado. No hay otro pincel en toda la casa, ni rastro de que se haya usado nunca para otra cosa. Esto no es una herramienta de pintor: es una herramienta de una sola tarea, repetida durante más años de los que Eusebio lleva vivos.",
+          "discoveryCondition": { "kind": "skill_check", "skill": "descubrir", "difficulty": "regular" },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-farol-pulperia",
+      "name": "Farol de querosén",
+      "value": 12,
+      "categoria": "herramienta",
+      "aliases": ["farol", "el farol", "la lámpara", "el farol de petrona"],
+      "shortDescription": "De los que vende Petrona, con el vidrio ahumado de otro dueño. Aguanta el viento mejor que cualquier vela, que en el Valle de Zonda no es un detalle menor.",
+      "owner": "pulperia-zonda",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": { "truth": "CANON_SETTING", "disclosure": "PUBLIC", "source": "scenario" },
+      "usageCount": 0
+    },
+    {
+      "id": "it-plano-obra",
+      "name": "El plano de la mensura",
+      "categoria": "documento",
+      "aliases": ["el plano", "plano", "la mensura", "los planos"],
+      "shortDescription": "Papel de calco clavado con chinches a una tabla, en la carpa del ingeniero. Cotas, pendientes y el trazado nuevo del canal en tinta roja.",
+      "owner": "obras-canal",
+      "carried": false,
+      "publicProperties": [],
+      "hiddenProperties": [
+        {
+          "id": "p-plano-desvio",
+          "description": "El trazado en tinta roja no es el único. Debajo, en lápiz y a medio borrar, hay otro que rodea el lecho de piedra en vez de atravesarlo: más largo, más caro, y perfectamente viable. Alguien lo dibujó primero y alguien lo descartó después, y la firma al pie del descarte no es la de Valenzuela.",
+          "discoveryCondition": { "kind": "skill_check", "skill": "descubrir", "difficulty": "regular" },
+          "disclosure": "DISCOVERABLE"
+        }
+      ],
       "discoveredProperties": [],
       "conditionalProperties": [],
       "temporalProperties": [],
@@ -69,7 +137,13 @@
       "attitude": {},
       "present": true,
       "isCompanion": false,
-      "createdAt": "inicio"
+      "createdAt": "inicio",
+      "comercio": {
+        "vende": ["it-farol-pulperia"],
+        "compra": ["herramienta", "arma", "personal", "hallazgo"],
+        "margen": 0.6,
+        "nota": "Petrona no regatea: dice un número, y si no te gusta se encoge de hombros y sigue secando vasos."
+      }
     }
   ],
   "documents": [
@@ -143,11 +217,37 @@
         "Petrona atiende sin apurarse, aunque no haya nadie más esperando."
       ],
       "connections": ["estacion-zonda", "rancho-eusebio"],
-      "itemsPresent": [],
+      "itemsPresent": ["it-farol-pulperia"],
       "npcsPresent": ["npc-petrona"],
       "visited": false,
       "umbralIntensity": 2,
-      "senses": { "sound": ["Una radio con más ruido de fondo que música."], "smell": ["Yerba, cuero, algo friéndose atrás."] }
+      "senses": { "sound": ["Una radio con más ruido de fondo que música."], "smell": ["Yerba, cuero, algo friéndose atrás."] },
+      "features": [
+        {
+          "id": "f-libreta-fiado",
+          "names": ["la libreta", "el fiado", "las cuentas", "la libreta de fiado"],
+          "description": "La libreta de fiado, abierta sobre el mostrador, con nombres del pueblo y cifras al lado en lápiz.",
+          "closerLook": "Casi todas las cuentas son de este año y de este mes. La de Eusebio Sosa no: viene abierta desde hace dos años, no creció nunca más de unos pocos pesos, y cada tanto alguien la saldó entera de un tirón sin que figure con qué. La letra de esos saldos es la misma de Petrona.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "Petrona le viene pagando la cuenta a Eusebio desde hace dos años, sin decírselo a nadie y sin anotar de dónde sale la plata.",
+            "kind": "documentary",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-estante-botellas",
+          "names": ["el estante", "las botellas", "los cajones", "la mercaderia"],
+          "description": "Botellas y cajones detrás del mostrador, con más polvo arriba que abajo.",
+          "closerLook": "Hay un cajón de velas de sebo que se vende, y al lado un espacio vacío del tamaño de otro cajón igual, con el polvo marcando dónde estuvo hasta hace poco. En la pared, un almanaque de 1928 que nadie cambió, con una fecha de febrero marcada a lápiz en un círculo — de este mes, pero de hace dos años.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "En la pulpería hay un almanaque viejo con una fecha de febrero marcada en círculo, de hace dos años — el mismo mes en que Eusebio dejó de poder subir al brocal.",
+            "kind": "physical",
+            "reliability": "unreliable"
+          }
+        }
+      ]
     },
     "rancho-eusebio": {
       "id": "rancho-eusebio",
@@ -159,20 +259,20 @@
         "En la pared, colgado de un clavo, hay un pincel gastado hasta la mitad de las cerdas."
       ],
       "connections": ["pulperia-zonda", "acequia-vieja"],
-      "itemsPresent": ["it-frasco-almagre"],
+      "itemsPresent": ["it-frasco-almagre", "it-pincel-eusebio"],
       "npcsPresent": ["npc-eusebio"],
       "visited": false,
       "umbralIntensity": 5,
       "senses": { "sound": ["La respiración de Eusebio, más trabajosa de lo que debería a media tarde."], "smell": ["Humo de fogón viejo y aceite de linaza."] },
       "features": [
         {
-          "id": "f-pincel",
-          "names": ["pincel", "el pincel"],
-          "description": "Un pincel de cerda gastada hasta la mitad, colgado de un clavo como si fuera a usarse mañana.",
-          "closerLook": "Las cerdas que quedan están duras de pintura seca de un solo color: colorado. No hay otro pincel en toda la casa.",
+          "id": "f-catre",
+          "names": ["el catre", "la cama", "las mantas"],
+          "description": "Un catre de lona contra la pared, con dos mantas dobladas a los pies y un balde vacío al lado.",
+          "closerLook": "El balde está al lado del catre y no al lado del fogón, que es donde iría si fuera para agua. Y hay un rosario colgado del respaldo que no está gastado en las cuentas, sino en la cruz: alguien lo agarró muchas veces de ahí, de la misma manera, y nunca lo rezó entero.",
           "examineSkill": "descubrir",
           "clue": {
-            "description": "Eusebio tiene un solo pincel, y lo usó para una sola cosa durante años.",
+            "description": "Eusebio ya no se levanta de noche: tiene el balde al lado del catre. Y agarra el rosario de la cruz, muchas veces, sin llegar a rezarlo.",
             "kind": "physical",
             "reliability": "reliable"
           }
@@ -220,11 +320,37 @@
         "Los peones bajan la voz cada vez que alguien nombra la acequia vieja."
       ],
       "connections": ["acequia-vieja", "estacion-zonda"],
-      "itemsPresent": [],
+      "itemsPresent": ["it-plano-obra"],
       "npcsPresent": ["npc-valenzuela"],
       "visited": false,
       "umbralIntensity": 3,
-      "senses": { "sound": ["Picos y palas, y una discusión en voz baja que se corta cuando alguien se acerca."], "smell": ["Tierra recién removida."] }
+      "senses": { "sound": ["Picos y palas, y una discusión en voz baja que se corta cuando alguien se acerca."], "smell": ["Tierra recién removida."] },
+      "features": [
+        {
+          "id": "f-cajones-dinamita",
+          "names": ["los cajones", "la dinamita", "los explosivos", "el galpon de herramientas"],
+          "description": "Cajones apilados con el sello de la empresa, más de los que hacen falta para un desnivel tan chico.",
+          "closerLook": "No son todos del mismo lote. Los de abajo tienen la fecha de compra de hace dos años —la mitad de la carga estaba comprada antes de que el ingeniero llegara al Valle—, y son los que están sellados. Los de arriba, los nuevos, están abiertos y a mitad de uso. Quien pidió esta cantidad no la pidió para nivelar un desnivel: la pidió para partir piedra, y la pidió antes de que hubiera un plano firmado.",
+          "examineSkill": "mecanica",
+          "clue": {
+            "description": "La mitad de la dinamita de la obra se compró hace dos años, antes de que Valenzuela llegara al Valle y antes de que hubiera un plano firmado. No es carga para nivelar: es carga para partir piedra.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        },
+        {
+          "id": "f-estacas",
+          "names": ["las estacas", "el desnivel", "las marcas del terreno", "el trazado"],
+          "description": "Un desnivel recién marcado con estacas y piolín, con los números escritos a lápiz en la madera.",
+          "closerLook": "Las estacas nuevas están clavadas encima de agujeros viejos, tapados con tierra suelta. Alguien midió esto mismo antes, hace bastante, y las cotas que dejó no son las que tienen las estacas de ahora: el trazado viejo pasaba dos metros al costado del lecho de piedra. El nuevo pasa justo por el medio.",
+          "examineSkill": "descubrir",
+          "clue": {
+            "description": "El trazado viejo del canal esquivaba el lecho de piedra por dos metros. El trazado nuevo pasa justo por el medio, y las estacas nuevas están clavadas encima de los agujeros del viejo.",
+            "kind": "physical",
+            "reliability": "reliable"
+          }
+        }
+      ]
     }
   },
   "startLocation": "estacion-zonda",
@@ -326,6 +452,7 @@
       "etiqueta": "Preguntarle si tiene dudas",
       "intencion": "Le pregunto a Valenzuela si tiene dudas sobre volar la piedra",
       "claves": ["dudas", "esta seguro", "está seguro", "le da miedo"],
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "razon": "que un ingeniero con una orden firmada admita en voz alta que no las tiene todas consigo" },
       "cede": {
         "actitud": 4,
         "texto": [
@@ -335,6 +462,14 @@
           "description": "Los peones de la obra no quieren acercarse al brocal después de las cinco de la tarde: dicen que el viento cambia ahí adentro antes que en cualquier otro lado del Valle.",
           "kind": "testimonial",
           "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Tengo una orden firmada y una fecha. Las dudas son un lujo de gente con menos gente a cargo. —Y vuelve a los papeles antes de terminar la frase, que es su manera de terminarla."],
+        "pista": {
+          "description": "Valenzuela no admite tener dudas sobre volar la piedra, pero vuelve a sus papeles antes de terminar la frase.",
+          "kind": "experiential",
+          "reliability": "unreliable"
         }
       }
     },
@@ -406,6 +541,28 @@
       "id": "leer-telegrama",
       "prioridad": 50,
       "cuando": { "op": "texto", "patron": "leo el telegrama|el telegrama de encargo" }
+    },
+    {
+      "id": "mirar-pincel",
+      "prioridad": 55,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "el pincel de cerca|miro el pincel|descuelgo el pincel" },
+          { "op": "lugar", "es": ["rancho-eusebio"] }
+        ]
+      }
+    },
+    {
+      "id": "mirar-plano",
+      "prioridad": 55,
+      "cuando": {
+        "op": "y",
+        "de": [
+          { "op": "texto", "patron": "el plano de la mensura|miro el plano|estudio el plano" },
+          { "op": "lugar", "es": ["obras-canal"] }
+        ]
+      }
     },
     {
       "id": "revisar-baul",
@@ -495,6 +652,24 @@
       "intencion": "Leo el telegrama de encargo",
       "etiqueta": "Leer el telegrama de encargo",
       "hecha": { "op": "documento", "id": "doc-telegrama" }
+    },
+    {
+      "id": "mirar-pincel",
+      "grupo": "observar",
+      "lugar": "rancho-eusebio",
+      "orden": 5,
+      "intencion": "Miro el pincel de cerca",
+      "etiqueta": "Mirar el pincel de cerca",
+      "hecha": { "op": "propiedad", "item": "it-pincel-eusebio", "prop": "p-pincel-un-solo-color" }
+    },
+    {
+      "id": "mirar-plano",
+      "grupo": "observar",
+      "lugar": "obras-canal",
+      "orden": 5,
+      "intencion": "Estudio el plano de la mensura",
+      "etiqueta": "Estudiar el plano de la mensura",
+      "hecha": { "op": "propiedad", "item": "it-plano-obra", "prop": "p-plano-desvio" }
     },
     {
       "id": "revisar-baul",

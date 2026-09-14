@@ -133,6 +133,12 @@ export function sanitizeForClient(state: GameState): ClientState {
         shortDescription: i.shortDescription,
         carried: i.owner === inv.id,
         roto: i.roto ?? false,
+        // Una partida guardada ANTES de que existieran las categorías tiene
+        // sus objetos sin `categoria`: el estado es el pliegue del log, y
+        // esos objetos se crearon sin el campo. Caen en «hallazgo», que es
+        // el cajón de lo que no se sabe qué es — salvo las armas, que se
+        // reconocen igual por su `armaId` y no tiene sentido esconder.
+        categoria: i.categoria ?? (i.armaId ? 'arma' : 'hallazgo'),
         // Sólo propiedades públicas + las YA descubiertas.
         properties: [
           ...i.publicProperties.map((p) => ({ description: p.description, discovered: false })),

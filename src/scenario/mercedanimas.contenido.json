@@ -6,6 +6,7 @@
     {
       "id": "it-manuscrito-1674",
       "name": "El manuscrito de Fray Ignacio",
+      "categoria": "documento",
       "aliases": ["manuscrito", "el manuscrito", "las actas de 1674", "el legajo"],
       "shortDescription": "Un legajo cosido a mano, con la letra apretada de un escribano. Copia —o copia de una copia— de algo escrito treinta y seis años atrás, a mil trescientas leguas de acá.",
       "owner": "npc-ignacio",
@@ -34,6 +35,7 @@
     {
       "id": "it-almagre-colonial",
       "name": "Almagre molido",
+      "categoria": "material",
       "aliases": ["almagre", "el almagre", "tierra colorada"],
       "shortDescription": "Un cuenco de tierra colorada de la barranca, molida en aceite. Igual a la que se usa doscientos veinte años más adelante, en otra punta del país, sin que nadie de acá pueda saberlo.",
       "owner": "convento-merced",
@@ -49,6 +51,7 @@
     {
       "id": "it-mosquete-guardia",
       "name": "Mosquete de la guardia",
+      "categoria": "arma",
       "aliases": ["mosquete", "el mosquete", "fusil"],
       "shortDescription": "El mosquete que uno de los soldados de la guardia le prestó para las prácticas. Nadie se lo pidió de vuelta todavía.",
       "owner": "obras-cofradia",
@@ -160,12 +163,12 @@
       "secrets": [],
       "relationships": [],
       "attitude": {},
-      "present": true,
+      "present": false,
       "isCompanion": false,
       "createdAt": "inicio",
       "combate": {
         "hp": 20, "maxHp": 20, "pelea": 60, "esquivar": 30,
-        "armaId": "rafaga-viento", "bonificacionDano": "+2D6",
+        "armaId": "rafaga-viento", "bonificacionDano": "0",
         "defensaPorDefecto": "contraataca",
         "dex": 65, "build": 3, "armadura": 6
       }
@@ -253,7 +256,7 @@
         "Algo se mueve entre las cañas sin hacer ruido de pisada.",
         "El agua de la acequia refleja el cielo de un modo que tarda una fracción de segundo de más en seguir a las nubes."
       ],
-      "connections": ["plaza-mayor"],
+      "connections": ["plaza-mayor", "canaverales-fuga"],
       "itemsPresent": [],
       "npcsPresent": ["npc-takillpa"],
       "visited": false,
@@ -278,10 +281,11 @@
       "id": "convento-merced",
       "name": "El Convento de la Merced",
       "aliases": ["convento", "el convento", "la merced"],
-      "description": "Adobe grueso, vigas de algarrobo. Fray Ignacio recibe en el locutorio con una calma que no se explica sólo con la fe.",
+      "description": "Adobe grueso, vigas de algarrobo. Fray Ignacio recibe en el locutorio con una calma que no se explica sólo con la fe. Lo primero que hizo, antes de preguntar nada, fue mandar que le preparen un cuarto de huéspedes al fondo del claustro: a un forastero con esa ropa no se lo deja durmiendo en la plaza.",
       "atmosphere": [
         "Una lámpara de sebo parpadea con cada ráfaga que se filtra por las persianas.",
-        "El legajo de 1674 está sobre la mesa, abierto, como si lo hubiera estado dejando ahí a propósito para que alguien lo viera."
+        "El legajo de 1674 está sobre la mesa, abierto, como si lo hubiera estado dejando ahí a propósito para que alguien lo viera.",
+        "El cuarto del fondo del claustro sigue con la puerta abierta y una vela sin encender sobre la mesa, esperando."
       ],
       "connections": ["plaza-mayor", "celda-convento"],
       "itemsPresent": ["it-almagre-colonial"],
@@ -292,9 +296,9 @@
     },
     "celda-convento": {
       "id": "celda-convento",
-      "name": "La celda del convento",
-      "aliases": ["celda", "la celda"],
-      "description": "Tercera noche desde la llegada. El viento Zonda sube, sofocante, y una lámpara de sebo parpadea sobre la mesa. Dos cosas pasan al mismo tiempo, y no hay tiempo para las dos.\n\nUn novicio desliza por debajo de la puerta una nota con sello de cera roja: Fray Ignacio convoca al scriptorium antes de la medianoche, con las actas de 1674 desplegadas.\n\nAl mismo tiempo, al acercarse a la ventana a airear el cuarto, hay una marca fresca de barro húmedo en el marco exterior — la misma línea cruzada por un semicírculo que se ve en la piedra del brocal, doscientos años más adelante— y, abajo, entre los naranjos del patio, una figura agazapada hace una seña hacia los cerros.\n\nNo hay forma de atender las dos cosas. Elegir una cierra la otra, esta noche y todas las que vengan.",
+      "name": "El cuarto de huéspedes",
+      "aliases": ["el cuarto", "cuarto de huespedes", "la celda", "celda"],
+      "description": "El cuarto que le prepararon al fondo del claustro: un catre, una mesa, una vela, y una ventana que da al patio de los naranjos. Es la tercera noche desde que llegó, y es la primera en que se acuesta sabiendo por qué está acá.\n\nEl viento Zonda sube, sofocante. Y entonces pasan dos cosas al mismo tiempo, y no hay tiempo para las dos.\n\nUn novicio desliza por debajo de la puerta una nota con sello de cera roja: Fray Ignacio convoca al scriptorium antes de la medianoche, con las actas de 1674 desplegadas.\n\nAl mismo tiempo, al acercarse a la ventana a airear el cuarto, hay una marca fresca de barro húmedo en el marco exterior — la misma línea cruzada por un semicírculo que se ve en la piedra del brocal, doscientos años más adelante— y, abajo, entre los naranjos del patio, una figura agazapada hace una seña hacia los cerros.\n\nNo hay forma de atender las dos cosas. Elegir una cierra la otra, esta noche y todas las que vengan.",
       "atmosphere": [
         "La lámpara se apaga sola con la próxima ráfaga, y nadie la vuelve a encender todavía."
       ],
@@ -338,7 +342,7 @@
       "id": "canaverales-fuga",
       "name": "El escondite entre las cañas",
       "aliases": ["cañaverales de noche", "el escondite", "escondite entre las canas"],
-      "description": "Takillpa espera agazapado, y detrás, en el patio del convento, los perros de la guardia empiezan a ladrar. No hay tiempo para explicaciones largas.",
+      "description": "Takillpa espera agazapado entre las cañas altas, con el oído puesto en el camino y no en quien llega. En algún lado del pueblo, todavía lejos, los perros de la guardia empiezan a ladrar. No hay tiempo para explicaciones largas.",
       "atmosphere": ["Los ladridos se alejan hacia el otro lado del pueblo, por ahora."],
       "connections": ["cienaga-sabotaje"],
       "itemsPresent": [],
@@ -450,6 +454,7 @@
       "etiqueta": "Preguntarle si conoce otro lugar como éste",
       "intencion": "Le pregunto a Fray Ignacio si conoce otro lugar donde pase algo parecido",
       "claves": ["otro lugar", "otro paraje", "en otra parte tambien pasa"],
+      "prueba": { "skill": "persuasion", "difficulty": "regular", "actitudMinima": 2, "razon": "que diga en voz alta lo que el legajo insinúa y él nunca terminó de creerse" },
       "cede": {
         "actitud": 1,
         "texto": [
@@ -457,6 +462,45 @@
         ],
         "pista": {
           "description": "El manuscrito de 1674 menciona otro paraje, lejos, cerca del mar, donde el agua también «se porta mal» y hay quien la vigila sin saber por qué.",
+          "kind": "testimonial",
+          "reliability": "unreliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Le voy a contestar lo que le contestaría a cualquiera: no sé. —Y se queda mirando el legajo un segundo más de lo que hace falta para no saber nada."],
+        "pista": {
+          "description": "Fray Ignacio esquivó la pregunta de si hay otros lugares como éste, pero miró el legajo antes de decir que no sabe.",
+          "kind": "experiential",
+          "reliability": "unreliable"
+        }
+      }
+    },
+    {
+      "id": "i-camino",
+      "npc": "npc-ignacio",
+      "orden": 35,
+      "etiqueta": "Preguntarle cómo llegó ese legajo hasta San Juan",
+      "intencion": "Le pregunto a Fray Ignacio cómo llegó ese legajo desde tan lejos hasta San Juan",
+      "claves": ["llego ese legajo", "como llego el legajo", "quien lo trajo", "de donde vino el manuscrito"],
+      "disponible": { "op": "pista", "contiene": "el último eslabón de ese grupo en San Juan" },
+      "prueba": { "skill": "historia", "difficulty": "regular", "actitudMinima": 2, "razon": "seguirle el rastro a un papel que cruzó un virreinato entero sin figurar en ningún registro" },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "—Por partes, y por manos. —Cuenta con los dedos, y los dedos no le alcanzan—. De donde lo recuperaron a Córdoba, con un arriero que no sabía qué llevaba. De Córdoba a Mendoza, con un cura que sí sabía y se murió sin decirlo. De Mendoza acá lo trajo una mujer, a pie, en 1698. Doce años tardó en hacer un camino que una carreta hace en dos meses.",
+          "—Nadie firmó un recibo. Nadie anotó una fecha. Ésa es la única razón por la que todavía existe: porque el Santo Oficio no persigue lo que no figura en ningún lado.",
+          "Doce años, cuatro manos, mil trescientas leguas. No es un grupo con sede y con libro de actas: es una cadena de gente que decidió, cada una por su cuenta, que esto tenía que llegar a algún lado."
+        ],
+        "pista": {
+          "description": "El manuscrito de 1674 tardó veinticuatro años en llegar a San Juan, pasando por al menos cuatro manos —un arriero que no sabía qué llevaba, un cura que sí, una mujer que lo trajo a pie desde Mendoza en 1698— y sin un solo registro escrito. El Círculo no es una organización con sede: es una cadena de gente decidiendo lo mismo por separado.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Llegó. Es lo único que sé con certeza, y lo único que me hace falta saber."],
+        "pista": {
+          "description": "Fray Ignacio no sabe —o no quiere decir— por qué manos pasó el legajo de 1674 antes de llegarle a él.",
           "kind": "testimonial",
           "reliability": "unreliable"
         }
@@ -513,6 +557,7 @@
       "etiqueta": "Preguntarle cómo se cierra un borde así",
       "intencion": "Le pregunto a Takillpa cómo se cierra un borde así",
       "claves": ["como se cierra", "cerrarle el paso", "hay manera de cerrarlo"],
+      "prueba": { "skill": "persuasion", "difficulty": "regular", "actitudMinima": 2, "razon": "que un huarpe le confíe a un español —porque eso parece— lo único que su gente no dejó escrito en ningún lado" },
       "cede": {
         "actitud": 4,
         "texto": [
@@ -520,6 +565,14 @@
         ],
         "pista": {
           "description": "Takillpa conoce una manera de «cerrarle el paso» a lo que cruza un borde, aprendida de generaciones de guardianes anteriores a las acequias coloniales — sin papel ni fuego, con las manos.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": ["—Eso no se cuenta y ya. —Corta una caña con la uña del pulgar, despacio—. A los míos los escucharon contar cosas una vez, y por eso hoy somos cuatro."],
+        "pista": {
+          "description": "Takillpa sabe cómo se cierra un borde, pero no se lo cuenta a cualquiera: dice que a los suyos ya los escucharon contar cosas una vez.",
           "kind": "testimonial",
           "reliability": "reliable"
         }
@@ -542,6 +595,33 @@
           "kind": "testimonial",
           "reliability": "reliable"
         }
+      }
+    },
+    {
+      "id": "t-anteriores",
+      "npc": "npc-takillpa",
+      "orden": 4,
+      "etiqueta": "Preguntarle quién cuidaba esto antes que él",
+      "intencion": "Le pregunto a Takillpa quiénes cuidaban la ciénaga antes que él",
+      "claves": ["cuidaban la cienaga antes", "quien cuidaba antes", "los que estaban antes", "los anteriores"],
+      "disponible": { "op": "pista", "contiene": "los guardianes huarpes de la ciénaga son cada vez menos" },
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": 3, "razon": "preguntarle por los muertos sin que suene a inventario" },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "No contesta con nombres. Los huarpes no dan nombres de los que ya no están, y menos a alguien que podría repetirlos delante de un escribano.",
+          "—Éramos once cuando yo aprendí. Ahora somos cuatro, y dos ya no pueden subir al cerro. De los otros siete: tres se los llevó la mita, dos la viruela, uno se fue a vivir a la ciudad y aprendió a decir que todo esto es cuento de viejos.\n\n—Al último lo encontramos al lado de la fosa, sin una marca encima. Estaba cerrando algo. No llegó.",
+          "Lo dice como quien cuenta cuántas ovejas le quedan. Después se queda un rato largo mirando el agua, y no es que esté triste: es que está contando otra vez, por si le dio mal."
+        ],
+        "pista": {
+          "description": "De los once guardianes huarpes que cuidaban la ciénaga cuando Takillpa aprendió, quedan cuatro, y dos ya no pueden subir al cerro. Al último lo encontraron muerto al lado de la fosa, sin una marca encima, cerrando algo que no llegó a cerrar.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "exposicion": 3
+      },
+      "esquiva": {
+        "texto": ["—Ésos no se cuentan. —Y no agrega nada más, en un idioma o en el otro."]
       }
     },
     {
@@ -610,6 +690,34 @@
           "kind": "experiential",
           "reliability": "unreliable"
         }
+      }
+    },
+    {
+      "id": "j-corregidos",
+      "npc": "npc-josefa",
+      "orden": 4,
+      "etiqueta": "Preguntarle qué fue de los otros a los que corrigieron",
+      "intencion": "Le pregunto a Josefa qué fue de los otros de su familia a los que les corrigieron la mano",
+      "claves": ["los otros", "que fue de ellos", "los que corrigieron", "que les paso despues"],
+      "disponible": { "op": "pista", "contiene": "no es la primera vez que pasa en la familia" },
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "actitudMinima": 3, "razon": "que una madre le cuente a un desconocido lo que su familia decidió no volver a mencionar" },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Mi abuela tenía un hermano. Se lo corrigieron a los ocho meses, con la tabla y la cuerda, como dicen que hay que hacerlo. Vivió cuarenta años. Se casó, tuvo hijos, murió de viejo en su cama.",
+          "Se acomoda al chico en el otro brazo antes de seguir.",
+          "—Pero nunca durmió una noche entera. Ni una, en cuarenta años. Mi abuela dormía en el cuarto de al lado de chica y lo oía caminar toda la noche, todas las noches. Cuando le preguntaban, decía que soñaba con agua quieta y que prefería no cerrar los ojos.\n\n—Eso es lo que nadie me dice cuando me dicen que lo corrija. No me dicen que el que corrigen queda bien. Me dicen que queda vivo."
+        ],
+        "pista": {
+          "description": "Al hermano de la abuela de Josefa le corrigieron la mano de bebé y vivió cuarenta años sin dormir una noche entera: decía que soñaba con agua quieta y prefería no cerrar los ojos. Corregir la mano no arregla lo que sea que pase con esa sangre — sólo lo deja seguir vivo.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "cordura": 1,
+        "exposicion": 4
+      },
+      "esquiva": {
+        "texto": ["—De ésos no se habla en mi casa. —Y por cómo lo dice, no es que no sepa: es que se lo enseñaron así."]
       }
     },
     {
@@ -887,7 +995,7 @@
       "orden": 90,
       "final": true,
       "intencion": "Me arrojo a la fosa con Takillpa, perseguido por la rastrillería",
-      "etiqueta": "Arrojarse a la fosa, perseguido",
+      "etiqueta": "Correr a la fosa con Takillpa, perseguido",
       "visible": { "op": "narrado", "contiene": "La marca queda cerrada, honda, terminante" }
     }
   ],
@@ -895,12 +1003,12 @@
     {
       "id": "firmar-actas",
       "title": "Lo que queda escrito",
-      "condition": "El investigador colabora con Fray Ignacio y el Círculo Rojo temprano, sella el borde con almagre colonial, y firma las actas del Cabildo como testigo antes de cruzar de vuelta."
+      "condition": "El investigador colabora con Fray Ignacio y el Círculo Rojo temprano, sella el borde con almagre colonial y firma las actas del Cabildo como testigo — y descubre, cuando va a buscar la grieta, que cerrar el borde cerró también su camino de vuelta. Queda en 1710."
     },
     {
       "id": "fuga-final",
       "title": "Lo que queda grabado",
-      "condition": "El investigador se alía con Takillpa y los guardianes huarpes, graba la marca en la piedra caliza, y huye como fugitivo antes de cruzar de vuelta."
+      "condition": "El investigador se alía con Takillpa y los guardianes huarpes y graba la marca en la piedra caliza — y descubre, parado al borde de la fosa que ya no respira, que cerrar el borde cerró también su camino de vuelta. Queda en 1710, prófugo."
     }
   ],
   "opening": "El barro es fresco, y corre agua de verdad donde en 1930 hace décadas que no corre nada. El silbido del viento Zonda todavía se escucha, más bajo, más lejos, como si viniera de debajo de la tierra.\n\nNo hay campamento, no hay vía de tren, no hay cartel de ninguna empresa. Hay un valle seco y árido, casas de adobe a lo lejos, y ropa de 1930 empapada de un barro que no debería estar ahí.\n\nEs 1710. San Juan de la Frontera, Corregimiento de Cuyo, Capitanía General de Chile. Ningún reloj de acá va a decir la hora exacta, y nadie de este siglo sabe todavía que existe alguien como el investigador — ni que ya lo cruzó una vez alguien más, doscientos veinte años antes de que naciera.",
@@ -914,6 +1022,14 @@
           { "op": "pista", "contiene": "el último eslabón de ese grupo en San Juan" },
           { "op": "pista", "contiene": "mantiene cerrado un borde entre este mundo y otro" }
         ]
+      }
+    },
+    {
+      "desde": "canaverales",
+      "hasta": "canaverales-fuga",
+      "hastaQue": {
+        "op": "pista",
+        "contiene": "conoce una manera de «cerrarle el paso»"
       }
     }
   ]

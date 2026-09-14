@@ -13,6 +13,7 @@
     {
       "id": "it-almagre",
       "name": "El tarro de almagre",
+      "categoria": "material",
       "aliases": [
         "almagre",
         "tarro",
@@ -55,6 +56,7 @@
     {
       "id": "it-foto",
       "name": "La foto de la comisión del centenario",
+      "categoria": "documento",
       "aliases": [
         "foto",
         "fotografia",

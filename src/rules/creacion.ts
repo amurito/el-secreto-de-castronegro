@@ -32,7 +32,7 @@
  */
 
 import type {
-  Characteristics, CharacteristicId, SkillId, SkillValue,
+  Characteristics, CharacteristicId, SkillId, SkillValue, CategoriaItem,
 } from '../shared/types.ts';
 import { SKILLS, SKILL_BY_ID } from './skills.ts';
 
@@ -215,7 +215,7 @@ export interface Ocupacion {
    * ambulante comparten cámara): así una escena que lo busca por id no le
    * importa qué ocupación se lo dio.
    */
-  itemInicial?: { id: string; nombre: string; shortDescription: string };
+  itemInicial?: { id: string; nombre: string; shortDescription: string; categoria?: CategoriaItem };
 }
 
 export interface ProblemaReparto {

@@ -6,6 +6,7 @@
     {
       "id": "it-libreta-medidas",
       "name": "Libreta de medidas",
+      "categoria": "documento",
       "aliases": [
         "libreta",
         "la libreta",

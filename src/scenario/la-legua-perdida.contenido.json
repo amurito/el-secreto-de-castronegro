@@ -6,6 +6,7 @@
     {
       "id": "it-rueda",
       "name": "Rueda de agrimensor",
+      "categoria": "herramienta",
       "aliases": [
         "rueda",
         "odómetro",
@@ -46,6 +47,7 @@
     {
       "id": "it-libreta",
       "name": "Libreta de campo de Roldán, 1903",
+      "categoria": "documento",
       "aliases": [
         "libreta",
         "libreta de campo",
@@ -87,6 +89,7 @@
     {
       "id": "it-cantimplora",
       "name": "Cantimplora de Fermín",
+      "categoria": "herramienta",
       "aliases": [
         "cantimplora",
         "caramañola",
@@ -127,6 +130,7 @@
     {
       "id": "it-botas",
       "name": "Alpargatas de Fermín",
+      "categoria": "personal",
       "aliases": [
         "alpargatas",
         "botas",

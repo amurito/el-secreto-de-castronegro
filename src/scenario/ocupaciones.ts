@@ -31,7 +31,7 @@ export const OCUPACIONES: Ocupacion[] = [
     nota: 'La ocupación de Elena Sartori.',
     tratamiento: { m: 'doctor', f: 'doctora' },
     itemInicial: {
-      id: 'it-maletin-medico', nombre: 'Maletín médico',
+      id: 'it-maletin-medico', nombre: 'Maletín médico', categoria: 'herramienta',
       shortDescription: 'Cuero gastado, instrumental básico y un frasco de láudano que nunca usó y no piensa tirar. ' +
         'Lo abre siempre de la misma manera, aunque nadie la esté mirando.',
     },
@@ -48,7 +48,7 @@ export const OCUPACIONES: Ocupacion[] = [
     formula: { fijos: { EDU: 4 } },
     nota: 'La ocupación de Tomás Belgrano.',
     itemInicial: {
-      id: 'it-camara-fotografica', nombre: 'Cámara de placas',
+      id: 'it-camara-fotografica', nombre: 'Cámara de placas', categoria: 'herramienta',
       shortDescription: 'Heredada, más vieja que quien la carga y mejor que él. Placas de vidrio, no película: ' +
         'cada toma cuesta tiempo y no se repite fácil.',
     },
@@ -74,7 +74,7 @@ export const OCUPACIONES: Ocupacion[] = [
     // cualquier otra aventura, donde `it-rueda` no existe, nace como objeto
     // de oficio genérico.
     itemInicial: {
-      id: 'it-rueda', nombre: 'Rueda de agrimensor',
+      id: 'it-rueda', nombre: 'Rueda de agrimensor', categoria: 'herramienta',
       shortDescription: 'Una rueda de medir con contador de vueltas, propia, de tanto uso que ya no hace falta ' +
         'mirarle el contador para saber si dio una vuelta entera o no.',
     },
@@ -92,7 +92,7 @@ export const OCUPACIONES: Ocupacion[] = [
     tratamiento: { m: 'comisario', f: 'comisaria' },
     armasPermitidas: ['revolver-38', 'revolver-32'],
     itemInicial: {
-      id: 'it-libreta-actas', nombre: 'Libreta de actas',
+      id: 'it-libreta-actas', nombre: 'Libreta de actas', categoria: 'documento',
       shortDescription: 'Declaraciones tomadas a mano, con la hora y el nombre del que declaró. ' +
         'Sirve en un juzgado y sirve para acordarse de quién mintió primero.',
     },
@@ -109,7 +109,7 @@ export const OCUPACIONES: Ocupacion[] = [
     formula: { fijos: { EDU: 4 } },
     tratamiento: { m: 'maestro', f: 'maestra' },
     itemInicial: {
-      id: 'it-registro-escolar', nombre: 'Registro escolar',
+      id: 'it-registro-escolar', nombre: 'Registro escolar', categoria: 'documento',
       shortDescription: 'Treinta nombres, sus faltas y sus notas, más un fajo de cartas del pueblo que nadie más ' +
         'guardó nunca en ningún lado.',
     },
@@ -126,7 +126,7 @@ export const OCUPACIONES: Ocupacion[] = [
     formula: { fijos: { EDU: 4 } },
     tratamiento: { m: 'escribano', f: 'escribana' },
     itemInicial: {
-      id: 'it-sello-notarial', nombre: 'Sello y protocolo notarial',
+      id: 'it-sello-notarial', nombre: 'Sello y protocolo notarial', categoria: 'documento',
       shortDescription: 'El sello que hace válido lo que firma, y el libro donde queda copia de cada escritura ' +
         'que pasó por sus manos desde que se recibió.',
     },
@@ -146,7 +146,7 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 30, max: 70 },
     formula: { fijos: { EDU: 4 } },
     itemInicial: {
-      id: 'it-lupa-anticuario', nombre: 'Lupa de joyero',
+      id: 'it-lupa-anticuario', nombre: 'Lupa de joyero', categoria: 'herramienta',
       shortDescription: 'Aumento suficiente para ver una fecha en el reverso de una hebilla, o la costura que ' +
         'delata una reparación mal disimulada.',
     },
@@ -167,7 +167,7 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 9, max: 40 },
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
     itemInicial: {
-      id: 'it-prismaticos-capataz', nombre: 'Prismáticos de campo',
+      id: 'it-prismaticos-capataz', nombre: 'Prismáticos de campo', categoria: 'herramienta',
       shortDescription: 'Rayados de tanto viaje en las alforjas, pero enfocan bien. Ven un jinete en el horizonte ' +
         'antes de que el jinete vea la estancia.',
     },
@@ -186,7 +186,7 @@ export const OCUPACIONES: Ocupacion[] = [
     // Mismo id que el de periodista: es el mismo objeto —una cámara propia—,
     // no dos ítems distintos que casualmente hacen lo mismo.
     itemInicial: {
-      id: 'it-camara-fotografica', nombre: 'Cámara de placas',
+      id: 'it-camara-fotografica', nombre: 'Cámara de placas', categoria: 'herramienta',
       shortDescription: 'La lleva a todos lados, en una funda de cuero que ya tiene forma de cámara y no de otra ' +
         'cosa. La conoce a ciegas: sabe cuánto tarda cada revelado sin mirar el reloj.',
     },
@@ -204,7 +204,7 @@ export const OCUPACIONES: Ocupacion[] = [
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
     armasPermitidas: ['derringer-25', 'revolver-32'],
     itemInicial: {
-      id: 'it-credencial-detective', nombre: 'Placa y credencial',
+      id: 'it-credencial-detective', nombre: 'Placa y credencial', categoria: 'personal',
       shortDescription: 'No es policía, pero la placa se le parece lo suficiente como para que la mayoría no mire ' +
         'dos veces. Abre algunas puertas y le cierra otras, para siempre, si se descubre.',
     },
@@ -221,7 +221,7 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 9, max: 30 },
     formula: { fijos: { EDU: 4 } },
     itemInicial: {
-      id: 'it-cuaderno-ocultista', nombre: 'Cuaderno de anotaciones ocultas',
+      id: 'it-cuaderno-ocultista', nombre: 'Cuaderno de anotaciones ocultas', categoria: 'documento',
       shortDescription: 'Copias de símbolos, direcciones de correspondencia con otras provincias, y notas al margen ' +
         'que ni él mismo firmaría delante de otra persona.',
     },
@@ -238,7 +238,7 @@ export const OCUPACIONES: Ocupacion[] = [
     credito: { min: 9, max: 30 },
     formula: { fijos: { EDU: 2, STR: 2 } },
     itemInicial: {
-      id: 'it-vendas-boxeador', nombre: 'Vendas de mano',
+      id: 'it-vendas-boxeador', nombre: 'Vendas de mano', categoria: 'personal',
       shortDescription: 'Manchadas, remendadas, y más viejas que cualquier otra cosa que tenga encima. Se las venda ' +
         'siempre en el mismo orden, aunque no vaya a pelear.',
     },
@@ -256,7 +256,7 @@ export const OCUPACIONES: Ocupacion[] = [
     formula: { fijos: { EDU: 2 }, eleccion: { entre: ['STR', 'DEX'], multiplicador: 2 } },
     tratamiento: { m: 'domador', f: 'domadora' },
     itemInicial: {
-      id: 'it-lazo-domador', nombre: 'Lazo trenzado',
+      id: 'it-lazo-domador', nombre: 'Lazo trenzado', categoria: 'herramienta',
       shortDescription: 'Cuero sobado, trenzado a mano, sin un solo nudo flojo. No lo presta ni lo deja tirado, ' +
         'ni siquiera cuando no anda a caballo.',
     },
@@ -277,7 +277,7 @@ export const OCUPACIONES: Ocupacion[] = [
     soloGenero: 'm',
     tratamiento: { m: 'padre', f: 'padre' },
     itemInicial: {
-      id: 'it-breviario-cura', nombre: 'Breviario y crucifijo de bolsillo',
+      id: 'it-breviario-cura', nombre: 'Breviario y crucifijo de bolsillo', categoria: 'personal',
       shortDescription: 'Tapas gastadas de tanto abrirse en el mismo punto, y un crucifijo de metal barato que ya no ' +
         'brilla. Los dos le pesan menos en la mano que en la conciencia.',
     },

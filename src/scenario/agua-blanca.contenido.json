@@ -6,6 +6,7 @@
     {
       "id": "it-libreta",
       "name": "Libreta de tapas negras",
+      "categoria": "documento",
       "aliases": [
         "libreta",
         "libreta negra",
@@ -132,6 +133,7 @@
     {
       "id": "it-cilindro-cera",
       "name": "Cilindro de cera",
+      "categoria": "herramienta",
       "aliases": [
         "cilindro",
         "el cilindro",
@@ -163,6 +165,7 @@
     {
       "id": "it-cuaderno-tachado",
       "name": "Cuaderno de cuentas tachado",
+      "categoria": "documento",
       "aliases": [
         "cuaderno",
         "el cuaderno",
@@ -204,6 +207,7 @@
     {
       "id": "it-hacha-granero",
       "name": "Hacha de leña",
+      "categoria": "arma",
       "aliases": [
         "hacha",
         "el hacha",

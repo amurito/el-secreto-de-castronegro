@@ -6,6 +6,7 @@
     {
       "id": "it-cuchillo-cocina",
       "name": "Cuchillo de cocina",
+      "categoria": "arma",
       "aliases": [
         "cuchillo",
         "el cuchillo",
@@ -30,6 +31,7 @@
     {
       "id": "it-bisturi-laboratorio",
       "name": "Instrumental de piedra",
+      "categoria": "arma",
       "aliases": [
         "bisturi",
         "bisturí",
@@ -104,6 +106,7 @@
     {
       "id": "it-anillo-rubi",
       "name": "Anillo de rubí",
+      "cargado": true,
       "aliases": [
         "anillo",
         "el anillo",
@@ -134,6 +137,7 @@
     {
       "id": "it-diario-bernardo",
       "name": "Cuaderno de Bernardo",
+      "categoria": "documento",
       "aliases": [
         "cuaderno",
         "el cuaderno de bernardo",
@@ -175,6 +179,8 @@
     {
       "id": "it-punzon-circulo",
       "name": "El punzón del Círculo",
+      "cargado": true,
+      "categoria": "arma",
       "aliases": [
         "punzon",
         "punzón",

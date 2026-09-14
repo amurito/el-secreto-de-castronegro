@@ -40,6 +40,68 @@ export const LA_GRIETA_DEL_ZONDA_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    id: 'mirar-pincel',
+    prueba: () => ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'mirar una herramienta de trabajo con la atención con que se mira una prueba',
+      stakes_success: 'ves para qué se usó, y para qué no se usó nunca',
+      stakes_failure: 'un pincel viejo colgado de un clavo, como en cualquier rancho',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return {
+          texto: [
+            'Un pincel de cerda gastada hasta la mitad, colgado de un clavo. Mango liso de tanto uso.',
+            'Como el de cualquier rancho donde alguien alguna vez pintó algo.',
+          ],
+        };
+      }
+      return {
+        texto: [
+          'Las cerdas que quedan están duras de pintura seca, y de un solo color: colorado. No hay otra mancha, ni de cal, ni de alquitrán, ni del verde con que se pintan las aberturas en todo el valle.',
+          'No hay otro pincel en la casa. Éste no es el pincel de alguien que pinta cosas: es el pincel de alguien que pinta UNA cosa, y que lo viene haciendo desde antes de que el mango se gastara así.',
+        ],
+        descubre: {
+          itemId: 'it-pincel-eusebio', propertyId: 'p-pincel-un-solo-color',
+          how: 'mirando de qué color están duras las cerdas, y de qué color no',
+        },
+      };
+    },
+  },
+
+  {
+    id: 'mirar-plano',
+    prueba: () => ({
+      skill: 'descubrir', difficulty: 'regular',
+      reason: 'leer un plano de obra buscando lo que se borró, no lo que se dibujó',
+      stakes_success: 'encontrás el trazado que está debajo del trazado',
+      stakes_failure: 'cotas, pendientes y una línea roja que no dice nada que no sepas',
+    }),
+    resolver: ({ tirada }) => {
+      if (!tirada?.exito) {
+        return {
+          texto: [
+            'Papel de calco con cotas, pendientes y el trazado nuevo en tinta roja, cruzando el lecho de piedra de lado a lado.',
+            'Es un plano de obra. Dice lo que dice cualquier plano de obra.',
+          ],
+        };
+      }
+      return {
+        texto: [
+          'El calco deja pasar la luz, y con la luz pasando se ve lo que hay debajo de la tinta roja: otro trazado, a lápiz, borrado sin demasiado empeño. Ése rodea el lecho de piedra en vez de atravesarlo.',
+          'Es más largo. Es más caro. Y es perfectamente viable — quien lo dibujó sabía lo que hacía. Al pie del descarte hay una firma que no es la de Valenzuela, y una fecha de hace dos años.',
+          'Alguien decidió, antes de que llegara el ingeniero, que la piedra tenía que partirse. No por dónde pasa el agua: por dónde está la piedra.',
+        ],
+        exposicion: { amount: 3, source: 'grietadelzonda:plano', cause: 'entender que la voladura de la piedra fue el objetivo y no la consecuencia' },
+        descubre: {
+          itemId: 'it-plano-obra', propertyId: 'p-plano-desvio',
+          how: 'mirando el calco a contraluz y encontrando el trazado borrado debajo',
+        },
+      };
+    },
+  },
+
+  {
     id: 'revisar-baul',
     prueba: () => ({
       skill: 'descubrir', difficulty: 'regular',
@@ -106,7 +168,12 @@ export const LA_GRIETA_DEL_ZONDA_LOGICA: LogicaDeEscenas = [
           'Se da vuelta hacia la pared, y la conversación se termina ahí, aunque nadie la haya dado por terminada en voz alta.',
           'Ya no hay más que preguntarle.',
         ],
-        cordura: { amount: 1, cause: 'la certeza concreta de que algo se pierde hoy, y no se va a poder recuperar después' },
+        // Antes esto cobraba 1 de Cordura. Reportado jugando: «¿por qué
+        // pierde cordura por una tirada que no salió bien? no me reveló
+        // cómo pintar». Tiene razón, y la regla general que deja es que
+        // fallar una tirada ya es el costo — cobrar Cordura ADEMÁS es
+        // castigo doble por el mismo dado. La Cordura se paga por lo que
+        // el investigador VE o ENTIENDE, no por lo que no consiguió.
         pistas: [{
           description: 'Eusebio se negó a explicar el procedimiento del almagre de apuro, y no va a volver a intentarlo.',
           kind: 'testimonial',

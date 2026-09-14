@@ -247,7 +247,18 @@ export const ARMAS: Arma[] = [
   // pueda declarar en `armaId`, igual que `rebenque` para Cirilo Sosa.
   {
     id: 'rafaga-viento', nombre: 'Ráfaga de viento', habilidad: 'pelea',
-    dano: { cantidad: 2, caras: 6, suma: 0 },
+    // 1D6, no 2D6. Bajado tras jugarlo: contra un investigador de 11 PV
+    // máximos, cualquier golpe de 6 o más es HERIDA GRAVE (p. 119) y obliga
+    // a una tirada de CON para no perder el conocimiento — y un investigador
+    // inconsciente no puede seguir jugando, porque el motor todavía no tiene
+    // con qué reanimarlo. Con 2D6 eso pasaba en más de la mitad de los
+    // golpes: entrar al combate que la propia aventura abre terminaba, casi
+    // siempre, en una partida trabada.
+    //
+    // Lo que hace temible al Pólipo no es el daño: son sus 6 de armadura y
+    // sus 20 PV, que lo vuelven imposible de matar con lo que se consigue en
+    // 1710. La amenaza es que no se le puede ganar, no que ejecute.
+    dano: { cantidad: 1, caras: 6, suma: 0 },
     aporteBonificacion: 'completa', empala: false, alcance: 0,
     nota: 'Del Pólipo Septentrional. No hay filo que esquivar, sólo presión que empuja y arranca.',
   },

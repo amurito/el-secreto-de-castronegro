@@ -251,6 +251,13 @@ const ENTRADAS: EntradaCatalogo[] = [
     // `continuacion: true`: literalmente sigue del instante en que termina
     // La Grieta del Zonda —cruzar la grieta— igual que Agua Blanca → El
     // Vigésimo comparten la misma noche.
+    //
+    // ES LA ÚLTIMA DE LA CADENA, Y TERMINA SIN VOLVER. Sus dos desenlaces
+    // dejan al investigador en 1710: cerrar el borde —que es lo que las dos
+    // ramas le piden hacer— lo cierra en las dos direcciones, y la grieta
+    // por la que cruzó deja de existir. Nada la requiere todavía; lo que
+    // venga después arranca de un investigador de 1930 viviendo doscientos
+    // veinte años antes de nacer, no de uno que volvió a contarlo.
     requiere: ['la-grieta-del-zonda'],
     continuacion: true,
   },

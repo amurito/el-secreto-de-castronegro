@@ -48,6 +48,16 @@ export function Sheet({ inv }: { inv: any }) {
         <Stat label="PM" value={d.mp} max={d.maxMp} tone="mp" />
         <Stat label="Suerte" value={d.luck} max={99} tone="luck" />
       </div>
+      {/* El efectivo va aparte de la grilla y sin barra: no tiene máximo
+          contra el cual medirlo, y ponerle uno sugeriría que hay una meta.
+          Sólo aparece si hay algo — una partida guardada de antes de que
+          existiera la plata no muestra un cero que no significa nada. */}
+      {typeof d.efectivo === 'number' && d.efectivo > 0 && (
+        <div className="efectivo">
+          <span className="efectivo-label">Efectivo</span>
+          <span className="efectivo-valor">{d.efectivo} pesos</span>
+        </div>
+      )}
       {inv.pendingLuckBonus > 0 && (
         <div className="luck-pending">
           {/* Mismo campo tanto si viene de gastar Suerte como de lanzar
@@ -404,27 +414,69 @@ function Group({ title, count, children }: { title: string; count: number; child
   );
 }
 
-export function Inventory({ items }: { items: any[] }) {
-  if (!items?.length) return <div className="empty">Nada al alcance.</div>;
+/**
+ * El orden en que se muestran los cajones, y cómo se llaman en pantalla.
+ * Fijo y no alfabético: se lee de lo que se usa peleando a lo que todavía no
+ * se sabe qué es.
+ */
+const CATEGORIAS: Array<{ id: string; titulo: string }> = [
+  { id: 'arma', titulo: 'Armas' },
+  { id: 'documento', titulo: 'Papeles' },
+  { id: 'herramienta', titulo: 'Herramientas' },
+  { id: 'material', titulo: 'Materiales' },
+  { id: 'personal', titulo: 'Efectos personales' },
+  { id: 'hallazgo', titulo: 'Hallazgos' },
+];
+
+function ItemCard({ i }: { i: any }) {
   return (
-    <div className="board">
-      {items.map((i) => (
-        <div key={i.id} className={`card card-item ${i.carried ? 'carried' : ''}`}>
-          <div className="item-head">
-            <b>{i.name}</b>
-            {i.carried && <span className="carried-tag">encima</span>}
-            {i.roto && <span className="broken-tag">rota</span>}
-          </div>
-          <div className="item-desc">{i.shortDescription}</div>
-          {i.properties.map((p: any, n: number) => (
-            <div key={n} className={`prop ${p.discovered ? 'prop-found' : ''}`}>
-              {p.discovered && <span className="prop-tag">descubierto</span>}
-              {p.description}
-            </div>
-          ))}
-          {i.hasUndiscovered && <div className="prop-hint">Este objeto no ha terminado de decir lo que tiene para decir.</div>}
+    <div className={`card card-item ${i.carried ? 'carried' : ''}`}>
+      <div className="item-head">
+        <b>{i.name}</b>
+        {i.carried && <span className="carried-tag">encima</span>}
+        {i.roto && <span className="broken-tag">rota</span>}
+      </div>
+      <div className="item-desc">{i.shortDescription}</div>
+      {i.properties.map((p: any, n: number) => (
+        <div key={n} className={`prop ${p.discovered ? 'prop-found' : ''}`}>
+          {p.discovered && <span className="prop-tag">descubierto</span>}
+          {p.description}
         </div>
       ))}
+      {i.hasUndiscovered && <div className="prop-hint">Este objeto no ha terminado de decir lo que tiene para decir.</div>}
+    </div>
+  );
+}
+
+/**
+ * Agrupado por categoría desde que el inventario cruza de una aventura a la
+ * siguiente: con lo juntado en siete aventuras, una lista plana de veinte
+ * objetos no se lee. Un cajón sólo aparece si tiene algo adentro, así que en
+ * una aventura suelta —tres objetos, todos hallazgos— se ve casi igual que
+ * antes.
+ */
+export function Inventory({ items }: { items: any[] }) {
+  if (!items?.length) return <div className="empty">Nada al alcance.</div>;
+  const encima = items.filter((i) => i.carried);
+  const alrededor = items.filter((i) => !i.carried);
+  return (
+    <div className="board">
+      {CATEGORIAS.map(({ id, titulo }) => {
+        const delCajon = encima.filter((i) => (i.categoria ?? 'hallazgo') === id);
+        if (!delCajon.length) return null;
+        return (
+          <div key={id} className="inv-grupo">
+            <div className="inv-grupo-titulo">{titulo} <span className="inv-grupo-cuenta">{delCajon.length}</span></div>
+            {delCajon.map((i) => <ItemCard key={i.id} i={i} />)}
+          </div>
+        );
+      })}
+      {alrededor.length > 0 && (
+        <div className="inv-grupo">
+          <div className="inv-grupo-titulo">Acá cerca <span className="inv-grupo-cuenta">{alrededor.length}</span></div>
+          {alrededor.map((i) => <ItemCard key={i.id} i={i} />)}
+        </div>
+      )}
     </div>
   );
 }

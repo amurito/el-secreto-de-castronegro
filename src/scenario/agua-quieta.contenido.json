@@ -6,6 +6,7 @@
     {
       "id": "it-foto1897",
       "name": "Fotografía enmarcada (1897)",
+      "categoria": "documento",
       "aliases": [
         "retrato",
         "foto vieja",
@@ -48,6 +49,7 @@
     {
       "id": "it-fotoreciente",
       "name": "Fotografía del aljibe (tomada por Ignacio)",
+      "categoria": "documento",
       "aliases": [
         "placa",
         "fotografia de ignacio",
@@ -93,6 +95,7 @@
     {
       "id": "it-reloj",
       "name": "Reloj de bolsillo",
+      "categoria": "herramienta",
       "aliases": [
         "reloj"
       ],
@@ -131,6 +134,8 @@
     {
       "id": "it-espejo",
       "name": "Espejo de mano",
+      "cargado": true,
+      "categoria": "herramienta",
       "aliases": [
         "espejo"
       ],
@@ -170,6 +175,7 @@
     {
       "id": "it-farol",
       "name": "Farol de querosén",
+      "categoria": "material",
       "aliases": [
         "farol",
         "lampara",

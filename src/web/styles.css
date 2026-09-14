@@ -1031,6 +1031,28 @@ button { font-family: inherit; cursor: pointer; }
 }
 .card-source { margin-top: 0.3rem; text-transform: none; letter-spacing: 0; font-style: normal; }
 
+/* El efectivo, en la ficha. Sin barra: no tiene máximo. */
+.efectivo {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.35rem 0.6rem; margin-top: 0.4rem;
+  border: 1px solid var(--line); border-radius: 2px;
+}
+.efectivo-label {
+  font-family: var(--mono); font-size: 0.6rem; color: var(--text-dim);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.efectivo-valor { font-family: var(--mono); font-size: 0.8rem; color: var(--text); }
+
+/* Cajones del inventario. Ver `Inventory` en components.tsx. */
+.inv-grupo { margin-bottom: 1.1rem; }
+.inv-grupo-titulo {
+  font-family: var(--mono); font-size: 0.62rem; color: var(--text-dim);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  border-bottom: 1px solid var(--line); padding-bottom: 0.3rem; margin-bottom: 0.5rem;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.inv-grupo-cuenta { color: var(--accent-dim); }
+
 .card-item.carried { border-left-color: var(--accent-dim); }
 .item-head { display: flex; justify-content: space-between; align-items: baseline; }
 .carried-tag { font-family: var(--mono); font-size: 0.6rem; color: var(--accent); letter-spacing: 0.08em; }

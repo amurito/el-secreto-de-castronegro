@@ -154,6 +154,9 @@ function resolve(turn: Turn, i: Intent, out: string[], run: Runner, scenario: Sc
     case 'tocar':    return sense(turn, i, out, run, 'touch');
     case 'tomar':    return takeItem(turn, i, out, run);
     case 'soltar':   return dropItem(turn, i, out, run);
+    case 'descartar': return discardItem(turn, i, out, run);
+    case 'comprar':  return tradeItem(turn, i, out, run, 'buy_item');
+    case 'vender':   return tradeItem(turn, i, out, run, 'sell_item');
     case 'ir':
     case 'entrar':
     case 'salir':    return move(turn, i, out, run);
@@ -471,6 +474,58 @@ function dropItem(turn: Turn, i: Intent, out: string[], run: Runner): void {
     item_id: i.target.item.id, to: s.world.currentLocation, carried: 'false', cause: 'lo deja el investigador',
   });
   out.push(r.ok ? `Dejás ${i.target.item.name.toLowerCase()}.` : r.message);
+}
+
+/**
+ * Comprar y vender son la misma función porque la diferencia entera la hace
+ * el motor: quién le da qué a quién, a qué precio, y qué pasa si lo que
+ * cambia de manos toca el Umbral. Acá sólo hay que averiguar CON QUIÉN se
+ * está tratando, que es lo único que la intención no dice.
+ *
+ * El mostrador se busca entre los NPC de este lugar que tengan `comercio`.
+ * Si hay más de uno —no pasa hoy en ninguna aventura, pero va a pasar—, gana
+ * el primero, que es el mismo criterio que usa el resto del resolvedor
+ * cuando una frase no alcanza para desambiguar.
+ */
+function tradeItem(
+  turn: Turn, i: Intent, out: string[], run: Runner, tool: 'buy_item' | 'sell_item',
+): void {
+  const s = turn.state;
+  if (i.target.kind !== 'item') { out.push(needsClarification(s, i.raw)); return; }
+  const aqui = s.world.locations[s.world.currentLocation];
+  const mostrador = Object.values(s.npcs).find(
+    (n) => n.comercio && n.present && n.status !== 'dead' && aqui?.npcsPresent.includes(n.id),
+  );
+  if (!mostrador) {
+    out.push('Acá no hay con quién hacer ese trato.');
+    return;
+  }
+  const r = run(tool, { item_id: i.target.item.id, npc_id: mostrador.id });
+  out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+}
+
+/**
+ * Descartar NO es soltar. Soltar deja el objeto en el cuarto, donde se lo
+ * puede volver a levantar; descartar lo saca del mundo (`to: 'perdido'`,
+ * que `toolTransferItem` traduce a `owner: null`) y no hay vuelta atrás.
+ *
+ * Existe desde que el inventario dejó de ser de la aventura y pasó a ser de
+ * la campaña: con siete aventuras encima, la lista se llena de cosas que ya
+ * no sirven y que uno no quiere volver a ver ofrecidas en cada cuarto. Sin
+ * esto, la única forma de limpiar era soltarlas en algún lado y convivir con
+ * el botón de volver a agarrarlas.
+ */
+function discardItem(turn: Turn, i: Intent, out: string[], run: Runner): void {
+  const s = turn.state;
+  if (i.target.kind !== 'item') { out.push(needsClarification(s, i.raw)); return; }
+  const item = i.target.item;
+  const r = run('transfer_item', {
+    item_id: item.id, to: 'perdido', carried: 'false',
+    cause: 'el investigador se deshace de esto a propósito',
+  });
+  out.push(r.ok
+    ? `Te deshacés de ${item.name.toLowerCase()}. No vas a poder recuperarlo.`
+    : r.message);
 }
 
 function useItem(turn: Turn, i: Intent, out: string[], run: Runner): void {

@@ -4114,6 +4114,320 @@ investigador la trae con un valor jugable — si no, o se cambia de
 habilidad, o el chequeo se diseña para no gatear nada (mismo criterio que
 `suenodebido.logica.ts`), nunca dejarlo como gate duro de una pista.
 
+### 3.2-quinquagies Cuatro bugs que salieron de una sola partida del Acto I/II ✔ HECHA
+
+Una sesión de juego sobre el despliegue, con capturas, dejó cuatro
+problemas de motor. Ninguno es de contenido: los cuatro estaban en el
+motor o en la interfaz, y tres de los cuatro afectaban a cualquier
+aventura, no sólo a las dos nuevas.
+
+1. **El motor le hablaba al jugador como si fuera el Keeper-LLM.** En el
+   scriptorium, estudiar el manuscrito devolvía «*«El manuscrito de Fray
+   Ignacio» no está al alcance del investigador. No reveles esta propiedad.
+   Narrá lo que el investigador SÍ puede percibir.*» — texto escrito para
+   el narrador de IA que se quitó del proyecto hace mucho, impreso tal cual
+   en medio de la prosa. La causa: `isReachable` (`engine/gates.ts`) sólo
+   consideraba al alcance un objeto del investigador o del lugar, y el
+   legajo tiene `owner: npc-ignacio`, que es quien lo tiene abierto sobre
+   la mesa. Agregado el tercer caso —objeto de un NPC que está acá—, que
+   además vuelve coherente el trato: una propiedad SIN
+   `discoveryCondition` en manos de un NPC ya se descubría (sale antes,
+   por otro `return`), una CON condición no. `prueba-auditoria.ts` no caza
+   esta familia porque mira lo que la escena DECLARA entregar, no si el
+   tool lo permite en tiempo real. Test nuevo en `prueba-tiradas.ts`, con
+   el contenido real, que también comprueba que el alcance siga siendo
+   alcance desde otro lugar.
+2. **Al que le disparabas nunca te devolvía nada.** El más grave. Con un
+   arma de fuego a distancia, la defensa del NPC se fuerza a `esquiva` (p.
+   113: un balazo no se contraataca a mano) y el NPC objetivo está excluido
+   de `ordenDeAsalto` para no duplicar su contraataque. Entre las dos
+   cosas, no le quedaba NINGUNA forma de hacer daño. Reportado así:
+   «*el combate contra el pólipo fue como 35 asaltos porque tenía 25% de
+   habilidad, el pólipo no atacó en ningún momento*». No era un rival
+   difícil: era un rival que no peleaba. Arreglado dándole su turno propio
+   a quien esquivó —esquivar es una reacción, no la acción del asalto— y
+   sólo a ése, para que el que contraataca no pegue dos veces. Dos tests
+   de regresión en `prueba-combate.ts`, uno por cada mitad.
+3. **El jugador se elegía su propia dificultad.** La pantalla de combate
+   real traía los cuatro checkboxes del simulador: «venía apuntando» y «a
+   quemarropa» (bonificación), «el blanco se cubre» y «el blanco se mueve
+   rápido» (penalización). Nadie marca nunca las dos penalizaciones y todo
+   el mundo marca la bonificación: eso no es una decisión táctica.
+   Reportado: «*me dejaba elegir a mí los bonificadores o penalizaciones
+   dentro del combate*». Quitados de `Combate.tsx` — siguen en
+   `Simulador.tsx`, donde armar el escenario a mano ES el punto. Lo único
+   que queda es el quemarropa que el motor calcula solo con la distancia
+   declarada del rival. Pendiente: «apuntar» como acción que gasta el
+   asalto, que es como debería entrar esa bonificación.
+4. **El Pólipo estaba en escena desde media hora antes.** Mismo bug que
+   el Vagabundo Dimensional (§3.2-septquadragies) en el otro NPC de la
+   misma aventura: se corrigió uno y no el otro. El jugador leía «Pólipo
+   Septentrional está acá», con su descripción entera y la barra de
+   combate llena, junto al botón de pedirle a la guardia que le enseñe a
+   disparar. Ahora arranca `present: false` y emerge en `combate-polipo`,
+   que además pasó a cobrar 5 de Cordura con su fobia propia —antes la
+   aparición no costaba absolutamente nada— y tiene prosa nueva a la
+   altura de lo que es.
+
+**Y un ajuste de balance que salió de arreglar el 2.** Con el Pólipo
+atacando de verdad por primera vez, la pelea pasó de inofensiva a
+ejecución: `rafaga-viento` pegaba 2D6 más `+2D6` de bonificación contra un
+investigador de 11 PV máximos. Peor que eso: con 11 de máximo, cualquier
+golpe de 6+ es herida grave (p. 119) y obliga a una tirada de CON para no
+quedar inconsciente — y un investigador inconsciente no puede seguir
+jugando, porque el motor todavía no tiene con qué reanimarlo. O sea que
+entrar al combate que la propia aventura abre terminaba, casi siempre, en
+una partida trabada. Bajado a 1D6 sin bonificación: ahora ataca todos los
+asaltos y deja entre cuatro y seis de margen para decidir huir. Lo que
+hace temible al Pólipo no es el daño, son sus 6 de armadura y 20 PV, que
+lo vuelven imposible de matar con lo que hay en 1710.
+
+**Y una regla general, de un reporte de una línea.** «*¿Por qué pierde
+cordura por una tirada que no salió bien? No me reveló cómo pintar.*» En
+`pedir-que-ensene` (*La Grieta del Zonda*), fallar la tirada costaba 1 de
+Cordura además de no conseguir nada: castigo doble por el mismo dado.
+Quitado. La regla que deja, y que vale para todo lo que se escriba de acá
+en más: **la Cordura se paga por lo que el investigador VE o ENTIENDE, no
+por lo que no consiguió.** Revisado el resto del catálogo contra ese
+criterio —ocho escenas cobran Cordura en una rama de fracaso— y ninguna
+otra lo viola: las de *El Círculo Rojo* cobran por estar parado adentro
+del anillo de pasto enfermo (pase lo que pase con la tirada), la de *El
+Vigésimo* está en la rama de éxito, y las de *El Sueño Debido* están
+fuera del `if`, en las dos ramas.
+
+### 3.2-unquinquagies El cuarto del convento, y un final que ya no vuelve ✔ HECHA
+
+Dos quejas de la misma partida, las dos sobre *La Merced de las Ánimas*, y
+las dos acertadas por motivos distintos de los que parecían.
+
+**«Nadie va voluntariamente a la celda, no hay interacción para que el
+investigador caiga preso, sólo aparece en la celda.»** El malentendido de
+fondo era el nombre: `celda-convento` nunca fue un calabozo, es la celda
+monástica —el cuarto que el convento le da a un huésped— pero en
+castellano rioplatense «celda» se lee como cárcel, y el botón «Ir a la
+celda del convento» sonaba a entregarse preso. Tres arreglos:
+  - Renombrada a **«El cuarto de huéspedes»**, con «celda» y «la celda»
+    conservados como alias. El `id` no se toca —lo referencian condiciones,
+    acciones y `prueba-auditoria.ts`—, y el nombre nuevo no comparte
+    ninguna palabra de cuatro letras o más con `El Convento de la Merced`,
+    para no repetir el choque de `nombresDe()` que ya costó un bug con los
+    dos cañaverales (§3.2-sexquadragies).
+  - El alojamiento ahora se establece ANTES, en la prosa: la descripción
+    del convento dice que lo primero que hace Fray Ignacio, antes de
+    preguntar nada, es mandar que le preparen un cuarto al fondo del
+    claustro, y una línea de ambiente recuerda que la puerta quedó abierta.
+    Ya no aparece un cuarto de la nada.
+  - Y el problema estructural real, que estaba debajo de la queja:
+    **para aliarse con Takillpa había que dormir primero en el convento del
+    fraile.** El único camino a la Rama B pasaba por el cuarto, que es
+    exactamente al revés de lo que esa rama significa. Agregada una
+    conexión oculta `canaverales → canaverales-fuga`, destrabada por la
+    pista de `t-cerrar`: si se ganó la confianza de Takillpa, se va con él
+    esa noche sin pisar el convento. La descripción del escondite, que
+    daba por hecho que se venía huyendo del claustro, quedó neutral para
+    servir a las dos entradas.
+
+**«Este final no quiero que devuelva al investigador inmediatamente a
+1930, siento que aún no se descubrió nada relevante en esta época.»**
+Acordado con el jugador: las dos ramas dejan de devolverlo. Y la razón
+narrativa es la misma para las dos, que es lo que la vuelve buena — **el
+borde es uno solo, y cerrarlo lo cierra en las dos direcciones.** Sellar
+la ciénaga es lo que las dos ramas piden hacer, y es también lo que
+destruye la grieta por la que se cruzó. Rama A: vuelve al zanjón y
+encuentra piedra, barro seco y almagre fresco donde estaba la grieta.
+Rama B: la fosa sigue ahí pero ya no respira, y Takillpa se lo dice sin
+rodeos («cerrar es cerrar, de los dos lados; nadie le prometió otra
+cosa»). Los dos textos de desenlace siguen proyectando a 1930, pero desde
+el otro lado: lo que queda de él en el registro, no lo que él se lleva.
+`la-merced-de-las-animas` es la última de la cadena y nada la requiere, así
+que el catálogo no se rompe — queda el gancho para un Acto IV que arranque
+de un investigador de 1930 viviendo doscientos veinte años antes de nacer.
+
+**Contenido nuevo en las tres líneas** (elegidas por el jugador; sin
+lugares nuevos): `i-camino` —cómo llegó el legajo de 1674 a San Juan:
+veinticuatro años, cuatro manos, ningún registro escrito, y la idea de que
+el Círculo no es una organización con sede sino una cadena de gente
+decidiendo lo mismo por separado—; `t-anteriores` —de once guardianes
+quedan cuatro, y al último lo encontraron muerto al lado de la fosa,
+cerrando algo que no llegó a cerrar—; y `j-corregidos` —al hermano de la
+abuela de Josefa le corrigieron la mano y vivió cuarenta años sin dormir
+una noche entera, soñando con agua quieta: corregir no arregla, sólo deja
+vivo—.
+
+**Y de paso, la queja de que los NPC regalan todo.** Verificado sobre el
+catálogo entero: sólo 53 de 151 temas (35%) pedían tirada. Puestas tiradas
+en los tres temas de esta aventura que entregaban gratis información que
+el NPC tiene motivos para callar —`i-castronegro` (que Ignacio admita en
+voz alta que hay otros lugares), `t-cerrar` (que un huarpe le confíe a un
+español lo único que su gente no dejó escrito) y `t-mita`—, todas con
+rama `esquiva` que igual deja algo, según el criterio de
+§3.2-novemquadragies. *La Merced de las Ánimas* pasó de 4/12 a 9/15 temas
+con tirada (60%), bastante por encima del promedio del catálogo. Los temas
+que siguen sin tirada son los que el NPC QUIERE que sepas —Ignacio te
+convocó él mismo, Josefa pide ayuda, Gonzalo recita su discurso oficial—,
+que es donde pedir un dado sería ruido (`conversacion.ts`).
+
+### 3.2-duoquinquagies El inventario deja de ser de la aventura y pasa a ser de la campaña ✔ HECHA
+
+Pedido: «inventario permanente entre aventuras, con categorías y botón de
+soltar (desaparece)». Hasta acá, entre aventuras encadenadas se heredaba
+TODO del investigador —Cordura, Exposición, habilidades, fobias, umbrales
+cruzados, hasta las anomalías de percepción— menos una cosa: lo que llevaba
+en las manos. El punzón del Círculo que se saca del sótano de la Casa de
+Díaz desaparecía al empezar la aventura siguiente, sin que nadie lo dejara
+en ningún lado.
+
+**La herencia** (`createCampaign`, engine.ts) tiene tres reglas, y las tres
+hicieron falta:
+  1. Cruza lo que se lleva ENCIMA y es de un investigador que sigue vivo. Lo
+     que quedó tirado en un cuarto quedó en ese cuarto.
+  2. Si la aventura nueva declara un objeto con el mismo id, gana el de la
+     aventura. No es precaución teórica: hay ids repetidos de verdad entre
+     aventuras publicadas —`it-libreta` es de Adelmo en *El Orden Debido* y
+     de Roldán en *La Legua Perdida*, `it-almagre` y `it-foto` están dos
+     veces cada uno—. Sin esta regla, heredar pisaría el objeto que la
+     aventura necesita con otro que se llama igual.
+  3. El contenido puede vetar uno con `noSeHereda`, para lo prestado, lo que
+     se consume, o lo que sólo tiene sentido dentro de su propia historia.
+
+**Las categorías** (`CategoriaItem`) son cinco cajones y un default, no una
+taxonomía: `arma`, `documento`, `herramienta`, `material`, `personal`, y
+`hallazgo` para lo que no es nada de eso. Asignadas a los 42 objetos del
+contenido y a los 14 de oficio. El inventario de la interfaz agrupa por
+cajón —y sólo muestra el cajón que tiene algo adentro, así que una aventura
+suelta con tres objetos se ve casi igual que antes—. Una partida guardada
+de antes no tiene categorías: sus objetos caen en «hallazgo», salvo las
+armas, que se reconocen igual por su `armaId`.
+
+**Deshacerse de algo** no es lo mismo que soltarlo, y hacían falta los dos:
+soltar deja el objeto en el cuarto y se lo puede volver a levantar;
+deshacerse lo saca del mundo (`owner: null`) y no hay vuelta atrás. Verbo
+nuevo `descartar` en el clasificador —declarado ANTES que `soltar`, porque
+«me deshago de» tiene que ganarle a cualquier «dejo» de la misma frase, y
+confundirlos en esa dirección pierde un objeto para siempre— y botón propio
+en `acciones.ts`. Sin esto, lo que se junta no se puede dejar de juntar, y
+con siete aventuras encima la lista sólo crece.
+
+### 3.2-terquinquagies La Grieta del Zonda deja de ser un pasillo ✔ HECHA
+
+«Sigo sintiendo que La Grieta del Zonda es trivial, necesito que tenga más
+profundidad, escenas, ítems.» Medido antes de escribir nada, y el número
+explica la sensación: **un solo objeto en toda la aventura**, tres detalles
+examinables repartidos en cinco lugares, y dos lugares enteros —la pulpería
+y las obras— donde no había literalmente nada que mirar.
+
+Ahora son cuatro objetos, siete detalles y diez escenas:
+  - **El pincel de Eusebio** dejó de ser un detalle de pared y pasó a ser un
+    objeto que se puede levantar y llevar. Es el cambio que más se apoya en
+    el inventario permanente de arriba: el pincel con el que una familia
+    pintó la misma piedra durante generaciones ahora cruza la grieta con el
+    investigador. Su propiedad oculta —que las cerdas están duras de un solo
+    color y no hay otro pincel en la casa— se descubre con una escena propia.
+  - **El plano de la mensura**, en la carpa del ingeniero, con el trazado
+    viejo a lápiz debajo del nuevo en tinta roja: el viejo rodeaba el lecho
+    de piedra, el nuevo pasa justo por el medio, y la firma del descarte no
+    es la de Valenzuela. Convierte la voladura de consecuencia en objetivo.
+  - **El farol de Petrona**, que es de las pocas cosas de esta aventura que
+    sirven en la siguiente.
+  - Detalles nuevos donde no había ninguno: la libreta de fiado de la
+    pulpería (Petrona le viene pagando la cuenta a Eusebio hace dos años sin
+    decírselo a nadie), el estante con el hueco de un cajón que ya no está,
+    los cajones de dinamita de la obra (la mitad comprada dos años antes de
+    que llegara el ingeniero: carga para partir piedra, no para nivelar), las
+    estacas clavadas encima de los agujeros de una mensura anterior, y el
+    catre de Eusebio con el balde al lado y el rosario gastado en la cruz.
+  - Y dos tiradas donde se regalaba lo que nadie regala: `v-duda` —que un
+    ingeniero con una orden firmada admita que no las tiene todas consigo— y
+    su `esquiva`, que igual deja ver que vuelve a los papeles antes de
+    terminar la frase.
+
+**Una habilidad más que no se podía usar.** Al escribir el detalle de la
+libreta de fiado, el candidato natural era Contabilidad, que no existe en
+`skills.ts`; los dos siguientes, `credito` (base 0) y `geologia` (base 1),
+tienen el mismo problema que Antropología (§3.2-novemquadragies): ningún
+pregenerado las trae. Resuelto con `descubrir`. La lección de aquella
+entrada sigue valiendo y conviene automatizarla en algún momento.
+
+**Y la auditoría dejó de mentir sobre los detalles del mapa.** El chequeo
+«el recorrido consigue las pistas de los detalles» era duro y falló TRES
+veces en esta sesión, las tres con contenido perfectamente alcanzable: dos
+porque los dados salen de una cadena determinística y agregar una tirada en
+cualquier parte corre toda la secuencia posterior, y la tercera porque el
+andador se quedó sin turnos antes de tocar ese botón. Pasó a ser
+informativo, que es lo que siempre debió ser: el botón de un detalle no lo
+escribe nadie —`accionesDisponibles` lo genera solo para cada `feature` del
+lugar—, así que un detalle de un lugar al que se llega se ofrece SIEMPRE por
+construcción, y lo único que podía fallar de verdad —que esté en un lugar
+inalcanzable— ya lo caza el chequeo del mapa. Ahora distingue las dos cosas
+que antes mezclaba: «se miró y la tirada no salió» y «el recorrido no llegó
+a mirarlo», las dos como aviso.
+
+### 3.2-quaterquinquagies Economía: comprar, vender, y lo que cuesta vender lo que no se debería ✔ HECHA
+
+Se apoya entera en el inventario de campaña de §3.2-duoquinquagies: sin
+objetos que crucen de una aventura a otra, una economía no tiene sobre qué
+pararse.
+
+**Por qué hay un saldo donde el manual no lo tiene.** CoC 7e no lleva la
+cuenta de monedas: resuelve el dinero con Crédito, una habilidad que dice de
+qué nivel social sos y cuánto podés gastar sin que nadie pregunte. Este
+proyecto ya tenía media pieza puesta —cada ocupación declara su rango de
+Crédito (`Ocupacion.credito`) y la creación de investigador lo valida— pero
+le faltaba la otra mitad, porque acá además hay que VENDER, y una venta que
+no cambia ningún número no es una venta: es regalar algo con una frase
+amable. Así que el Crédito sigue siendo lo que es —de dónde sale el efectivo
+inicial— y encima se lleva un saldo real (`derived.efectivo`, diez pesos por
+punto de Crédito, en `rules/dinero.ts`). Es una desviación consciente del
+manual, anotada como tal.
+
+**Los pregenerados no tenían Crédito**, que con este cambio los habría
+dejado indigentes: ni Elena ni Tomás lo traían asignado, o sea 0. Puestos
+dentro del rango que su propia ocupación declara — Elena 45 (médica rural,
+rango 30-80: vive de lo que le pagan en un campo donde a veces le pagan con
+gallinas) y Tomás 15 (periodista de diario de provincia, rango 9-30). Es el
+mismo agujero que ya apareció dos veces con las habilidades de base 0-1
+(§3.2-novemquadragies, §3.2-terquinquagies), esta vez del lado del dinero.
+
+**El mostrador es contenido, no motor.** `Npc.comercio` declara qué vende un
+personaje, qué categorías compra, y con qué margen. Los botones no los
+escribe ninguna aventura: `accionesDisponibles` los arma cruzando eso con lo
+que hay en el lugar y encima del investigador, igual que hace con los
+detalles y las salidas. Una aventura que quiera un almacén sólo tiene que
+ponerle `comercio` a alguien. La primera es Petrona, en el Valle de Zonda:
+vende faroles, compra casi cualquier cosa —paga 60%, mejor que el 50% por
+defecto, no por generosa sino porque no sabe qué está comprando— y no
+regatea.
+
+**Y lo que hace que esto no sea sólo contabilidad:** vender un objeto
+marcado `cargado` —los que tocan el Umbral: el punzón del Círculo, el anillo
+de rubí, el espejo de Rosa, el almagre y el pincel de Eusebio— deja una
+consecuencia PERMANENTE de alcance mundo: queda suelto por ahí, en manos de
+alguien que no sabe lo que acaba de comprar. El juego no lo impide, se puede
+vender cualquier cosa que tenga precio. Lo cobra, que es distinto, y lo deja
+escrito donde las aventuras siguientes lo pueden leer con
+`{op:'consecuencia'}`.
+
+`STAT_CHANGED` absorbió el efectivo en vez de estrenar un evento propio: es
+exactamente lo mismo que los otros cuatro —un número de `derived` que sube o
+baja con una causa escrita— y su reducer ya era genérico sobre ese campo, así
+que no hubo que tocarlo.
+
+Seis casos nuevos en `prueba-campana.ts`: que el efectivo salga del Crédito,
+que comprar descuente y entregue, que no se le pueda comprar a quien no tiene
+mostrador, que vender cobre y entregue, que vender algo cargado deje la
+consecuencia, y que la plata cruce a la aventura siguiente. `npm run
+prueba:todo` completo.
+
+**Lo que quedó sin verificar en el navegador:** el widget de efectivo en la
+ficha y los botones del mostrador renderizados. El servidor de desarrollo
+dejó de responder a mitad de la verificación —Vite arrancaba y anunciaba el
+puerto, pero no servía ni una respuesta— y no se pudo levantar de vuelta en
+tres intentos. Lo que sí está comprobado: el build de producción compila, la
+lista de botones que la interfaz dibuja se verificó con
+`accionesDisponibles` (que es exactamente su fuente), y todo el flujo de
+compra y venta se corrió de punta a punta contra el motor real. Falta ver
+esas dos cosas con los ojos.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

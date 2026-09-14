@@ -129,9 +129,38 @@ function findProperty(item: Item, propertyId: PropertyId): ItemProperty | null {
   );
 }
 
+/**
+ * ¿Está este objeto al alcance del investigador, a los fines de mirarlo con
+ * atención? No es lo mismo que poder LLEVÁRSELO: el legajo que Fray Ignacio
+ * tiene desplegado sobre la mesa, o la libreta que Adelmo lee en voz alta
+ * sin soltarla, se pueden estudiar sin que cambien de dueño.
+ *
+ * El tercer caso —un objeto cuyo dueño es un NPC que está acá— faltaba, y
+ * su ausencia era un bug de verdad: `descubre` (`EfectoEscena`) rebotaba
+ * contra este gate y el rechazo terminaba NARRADO AL JUGADOR, con el texto
+ * que se le escribía al Keeper-LLM que ya no existe («No reveles esta
+ * propiedad. Narrá lo que el investigador SÍ puede percibir»). Reportado
+ * jugando *La Merced de las Ánimas*: el manuscrito de Fray Ignacio, que él
+ * tiene desplegado sobre la mesa del scriptorium, no se podía estudiar.
+ *
+ * Sin esto, además, el trato era incoherente: una propiedad SIN
+ * `discoveryCondition` en manos de un NPC sí se descubría —ese caso sale
+ * antes, por el `if (!cond)` de arriba, sin pasar por acá— y una CON
+ * condición no. Es la diferencia entre `it-libreta` de *El Orden Debido*
+ * (sin condición, siempre funcionó) y `it-manuscrito-1674` (con tirada de
+ * Ocultismo, nunca funcionó). Ahora las dos se rigen por lo mismo.
+ *
+ * `prueba-auditoria.ts` no caza esta familia de bug porque mira lo que la
+ * escena DECLARA entregar, no si el tool lo permite en tiempo real.
+ */
 function isReachable(state: GameState, item: Item, investigatorId: InvestigatorId): boolean {
   if (item.owner === investigatorId) return true;
   if (item.owner === state.world.currentLocation) return true;
+  const dueno = item.owner ? state.npcs[item.owner] : undefined;
+  if (dueno?.present && dueno.status !== 'dead') {
+    const aqui = state.world.locations[state.world.currentLocation];
+    if (aqui?.npcsPresent.includes(dueno.id)) return true;
+  }
   return false;
 }
 

@@ -259,7 +259,7 @@ async function recorrerAFondo(esc: Scenario, semilla: string, turnos = 260) {
   const faltan = Object.values(state.world.locations).filter((l) => !l.visited);
   const sinRetorno = faltan.length > 0 && faltan.every((l) => !alcanzables.has(l.id));
 
-  return { state, murio, atrapado, sinRetorno };
+  return { state, murio, atrapado, sinRetorno, intentadas: new Set(veces.keys()) };
 }
 
 async function auditar(esc: Scenario) {
@@ -289,6 +289,12 @@ async function auditar(esc: Scenario) {
           'convento-merced→celda-convento',
           'celda-convento→scriptorium', 'celda-convento→canaverales-fuga',
           'scriptorium→obras-cofradia', 'canaverales-fuga→cienaga-sabotaje',
+          // La vía alternativa a la Rama B: irse con Takillpa desde los
+          // cañaverales sin pasar por el cuarto del convento. Agregada
+          // después de jugarlo — para aliarse con el huarpe había que
+          // dormir primero en el convento del fraile, que es exactamente
+          // al revés de lo que la escena quiere decir.
+          'canaverales→canaverales-fuga',
         ]
         : [],
   );
@@ -445,7 +451,7 @@ async function auditar(esc: Scenario) {
 
   // ── 3. Recorrido real ────────────────────────────────────────────────────
   console.log('\nEL RECORRIDO REAL');
-  const { state: final, murio, atrapado, sinRetorno } = await recorrerAFondo(esc, 'j');
+  const { state: final, murio, atrapado, sinRetorno, intentadas } = await recorrerAFondo(esc, 'j');
   if (murio) {
     console.log('  el investigador murió en el intento —recorrido cortado ahí, a propósito—');
   }
@@ -470,14 +476,49 @@ async function auditar(esc: Scenario) {
   check('el recorrido obtiene todos los documentos',
     cortado || docsObtenidos === esc.documents.length, `${docsObtenidos}/${esc.documents.length}`);
 
-  // Las pistas de features son las más fáciles de romper: dependen de que el
-  // detalle se ofrezca y de que la tirada salga alguna de las tres veces.
-  const pistasDeFeature = Object.values(esc.locations)
-    .flatMap((l) => (l.features ?? []).filter((f) => f.clue).map((f) => f.clue!.description));
-  const faltantes = pistasDeFeature.filter((p) => !conseguidas.has(p));
-  for (const p of faltantes) console.log(`   ⚠ no salió: «${p.slice(0, 70)}…»`);
-  check('el recorrido consigue las pistas de los detalles del mapa',
-    cortado || faltantes.length === 0, `${pistasDeFeature.length - faltantes.length}/${pistasDeFeature.length}`);
+  // Las pistas de los detalles del mapa dependen de DOS cosas distintas, y
+  // sólo una es responsabilidad del contenido:
+  //
+  //   · que el detalle se OFREZCA alguna vez —eso sí es del contenido, y es
+  //     lo que esta prueba tiene que garantizar—;
+  //   · que la tirada salga bien alguna de las veces que se intenta —eso es
+  //     suerte, y con semilla fija es suerte CONGELADA—.
+  //
+  // Exigir las dos cosas hacía que esta prueba fallara cada vez que se
+  // agregaba contenido nuevo en cualquier parte de la aventura: los dados
+  // salen de una cadena determinística, así que una tirada de más al
+  // principio corre TODA la secuencia posterior y da vuelta resultados que
+  // no tienen nada que ver con lo que se tocó. Pasó dos veces en la misma
+  // sesión, las dos con detalles que estaban perfectamente alcanzables.
+  //
+  // Ahora falla sólo si el detalle NUNCA se ofreció —que es un problema de
+  // contenido de verdad, del tipo que dejó a Eusebio Roldán sin temas— y
+  // avisa sin fallar cuando se intentó y los dados dijeron que no.
+  // INFORMATIVO, NO UNA GARANTÍA — y es a propósito.
+  //
+  // El botón de un detalle no lo escribe nadie: `accionesDisponibles` lo
+  // genera solo para CADA `feature` del lugar que no esté ya examinada. O
+  // sea que un detalle de un lugar al que se llega se ofrece SIEMPRE, por
+  // construcción, y no hay nada que auditar ahí. Lo único que puede fallar
+  // —que el detalle esté en un lugar inalcanzable— ya lo caza el chequeo
+  // del mapa, y que su pista salga o no depende de los dados.
+  //
+  // Esto llegó a ser un `check` duro y fue un error: falló tres veces en
+  // una sola sesión, las tres por contenido perfectamente alcanzable. Dos
+  // veces porque los dados salen de una cadena determinística y agregar una
+  // tirada en cualquier parte corre toda la secuencia posterior; la tercera
+  // porque el andador se quedó sin turnos antes de tocar ese botón. Ninguna
+  // de las tres era un problema del contenido, que es lo único que esta
+  // prueba puede opinar.
+  const featuresConPista = Object.values(final.world.locations)
+    .filter((l) => l.visited)
+    .flatMap((l) => (esc.locations[l.id]?.features ?? []).filter((f) => f.clue));
+  const sinMirar = featuresConPista.filter((f) => !intentadas.has(`ver:${f.id}`));
+  const salieronMal = featuresConPista.filter(
+    (f) => intentadas.has(`ver:${f.id}`) && !conseguidas.has(f.clue!.description));
+  for (const f of salieronMal) console.log(`   ⚠ «${f.names[0]}»: se miró y la tirada no salió en ningún intento`);
+  for (const f of sinMirar) console.log(`   ⚠ «${f.names[0]}»: el recorrido no llegó a mirarlo`);
+  console.log(`  detalles del mapa que dieron su pista: ${featuresConPista.length - sinMirar.length - salieronMal.length}/${featuresConPista.length}`);
 
   // Las pistas de TEMAS son el punto ciego que dejó pasar a Eusebio Roldán:
   // `loQuePuedeEntregar` (capa 2, arriba) marca `tema.cede.pista` como

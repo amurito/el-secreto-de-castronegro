@@ -307,6 +307,119 @@ async function main() {
       && continuado.reserveInvestigators.includes('inv-tomas'));
   }
 
+  console.log('\nEL INVENTARIO ES DE LA CAMPAÑA, NO DE LA AVENTURA');
+  {
+    // Hasta acá se heredaba todo del investigador menos lo que llevaba en
+    // las manos: el punzón que se saca del sótano en El Vigésimo desaparecía
+    // al empezar la aventura siguiente, sin que nadie lo dejara en ningún
+    // lado. Pedido después de jugarlo.
+    const idA = await createCampaign(AGUA_QUIETA, 'INV-A', 'v1'.repeat(32));
+    const tA = await Turn.open(idA);
+    const inv = tA.state.activeInvestigator;
+    tA.executeTool('transfer_item', { item_id: 'it-espejo', to: inv, carried: 'true', cause: 'prueba' });
+    // Y uno que se queda en el piso: ése NO tiene que cruzar.
+    tA.executeTool('transfer_item', { item_id: 'it-farol', to: tA.state.world.currentLocation, carried: 'false', cause: 'prueba' });
+    await tA.commit();
+    const previo = (await loadState(idA)).state;
+
+    const idB = await createCampaign(LA_LEGUA, 'INV-B', 'v2'.repeat(32), {
+      estadoAnterior: previo, mesesTranscurridos: 5,
+    });
+    const sB = (await loadState(idB)).state;
+    check('lo que llevaba encima cruza a la aventura siguiente',
+      sB.items['it-espejo']?.owner === inv && sB.items['it-espejo']?.carried === true);
+    check('lo que dejó tirado en un cuarto NO cruza', !sB.items['it-farol']);
+
+    // Un id repetido entre aventuras no puede pisar al de la aventura nueva:
+    // `it-libreta` existe de verdad en dos aventuras publicadas.
+    const libretaLegua = sB.items['it-libreta'];
+    check('un objeto de la aventura nueva no queda pisado por uno heredado con el mismo id',
+      !libretaLegua || libretaLegua.name.includes('Roldán'),
+      libretaLegua?.name ?? '(no existe acá)');
+  }
+
+  console.log('\nDESHACERSE DE ALGO ES DEFINITIVO, Y SOLTARLO NO');
+  {
+    const id = await createCampaign(AGUA_QUIETA, 'DESCARTE', 'v3'.repeat(32));
+    const t = await Turn.open(id);
+    const inv = t.state.activeInvestigator;
+    t.executeTool('transfer_item', { item_id: 'it-espejo', to: inv, carried: 'true', cause: 'prueba' });
+    await t.commit();
+
+    const t2 = await Turn.open(id);
+    const ofrecidas = accionesDisponibles(t2.state, AGUA_QUIETA).map((o) => o.id);
+    check('se ofrece dejarlo y también deshacerse de él',
+      ofrecidas.includes('dejar:it-espejo') && ofrecidas.includes('tirar:it-espejo'));
+
+    const intencion = accionesDisponibles(t2.state, AGUA_QUIETA).find((o) => o.id === 'tirar:it-espejo')!.intencion;
+    t2.submitIntent(intencion, 'p1');
+    const r = await runOfflineTurn(t2, AGUA_QUIETA, intencion, () => {});
+    t2.narrate(r.narration, r.options);
+    await t2.commit();
+
+    const s = (await loadState(id)).state;
+    check('tras deshacerse, el objeto no tiene dueño', s.items['it-espejo']?.owner === null);
+    const despues = accionesDisponibles(s, AGUA_QUIETA).map((o) => o.id);
+    check('y ya no se ofrece ni para agarrarlo ni para soltarlo',
+      !despues.some((x) => x.endsWith(':it-espejo')));
+  }
+
+  console.log('\nLA PLATA: SALE DEL CRÉDITO, SE GASTA, SE COBRA Y CRUZA DE AVENTURA');
+  {
+    const { LA_GRIETA_DEL_ZONDA } = await import('./scenario/grietadelzonda.ts');
+    const id = await createCampaign(LA_GRIETA_DEL_ZONDA, 'PLATA', 'v4'.repeat(32));
+    let t = await Turn.open(id);
+    const inv = t.state.activeInvestigator;
+    const credito = t.investigator.skills['credito']?.base ?? 0;
+    check('el efectivo inicial sale del Crédito, no de la nada',
+      t.investigator.derived.efectivo === credito * 10,
+      `crédito ${credito} → ${t.investigator.derived.efectivo} pesos`);
+
+    t.executeTool('move_to_location', { location_id: 'pulperia-zonda', reason: 'prueba' });
+    await t.commit();
+
+    // Comprar: sale plata, entra el objeto.
+    t = await Turn.open(id);
+    const antes = t.investigator.derived.efectivo;
+    const rc = t.executeTool('buy_item', { item_id: 'it-farol-pulperia', npc_id: 'npc-petrona' });
+    await t.commit();
+    let s = (await loadState(id)).state;
+    check('comprar descuenta el precio y entrega el objeto',
+      rc.ok && s.items['it-farol-pulperia']?.owner === inv
+      && s.investigators[inv]!.derived.efectivo === antes - 12,
+      `${antes} → ${s.investigators[inv]!.derived.efectivo}`);
+
+    // No se le compra a quien no tiene mostrador.
+    const t2 = await Turn.open(id);
+    const rEusebio = t2.executeTool('buy_item', { item_id: 'it-farol-pulperia', npc_id: 'npc-eusebio' });
+    check('no se le compra a quien no comercia', !rEusebio.ok, rEusebio.message.slice(0, 70));
+
+    // Vender algo CARGADO deja una consecuencia permanente, además de la plata.
+    const t3 = await Turn.open(id);
+    t3.executeTool('move_to_location', { location_id: 'rancho-eusebio', reason: 'prueba' });
+    t3.executeTool('transfer_item', { item_id: 'it-pincel-eusebio', to: inv, carried: 'true', cause: 'prueba' });
+    t3.executeTool('move_to_location', { location_id: 'pulperia-zonda', reason: 'prueba' });
+    const conPlata = t3.investigator.derived.efectivo;
+    const rv = t3.executeTool('sell_item', { item_id: 'it-pincel-eusebio', npc_id: 'npc-petrona' });
+    await t3.commit();
+    s = (await loadState(id)).state;
+    check('vender cobra y entrega el objeto al comerciante',
+      rv.ok && s.items['it-pincel-eusebio']?.owner === 'npc-petrona'
+      && s.investigators[inv]!.derived.efectivo > conPlata);
+    check('y vender algo que toca el Umbral deja consecuencia permanente',
+      s.consequences.some((c) => c.permanent && /vendió «El pincel de Eusebio»/.test(c.description)));
+
+    // La plata cruza a la aventura siguiente, como el inventario.
+    const previo = (await loadState(id)).state;
+    const quedaba = previo.investigators[inv]!.derived.efectivo;
+    const idB = await createCampaign(AGUA_QUIETA, 'PLATA-B', 'v5'.repeat(32), {
+      estadoAnterior: previo, mesesTranscurridos: 3,
+    });
+    const sB = (await loadState(idB)).state;
+    check('el efectivo cruza a la aventura siguiente',
+      sB.investigators[inv]?.derived.efectivo === quedaba, `${quedaba} pesos`);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

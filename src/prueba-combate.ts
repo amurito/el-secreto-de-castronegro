@@ -606,12 +606,16 @@ async function main() {
     // 'contraataca'` —le pega de vuelta con el palo— pero eso no puede
     // valer contra un disparo hecho desde lejos: no hay con qué devolverlo.
     // A quemarropa ya es forcejeo, y ahí sí vuelve a tener sentido.
+    // La DEFENSA es la PRIMERA tirada del NPC en el asalto, no la última:
+    // desde que el que esquiva tiene además su propio ataque (ver «AL QUE
+    // LE DISPARÁS TAMBIÉN TE PEGA», más abajo), la última tirada del NPC
+    // cuando le disparan de lejos es la de su ataque, no la de su defensa.
     const id = await createCampaign(conMaton, 'FUEGO-DEFENSA-LEJOS', 'fd'.repeat(32));
     const t = await Turn.open(id);
     t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'revolver-38' });
     await t.commit();
     const s = (await Turn.open(id)).state;
-    const tirDefensa = s.rolls.filter((x) => x.investigatorId === 'npc-maton').at(-1);
+    const tirDefensa = s.rolls.filter((x) => x.investigatorId === 'npc-maton')[0];
     check('a distancia, el matón esquiva —no devuelve el golpe—',
       tirDefensa?.commitment.skill === 'Esquivar', tirDefensa?.commitment.skill);
 
@@ -622,7 +626,7 @@ async function main() {
     });
     await t2.commit();
     const s2 = (await Turn.open(id2)).state;
-    const tirDefensa2 = s2.rolls.filter((x) => x.investigatorId === 'npc-maton').at(-1);
+    const tirDefensa2 = s2.rolls.filter((x) => x.investigatorId === 'npc-maton')[0];
     check('a quemarropa, vuelve a devolver el golpe —es forcejeo, no a distancia—',
       tirDefensa2?.commitment.skill === 'Pelea', tirDefensa2?.commitment.skill);
 
@@ -631,7 +635,7 @@ async function main() {
     t3.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
     await t3.commit();
     const s3 = (await Turn.open(id3)).state;
-    const tirDefensa3 = s3.rolls.filter((x) => x.investigatorId === 'npc-maton').at(-1);
+    const tirDefensa3 = s3.rolls.filter((x) => x.investigatorId === 'npc-maton')[0];
     check('cuerpo a cuerpo no cambia nada: el matón sigue devolviendo el golpe',
       tirDefensa3?.commitment.skill === 'Pelea', tirDefensa3?.commitment.skill);
   }
@@ -1169,6 +1173,56 @@ async function main() {
     const s = (await Turn.open(id)).state;
     check('a mano/facón no registra la consecuencia de disparo',
       !s.consequences.some((c) => c.description.includes(SALIDA_PACIFICA_MATON.consecuenciaDisparo.description)));
+  }
+
+  console.log('\nAL QUE LE DISPARÁS TAMBIÉN TE PEGA: ESQUIVAR NO ES QUEDARSE QUIETO');
+  {
+    // El bug: con un arma de fuego a distancia, la defensa del NPC se
+    // fuerza a `esquiva` (p. 113, un balazo no se contraataca a mano) y el
+    // NPC objetivo queda EXCLUIDO de `ordenDeAsalto` para no duplicar su
+    // contraataque. Entre las dos cosas, no le quedaba ninguna forma de
+    // hacer daño: era un blanco inmóvil que nunca devolvía nada.
+    //
+    // Reportado jugando La Merced de las Ánimas: treinta y cinco asaltos
+    // disparándole a un Pólipo de 20 PV y 6 de armadura con Armas de Fuego
+    // al 25%, sin recibir un solo golpe en toda la pelea.
+    let recibioAlgunGolpe = false;
+    let vioLineaDeAtaque = false;
+    for (const n of ['ja', 'jb', 'jc', 'jd', 'je', 'jf']) {
+      const id = await createCampaign(conMaton, `PASIVO-${n}`, n.repeat(32));
+      const t = await Turn.open(id);
+      t.executeTool('start_combat', { npc_ids: 'npc-maton', reason: 'prueba' });
+      const hpAntes = t.investigator.derived.hp;
+      // Seis asaltos seguidos de tiro a distancia, sin quemarropa.
+      for (let i = 0; i < 6; i++) {
+        const r = t.executeTool('resolve_attack', {
+          npc_id: 'npc-maton', weapon_id: 'revolver-38', punto_blanco: 'false',
+        });
+        if (/ataca a .* con palo/i.test(r.message)) vioLineaDeAtaque = true;
+      }
+      await t.commit();
+      const s = (await Turn.open(id)).state;
+      const inv = s.investigators[s.activeInvestigator]!;
+      if (inv.derived.hp < hpAntes) recibioAlgunGolpe = true;
+    }
+    check('el NPC al que le disparan llega a atacar de verdad en algún asalto', vioLineaDeAtaque);
+    check('y en alguna de las seis semillas el investigador termina lastimado', recibioAlgunGolpe);
+  }
+
+  console.log('\nA MANO LIMPIA NO SE DUPLICA: EL QUE CONTRAATACA NO PEGA DOS VECES EN EL MISMO ASALTO');
+  {
+    // La otra mitad del arreglo de arriba: el turno propio se le da SÓLO a
+    // quien esquivó. Si el NPC contraatacó, ya tuvo su oportunidad dentro
+    // del enfrentamiento, y darle además un ataque aparte sería pegarle al
+    // investigador dos veces por asalto.
+    const id = await createCampaign(conMaton, 'SIN-DUPLICAR', 'kk'.repeat(32));
+    const t = await Turn.open(id);
+    t.executeTool('start_combat', { npc_ids: 'npc-maton', reason: 'prueba' });
+    const r = t.executeTool('resolve_attack', { npc_id: 'npc-maton', weapon_id: 'facon' });
+    await t.commit();
+    const vecesQueAtaca = (r.message.match(/ataca a /g) ?? []).length;
+    check('cuerpo a cuerpo, el NPC no suma un ataque aparte al contraataque',
+      vecesQueAtaca === 0, `líneas de ataque aparte: ${vecesQueAtaca}`);
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);

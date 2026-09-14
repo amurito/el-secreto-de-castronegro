@@ -182,7 +182,12 @@ export function crearInvestigador(
     origin: skills['esquivar']?.base ? 'occupation' : 'personal',
   };
 
-  const derivado = computeDerived(ch, { luck: tirada.suerte, edad: decisiones.edad });
+  const derivado = computeDerived(ch, {
+    luck: tirada.suerte, edad: decisiones.edad,
+    // El efectivo de arranque sale del Crédito que el jugador acaba de
+    // repartir, dentro del rango que su ocupación permite.
+    credito: skills['credito']?.base ?? 0,
+  });
 
   const investigador: Investigator = {
     id: `inv-${decisiones.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 24)}-${Date.now().toString(36)}`,

@@ -20,6 +20,7 @@
 
 import type { GameState, LocationId, LocationFeature } from '../shared/types.ts';
 import type { Scenario } from './types.ts';
+import { loQuePagan, enPesos } from '../rules/dinero.ts';
 
 const lowerFirst = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
 
@@ -275,6 +276,52 @@ export function accionesDisponibles(s: GameState, escenario: Scenario): Opcion[]
       grupo: 'usar',
       orden: 71,
     });
+    // Y el descarte definitivo, que no es lo mismo: soltar deja el objeto
+    // en el cuarto y descartar lo saca del mundo. Hace falta desde que el
+    // inventario cruza de una aventura a la siguiente — sin esto, lo que se
+    // junta no se puede dejar de juntar, y la lista sólo crece.
+    out.push({
+      id: `tirar:${item.id}`,
+      etiqueta: `Deshacerte de ${item.name.toLowerCase()} (para siempre)`,
+      intencion: `Me deshago de ${item.name.toLowerCase()}`,
+      grupo: 'usar',
+      orden: 72,
+    });
+  }
+
+  // ── El mostrador, si hay alguno acá ──
+  //
+  // Los botones de comprar y vender no los escribe ninguna aventura: salen
+  // de cruzar lo que este NPC declara que vende y compra (`Npc.comercio`)
+  // con lo que hay en el lugar y encima del investigador. Una aventura que
+  // quiera un almacén sólo tiene que ponerle `comercio` a alguien.
+  const mostrador = Object.values(s.npcs).find(
+    (n) => n.comercio && n.present && n.status !== 'dead' && loc?.npcsPresent.includes(n.id),
+  );
+  if (mostrador?.comercio) {
+    for (const itemId of mostrador.comercio.vende ?? []) {
+      const item = s.items[itemId];
+      if (!item || !item.value || item.owner === s.activeInvestigator) continue;
+      out.push({
+        id: `comprar:${item.id}`,
+        etiqueta: `Comprar ${item.name.toLowerCase()} (${enPesos(item.value)})`,
+        intencion: `Le compro ${item.name.toLowerCase()} a ${mostrador.name}`,
+        grupo: 'usar',
+        orden: 73,
+      });
+    }
+    const compra = mostrador.comercio.compra ?? [];
+    for (const item of Object.values(s.items)) {
+      if (item.owner !== s.activeInvestigator) continue;
+      if (!item.value || !compra.includes(item.categoria ?? 'hallazgo')) continue;
+      out.push({
+        id: `vender:${item.id}`,
+        etiqueta: `Venderle ${item.name.toLowerCase()} (${enPesos(loQuePagan(item.value, mostrador.comercio.margen))})`,
+        intencion: `Le vendo ${item.name.toLowerCase()} a ${mostrador.name}`,
+        grupo: 'usar',
+        orden: 74,
+      });
+    }
   }
 
   for (const destino of loc?.connections ?? []) {

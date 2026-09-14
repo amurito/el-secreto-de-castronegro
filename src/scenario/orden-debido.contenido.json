@@ -13,6 +13,7 @@
     {
       "id": "it-mapa",
       "name": "El mapa de Delfina",
+      "categoria": "documento",
       "aliases": [
         "mapa",
         "el mapa",
@@ -88,6 +89,7 @@
     {
       "id": "it-libreta",
       "name": "La libreta de Adelmo",
+      "categoria": "documento",
       "aliases": [
         "libreta",
         "libreta de adelmo",

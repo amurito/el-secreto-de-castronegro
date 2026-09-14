@@ -15,8 +15,9 @@ import type { GameEvent, Actor, GameEventType } from '../shared/events.ts';
 import type {
   GameState, InvestigatorId, RollRecord, RollModifier, Difficulty,
   Clue, Npc, Condition, MechanicalEffect, WorldTime, SkillId, CharacteristicId, Investigator,
-  SuccessDegree, Item, ActiveCombat,
+  SuccessDegree, Item, ActiveCombat, ComercioNpc,
 } from '../shared/types.ts';
+import { loQuePagan, enPesos } from '../rules/dinero.ts';
 import { fold, apply } from './reducers.ts';
 import { store, type CampaignIndexEntry } from './store.ts';
 import { dieValues, damageDice, generateSeed, commitmentOf } from './rng.ts';
@@ -146,6 +147,7 @@ export async function createCampaign(
         id: id(),
         name: ARMA_POR_ID[armaInicialId]?.nombre ?? armaInicialId,
         shortDescription: ARMA_POR_ID[armaInicialId]?.nota ?? ARMA_POR_ID[armaInicialId]?.nombre ?? armaInicialId,
+        categoria: 'arma',
         owner: propio.id,
         carried: true,
         armaId: armaInicialId,
@@ -182,6 +184,7 @@ export async function createCampaign(
       id: item.id,
       name: item.nombre,
       shortDescription: item.shortDescription,
+      categoria: item.categoria ?? 'herramienta',
       owner: propio!.id,
       carried: true,
       roto: false,
@@ -193,6 +196,46 @@ export async function createCampaign(
       canon: { truth: 'CANON_SETTING', disclosure: 'PUBLIC', source: 'scenario' },
       usageCount: 0,
     };
+  })();
+
+  /**
+   * LO QUE EL INVESTIGADOR SE TRAE DE LA AVENTURA ANTERIOR.
+   *
+   * Hasta acá, entre aventuras encadenadas se heredaba TODO del investigador
+   * —Cordura, Exposición, habilidades, fobias, umbrales cruzados— menos una
+   * cosa: lo que llevaba en las manos. El punzón del Círculo que se saca del
+   * sótano de la Casa de Díaz en El Vigésimo desaparecía al empezar la
+   * aventura siguiente, sin que nadie lo dejara en ningún lado. Pedido
+   * después de jugarlo: que el inventario sea de la campaña, no de la
+   * aventura.
+   *
+   * Tres reglas, y las tres importan:
+   *
+   *  1. Sólo cruza lo que se lleva ENCIMA (`carried`) y es del investigador
+   *     que sigue vivo. Lo que quedó tirado en un cuarto quedó en ese cuarto.
+   *  2. Si la aventura nueva declara un objeto con el MISMO id, gana el de la
+   *     aventura. No es una precaución teórica: hay ids repetidos de verdad
+   *     entre aventuras publicadas (`it-libreta` es de Adelmo en El Orden
+   *     Debido y de Roldán en La Legua Perdida; `it-almagre` y `it-foto`
+   *     están dos veces cada uno). Heredar encima de eso reemplazaría el
+   *     objeto que la aventura necesita por otro con el mismo nombre.
+   *  3. El contenido puede vetar uno con `noSeHereda` — lo prestado, lo que
+   *     se consume, lo que sólo tiene sentido en su propia historia.
+   */
+  const itemsHeredados: Item[] = (() => {
+    if (!herencia) return [];
+    const vivos = new Set(
+      Object.values(herencia.estadoAnterior.investigators)
+        .filter((i) => i.status === 'alive').map((i) => i.id),
+    );
+    const yaDeclarados = new Set([
+      ...scenario.items.map((i) => i.id),
+      ...(itemArmaInicial ? [itemArmaInicial.id] : []),
+      ...(itemOcupacionInicial ? [itemOcupacionInicial.id] : []),
+    ]);
+    return Object.values(herencia.estadoAnterior.items)
+      .filter((i) => i.carried && i.owner !== null && vivos.has(i.owner)
+        && !i.noSeHereda && !yaDeclarados.has(i.id));
   })();
 
   const meta: CampaignIndexEntry = {
@@ -231,7 +274,8 @@ export async function createCampaign(
         : investigadoresDe(scenario, herencia)
             .map((i) => i.id)
             .filter((x) => x !== activoDe(scenario, herencia)),
-      items: [...scenario.items, itemArmaInicial, itemOcupacionInicial].filter((i): i is Item => i !== null),
+      items: [...scenario.items, itemArmaInicial, itemOcupacionInicial, ...itemsHeredados]
+        .filter((i): i is Item => i !== null),
       npcs: scenario.npcs,
       documents: scenario.documents,
       locations: scenario.locations,
@@ -291,6 +335,9 @@ function heredarInvestigador(inv: Investigator, meses: number): Investigator {
   );
   return {
     ...inv,
+    // El efectivo cruza por el spread, y es lo correcto: la plata que le
+    // quedó al terminar una aventura es la que tiene al empezar la
+    // siguiente, igual que el inventario. Lo único que se repone son los PV.
     derived: { ...inv.derived, hp: inv.derived.maxHp },
     umbral: {
       ...inv.umbral,
@@ -789,6 +836,8 @@ export class Turn {
         case 'use_item': return this.toolUseItem(raw);
         case 'reveal_document': return this.toolRevealDocument(raw);
         case 'transfer_item': return this.toolTransferItem(raw);
+        case 'buy_item': return this.toolBuyItem(raw);
+        case 'sell_item': return this.toolSellItem(raw);
         case 'move_to_location': return this.toolMoveToLocation(raw);
         case 'advance_time': return this.toolAdvanceTime(raw);
         case 'set_time_label': return this.toolSetTimeLabel(raw);
@@ -1884,6 +1933,29 @@ export class Turn {
       }
     }
 
+    // ── 3-bis. El que esquivó todavía no hizo NADA este asalto ──
+    //
+    // Esquivar es una reacción, no la acción del asalto: quien se quita de
+    // en medio sigue teniendo su propio turno para pegar. El motor lo
+    // aproximaba con `contraataca` —el NPC devuelve el golpe dentro del
+    // mismo enfrentamiento— y por eso nunca hizo falta un turno aparte...
+    // hasta que el arma del investigador es de fuego. Ahí la defensa se
+    // fuerza a `esquiva` (ver más arriba, p. 113) y el NPC objetivo quedaba
+    // SIN NINGUNA forma de hacer daño: no contraataca porque esquivó, y no
+    // entra en `ordenDeAsalto` porque es el objetivo, que se excluye para
+    // no duplicar el contraataque.
+    //
+    // Resultado reportado jugando *La Merced de las Ánimas*: treinta y
+    // cinco asaltos disparándole a un Pólipo de 20 PV y 6 de armadura con
+    // un 25% de Armas de Fuego, sin recibir un solo golpe. No era un rival
+    // difícil: era un rival que no peleaba.
+    const objetivoAhora = this.state.npcs[npc.id]!;
+    if (defensa === 'esquiva' && objetivoAhora.combate!.hp > 0 && objetivoAhora.status !== 'dead'
+      && this.investigator.derived.hp > 0 && this.investigator.status === 'alive') {
+      const texto = this.ataqueDeNpcContraInvestigador(objetivoAhora, armaId);
+      if (texto) bloques.push(texto);
+    }
+
     // ── 4. El resto del cuarto que era más lento ──
     for (const otro of masLentos) {
       const texto = this.ataqueDeNpcContraInvestigador(otro, armaId);
@@ -2755,6 +2827,131 @@ export class Turn {
       cause: String(raw.cause ?? ''),
     });
     return { ok: true, message: `«${item.name}» ahora está en: ${dest ?? 'perdido'}.` };
+  }
+
+  // ── PLATA ──────────────────────────────────────────────────────────────────
+
+  /** Mueve el efectivo del investigador y devuelve cuánto quedó. */
+  private moverEfectivo(delta: number, cause: string): number {
+    const inv = this.investigator;
+    const from = inv.derived.efectivo;
+    const to = Math.max(0, from + delta);
+    this.emit('STAT_CHANGED', {
+      investigatorId: inv.id, stat: 'efectivo', from, to, delta: to - from, cause,
+    });
+    return to;
+  }
+
+  /**
+   * Lo que hay que comprobar antes de cualquier trato, que es lo mismo para
+   * comprar y para vender: que el otro tenga mostrador, que esté acá, y que
+   * el objeto exista.
+   */
+  private mostradorDe(npcId: string, tool: string, raw: Record<string, unknown>):
+  { npc: Npc; comercio: ComercioNpc } | ToolOutcome {
+    const npc = this.state.npcs[npcId];
+    if (!npc) return this.reject(tool, raw, `El personaje «${npcId}» no existe.`);
+    if (!npc.comercio) {
+      return this.reject(tool, raw,
+        `${npc.name} no comercia. Que alguien conteste preguntas no lo convierte en un mostrador.`);
+    }
+    if (!npc.present || npc.status === 'dead') {
+      return this.reject(tool, raw, `${npc.name} no está acá.`);
+    }
+    const aqui = this.state.world.locations[this.state.world.currentLocation];
+    if (!aqui?.npcsPresent.includes(npc.id)) {
+      return this.reject(tool, raw, `${npc.name} no está en este lugar.`);
+    }
+    return { npc, comercio: npc.comercio };
+  }
+
+  private toolBuyItem(raw: Record<string, unknown>): ToolOutcome {
+    const itemId = String(raw.item_id ?? '');
+    const npcId = String(raw.npc_id ?? '');
+    const mostrador = this.mostradorDe(npcId, 'buy_item', raw);
+    if ('ok' in mostrador) return mostrador;
+    const { npc, comercio } = mostrador;
+
+    const item = this.state.items[itemId];
+    if (!item) return this.reject('buy_item', raw, `El objeto ${itemId} no existe.`);
+    if (!(comercio.vende ?? []).includes(itemId)) {
+      return this.reject('buy_item', raw, `${npc.name} no vende «${item.name}».`);
+    }
+    if (item.owner === this.investigator.id) {
+      return this.reject('buy_item', raw, `«${item.name}» ya lo lleva encima.`);
+    }
+    const precio = item.value ?? 0;
+    if (precio <= 0) {
+      return this.reject('buy_item', raw,
+        `«${item.name}» no tiene precio declarado: nadie le puso uno, así que no se compra.`);
+    }
+    const tiene = this.investigator.derived.efectivo;
+    if (tiene < precio) {
+      return this.reject('buy_item', raw,
+        `No alcanza: «${item.name}» cuesta ${enPesos(precio)} y lleva ${enPesos(tiene)}.`);
+    }
+
+    const queda = this.moverEfectivo(-precio, `compró «${item.name}» a ${npc.name}`);
+    this.emit('ITEM_TRANSFERRED', {
+      itemId, from: item.owner, to: this.investigator.id, carried: true,
+      cause: `comprado a ${npc.name} por ${enPesos(precio)}`,
+    });
+    return {
+      ok: true,
+      message: `Comprás ${item.name.toLowerCase()} por ${enPesos(precio)}. Te quedan ${enPesos(queda)}.`,
+    };
+  }
+
+  private toolSellItem(raw: Record<string, unknown>): ToolOutcome {
+    const itemId = String(raw.item_id ?? '');
+    const npcId = String(raw.npc_id ?? '');
+    const mostrador = this.mostradorDe(npcId, 'sell_item', raw);
+    if ('ok' in mostrador) return mostrador;
+    const { npc, comercio } = mostrador;
+
+    const item = this.state.items[itemId];
+    if (!item) return this.reject('sell_item', raw, `El objeto ${itemId} no existe.`);
+    if (item.owner !== this.investigator.id) {
+      return this.reject('sell_item', raw, `No se puede vender «${item.name}»: no es suyo.`);
+    }
+    const categoria = item.categoria ?? 'hallazgo';
+    if (!(comercio.compra ?? []).includes(categoria)) {
+      return this.reject('sell_item', raw,
+        `${npc.name} no compra esa clase de cosas. «${item.name}» no le sirve para nada.`);
+    }
+    const valor = item.value ?? 0;
+    if (valor <= 0) {
+      return this.reject('sell_item', raw,
+        `«${item.name}» no tiene precio declarado: nadie sabría qué pagar por eso.`);
+    }
+
+    const pagan = loQuePagan(valor, comercio.margen);
+    const queda = this.moverEfectivo(pagan, `vendió «${item.name}» a ${npc.name}`);
+    this.emit('ITEM_TRANSFERRED', {
+      itemId, from: item.owner, to: npc.id, carried: false,
+      cause: `vendido a ${npc.name} por ${enPesos(pagan)}`,
+    });
+
+    // Desprenderse de algo que toca el Umbral no es una transacción: es
+    // dejarlo suelto en el mundo, en manos de alguien que no sabe lo que
+    // tiene. El juego no lo impide —se puede vender cualquier cosa— pero lo
+    // deja anotado para siempre, y eso lo pueden leer las aventuras que
+    // vengan después con `{op:'consecuencia'}`.
+    let extra = '';
+    if (item.cargado) {
+      this.toolRecordConsequence({
+        description: `El investigador vendió «${item.name}» a ${npc.name}, que no sabe lo que acaba de comprar.`,
+        scope: 'world',
+        permanent: 'true',
+        world_reminder: `«${item.name}» quedó en manos de ${npc.name}, sin que nadie le explicara qué es.`,
+      });
+      extra = ' Queda del otro lado del mostrador, con alguien que no sabe lo que acaba de comprar.';
+    }
+
+    return {
+      ok: true,
+      message: `Vendés ${item.name.toLowerCase()} por ${enPesos(pagan)}. Ahora llevás ${enPesos(queda)}.${extra}`,
+    };
   }
 
   // ── TABLERO ────────────────────────────────────────────────────────────────

@@ -153,7 +153,13 @@ export interface RollExecutedPayload {
 
 export interface StatChangedPayload {
   investigatorId: InvestigatorId;
-  stat: 'hp' | 'san' | 'mp' | 'luck';
+  /**
+   * `efectivo` entra acá y no en un evento propio porque es exactamente lo
+   * mismo que los otros cuatro: un número de `derived` que sube o baja con
+   * una causa escrita. El reducer de `STAT_CHANGED` ya es genérico sobre
+   * este campo, así que no hizo falta tocarlo.
+   */
+  stat: 'hp' | 'san' | 'mp' | 'luck' | 'efectivo';
   from: number;
   to: number;
   delta: number;
