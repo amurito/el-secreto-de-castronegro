@@ -778,7 +778,7 @@
       "prueba": {
         "skill": "persuasion",
         "difficulty": "regular",
-        "actitudMinima": 5,
+        "actitudMinima": 2,
         "razon": "que cuente lo que no contó ni cuando le pagaron por contarlo"
       },
       "cede": {

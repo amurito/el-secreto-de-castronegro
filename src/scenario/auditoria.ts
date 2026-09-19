@@ -248,3 +248,49 @@ export function objetosPerdidos(esc: Scenario): string[] {
     })
     .map((i) => `${i.id} (owner: ${i.owner ?? 'null'})`);
 }
+
+/**
+ * Temas cuyo `actitudMinima` pide más de lo que ese NPC puede llegar a dar,
+ * ni jugando perfecto.
+ *
+ * Encontrado auditando el catálogo entero —no jugando— con este mismo
+ * cálculo: diez casos en seis aventuras, el peor pidiendo actitud 30 de un
+ * NPC que sólo puede dar 27 aunque el jugador acierte todo, incluido un
+ * crítico. El más viejo databa de meses antes de que existiera este chequeo.
+ *
+ * El cálculo es un punto fijo: sumar la ganancia de todo tema SIN piso o con
+ * el piso ya cruzado, una y otra vez, hasta que no se pueda sumar ninguno
+ * más. La ganancia de cada tema es la mejor de sus tres salidas
+ * (`cede`/`esquiva`/`critico`) —jugando perfecto, no en promedio— porque lo
+ * que se audita es si el tema es alcanzable EN ABSOLUTO, no si es probable.
+ */
+export function actitudesImposibles(esc: Scenario): string[] {
+  const porNpc = new Map<string, typeof esc.conversations>();
+  for (const t of esc.conversations) {
+    if (!porNpc.has(t.npc)) porNpc.set(t.npc, []);
+    porNpc.get(t.npc)!.push(t);
+  }
+  const imposibles: string[] = [];
+  for (const [npcId, temasDelNpc] of porNpc) {
+    let actitudMax = 0;
+    const pendientes = new Set(temasDelNpc);
+    let cambio = true;
+    while (cambio) {
+      cambio = false;
+      for (const t of pendientes) {
+        const piso = t.prueba?.actitudMinima;
+        if (piso !== undefined && actitudMax < piso) continue;
+        const ganancia = Math.max(t.cede.actitud ?? 0, t.esquiva?.actitud ?? 0, t.critico?.actitud ?? 0);
+        actitudMax += ganancia;
+        pendientes.delete(t);
+        cambio = true;
+      }
+    }
+    for (const t of pendientes) {
+      imposibles.push(
+        `«${t.id}» (${npcId}): pide actitud ${t.prueba!.actitudMinima}, pero el máximo alcanzable con este NPC es ${actitudMax}`,
+      );
+    }
+  }
+  return imposibles;
+}

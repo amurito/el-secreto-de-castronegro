@@ -4428,6 +4428,77 @@ lista de botones que la interfaz dibuja se verificó con
 compra y venta se corrió de punta a punta contra el motor real. Falta ver
 esas dos cosas con los ojos.
 
+### 3.2-quinquiquinquagies Pasada de tiradas por el resto del catálogo ✔ HECHA
+
+Pedido: revisar las once aventuras que no fueron Zonda ni Merced con el mismo
+criterio ("casi no hay tiradas"). Medido antes de tocar nada —% de temas de
+conversación con `prueba` por aventura— para no adivinar dónde hacía falta
+trabajar.
+
+**El número engañaba.** Las dos aventuras en 0% (*El Hombre que Miraba el
+Agua*, *Lo que Bernardo Sabía*) resultaron ser diseño a propósito, no
+descuido: la primera reparte el riesgo en escenas de acción, no en diálogo
+—es una visión, no un interrogatorio—; la segunda es un epílogo de cinco
+escenas sin un solo NPC que resista nada. Y para confirmar que el resto del
+catálogo no estaba regalando secretos de verdad —el problema real detrás de
+"casi no hay tiradas"— se cruzó cada secreto declarado (`Npc.secrets`)
+contra el tema que lo revela: de trece aventuras, sólo UNO se entregaba sin
+tirada.
+
+**El único bug real de ese cruce:** en *Agua Blanca*, `e-aljibe` regalaba el
+secreto de Encarnación —para qué es el aljibe que nadie toca hace treinta
+años— en el primer tema, gratis, contradiciendo su propia `motivation`
+declarada ("no le pregunte por qué"). Agregada `prueba` de persuasión y una
+`esquiva` que corta la conversación en seco.
+
+**Contenido nuevo, uno o dos chequeos por aventura, sólo donde había un
+hueco real** (un `refusals` declarado sin ningún tema que lo cubra, o una
+revelación central regalada sin resistencia) — no forzado parejo en las
+once, porque varias ya estaban bien como estaban (*El Sueño Debido*, *El
+Círculo Rojo*: sus NPCs son colegas del mismo secreto compartiendo
+información urgente, no extraños interrogados):
+  - **Invierno Debido** — `d-marco`: por qué el marco de la puerta sin
+    puerta impresionó a Delfina más que los otros tres puntos del mapa,
+    encadenado tras `d-puntos`.
+  - **Tercer Umbral** — `c-hoja`: Ceferino admite haber arrancado él mismo
+    la hoja del libro de 1923 —su `refusals` lo decía y ningún tema lo
+    cubría—, encadenado tras encontrar la hoja arrancada (`f-libros`).
+  - **La Legua Perdida** — `h-comprador`: quién le compra el campo a
+    Herminia y por qué necesita el número antes que la verdad —su segundo
+    `refusals` ("no habla del comprador hasta que la confianza sea alta")
+    no tenía ningún tema, tampoco.
+  - **El Orden Debido** — `d-patron`: separado de `d-mapa-nuevo`, que
+    regalaba GRATIS la revelación central del archivo —los puntos del mapa
+    avanzan cada uno más al oeste que el anterior, sin excepción— con sólo
+    +3 de actitud y ningún dado de por medio. Ahora el mapa se sigue dando
+    libre; el patrón hay que ganárselo.
+
+**Y un bug real de calibración, encontrado por verificar el mío antes de
+darlo por bueno.** Al ponerle un `actitudMinima` a `h-comprador`, hizo falta
+saber cuánta actitud puede dar Herminia como máximo — y resultó que
+`h-oeste`, YA EXISTENTE, pedía actitud 15 cuando el máximo que sus propios
+temas pueden sumar es 10. Matemáticamente irrealizable, ni jugando perfecto:
+un tema que nadie iba a desbloquear jamás. Auditado el catálogo ENTERO con
+el mismo cálculo —punto fijo: sumar la ganancia de todo tema sin piso o con
+el piso ya cruzado, hasta que no se pueda sumar más, usando la mejor salida
+de cada uno (`cede`/`esquiva`/`crítico`)— y aparecieron **nueve casos más**
+en cinco aventuras, el peor pidiendo actitud 30 (Rosa, *Agua Quieta*) contra
+un máximo real de 27. El más viejo databa de agosto de 2026. Bajados los
+diez a un umbral realmente alcanzable, con margen.
+
+**El chequeo quedó permanente.** `actitudesImposibles` (nueva función pura
+en `scenario/auditoria.ts`), con su propio caso de control en
+`prueba-auditoria.ts` (`caza un actitudMinima que ese NPC nunca puede llegar
+a dar`) que fabrica un piso de 9999 sobre la primera aventura del catálogo y
+confirma que el detector lo encuentra. De acá en más, cualquier
+`actitudMinima` mal calibrado se cacha solo en `npm run prueba:auditoria`,
+sin depender de que alguien lo note jugando.
+
+Verificado con recorridos scriptados contra el motor real para cada cadena
+nueva (`d-marco`, `d-patron`, `c-hoja`, `h-comprador`), confirmando que se
+destraban en el momento correcto y no antes. `npm run prueba:todo` completo,
+`prueba-auditoria.ts` en verde para el catálogo entero.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

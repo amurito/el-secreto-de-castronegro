@@ -1026,7 +1026,7 @@
       "prueba": {
         "skill": "persuasion",
         "difficulty": "regular",
-        "actitudMinima": 30,
+        "actitudMinima": 20,
         "razon": "meterse en un asunto de familia que no le corresponde"
       },
       "cede": {

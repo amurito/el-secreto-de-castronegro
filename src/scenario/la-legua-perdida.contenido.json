@@ -1093,6 +1093,36 @@
       }
     },
     {
+      "id": "h-comprador",
+      "npc": "npc-herminia",
+      "orden": 17,
+      "etiqueta": "Preguntarle quién le compra el campo",
+      "intencion": "Le pregunto a Herminia quién le está comprando el campo",
+      "claves": [
+        "esta comprando el campo",
+        "el comprador",
+        "quien le compra"
+      ],
+      "prueba": { "skill": "persuasion", "difficulty": "regular", "actitudMinima": 12, "razon": "hablar de lo único que dijo que no iba a hablar hasta que confiara" },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Deja el mate y se seca las manos en el delantal antes de contestar, como si fuera a firmar algo.",
+          "—Un rematador de Bragado, por un consorcio de Buenos Aires que ni conozco. Ya adelantaron seña. Si esto se convierte en un expediente por la muerte de Fermín, se cae la operación y me quedo con el campo, la rueda, y encima con un peón muerto en la conciencia.\n\n—Por eso necesito el número antes que la verdad. Dígamelo así, si le sirve para entenderme: no me importa cuánto mide de verdad. Me importa que alguien lo firme."
+        ],
+        "pista": {
+          "description": "Herminia le vende el campo a un consorcio de Buenos Aires, a través de un rematador de Bragado, con seña ya adelantada. Necesita un número firmado antes de que se abra cualquier expediente por la muerte de Fermín, o la venta se cae.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Eso no es asunto suyo. Usted está acá por el certificado, no por mis cuentas."
+        ]
+      }
+    },
+    {
       "id": "h-oeste",
       "npc": "npc-herminia",
       "orden": 18,
@@ -1106,7 +1136,7 @@
       "prueba": {
         "skill": "psicologia",
         "difficulty": "hard",
-        "actitudMinima": 15,
+        "actitudMinima": 8,
         "razon": "que cuente lo que le pasó a ella y no lo que le pasó al campo"
       },
       "cede": {
@@ -1263,7 +1293,7 @@
       "prueba": {
         "skill": "psicologia",
         "difficulty": "hard",
-        "actitudMinima": 20,
+        "actitudMinima": 14,
         "razon": "que suelte lo que calla desde hace catorce años"
       },
       "cede": {
@@ -1448,7 +1478,7 @@
       "prueba": {
         "skill": "psicologia",
         "difficulty": "hard",
-        "actitudMinima": 25,
+        "actitudMinima": 12,
         "razon": "que diga el número que no anotó en ninguna parte"
       },
       "cede": {

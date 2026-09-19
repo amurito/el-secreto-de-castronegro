@@ -850,6 +850,45 @@
       }
     },
     {
+      "id": "c-hoja",
+      "npc": "npc-ceferino",
+      "orden": 19,
+      "etiqueta": "Preguntarle por la hoja arrancada del libro de 1923",
+      "intencion": "Le pregunto a Ceferino por la hoja arrancada del libro de cuentas de 1923",
+      "claves": [
+        "la hoja arrancada",
+        "el libro de 1923",
+        "la pagina que falta"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "le falta una hoja, arrancada al ras"
+      },
+      "prueba": { "skill": "persuasion", "difficulty": "hard", "razon": "que admita algo que él mismo se encargó de que nadie pudiera probar" },
+      "cede": {
+        "actitud": -2,
+        "texto": [
+          "Se queda mirando los libros un segundo de más antes de contestar.",
+          "—Anastasio murió sin heredero confirmado, y alguien tenía que decidir qué se pagaba y qué se cobraba mientras tanto. Lo decidí yo. Arranqué esa hoja porque anotaba adelantos que no tenía cómo justificar si el heredero aparecía y preguntaba.\n\n—No robé nada que no fuera a cobrar de todos modos, por el trabajo de esos meses. Pero si usted me pregunta si puedo probarlo con un papel, la respuesta es no, y por eso no hay papel."
+        ],
+        "pista": {
+          "description": "Ceferino admite haber arrancado él mismo la hoja del libro de 1923: anotaba adelantos de plata que se cobró mientras administraba la estancia sin heredero confirmado, y que no podría justificar si alguien preguntara.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—No sé de qué hoja me habla. Esos libros los llevo yo, y están completos.\n\n—Es lo último que le voy a decir sobre mis cuentas."
+        ],
+        "pista": {
+          "description": "Ceferino niega saber algo de la hoja arrancada, pero es la primera vez que corta una conversación en seco.",
+          "kind": "experiential",
+          "reliability": "unreliable"
+        }
+      }
+    },
+    {
       "id": "m-nino",
       "npc": "npc-martiniano",
       "orden": 10,

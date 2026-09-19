@@ -29,7 +29,7 @@ import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import {
   loQueDeclara, loQuePuedeEntregar, lugaresInalcanzables,
-  conexionesDeIda, objetosPerdidos,
+  conexionesDeIda, objetosPerdidos, actitudesImposibles,
 } from './scenario/auditoria.ts';
 import type { Scenario } from './scenario/types.ts';
 import type { GameState } from './shared/types.ts';
@@ -375,6 +375,16 @@ async function auditar(esc: Scenario) {
   for (const m of sinClave) console.log(`   ✗ ${m}`);
   check('la intención de cada tema contiene alguna de sus propias claves',
     sinClave.length === 0, `${esc.conversations.length} temas`);
+
+  // Un `actitudMinima` más alto que cualquier actitud que ese NPC pueda dar
+  // es un tema que nadie va a desbloquear jamás — no por mala suerte con los
+  // dados, sino porque el número no cierra ni jugando perfecto. Ver
+  // `actitudesImposibles` en `scenario/auditoria.ts`.
+  const pisosImposibles = actitudesImposibles(esc);
+  for (const m of pisosImposibles) console.log(`   ✗ ${m}`);
+  check('ningún `actitudMinima` pide más de lo que el NPC puede llegar a dar',
+    pisosImposibles.length === 0, `${esc.conversations.length} temas`);
+
   const declarado = loQueDeclara(esc);
   const entregable = loQuePuedeEntregar(esc, estadosDeBanco(base, esc));
 
@@ -617,6 +627,17 @@ async function auditarLaAuditoria() {
   const declSec = loQueDeclara(secretoHuerfano);
   check('caza un secreto que ningún tema revela',
     declSec.secretos.some((s) => s.que === 's-fantasma') && !entSec.secretos.has('s-fantasma'));
+
+  // ── Un tema que pide más actitud de la que ese NPC puede llegar a dar ────
+  const pisoImposible: Scenario = {
+    ...sano,
+    conversations: sano.conversations.map((t, i) => (i === 0 ? {
+      ...t,
+      prueba: { skill: 'persuasion' as const, difficulty: 'regular' as const, actitudMinima: 9999, razon: 'control' },
+    } : t)),
+  };
+  check('caza un `actitudMinima` que ese NPC nunca puede llegar a dar',
+    actitudesImposibles(pisoImposible).some((m) => m.includes(sano.conversations[0]!.id)));
 
   // ── Escena que explota al ejecutarse ─────────────────────────────────────
   const escenaRota: Scenario = {

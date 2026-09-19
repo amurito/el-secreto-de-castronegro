@@ -766,8 +766,40 @@
       "cede": {
         "actitud": 3,
         "texto": [
-          "—Dos cosas. —Se para y va hasta el mapa sin que haya que pedírselo—. Una: ubiqué el de la puerta. Ese lo tenía anotado desde el veinticinco y no sabía dónde quedaba, porque el que me lo contó era un carrero y me lo explicó por horas de viaje, no por leguas.\n\n—Lo vi desde el tren volviendo de Del Valle. Está a ocho leguas de acá, al oeste.",
-          "—Y dos: cuando lo puse, me di cuenta de que si los ordeno por el año en que me los contaron, cada uno cae más al oeste que el anterior. Todos. Sin una excepción.\n\nSe queda con el dedo apoyado en el papel.\n\n—Yo los anoté en el orden en que me los fueron contando viajeros distintos, que no se conocen entre ellos y que no sabían que yo anotaba. No hay manera de que eso salga ordenado."
+          "—Ubiqué el de la puerta. —Se para y va hasta el mapa sin que haya que pedírselo—. Ese lo tenía anotado desde el veinticinco y no sabía dónde quedaba, porque el que me lo contó era un carrero y me lo explicó por horas de viaje, no por leguas.\n\n—Lo vi desde el tren volviendo de Del Valle. Está a ocho leguas de acá, al oeste."
+        ],
+        "pista": {
+          "description": "Delfina ubicó en el mapa el punto de la puerta que tenía anotado desde 1925: está a ocho leguas al oeste, sobre la vía del tren a Del Valle.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "agotado": {
+        "op": "pista",
+        "contiene": "ubicó en el mapa el punto de la puerta"
+      }
+    },
+    {
+      "id": "d-patron",
+      "npc": "npc-delfina",
+      "orden": 11,
+      "etiqueta": "Preguntarle si nota algo raro en el orden de los puntos",
+      "intencion": "Le pregunto a Delfina si nota algo raro en el orden en que fue anotando los puntos del mapa",
+      "claves": [
+        "algo raro en el orden",
+        "el orden de los puntos",
+        "un patron en el mapa",
+        "un patrón en el mapa"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "ubicó en el mapa el punto de la puerta"
+      },
+      "prueba": { "skill": "persuasion", "difficulty": "regular", "razon": "convencerla de que no le está preguntando por curiosidad, sino porque de verdad va a ir a mirar" },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Se queda con el dedo apoyado en el papel un momento largo antes de contestar.\n\n—Cuando lo puse, me di cuenta de algo. Si los ordeno por el año en que me los contaron, cada uno cae más al oeste que el anterior. Todos. Sin una excepción.\n\n—Yo los anoté en el orden en que me los fueron contando viajeros distintos, que no se conocen entre ellos y que no sabían que yo anotaba. No hay manera de que eso salga ordenado solo."
         ],
         "pista": {
           "description": "Ordenados por el año en que se los contaron, los puntos del mapa de Delfina avanzan cada uno más al oeste que el anterior, sin excepción. Los contaron viajeros distintos que no se conocían.",
@@ -776,9 +808,10 @@
         },
         "exposicion": 3
       },
-      "agotado": {
-        "op": "pista",
-        "contiene": "avanzan cada uno más al oeste"
+      "esquiva": {
+        "texto": [
+          "—Raro es raro. No sé si es más que eso, y no le voy a inventar un orden que capaz que no está, sólo porque usted quiere que esté."
+        ]
       }
     },
     {
@@ -980,7 +1013,7 @@
       "prueba": {
         "skill": "persuasion",
         "difficulty": "hard",
-        "actitudMinima": 15,
+        "actitudMinima": 6,
         "razon": "que un hombre diga en voz alta lo que viene tapando con cemento hace años"
       },
       "cede": {
@@ -1222,7 +1255,7 @@
       "prueba": {
         "skill": "psicologia",
         "difficulty": "hard",
-        "actitudMinima": 10,
+        "actitudMinima": 5,
         "razon": "que hable de un lugar que decidió hace décadas no nombrar"
       },
       "cede": {

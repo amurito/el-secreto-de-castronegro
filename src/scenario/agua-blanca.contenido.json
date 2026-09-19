@@ -1270,7 +1270,7 @@
       "prueba": {
         "skill": "psicologia",
         "difficulty": "regular",
-        "actitudMinima": 5,
+        "actitudMinima": 3,
         "razon": "darse cuenta de que la guardó a propósito, y decírselo sin acusarlo"
       },
       "cede": {
@@ -1309,7 +1309,7 @@
       "prueba": {
         "skill": "persuasion",
         "difficulty": "regular",
-        "actitudMinima": 3,
+        "actitudMinima": 2,
         "razon": "que hable de apellidos con dos parroquianos en el mostrador"
       },
       "cede": {
@@ -1443,7 +1443,7 @@
       "prueba": {
         "skill": "psicologia",
         "difficulty": "regular",
-        "actitudMinima": 10,
+        "actitudMinima": 4,
         "razon": "preguntarle un número que él ya calculó y no le mostró a nadie"
       },
       "cede": {
@@ -1840,6 +1840,7 @@
         "caballos"
       ],
       "orden": 1,
+      "prueba": { "skill": "persuasion", "difficulty": "regular", "razon": "que hable de lo único que ella misma prefiere no explicarle a un huésped" },
       "cede": {
         "texto": [
           "—Es para los caballos —dice, y no levanta la vista de la pava—. Buena agua, dicen, pero nadie la toma. Ni yo, y hace treinta años que vivo con ese aljibe en el patio.\n\n—No sé quién lo decidió. Un día dejamos todos, y ya está. No es una regla, no está escrita en ningún lado. Es de esas cosas que se hacen y no se explican."
@@ -1850,6 +1851,16 @@
           "description": "Nadie en Castronegro toma agua del aljibe de la fonda desde hace treinta años, ni siquiera la dueña. Nadie decidió prohibirlo: dejaron de hacerlo todos, sin ponerse de acuerdo.",
           "kind": "testimonial",
           "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Es para los caballos —dice, y no levanta la vista de la pava—. Buena agua, dicen.\n\n—¿Necesita algo más? Tengo la cocina esperando."
+        ],
+        "pista": {
+          "description": "Encarnación corta cualquier pregunta sobre el aljibe apenas puede, y no cuenta nada que no le pregunten dos veces.",
+          "kind": "experiential",
+          "reliability": "unreliable"
         }
       }
     },

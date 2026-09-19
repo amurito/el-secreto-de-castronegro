@@ -1268,6 +1268,40 @@
       }
     },
     {
+      "id": "d-marco",
+      "npc": "npc-delfina",
+      "orden": 42,
+      "etiqueta": "Preguntarle por qué el marco de la puerta la impresionó más",
+      "intencion": "Le pregunto a Delfina por qué el marco de la puerta sin puerta la impresionó más que los otros tres puntos",
+      "claves": [
+        "el marco de la puerta",
+        "la puerta sin puerta",
+        "por que le impresiono mas"
+      ],
+      "disponible": {
+        "op": "narrado",
+        "contiene": "el marco de una puerta que ya no tiene puerta"
+      },
+      "prueba": { "skill": "psicologia", "difficulty": "regular", "razon": "ponerle palabras a una corazonada que ella misma no terminó de entender" },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "Se queda un momento sin contestar, como si nunca se lo hubiera preguntado a sí misma en esos términos.",
+          "—Un aljibe todavía da agua. Un mojón todavía es un límite. La base de un molino todavía sostiene algo, aunque el molino ya no esté. Pero una puerta sin puerta no es nada. No separa nada de nada. Y sin embargo alguien la sigue pintando, como si de este lado y del otro lado siguiera habiendo dos cosas distintas.\n\n—Los otros tres son cosas que todavía sirven para algo, aunque sea de casualidad. Ésa no. Ésa es puro límite, sin nada que limite. Eso fue lo que me impresionó."
+        ],
+        "pista": {
+          "description": "De los cuatro puntos marcados, tres siguen cumpliendo alguna función práctica de casualidad —el aljibe da agua, el mojón sigue siendo un límite, la base del molino sostiene algo—. El marco de la puerta sin puerta no sirve para nada: es puro límite, sin ningún lado que separe. Y sin embargo alguien lo sigue pintando.",
+          "kind": "experiential",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—No sé. Me impresionó y ya está. No todo lo que a una le hace impresión tiene una razón que se pueda decir en voz alta."
+        ]
+      }
+    },
+    {
       "id": "a-abrir",
       "npc": "npc-aurelio",
       "orden": 9,
