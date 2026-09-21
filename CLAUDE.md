@@ -17,6 +17,7 @@ npm run build              # typecheck + vite build → dist/web
 npm run preview            # serve the static build, as it would ship
 npm run desplegar          # test + build + audit + publish to gh-pages (see README)
 npm run revisar:bundle     # audits the built JS for leaked spoilers/secrets
+npm run mapa               # regenerates docs/mapa-de-campana.html: campaign tree + per-adventure map/cause-effect flow (design tool, read from the real content — not part of prueba:todo)
 
 npm run prueba:todo        # every suite below, in order, then build + revisar:bundle — this is what CI runs
 npm run prueba:combate     # e.g., run one suite directly with tsx

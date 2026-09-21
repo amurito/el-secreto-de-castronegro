@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de campaña — El Secreto de Castronegro</title>
+<style>
+  :root {
+    --bg: #0f0f12; --panel: #17171c; --raised: #1e1e25; --line: #2c2c36;
+    --text: #e6e3dc; --dim: #a09d96; --faint: #6d6b66;
+    --pista: #6aa5d8; --cons: #e0a44a; --narrado: #8a8a94; --final: #d8604f; --ok: #79b58a;
+    --escena: #b9a7e0; --tema: #79b58a;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --serif: Georgia, "Iowan Old Style", serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f6f4ee; --panel: #ffffff; --raised: #efece4; --line: #d6d1c4; --text: #23211c; --dim: #5d5a52; --faint: #8b877c;
+      --pista: #2c6aa3; --cons: #a86b0f; --narrado: #6d6d78; --final: #b23a2a; --ok: #2f7d4a; --escena: #6b4fb0; --tema: #2f7d4a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 var(--serif); }
+  header { padding: 14px 20px 0; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 5; }
+  h1 { font-size: 17px; font-weight: normal; margin: 0 0 2px; }
+  .sub { font: 11px var(--mono); color: var(--faint); margin-bottom: 10px; }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  nav button, nav select {
+    font: 12px var(--mono); color: var(--dim); background: none; border: 1px solid transparent;
+    border-bottom: none; padding: 7px 12px; cursor: pointer; border-radius: 3px 3px 0 0;
+  }
+  nav select { background: var(--raised); border-color: var(--line); border-bottom: none; max-width: 300px; }
+  nav button.on { color: var(--text); background: var(--panel); border-color: var(--line); }
+  nav .sep { width: 1px; height: 18px; background: var(--line); margin: 0 8px; }
+  main { padding: 18px 20px 60px; }
+  .lienzo { overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+  svg { display: block; }
+  svg text { font-family: var(--serif); fill: var(--text); }
+  svg .m { font: 10px var(--mono); fill: var(--dim); }
+  .nodo { cursor: pointer; }
+  .nodo rect { fill: var(--raised); stroke: var(--line); stroke-width: 1.2; }
+  .nodo:hover rect { stroke: var(--dim); }
+  .nodo.sel rect { stroke: var(--text); stroke-width: 2; }
+  .nodo.tenue { opacity: .18; }
+  .arista.tenue { opacity: .08; }
+  .fantasma rect { stroke-dasharray: 5 4; fill: transparent; }
+  .leyenda { display: flex; gap: 16px; flex-wrap: wrap; font: 11px var(--mono); color: var(--dim); margin: 10px 2px 14px; }
+  .leyenda i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; vertical-align: middle; margin-right: 5px; }
+  .leyenda i.pu { border-top-style: dashed; }
+  .lado { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+  @media (max-width: 1000px) { .lado { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; position: sticky; top: 92px; max-height: calc(100vh - 110px); overflow: auto; }
+  .panel h3 { font-size: 15px; margin: 0 0 2px; font-weight: normal; }
+  .panel h4 { font: 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin: 14px 0 5px; }
+  .panel p, .panel li { font-size: 12.5px; margin: 0 0 6px; color: var(--dim); }
+  .panel ul { margin: 0; padding-left: 16px; }
+  .chip { display: inline-block; font: 10px var(--mono); border: 1px solid var(--line); border-radius: 2px; padding: 1px 6px; margin: 0 4px 4px 0; color: var(--dim); }
+  .k-pista { color: var(--pista); } .k-consecuencia { color: var(--cons); } .k-narrado { color: var(--narrado); } .k-desenlace { color: var(--final); }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  th { text-align: left; font: 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--dim); }
+  td b { color: var(--text); font-weight: normal; }
+  .caja { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 12px 12px; margin-bottom: 16px; }
+  .caja h2 { font: 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin: 10px 0 6px; }
+  details { margin-top: 12px; } summary { cursor: pointer; font: 11px var(--mono); color: var(--dim); }
+  .vacio { color: var(--faint); font-style: italic; padding: 12px 4px; }
+  a.enlace { color: var(--pista); cursor: pointer; text-decoration: underline dotted; }
+  .nota { font: 11.5px/1.5 var(--mono); color: var(--faint); margin-top: 14px; max-width: 900px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Mapa de campaña — El Secreto de Castronegro</h1>
+  <div class="sub" id="generado"></div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+
+<script>
+const D = /*__DATOS__*/null;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const trunc = (s, n) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s);
+const porId = Object.fromEntries(D.campania.map((c) => [c.id, c]));
+const COLOR = { pista: 'var(--pista)', consecuencia: 'var(--cons)', narrado: 'var(--narrado)', desenlace: 'var(--final)' };
+
+let vista = 'campania';   // 'campania' | id de aventura
+let sub = 'causa';        // 'mapa' | 'causa' | 'cons'
+let sel = null;           // nodo elegido en causa y efecto
+
+$('#generado').textContent = 'Generado desde el código el ' + D.generado + ' · npm run mapa lo regenera';
+
+function nav() {
+  const n = $('#nav');
+  let h = '<button class="' + (vista === 'campania' ? 'on' : '') + '" data-v="campania">Campaña</button><span class="sep"></span>';
+  h += '<select id="sel-av"><option value="">Aventura…</option>' +
+    D.campania.map((c) => '<option value="' + c.id + '"' + (vista === c.id ? ' selected' : '') + '>' + esc(c.epoca.split('·')[0].trim() + ' — ' + c.title) + '</option>').join('') + '</select>';
+  if (vista !== 'campania') {
+    h += '<span class="sep"></span>' + [['mapa', 'Lugares'], ['causa', 'Causa y efecto'], ['cons', 'Consecuencias']]
+      .map(([k, t]) => '<button class="' + (sub === k ? 'on' : '') + '" data-s="' + k + '">' + t + '</button>').join('');
+  }
+  n.innerHTML = h;
+  n.querySelectorAll('button[data-v]').forEach((b) => (b.onclick = () => ir('campania')));
+  n.querySelectorAll('button[data-s]').forEach((b) => (b.onclick = () => { sub = b.dataset.s; sel = null; dibujar(); }));
+  $('#sel-av').onchange = (e) => e.target.value && ir(e.target.value);
+}
+function ir(v) { vista = v; sel = null; dibujar(); window.scrollTo(0, 0); }
+function dibujar() { nav(); $('#main').innerHTML = ''; (vista === 'campania' ? campania : aventura)(); }
+
+/* ───────────────────────── CAMPAÑA ───────────────────────── */
+
+function campania() {
+  const cs = [...D.campania].sort((a, b) => a.cuando.localeCompare(b.cuando));
+  const prof = {};
+  const dep = (id, vis = []) => {
+    if (prof[id] !== undefined) return prof[id];
+    if (vis.includes(id)) return 0;
+    const r = (porId[id]?.requiere ?? []).filter((x) => porId[x]);
+    return (prof[id] = r.length ? 1 + Math.max(...r.map((x) => dep(x, [...vis, id]))) : 0);
+  };
+  cs.forEach((c) => dep(c.id));
+  const cols = {};
+  cs.forEach((c) => (cols[prof[c.id]] = cols[prof[c.id]] || []).push(c));
+  const W = 200, H = 84, GX = 70, GY = 34, X0 = 24, Y0 = 120;
+  const pos = {};
+  Object.keys(cols).forEach((d) => cols[d].forEach((c, i) => (pos[c.id] = { x: X0 + d * (W + GX), y: Y0 + i * (H + GY) })));
+  const maxD = Math.max(...Object.keys(cols).map(Number));
+  let nodosSvg = '', lineas = '';
+
+  // Requiere (línea continua)
+  cs.forEach((c) => c.requiere.filter((r) => pos[r]).forEach((r) => {
+    const a = pos[r], b = pos[c.id];
+    lineas += '<path d="M' + (a.x + W) + ' ' + (a.y + H / 2) + ' C' + (a.x + W + 34) + ' ' + (a.y + H / 2) + ',' + (b.x - 34) + ' ' + (b.y + H / 2) + ',' + b.x + ' ' + (b.y + H / 2) +
+      '" fill="none" stroke="var(--dim)" stroke-width="1.6"/>';
+  }));
+
+  // Consecuencias que cruzan (punteada), agrupadas por par
+  const par = {};
+  D.cruces.forEach((x) => { const k = x.de + '>' + x.a; (par[k] = par[k] || []).push(x); });
+  Object.keys(par).forEach((k, i) => {
+    const [de, a] = k.split('>');
+    if (!pos[de] || !pos[a]) return;
+    const A = pos[de], B = pos[a];
+    const x1 = A.x + W / 2, y1 = A.y, x2 = B.x + W / 2, y2 = B.y;
+    const alto = Math.max(14, Math.min(y1, y2) - 26 - (i % 6) * 12);
+    const tip = par[k].length + ' consecuencia(s) de «' + porId[de].title + '» que «' + porId[a].title + '» lee:\n' + par[k].slice(0, 6).map((x) => '· ' + x.frag).join('\n');
+    lineas += '<g class="arista"><path d="M' + x1 + ' ' + y1 + ' C' + x1 + ' ' + alto + ',' + x2 + ' ' + alto + ',' + x2 + ' ' + y2 +
+      '" fill="none" stroke="var(--cons)" stroke-width="1.6" stroke-dasharray="5 4"><title>' + esc(tip) + '</title></path></g>';
+  });
+
+  cs.forEach((c) => {
+    const p = pos[c.id];
+    nodosSvg += '<g class="nodo" data-id="' + c.id + '" transform="translate(' + p.x + ',' + p.y + ')"><rect width="' + W + '" height="' + H + '" rx="4"/>' +
+      '<text x="12" y="22" font-size="13.5">' + esc(trunc(c.title, 27)) + '</text>' +
+      '<text class="m" x="12" y="40">' + esc(trunc(c.epoca.split('·')[0].trim(), 34)) + '</text>' +
+      '<text class="m" x="12" y="58">' + c.lugares + ' lugares · ' + c.escenas + ' escenas · ' + c.temas + ' temas</text>' +
+      '<text class="m" x="12" y="73" style="fill:var(--final)">' + c.finales + ' final' + (c.finales === 1 ? '' : 'es') + (c.continuacion ? '  ·  continuación' : '') + '</text></g>';
+  });
+
+  // En diseño: el futuro
+  let alto = Y0 + Math.max(...Object.values(cols).map((v) => v.length)) * (H + GY);
+  if (D.enDiseno && pos[D.enDiseno.requiere[0]]) {
+    const dsn = D.enDiseno, ant = pos[dsn.requiere[0]];
+    const gx = ant.x + W + GX, gy = ant.y;
+    lineas += '<path d="M' + (ant.x + W) + ' ' + (ant.y + H / 2) + ' L' + gx + ' ' + (gy + H / 2) + '" stroke="var(--dim)" stroke-width="1.6"/>';
+    nodosSvg += '<g class="nodo fantasma" data-fant="1" transform="translate(' + gx + ',' + gy + ')"><rect width="' + (W + 30) + '" height="' + (H + 40) + '" rx="4"/>' +
+      '<text x="12" y="22" font-size="13.5">' + esc(dsn.title) + '</text>' +
+      '<text class="m" x="12" y="40">' + esc(dsn.epoca) + '</text><text class="m" x="12" y="56" style="fill:var(--cons)">' + esc(dsn.estado) + '</text>' +
+      dsn.aperturas.map((o, i) => '<text class="m" x="12" y="' + (76 + i * 15) + '">◂ apertura ' + esc(o.nombre) + '</text>').join('') +
+      '<text class="m" x="12" y="' + (76 + dsn.aperturas.length * 15 + 2) + '">3 actos: ' + esc(dsn.actos.length) + ' · ~28 lugares</text></g>';
+    const sx = gx + W + 30 + GX;
+    dsn.salidas.forEach((s, i) => {
+      const y = gy - 30 + i * 96;
+      lineas += '<path d="M' + (gx + W + 30) + ' ' + (gy + (H + 40) / 2) + ' C' + (gx + W + 60) + ' ' + (gy + (H + 40) / 2) + ',' + (sx - 30) + ' ' + (y + 34) + ',' + sx + ' ' + (y + 34) + '" fill="none" stroke="var(--dim)" stroke-width="1.4" stroke-dasharray="3 4"/>';
+      nodosSvg += '<g class="nodo fantasma" transform="translate(' + sx + ',' + y + ')"><rect width="230" height="68" rx="4"/>' +
+        '<text x="12" y="22" font-size="12.5">' + esc(trunc(s.nombre, 30)) + '</text>' +
+        '<text class="m" x="12" y="40">' + esc(trunc(s.detalle, 40)) + '</text><text class="m" x="12" y="55">' + esc(trunc(s.detalle.slice(40), 40)) + '</text></g>';
+    });
+    alto = Math.max(alto, gy + 190 + 90);
+    var ancho = sx + 260;
+  }
+  const ancho2 = Math.max(ancho || 0, X0 + (maxD + 1) * (W + GX) + 20);
+  $('#main').innerHTML =
+    '<div class="leyenda"><span><i style="border-color:var(--dim)"></i>«requiere» — sigue a</span>' +
+    '<span><i class="pu" style="border-color:var(--cons)"></i>una consecuencia de la primera que la segunda lee</span>' +
+    '<span><i class="pu" style="border-color:var(--dim)"></i>en diseño, todavía sin escribir</span><span>Clic en una aventura para abrirla</span></div>' +
+    '<div class="lienzo"><svg width="' + ancho2 + '" height="' + (alto + 20) + '">' + lineas + nodosSvg + '</svg></div>' + tablaCruces();
+  document.querySelectorAll('.nodo[data-id]').forEach((n) => (n.onclick = () => ir(n.dataset.id)));
+}
+
+function tablaCruces() {
+  if (!D.cruces.length) return '';
+  const filas = D.cruces.map((x) => '<tr><td><a class="enlace" onclick="ir(\'' + x.de + '\')">' + esc(porId[x.de].title) + '</a></td>' +
+    '<td><a class="enlace" onclick="ir(\'' + x.a + '\')">' + esc(porId[x.a].title) + '</a></td><td><b>' + esc(x.frag) + '</b></td><td>' + x.scope + '</td></tr>').join('');
+  return '<div class="caja" style="margin-top:18px"><h2>Ganchos entre aventuras (' + D.cruces.length + ')</h2>' +
+    '<p class="nota" style="margin:0 0 8px">Una aventura deja una consecuencia permanente; otra pregunta por un fragmento de su texto. Es la única forma en que lo que hiciste cruza de una a otra.</p>' +
+    '<table><tr><th>La deja</th><th>La lee</th><th>Fragmento que se busca</th><th>Alcance</th></tr>' + filas + '</table></div>';
+}
+
+/* ───────────────────────── AVENTURA ───────────────────────── */
+
+function aventura() {
+  const c = porId[vista], A = D.aventuras[vista];
+  const cab = '<div style="margin-bottom:12px"><span style="font-size:18px">' + esc(c.title) + '</span> <span class="chip">' + esc(c.epoca) + '</span>' +
+    '<span class="chip">' + c.lugares + ' lugares</span><span class="chip">' + c.npcs + ' NPCs</span><span class="chip">' + c.escenas + ' escenas</span><span class="chip">' + c.temas + ' temas</span></div>';
+  $('#main').innerHTML = cab + '<div id="cuerpo"></div>';
+  window.__lugarSel = null; if (sub === 'mapa') mapa(A); else if (sub === 'cons') consecuencias(c, A); else causa(A);
+}
+
+/* Lugares: capas por distancia desde el inicio */
+function mapa(A) {
+  const L = Object.fromEntries(A.locations.map((l) => [l.id, l]));
+  const capa = {}; const cola = [];
+  const ini = A.locations.find((l) => l.start)?.id;
+  if (ini) { capa[ini] = 0; cola.push(ini); }
+  while (cola.length) {
+    const u = cola.shift();
+    const vec = [...(L[u].conn || []), ...A.ocultas.filter((o) => o.desde === u).map((o) => o.hasta)];
+    vec.forEach((v) => { if (L[v] && capa[v] === undefined) { capa[v] = capa[u] + 1; cola.push(v); } });
+  }
+  const sin = A.locations.filter((l) => capa[l.id] === undefined);
+  const maxC = Math.max(0, ...Object.values(capa));
+  sin.forEach((l) => (capa[l.id] = maxC + 1));
+  const cols = {};
+  A.locations.forEach((l) => (cols[capa[l.id]] = cols[capa[l.id]] || []).push(l));
+  const W = 170, H = 50, GX = 60, GY = 22, P = 20, pos = {};
+  Object.keys(cols).forEach((c) => cols[c].forEach((l, i) => (pos[l.id] = { x: P + c * (W + GX), y: P + i * (H + GY) })));
+  const filas = Math.max(...Object.values(cols).map((v) => v.length));
+  let s = '';
+  const flecha = (a, b, oculto, txt) => {
+    const p = pos[a], q = pos[b]; if (!p || !q) return '';
+    const x1 = p.x + W, y1 = p.y + H / 2, x2 = q.x, y2 = q.y + H / 2;
+    const atras = q.x <= p.x;
+    const d = atras ? 'M' + (p.x + W / 2) + ' ' + (p.y + H) + ' C' + (p.x + W / 2) + ' ' + (p.y + H + 40) + ',' + (q.x + W / 2) + ' ' + (q.y + H + 40) + ',' + (q.x + W / 2) + ' ' + (q.y + H)
+      : 'M' + x1 + ' ' + y1 + ' C' + (x1 + 30) + ' ' + y1 + ',' + (x2 - 30) + ' ' + y2 + ',' + x2 + ' ' + y2;
+    return '<path d="' + d + '" fill="none" stroke="' + (oculto ? 'var(--cons)' : 'var(--dim)') + '" stroke-width="1.3"' + (oculto ? ' stroke-dasharray="5 4"' : '') + '><title>' + esc(txt || '') + '</title></path>';
+  };
+  const hechas = new Set();
+  A.locations.forEach((l) => (l.conn || []).forEach((v) => {
+    const k = [l.id, v].sort().join('|');
+    const rec = (L[v]?.conn || []).includes(l.id);
+    if (rec && hechas.has(k)) return; hechas.add(k);
+    s += flecha(l.id, v, false, rec ? 'ida y vuelta' : 'sólo de ida');
+  }));
+  A.ocultas.forEach((o) => (s += flecha(o.desde, o.hasta, true, 'aparece cuando: ' + o.cond)));
+  A.locations.forEach((l) => {
+    const p = pos[l.id];
+    s += '<g class="nodo' + (l.start ? ' sel' : '') + '" transform="translate(' + p.x + ',' + p.y + ')"><rect width="' + W + '" height="' + H + '" rx="4"/>' +
+      '<text x="10" y="21" font-size="12.5">' + esc(trunc(l.name, 24)) + '</text><text class="m" x="10" y="38">' + (l.start ? '◆ inicio · ' : '') + l.npcs + ' NPC' + (l.npcs === 1 ? '' : 's') + '</text></g>';
+  });
+  window.__mapaA = A;
+  $('#cuerpo').innerHTML =
+    '<div class="leyenda"><span><i style="border-color:var(--dim)"></i>camino</span><span><i class="pu" style="border-color:var(--cons)"></i>conexión oculta (aparece al cumplir una condición)</span><span>◆ lugar de inicio</span></div>' +
+    '<div class="lado"><div><div class="lienzo"><svg id="svg-mapa" width="' + (P * 2 + (Object.keys(cols).length) * (W + GX)) + '" height="' + (P * 2 + filas * (H + GY) + 30) + '">' + s + '</svg></div>' +
+    (sin.length ? '<p class="nota">Sin camino desde el inicio (a la derecha): ' + sin.map((l) => esc(l.name)).join(', ') + '. Puede ser a propósito si se llega por otro medio.</p>' : '') +
+    '<div class="nota">Una flecha por par de lugares; el título dice si es de ida y vuelta o sólo de ida.</div></div>' +
+    '<div class="panel" id="panel"><p class="vacio">Tocá un lugar para ver qué se puede hacer ahí y qué deja cada cosa.</p></div></div>';
+  document.querySelectorAll('#svg-mapa .nodo').forEach((g) => (g.onclick = () => lugar(g.dataset.id)));
+  if (window.__lugarSel) lugar(window.__lugarSel);
+}
+
+function lugar(id) {
+  const A = window.__mapaA; window.__lugarSel = id;
+  const l = A.locations.find((x) => x.id === id);
+  document.querySelectorAll('#svg-mapa .nodo').forEach((g) => g.classList.toggle('sel', g.dataset.id === id || (!g.dataset.id && false)));
+  const aca = new Set([id, ...l.npcIds, ...l.itemIds, ...l.featIds]);
+  const temas = A.nodos.filter((n) => n.kind === 'tema' && l.npcIds.includes(n.npc));
+  const escenas = A.nodos.filter((n) => n.kind === 'escena' && n.refs.some((r) => aca.has(r)));
+  const fila = (n) => '<li><b style="color:var(--text);font-weight:normal">' + esc(n.label) + '</b>' + (n.sub ? ' <span class="m" style="font:10px var(--mono)">' + esc(n.sub) + '</span>' : '') + '<br>' +
+    n.chips.map((c) => '<span class="chip">' + esc(c) + '</span>').join('') +
+    (n.pistas.length ? '<span class="chip k-pista">' + n.pistas.length + ' pista' + (n.pistas.length > 1 ? 's' : '') + '</span>' : '') +
+    (n.cons.length ? '<span class="chip k-consecuencia">deja ' + n.cons.length + ' consecuencia' + (n.cons.length > 1 ? 's' : '') + '</span>' : '') + '</li>';
+  const conex = (l.conn || []).map((v) => (A.locations.find((x) => x.id === v) || {}).name || v);
+  const ocul = A.ocultas.filter((o) => o.desde === id).map((o) => ((A.locations.find((x) => x.id === o.hasta) || {}).name || o.hasta) + ' (si: ' + o.cond + ')');
+  $('#panel').innerHTML = '<h3>' + esc(l.name) + '</h3><p>' + esc(trunc(l.desc, 220)) + '</p>' +
+    '<h4>Salidas</h4><p>' + (conex.length ? esc(conex.join(' · ')) : 'Ninguna declarada.') + (ocul.length ? '<br><span class="k-consecuencia">ocultas:</span> ' + esc(ocul.join(' · ')) : '') + '</p>' +
+    '<h4>Hay acá</h4><p>' + (l.npcIds.map((x) => esc(A.npcs[x] || x)).concat(l.itemIds.map((x) => '🎒 ' + esc(A.items[x] || x))).join(' · ') || 'Nada ni nadie.') + '</p>' +
+    '<h4>Conversaciones (' + temas.length + ')</h4>' + (temas.length ? '<ul>' + temas.map(fila).join('') + '</ul>' : '<p class="vacio">Ninguna.</p>') +
+    '<h4>Escenas ligadas a este lugar (' + escenas.length + ')</h4>' + (escenas.length ? '<ul>' + escenas.map(fila).join('') + '</ul>' : '<p class="vacio">Ninguna atada a un objeto o detalle de acá.</p>') +
+    '<p class="nota" style="margin-top:10px">Las escenas que no dependen de un objeto o lugar concreto (p. ej. un desenlace) no aparecen acá: mirá «Causa y efecto».</p>';
+}
+
+/* Causa y efecto: quién habilita a quién */
+function causa(A) {
+  const N = Object.fromEntries(A.nodos.map((n) => [n.id, n]));
+  const ar = A.aristas.filter((a) => N[a.de] && N[a.a]);
+  const conectados = new Set(); ar.forEach((a) => { conectados.add(a.de); conectados.add(a.a); });
+  const nodos = A.nodos.filter((n) => conectados.has(n.id));
+  const sueltos = A.nodos.filter((n) => !conectados.has(n.id));
+  // Capas: camino más largo desde una fuente, ignorando aristas que cierran un ciclo.
+  const ent = {}; ar.forEach((a) => (ent[a.a] = ent[a.a] || []).push(a.de));
+  const capa = {}; const en = new Set();
+  const cap = (id) => {
+    if (capa[id] !== undefined) return capa[id];
+    if (en.has(id)) return 0; en.add(id);
+    const v = (ent[id] || []).map(cap);
+    en.delete(id);
+    return (capa[id] = v.length ? 1 + Math.max(...v) : 0);
+  };
+  nodos.forEach((n) => cap(n.id));
+  const cols = {}; nodos.forEach((n) => (cols[capa[n.id]] = cols[capa[n.id]] || []).push(n));
+  Object.values(cols).forEach((c) => c.sort((a, b) => (a.kind === b.kind ? a.label.localeCompare(b.label) : a.kind === 'final' ? 1 : -1)));
+  const W = 200, H = 52, GX = 70, GY = 16, P = 20, pos = {};
+  Object.keys(cols).forEach((c) => cols[c].forEach((n, i) => (pos[n.id] = { x: P + c * (W + GX), y: P + i * (H + GY) })));
+  const filas = Math.max(1, ...Object.values(cols).map((v) => v.length));
+  const KC = { escena: 'var(--escena)', tema: 'var(--tema)', final: 'var(--final)' };
+  const dibujaAr = ar.map((a, i) => {
+    const p = pos[a.de], q = pos[a.a];
+    const x1 = p.x + W, y1 = p.y + H / 2, x2 = q.x, y2 = q.y + H / 2;
+    return '<path class="arista" data-de="' + a.de + '" data-a="' + a.a + '" d="M' + x1 + ' ' + y1 + ' C' + (x1 + 36) + ' ' + y1 + ',' + (x2 - 36) + ' ' + y2 + ',' + x2 + ' ' + y2 +
+      '" fill="none" stroke="' + COLOR[a.por] + '" stroke-width="1.5"><title>' + esc(N[a.de].label + ' → ' + N[a.a].label + ' (' + a.por + ')') + '</title></path>';
+  }).join('');
+  const dibujaNo = nodos.map((n) => {
+    const p = pos[n.id];
+    return '<g class="nodo" data-id="' + n.id + '" transform="translate(' + p.x + ',' + p.y + ')"><rect width="' + W + '" height="' + H + '" rx="4"/>' +
+      '<rect width="4" height="' + H + '" rx="2" style="fill:' + KC[n.kind] + ';stroke:none"/>' +
+      '<text x="14" y="21" font-size="12.5">' + esc(trunc(n.label, 27)) + '</text><text class="m" x="14" y="38">' + esc(trunc((n.kind === 'tema' ? '💬 ' : n.kind === 'final' ? '⚑ ' : '') + n.sub, 32)) + '</text></g>';
+  }).join('');
+  const rows = (l) => l.map((n) => '<tr><td><b>' + esc(n.label) + '</b></td><td>' + n.kind + '</td><td>' + esc(n.sub) + '</td><td>' + n.chips.map((c) => '<span class="chip">' + esc(c) + '</span>').join('') + '</td></tr>').join('');
+  $('#cuerpo').innerHTML =
+    '<div class="leyenda"><span style="color:var(--escena)">▌escena</span><span style="color:var(--tema)">▌tema de conversación</span><span style="color:var(--final)">▌desenlace</span>' +
+    '<span><i style="border-color:var(--pista)"></i>una pista habilita</span><span><i style="border-color:var(--cons)"></i>una consecuencia habilita</span>' +
+    '<span><i style="border-color:var(--narrado)"></i>algo ya narrado habilita</span><span><i style="border-color:var(--final)"></i>lleva al desenlace</span><span>Clic en un nodo: ver de dónde viene y adónde lleva</span></div>' +
+    '<div class="lado"><div>' +
+    (nodos.length ? '<div class="lienzo" style="max-height:74vh"><svg id="svg-causa" width="' + (P * 2 + Object.keys(cols).length * (W + GX)) + '" height="' + (P * 2 + filas * (H + GY)) + '">' + dibujaAr + dibujaNo + '</svg></div>' : '<div class="vacio">Esta aventura no encadena pistas entre escenas: todo se resuelve suelto.</div>') +
+    '<details><summary>' + sueltos.length + ' escenas y temas sin cadena (independientes entre sí)</summary><div class="caja"><table><tr><th>Nombre</th><th>Tipo</th><th>Dónde / quién</th><th>Efectos</th></tr>' + rows(sueltos) + '</table></div></details>' +
+    '</div><div class="panel" id="panel"><p class="vacio">Elegí un nodo del diagrama.</p></div></div>';
+  document.querySelectorAll('#svg-causa .nodo').forEach((g) => (g.onclick = () => elegir(g.dataset.id, A, ar, N)));
+  if (sel && N[sel]) elegir(sel, A, ar, N);
+}
+
+function elegir(id, A, ar, N) {
+  sel = id;
+  const arriba = new Set([id]), abajo = new Set([id]);
+  const sube = (x) => ar.filter((a) => a.a === x).forEach((a) => { if (!arriba.has(a.de)) { arriba.add(a.de); sube(a.de); } });
+  const baja = (x) => ar.filter((a) => a.de === x).forEach((a) => { if (!abajo.has(a.a)) { abajo.add(a.a); baja(a.a); } });
+  sube(id); baja(id);
+  const vivo = new Set([...arriba, ...abajo]);
+  document.querySelectorAll('#svg-causa .nodo').forEach((g) => { g.classList.toggle('tenue', !vivo.has(g.dataset.id)); g.classList.toggle('sel', g.dataset.id === id); });
+  document.querySelectorAll('#svg-causa .arista').forEach((p) => p.classList.toggle('tenue', !((arriba.has(p.dataset.de) && arriba.has(p.dataset.a)) || (abajo.has(p.dataset.de) && abajo.has(p.dataset.a)))));
+  const n = N[id];
+  const antes = ar.filter((a) => a.a === id), despues = ar.filter((a) => a.de === id);
+  const li = (l, f) => l.length ? '<ul>' + l.map(f).join('') + '</ul>' : '<p class="vacio">Nada.</p>';
+  $('#panel').innerHTML =
+    '<h3>' + esc(n.label) + '</h3><p>' + n.kind + (n.sub ? ' · ' + esc(n.sub) : '') + '</p>' + n.chips.map((c) => '<span class="chip">' + esc(c) + '</span>').join('') +
+    '<h4>Necesita</h4>' + li(n.req.filter((r) => r.k !== 'otro'), (r) => '<li><span class="k-' + r.k + '">' + r.k + '</span> «' + esc(r.frag) + '»</li>') +
+    '<h4>Viene de</h4>' + li(antes, (a) => '<li><span class="k-' + a.por + '">' + a.por + '</span> ← ' + esc(N[a.de].label) + '</li>') +
+    '<h4>Deja pistas</h4>' + li(n.pistas, (p) => '<li>' + esc(p) + '</li>') +
+    '<h4>Deja consecuencias</h4>' + li(n.cons, (c) => '<li><span class="k-consecuencia">' + c.scope + '</span> ' + esc(c.desc) + '</li>') +
+    '<h4>Lleva a</h4>' + li(despues, (a) => '<li><span class="k-' + a.por + '">' + a.por + '</span> → ' + esc(N[a.a].label) + '</li>');
+}
+
+/* Consecuencias */
+function consecuencias(c, A) {
+  const deja = A.nodos.flatMap((n) => n.cons.map((x) => ({ n, x })));
+  const recibe = D.cruces.filter((x) => x.a === c.id);
+  const leen = D.cruces.filter((x) => x.de === c.id);
+  const t1 = deja.length ? '<table><tr><th>Dónde</th><th>Alcance</th><th>Queda escrito</th></tr>' +
+    deja.map(({ n, x }) => '<tr><td><b>' + esc(n.label) + '</b><br><span class="chip">' + n.kind + '</span></td><td>' + x.scope + (x.scope === 'campaign' || x.scope === 'world' ? '<br><span class="chip">cruza de aventura</span>' : '') + '</td><td>' + esc(x.desc) + '</td></tr>').join('') + '</table>'
+    : '<p class="vacio">No deja consecuencias permanentes.</p>';
+  const t2 = recibe.length ? '<table><tr><th>De qué aventura</th><th>Quién lo pregunta acá</th><th>Fragmento</th></tr>' +
+    recibe.map((x) => '<tr><td><a class="enlace" onclick="ir(\'' + x.de + '\')">' + esc(porId[x.de].title) + '</a></td><td>' + esc(x.hasta.slice(2)) + '</td><td><b>' + esc(x.frag) + '</b></td></tr>').join('') + '</table>'
+    : '<p class="vacio">No lee nada de otras aventuras.</p>';
+  const t3 = leen.length ? '<table><tr><th>Quién la lee</th><th>Dónde</th><th>Fragmento</th></tr>' +
+    leen.map((x) => '<tr><td><a class="enlace" onclick="ir(\'' + x.a + '\')">' + esc(porId[x.a].title) + '</a></td><td>' + esc(x.hasta.slice(2)) + '</td><td><b>' + esc(x.frag) + '</b></td></tr>').join('') + '</table>'
+    : '<p class="vacio">Ninguna otra aventura lee lo que ésta deja.</p>';
+  const fin = A.finales.map((f) => '<tr><td><b>' + esc(f.title) + '</b></td><td>' + esc(f.condition) + '</td></tr>').join('');
+  $('#cuerpo').innerHTML =
+    '<div class="caja"><h2>Desenlaces (' + A.finales.length + ')</h2><table><tr><th>Título</th><th>Cuándo se llega</th></tr>' + fin + '</table></div>' +
+    '<div class="caja"><h2>Lo que deja escrito</h2>' + t1 + '</div>' +
+    '<div class="caja"><h2>Lo que recibe de aventuras anteriores</h2>' + t2 + '</div>' +
+    '<div class="caja"><h2>Quién más lee lo que deja</h2>' + t3 + '</div>' +
+    '<p class="nota">Las consecuencias con alcance «scene» mueren al terminar la escena; «campaign» y «world» son las únicas que pueden cruzar a otra aventura.</p>';
+}
+
+dibujar();
+</script>
+</body>
+</html>

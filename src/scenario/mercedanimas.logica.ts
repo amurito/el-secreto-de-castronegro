@@ -197,8 +197,8 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
         title: 'Lo que queda escrito',
         text: [
           'Nadie le explicó nunca —ni Eusebio, ni Fray Ignacio, ni el legajo— que el borde es uno solo, y que cerrarlo lo cierra en las dos direcciones. Era la única forma de salvar el valle, y era también la única forma de no volver.',
-          'El Cabildo de San Juan archiva las actas sin que a nadie le llame la atención una firma más entre tantas. Fray Ignacio muere unos años después, convencido de haber corregido un error que en realidad cometió él mismo, y deja el legajo en manos del único hombre de San Juan que sabe leerlo entero: uno que llegó de ninguna parte, con ropa que nadie supo nombrar, y que nunca explicó de dónde venía.',
-          'El borde queda sellado —del modo controlador y a medias que el Círculo entendió, no del modo que Takillpa hubiera preferido— y eso alcanza, por ahora.',
+'El Cabildo de San Juan archiva las actas sin que a nadie le llame la atención una firma más entre tantas. Fray Ignacio guarda el legajo bajo el brazo, convencido de haber corregido un error que en realidad cometió él mismo, y mira el camino de la villa con la cara de quien acaba de recordar que aún falta rendir cuentas ante alguien.',
+          'El borde queda sellado —del modo controlador y a medias que el Círculo entendió, no del modo que Takillpa hubiera preferido— y eso alcanza, por ahora. Por ahora.',
           'Doscientos veinte años más tarde, en un archivo de San Juan que casi nadie visita, hay un libro de actas de 1710 con una firma escrita con una letra que en 1710 no debería haber existido. Nadie la mira dos veces.',
           'Y en el Valle de Zonda, en 1930, un pozo de acequia vuelve a secarse sin que nadie recuerde por qué hubo que pintarlo todos esos años.',
         ],
@@ -359,7 +359,7 @@ export const LA_MERCED_DE_LAS_ANIMAS_LOGICA: LogicaDeEscenas = [
         title: 'Lo que queda grabado',
         text: [
           'Nadie le explicó nunca —ni Eusebio, ni Takillpa, ni la piedra— que el borde es uno solo, y que cerrarlo lo cierra en las dos direcciones. Era la única forma de salvar el valle, y era también la única forma de no volver.',
-          'El Cabildo de San Juan declara prófugo a un forastero de ropa extraña, y la causa se cierra sola con el tiempo, sin sentencia y sin nombre completo que anotar. Lo buscan tres meses en los caminos a Chile y a Córdoba, que son los caminos por los que se va la gente. Nadie piensa en buscarlo en la ranchada de los que cuidan una ciénaga que la Corona quiso secar.',
+          'Antes de que aclare, el Cabildo de San Juan ya declaró prófugo a un forastero de ropa extraña, sin nombre completo que anotar. Los perros de la rastrillería siguen el rastro hasta el cauce y ahí se enredan un rato en el barro. Es lo único que Takillpa necesitaba: un rato.',
           'La ciénaga queda contenida del modo que Takillpa entendía que había que contenerla: sin papel, sin firma, sin nadie que la use para predecir cosechas. Y queda, por primera vez en tres generaciones, alguien más a quien enseñarle cómo se hace.',
           'Doscientos veinte años más tarde, en el mismo Valle de Zonda, en una piedra caliza que nadie mira dos veces, hay una marca grabada erosionada por dos siglos de viento Zonda. La hizo alguien que en 1930 todavía no había nacido, y que no llegó a verla envejecer desde el otro lado.',
         ],
