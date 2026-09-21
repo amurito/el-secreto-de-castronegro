@@ -169,3 +169,38 @@ Aplicados desde los comentarios de una segunda lectura, más una investigación 
   Los nombres de lugar no deben contener verbos de acción.
 - Cruces de rama pendientes del Acto II: `ranchada → iglesia-matriz` y
   `sd-huerta → cueva-pinturas` (conexiones ocultas por contacto).
+
+## Estado del Acto II (2026-09-21)
+
+Escrito y probado (`prueba-santo-oficio.ts`): la plaza y sus lugares, el juicio
+del Cabildo, la cárcel, la oferta de Albornoz y los dos cruces entre ramas.
+
+- **El juicio abre el Acto III.** El camino del piedemonte está cerrado (en las
+  dos direcciones, también desde la cueva) hasta que se concluye el juicio ante
+  el Cabildo. Tres argumentos: defenderse (persuasión difícil), acusar al
+  Comisario (extrema; sólo si se vio su libro) o callar (+10, sin tirada). Cada
+  apoyo previo —Ignacio, el testimonio de Don Gonzalo, la intercesión del
+  prior— es un dado de bonificación; cada cosa dicha de más, una penalización.
+- **Preso.** A 85–99 de sospecha se cierran todas las calles y sólo queda
+  «dejar que te detengan» (100 es la hoguera y deja sólo los desenlaces). La
+  cárcel se abre por soborno (bolsa comprada en la pulpería), fuga, o esperando:
+  Ignacio con una orden si lo tenés a favor, si no, Albornoz te saca para
+  llevarte a la sierra. Nunca queda sin salida.
+- **Reclutar o usar.** Con sospecha ≤ 50 y algo del futuro mostrado, Albornoz
+  ofrece reclutar. Aceptar entrega el salvoconducto y cuesta Mitos +4 (el techo
+  de Cordura baja 4 para siempre) y 1 de Cordura; rechazar sube la sospecha y
+  pasa a «te usa». El hechizo «Corregir la mano» **no está escrito todavía**
+  (sólo se lo menciona): queda para el Acto III.
+- **Cruces.** `ranchada ↔ iglesia-matriz` se abre con el contacto de Takillpa
+  (la puerta lateral que deja el prior Anselmo); `sd-huerta ↔ cueva-pinturas`, con
+  el de Ignacio (el sendero de las acequias).
+- **Cueva de las pinturas.** Siete rayas de almagre: la primera fuente del 1944.
+  La tirada de Ocultismo sólo agrega el mecanismo (lo que se cierra se junta); la
+  cuenta de las rayas se entrega salga o no.
+- **Josefa.** Padrino oculto o alejarse: sólo una consecuencia de campaña.
+- **Motor.** Nuevo efecto de escena `llevaA` (movimiento forzado, sin conexión)
+  para la detención. Y se cerró un agujero de la economía: el botón «Llevarte…»
+  ofrecía gratis lo que un comerciante vende; ahora sólo se compra.
+- **Trampa del clasificador**: una escena cuya frase empieza con un verbo de
+  soltar o tomar sobre un ítem (`Dejo una limosna…`) pierde contra el genérico si
+  no declara `tambienAlAgarrar`.

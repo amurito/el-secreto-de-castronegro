@@ -252,8 +252,16 @@ export function accionesDisponibles(s: GameState, escenario: Scenario): Opcion[]
     });
   }
 
+  // Lo que un comerciante presente pone en venta NO se agarra: se compra. Sin esto
+  // el botón «Llevarte…» regalaba todo el mostrador, junto al botón de comprar.
+  const enVenta = new Set(
+    Object.values(s.npcs)
+      .filter((n) => n.comercio && n.present && n.status !== 'dead' && loc?.npcsPresent.includes(n.id))
+      .flatMap((n) => n.comercio!.vende ?? []),
+  );
+
   for (const item of Object.values(s.items)) {
-    if (item.owner !== aqui) continue;
+    if (item.owner !== aqui || enVenta.has(item.id)) continue;
     out.push({
       id: `tomar:${item.id}`,
       etiqueta: `Llevarte ${item.name.toLowerCase()}`,

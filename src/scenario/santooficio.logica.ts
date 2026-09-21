@@ -4,7 +4,7 @@
 * ESTADO: en construcción. Escritos: el arranque compartido, el Acto I de las
  * dos ramas (Iglesia: interrogatorio, encierro, archivo, huerta; huarpe: barro,
  * altar, ofrenda, espionaje, ranchada, la rastrillería encima) y el desenlace
- * de la hoguera. Pendientes: el Acto II, el Acto III y los cuatro
+ * de la hoguera. Escrito también el Acto II (villa, juicio, cárcel, oferta, cruces de rama). Pendientes: el Acto III y los cuatro
  * desenlaces restantes (sus escenas existen sólo para que el contenido cargue;
  * dicen «PENDIENTE»). No está registrada en `catalogo.ts`. Ver
  * `docs/SANTO-OFICIO-DISENO.md`.
@@ -69,6 +69,55 @@ function cierreDelInterrogatorio(s: GameState, delta: number) {
       scope: 'scene' as const, permanent: false, worldReminder: '',
     },
   };
+}
+
+const hayPista = (s: GameState, frag: string) =>
+  s.board.clues.some((c) => c.description.includes(frag));
+
+/**
+ * Lo que juega a favor y en contra ante el Cabildo. Cada apoyo es un dado de
+ * bonificación y cada cosa dicha de más, uno de penalización: el juicio se
+ * gana o se pierde en lo que se hizo ANTES de entrar, no en la tirada sola.
+ */
+function pesoDelJuicio(s: GameState) {
+  const a = [
+    actitudDeIgnacio(s) >= 20 && !hayConsecuencia(s, 'del lado de los huarpes'),
+    hayPista(s, 'acepta declarar ante el Cabildo a favor del investigador'),
+    hayPista(s, 'acepta interceder ante el alcalde Videla'),
+  ].filter(Boolean).length;
+  const c = [
+    hayConsecuencia(s, 'se confesó ante un fraile de Santo Domingo'),
+    hayConsecuencia(s, 'aprendió lo que sabe de los indios de las lagunas'),
+    hayConsecuencia(s, 'del lado de los huarpes'),
+  ].filter(Boolean).length;
+  return { bonus: Math.min(2, a), penalidad: Math.min(2, c) };
+}
+
+/**
+ * El veredicto: lo que queda después del debate. La sospecha final decide si
+ * el Cabildo lo suelta, y en cualquier caso el juicio queda cerrado — es lo que
+ * abre el camino del piedemonte (Acto III). Devuelve efectos para encadenar
+ * detrás del efecto propio de cada argumento.
+ */
+function veredicto(s: GameState, delta: number) {
+  const final = Math.max(0, Math.min(100, sospechaDe(s) + delta));
+  const efectos: import('./escena.ts').EfectoEscena[] = [{
+    consecuencia: {
+      description: 'En 1710, el investigador concluyó el juicio ante el Cabildo de San Juan: el alcalde Videla levantó la sesión.',
+      scope: 'campaign', permanent: true, worldReminder: 'Pasó por el juicio del Cabildo de San Juan.',
+    },
+  }];
+  if (final >= 85 && final < 100) {
+    efectos.push({
+      texto: ['Videla no lo mira cuando habla. Lee de un papel que alguien le pasó por debajo de la mesa: detención preventiva hasta que se aclaren los cargos del Santo Oficio.\n\nDos soldados lo toman de los brazos sin dureza. Uno de ellos ya tiene la llave en la mano.'],
+      llevaA: { lugar: 'carcel', minutos: 20, cause: 'lo llevan preso del Cabildo a la cárcel' },
+      consecuencia: {
+        description: 'En 1710, el investigador fue detenido y llevado a la cárcel del Cabildo de San Juan por decisión del alcalde Videla y el Comisario Albornoz.',
+        scope: 'scene', permanent: false, worldReminder: '',
+      },
+    });
+  }
+  return efectos;
 }
 
 export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
@@ -645,6 +694,341 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
         scope: 'scene', permanent: false, worldReminder: '',
       },
     }),
+  },
+
+  // ───────────────────────────────── ACTO II ─────────────────────────────────
+  {
+    id: 'cruzar-la-plaza',
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'cruzar una plaza con soldados sin que nadie que oyó del forastero te reconozca',
+      stakes_success: 'un vecino más entre los que rodean el sol',
+      stakes_failure: 'alguien te señala, y un soldado gira la cabeza',
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? { texto: ['Cruzás la plaza pegado a las paredes, con el paso de quien conoce el lugar, sin apurarte y sin mirar a los soldados. Un chico te mira más de la cuenta. Su madre le tapa los ojos.'] }
+      : {
+        texto: ['Cruzás la plaza pegado a las paredes, pero una mujer que sale de la iglesia te mira, te reconoce por el barro seco de la ropa y dice algo en voz baja a la que va a su lado. Un soldado gira la cabeza.'],
+        sospecha: { amount: 20, cause: 'lo reconocieron en la plaza, con la rastrillería todavía buscándolo' },
+      },
+  },
+
+  {
+    id: 'confesarse',
+    resolver: () => ({
+      texto: [
+        'La cortina raída se cierra y el prior, del otro lado, no pregunta nada. Espera. Lo que uno dice en esa penumbra sale con una facilidad que después cuesta explicar: el zanjón, el reloj, lo que se dijo en la cripta.',
+        'La absolución llega en latín, sin apuro. Al salir, alguien barre la nave con más cuidado del necesario y ninguno de los dos mira al otro.',
+      ],
+      sospecha: { amount: -10, cause: 'se confesó, y un cristiano que se confiesa es un cristiano' },
+      consecuencia: {
+        description: 'En 1710, el investigador se confesó ante un fraile de Santo Domingo y dijo más de lo que hubiera querido: lo dicho en la penumbra del confesionario ya no es sólo suyo.',
+        scope: 'scene', permanent: false, worldReminder: '',
+      },
+    }),
+  },
+  {
+    id: 'dar-limosna',
+    resolver: () => ({
+      texto: ['Dejás las velas y las monedas en la caja de hierro junto al altar lateral. Nadie te ve hacerlo, salvo el sacristán, que anota algo en un cuaderno sin que se note. En esta villa, una limosna generosa es un certificado.'],
+      traslada: { itemId: 'it-cera-limosna', a: 'iglesia-matriz', carried: false, cause: 'la dejó en la caja de la iglesia matriz' },
+      sospecha: { amount: -5, cause: 'una limosna generosa a la vista del sacristán' },
+    }),
+  },
+
+  {
+    id: 'ser-padrino',
+    resolver: () => ({
+      texto: [
+        'Josefa te mira un largo rato antes de contestar. Después le acomoda el niño en el otro brazo, con la mano izquierda hacia adentro.\n\n—Un padrino que no se ve. Que no viene a la iglesia ni a la mesa. Que sólo aparece si hace falta.',
+        'Le dejás una nota doblada en cuatro, con una fecha y una sola frase, para cuando el niño sea grande. Ella la guarda sin leerla, y no pregunta.',
+      ],
+      npc: { id: 'npc-josefa', attitudeDelta: 5, cause: 'aceptó que el investigador vele desde lejos por su hijo' },
+      consecuencia: {
+        description: 'En 1710, el investigador se ofreció como padrino oculto del hijo zurdo de Josefa Sosa y le dejó una nota para cuando crezca.',
+        scope: 'campaign', permanent: true, worldReminder: 'Es el padrino oculto del hijo de Josefa Sosa.',
+      },
+    }),
+  },
+  {
+    id: 'alejarse-del-nino',
+    resolver: () => ({
+      texto: ['Te vas sin volver a mirar el patio. Josefa no te llama. Al doblar la esquina, alcanzás a oír que le canta al niño, y que le sale un poco más fuerte de lo necesario.'],
+      consecuencia: {
+        description: 'En 1710, el investigador se alejó del hijo zurdo de Josefa Sosa, sin dejarle nada y sin decirle nada.',
+        scope: 'campaign', permanent: true, worldReminder: 'Se alejó del niño de Josefa Sosa.',
+      },
+    }),
+  },
+
+  {
+    id: 'mirar-pinturas',
+    prueba: () => ({
+      skill: 'ocultismo', difficulty: 'hard',
+      reason: 'leer, en la pared, qué dicen las capas de almagre sobre lo que se acumula',
+      stakes_success: 'entendés qué cuenta cada raya y por qué la última quedó sola',
+      stakes_failure: 'contás las rayas y anotás lo que se ve',
+    }),
+    resolver: ({ tirada }) => {
+      const base = 'Son siete rayas de almagre, una sobre otra, cada una más ancha que la de abajo. Las seis primeras están separadas por una distancia pareja; la séptima está sola, más abajo, y a su lado la roca está limpia, esperando.';
+      if (tirada?.exito) {
+        return {
+          texto: [base, 'Entendés lo que ninguna raya dice: cada capa no marca que la tierra se abrió, sino cuánto tardó en volver a cargarse. Lo que se cierra no desaparece. Se junta.'],
+          pistas: [
+            { description: 'La cueva tiene siete rayas de almagre superpuestas: las seis primeras separadas por una distancia pareja de tiempo y la séptima, la última, sola, con roca limpia al lado esperando la siguiente.', kind: 'physical', source: 'la cueva de las pinturas', reliability: 'reliable' },
+            { description: 'Cada raya de las pinturas marca cuánto tarda la tierra en volver a cargarse, no sólo cuándo se abrió: lo que se cierra no desaparece, se junta.', kind: 'experiential', source: 'la cueva de las pinturas', reliability: 'reliable' },
+          ],
+          exposicion: { amount: 3, source: 'santooficio:pinturas', cause: 'leer en una pared cuánto pesa lo que se cierra' },
+        };
+      }
+      return {
+        texto: [base],
+        pistas: [{ description: 'La cueva tiene siete rayas de almagre superpuestas: las seis primeras separadas por una distancia pareja de tiempo y la séptima, la última, sola, con roca limpia al lado esperando la siguiente.', kind: 'physical', source: 'la cueva de las pinturas', reliability: 'reliable' }],
+      };
+    },
+  },
+
+  // El juicio.
+  {
+    id: 'juicio-abrir',
+    resolver: ({ estado }) => {
+      const huarpe = hayConsecuencia(estado, 'del lado de los huarpes');
+      return {
+        texto: [
+          'El Cabildo abre la sesión con tres golpes de una vara sobre la mesa. Don Blas de Videla lee el motivo sin levantar la vista: comparecencia de un forastero sin licencia, sin nombre asentado, sospechado de conversar con gente de las lagunas y de portar objetos que los vecinos llaman «de artificio».',
+          'El Comisario está en la silla de la derecha, con las manos juntas y el libro cerrado. No habla. No necesita.',
+          huarpe
+            ? 'No hay ningún fraile de Santo Domingo en la sala que se ponga de pie. Del lado de las lagunas, nadie: nadie que hable español cabe en esta sala.'
+            : (actitudDeIgnacio(estado) >= 20
+              ? 'Fray Ignacio está de pie contra la pared, con el sombrero de escribano en la mano. Lo mira una sola vez y baja los ojos.'
+              : 'Fray Ignacio está en la última fila, con la cara de quien sabe que su silencio también será tomado en cuenta.'),
+        ],
+      };
+    },
+  },
+  {
+    id: 'juicio-defensa',
+    prueba: (s) => {
+      const { bonus, penalidad } = pesoDelJuicio(s);
+      return {
+        skill: 'persuasion', difficulty: 'hard',
+        reason: 'defenderte ante el alcalde con lo que hiciste y lo que otros van a decir de vos',
+        stakes_success: 'Videla acepta que hiciste un servicio y los cargos se desinflan',
+        stakes_failure: 'el alcalde deja que el Comisario marque el paso',
+        ...(bonus ? { bonus_dice: bonus, modifier_reason: 'hay quien habla a tu favor' } : {}),
+        ...(penalidad ? { penalty_dice: penalidad, modifier_reason: 'hay cosas que ya se dijeron de vos' } : {}),
+      };
+    },
+    resolver: ({ tirada, estado }) => {
+      const ok = Boolean(tirada?.exito);
+      const delta = ok ? -25 : 25;
+      return [
+        {
+          texto: ok
+            ? ['Hablás sin levantar la voz, con lo que se hizo y no con lo que se supo. Cuando terminás, Videla se demora en contestar. Mira al Comisario, que no dice nada, y después a los vecinos.\n\n—Consta que el reo hizo un servicio a esta villa. Consta que no hizo daño. Los otros cargos, a otros tribunales.']
+            : ['Hablás bien, pero el Comisario se inclina una sola vez para decirle algo al oído a Videla. El alcalde asiente. Cuando vuelve a mirarte, ya decidió.\n\n—El reo dice lo que cualquiera diría. No es lo mismo que ser inocente.'],
+          sospecha: { amount: delta, cause: ok ? 'el Cabildo aceptó que hizo un servicio a la villa' : 'el Cabildo no aceptó su defensa' },
+        },
+        ...veredicto(estado, delta),
+      ];
+    },
+  },
+  {
+    id: 'juicio-acusar',
+    prueba: (s) => {
+      const { bonus, penalidad } = pesoDelJuicio(s);
+      const extra = hayPista(s, 'lista conventos de todo Cuyo y Chile') && hayPista(s, 'no le cierran los números') ? 1 : 0;
+      const b = Math.min(2, bonus + extra);
+      return {
+        skill: 'persuasion', difficulty: 'extreme',
+        reason: 'acusar de frente a quien manda más que el Cabildo, con lo poco que sabés de su libro',
+        stakes_success: 'Videla se da cuenta de que el Comisario le mintió también a él',
+        stakes_failure: 'el Cabildo se pone del lado del Comisario y contra vos',
+        ...(b ? { bonus_dice: b, modifier_reason: 'tenés con qué respaldarlo' } : {}),
+        ...(penalidad ? { penalty_dice: penalidad, modifier_reason: 'hay cosas que ya se dijeron de vos' } : {}),
+      };
+    },
+    resolver: ({ tirada, estado }) => {
+      const ok = Boolean(tirada?.exito);
+      const delta = ok ? -40 : 35;
+      return [
+        ok
+          ? {
+            texto: ['Decís lo que viste: un libro con columnas de conventos, un signo de almagre tachado, la entrada de San Juan a medio llenar. Nadie en la sala se mueve. El Comisario no se defiende; sólo levanta la vista, por primera vez, y te mira con algo que se parece al respeto.',
+              'Videla mira el libro cerrado y después al Comisario.\n\n—Fray Bartolomé. ¿Hay un registro que el Cabildo no conozca?\n\n—Hay muchos, Don Blas —dice el Comisario, sin apuro—. Ninguno que le convenga leer.'],
+            sospecha: { amount: delta, cause: 'el Cabildo dudó del Comisario en público' },
+            consecuencia: {
+              description: 'En 1710, el investigador acusó al Comisario Albornoz ante el Cabildo de San Juan con lo que vio en su libro de cuentas, y Videla dudó de él en público.',
+              scope: 'campaign', permanent: true, worldReminder: 'Acusó al Comisario Albornoz ante el Cabildo.',
+            },
+          }
+          : {
+            texto: ['Decís lo que viste, y en la sala nadie te sigue. El Comisario contesta con una calma que descuartiza: el libro es el registro de una comisión del Santo Oficio, y quien lo mira sin licencia comete otro delito. Videla asiente, aliviado de poder asentir.'],
+            sospecha: { amount: delta, cause: 'acusó al Comisario y no pudo sostenerlo' },
+          },
+        ...veredicto(estado, delta),
+      ];
+    },
+  },
+  {
+    id: 'juicio-callar',
+    resolver: ({ estado }) => [
+      {
+        texto: ['Guardás silencio. Es una decisión que la sala lee de mil maneras y ninguna a tu favor. El Comisario no dice una palabra; deja que Videla llene el aire.\n\n—El reo elige no hablar. Que conste.'],
+        sospecha: { amount: 10, cause: 'callarse ante el Cabildo también es una respuesta' },
+      },
+      ...veredicto(estado, 10),
+    ],
+  },
+
+  // Albornoz decide qué quiere de vos.
+  {
+    id: 'oferta-albornoz',
+    resolver: ({ estado }) => {
+      const valor = hayPista(estado, 'cómo funciona un reloj de pulsera')
+        || hayPista(estado, 'hay un límite bajo el zanjón')
+        || hayPista(estado, 'quiere al investigador vivo y hablando');
+      if (sospechaDe(estado) <= 50 && valor) {
+        return {
+          texto: [
+            'Albornoz te espera junto a la puerta del Cabildo, sin sotana, con una capa de viaje y el libro bajo el brazo. Camina a tu lado sin decir nada hasta que se apagan las voces de la sala.',
+            '—Le voy a hacer una oferta que no le voy a repetir. Usted sabe cosas que no están en ningún legajo. Yo llevo veinte años juntando legajos. Podemos trabajar juntos, con una licencia mía, sin fraile de por medio y sin cripta.\n\n—Lo único que le pido es que me acompañe a la sierra, donde abrieron una labor que no debieron abrir, y que cuando llegue el momento me diga lo que sabe.',
+            'Te da unos segundos, y los mide.',
+          ],
+        };
+      }
+      return {
+        texto: ['Albornoz te alcanza en la puerta del Cabildo con dos soldados que no se acercan del todo.\n\n—Usted va a acompañarme a la sierra. No como acusado; como huésped, hasta que sea necesario otra cosa. Hay una labor abierta que no debieron abrir, y usted es el único que puede decirme qué hay adentro.\n\n—No es una invitación. Pero tampoco es una condena, todavía.'],
+        consecuencia: {
+          description: 'En 1710, Albornoz decidió usarlo como prisionero-oráculo: el investigador irá a la Labor Vieja del piedemonte como huésped forzoso de la comisión.',
+          scope: 'campaign', permanent: true, worldReminder: 'El Comisario lo lleva a la sierra como oráculo a la fuerza.',
+        },
+      };
+    },
+  },
+  {
+    id: 'aceptar-oferta',
+    resolver: ({ estado }) => [
+      {
+        texto: [
+          'Aceptás. El Comisario no sonríe; asiente, como quien tacha un renglón. Del libro saca una hoja doblada con el sello del Santo Oficio de Lima y te la entrega sin mirarte.\n\n—El salvoconducto. Nadie que lo lea va a detenerlo. Y una cosa más, que se aprende una sola vez: hay una palabra que usan los del Círculo para corregir una mano que escribe mal. La va a necesitar.',
+          'Lo que te enseña no se escribe. Se retiene con la boca. Cuando termina, sentís que te pesa algo que antes no tenías, del lado de la cabeza que no sabés nombrar.',
+        ],
+        traslada: { itemId: 'it-salvoconducto', a: estado.activeInvestigator, carried: true, cause: 'Albornoz se lo entregó al aceptar' },
+        mitos: { amount: 4, source: 'aceptar lo que Albornoz enseña sobre cómo el aparato corrige lo que no debe quedar escrito' },
+        cordura: { amount: 1, cause: 'saber, sin poder dejar de saberlo, que el Círculo corrige a los niños zurdos' },
+        sospecha: { amount: -20, cause: 'el salvoconducto del Santo Oficio' },
+        consecuencia: {
+          description: 'En 1710, el investigador aceptó ser agente del aparato de Albornoz a cambio de un salvoconducto y de lo que le enseñó: el aparato del Círculo ya lo tiene anotado.',
+          scope: 'campaign', permanent: true, worldReminder: 'Aceptó ser agente del aparato del Comisario. Mitos +4.',
+        },
+      },
+      {
+        consecuencia: {
+          description: 'En 1710, Albornoz decidió reclutar al investigador y lo llevará a la Labor Vieja del piedemonte como colaborador de su comisión.',
+          scope: 'campaign', permanent: true, worldReminder: 'Es colaborador de la comisión del Comisario.',
+        },
+      },
+    ],
+  },
+  {
+    id: 'rechazar-oferta',
+    resolver: () => [
+      {
+        texto: ['Rechazás. El Comisario no se enoja; guarda el libro bajo el brazo y se queda un momento mirando la plaza.\n\n—Es una lástima. Usted no me deja otra opción que la que nunca quise usar. La sierra sigue en pie. Usted va a venir igual, y no como colaborador.'],
+        sospecha: { amount: 15, cause: 'rechazó una oferta del Comisario delante del alcalde' },
+        consecuencia: {
+          description: 'En 1710, el investigador rechazó la oferta de Albornoz de trabajar para su comisión, y perdió la protección que traía consigo.',
+          scope: 'campaign', permanent: true, worldReminder: 'Rechazó la oferta del Comisario.',
+        },
+      },
+      {
+        consecuencia: {
+          description: 'En 1710, Albornoz decidió usarlo como prisionero-oráculo después de que rechazara su oferta: el investigador irá a la Labor Vieja del piedemonte como huésped forzoso.',
+          scope: 'campaign', permanent: true, worldReminder: 'El Comisario lo lleva a la sierra como oráculo a la fuerza.',
+        },
+      },
+    ],
+  },
+
+  // Preso.
+  {
+    id: 'ser-arrestado',
+    resolver: () => ({
+      texto: [
+        'No hay resistencia que sirva. Los soldados llegan por los dos lados a la vez, sin gritos, con la prolijidad de quien lo ensayó. Uno le toma la muñeca, otro le pide con cortesía que entregue lo que lleve encima. Se lo dan al Comisario, que ya lo espera con un pañuelo de lino.',
+        'La cárcel del Cabildo es un cuarto de adobe sin ventana. La puerta se cierra sin ruido.',
+      ],
+      llevaA: { lugar: 'carcel', minutos: 30, cause: 'lo llevan preso a la cárcel del Cabildo' },
+      consecuencia: {
+        description: 'En 1710, el investigador fue detenido y llevado a la cárcel del Cabildo de San Juan cuando la sospecha del Comisario llegó a un punto en que ya no hubo nada que discutir.',
+        scope: 'scene', permanent: false, worldReminder: '',
+      },
+    }),
+  },
+  {
+    id: 'carcel-sobornar',
+    resolver: () => ({
+      texto: ['Le pasás la bolsa por la reja sin mirarlo. El carcelero la pesa con la mano, sin abrirla, y se queda un rato mirando el techo. Después dice, hacia el pasillo, que se fue a buscar agua.\n\nLa puerta queda sin trancar. Una puerta sin trancar, en esa cárcel, es una decisión.'],
+      traslada: { itemId: 'it-soborno', a: 'carcel', carried: false, cause: 'se lo dio al carcelero' },
+      sospecha: { amount: -30, cause: 'el carcelero dejó la puerta sin trancar' },
+      consecuencia: {
+        description: 'En 1710, el investigador salió de la cárcel del Cabildo comprando al carcelero con una bolsa de plata.',
+        scope: 'scene', permanent: false, worldReminder: '',
+      },
+    }),
+  },
+  {
+    id: 'carcel-fugarse',
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'hard',
+      reason: 'salir de una cárcel de adobe sin que el carcelero, que juega a los dados en el pasillo, levante la vista',
+      stakes_success: 'salís por donde el techo de cañas se apoya mal',
+      stakes_failure: 'el ruido de la caña rota llama a los guardias',
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? {
+        texto: ['Donde el techo de cañas se apoya sobre el muro, el adobe está flojo. Trepás con los codos y las rodillas, corrés una caña, y salís a un patio trasero donde alguien secó ropa. No hay nadie. Tampoco hay quien te vea irte.'],
+        consecuencia: {
+          description: 'En 1710, el investigador salió de la cárcel del Cabildo fugándose por el techo de cañas: es un prófugo dentro de la villa.',
+          scope: 'scene', permanent: false, worldReminder: '',
+        },
+      }
+      : {
+        texto: ['La caña se quiebra con un chasquido seco que en el silencio suena a disparo. Los dados se detienen en el pasillo. La puerta se abre sin prisa, y el carcelero entra con el gesto de quien esperaba esto desde el principio.'],
+        sospecha: { amount: 15, cause: 'fracasó al intentar fugarse de la cárcel del Cabildo' },
+      },
+  },
+  {
+    id: 'carcel-esperar',
+    resolver: ({ estado }) => {
+      if (actitudDeIgnacio(estado) >= 20) {
+        return {
+          texto: ['Pasan dos noches. A la tercera, la puerta se abre con un ruido de llaves y entra Fray Ignacio con un papel firmado por el prior y por el alcalde en persona. No dice cómo lo consiguió.\n\n—Salga antes de que el Comisario se dé cuenta. Y no me pregunte nada.'],
+          sospecha: { amount: -25, cause: 'Fray Ignacio consiguió una orden de libertad del prior y del alcalde' },
+          consecuencia: {
+            description: 'En 1710, el investigador salió de la cárcel del Cabildo por una orden que consiguió Fray Ignacio de la Cruz con la firma del prior y del alcalde.',
+            scope: 'scene', permanent: false, worldReminder: '',
+          },
+        };
+      }
+      return [
+        {
+          texto: ['Pasan dos noches sin que baje nadie. A la tercera, la puerta se abre y entra el Comisario con un pañuelo de lino en la mano y sin ningún apuro.\n\n—Usted ya aprendió lo que la paciencia enseña. Ahora me va a acompañar. No como reo: como huésped. Va a salir esta misma tarde, con dos soldados atrás.'],
+          sospecha: { amount: -30, cause: 'Albornoz lo saca de la cárcel para llevarlo a la sierra' },
+          consecuencia: {
+            description: 'En 1710, el investigador salió de la cárcel del Cabildo porque Albornoz lo sacó personalmente para llevarlo a la sierra.',
+            scope: 'scene', permanent: false, worldReminder: '',
+          },
+        },
+        {
+          consecuencia: {
+            description: 'En 1710, Albornoz decidió usarlo como prisionero-oráculo desde la cárcel: el investigador irá a la Labor Vieja del piedemonte como huésped forzoso de la comisión.',
+            scope: 'campaign', permanent: true, worldReminder: 'El Comisario lo lleva a la sierra como oráculo a la fuerza.',
+          },
+        },
+      ];
+    },
   },
 
   // ─────────────────────────────── DESENLACES ───────────────────────────────

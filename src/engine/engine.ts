@@ -3221,7 +3221,11 @@ export class Turn {
       const ids = Object.values(this.state.world.locations).map((l) => `${l.id} (${l.name})`).join(', ');
       return this.reject('move_to_location', raw, `No existe la localización ${locId}. Disponibles: ${ids}.`);
     }
-    if (cur && !cur.connections.includes(locId)) {
+    // `forced` lo pide sólo una escena (`EfectoEscena.llevaA`): a uno lo llevan
+    // preso, lo sacan del pueblo. No hay conexión que recorrer porque no fue
+    // una decisión de quien juega. El movimiento normal sigue exigiéndola.
+    const forced = String(raw.forced ?? 'false') === 'true';
+    if (cur && !forced && !cur.connections.includes(locId)) {
       return this.reject('move_to_location', raw,
         `${dest.name} no está conectada con ${cur.name}. Conexiones: ${cur.connections.join(', ')}.`);
     }

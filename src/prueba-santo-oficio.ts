@@ -238,6 +238,212 @@ async function main() {
     check("enfrentarlos abre un combate real contra el rastreador", Boolean(s.activeCombat), JSON.stringify(s.activeCombat)?.slice(0, 60));
   }
 
+
+  // ───────────────────────────────── ACTO II ─────────────────────────────────
+  const conClue = async (nid: string, description: string) => {
+    const tt = await Turn.open(nid);
+    tt.executeTool('add_clue', { description, kind: 'testimonial', source: 'prueba', reliability: 'reliable' });
+    await tt.commit();
+  };
+  const conConsecuencia = async (nid: string, description: string) => {
+    const tt = await Turn.open(nid);
+    tt.executeTool('record_consequence', { description, scope: 'campaign', permanent: 'true', world_reminder: 'prueba' });
+    await tt.commit();
+  };
+  const sospA = async (nid: string, n: number) => {
+    const tt = await Turn.open(nid);
+    tt.executeTool('adjust_suspicion', { amount: n, cause: 'prueba' });
+    await tt.commit();
+  };
+  const enLaVilla = async (nombre: string, semilla: string) => {
+    const nid = await createCampaign(SO, nombre, seed(semilla));
+    await jugar(nid, 'Me levanto del fondo del zanjon y miro alrededor');
+    const st = await camino(nid, 'camino-villa', 'sd-porton', 'plaza');
+    return { nid, st };
+  };
+
+  console.log('\nACTO II: la villa, el mostrador y los caminos cerrados');
+  {
+    const { nid, st } = await enLaVilla('SO-V1', 'v1');
+    id = nid; s = st;
+    check('desde la plaza no hay camino al piedemonte antes del juicio', !ids(s).includes('ir:camino-piedemonte'));
+    check('ni a la cárcel: no se entra caminando', !ids(s).includes('ir:carcel'));
+    s = await camino(id, 'pulperia');
+    const v = ids(s);
+    check('la pulpería vende la bolsa, la pólvora y la limosna', v.includes('comprar:it-soborno') && v.includes('comprar:it-polvora-cabildo') && v.includes('comprar:it-cera-limosna'));
+    check('y NO se pueden llevar gratis', !v.some((x) => x === 'tomar:it-soborno' || x === 'tomar:it-polvora-cabildo' || x === 'tomar:it-cera-limosna'), v.filter((x) => x.startsWith('tomar:')).join(','));
+    const antesPesos = s.investigators[s.activeInvestigator]!.derived.efectivo;
+    s = await pulsar(id, 'comprar:it-cera-limosna');
+    check('comprar descuenta el precio', s.investigators[s.activeInvestigator]!.derived.efectivo === antesPesos - 10, antesPesos + ' → ' + s.investigators[s.activeInvestigator]!.derived.efectivo);
+    s = await camino(id, 'plaza', 'iglesia-matriz');
+    const sAntes = sosp(s);
+    s = await pulsar(id, 'dar-limosna');
+    check('la limosna baja la sospecha 5 y sale del inventario', sosp(s) === Math.max(0, sAntes - 5) && s.items['it-cera-limosna']?.owner !== s.activeInvestigator, `sospecha ${sAntes} → ${sosp(s)}; dueño: ${s.items['it-cera-limosna']?.owner}`);
+    const sConf = sosp(s);
+    s = await pulsar(id, 'confesarse');
+    check('confesarse baja 10 y deja algo dicho', sosp(s) === Math.max(0, sConf - 10) && s.consequences.some((c) => c.description.includes('se confesó ante un fraile')));
+    check('y no se repite', !ids(s).includes('confesarse'));
+  }
+
+  console.log('\nACTO II: el juicio, y lo que decide quedar libre o preso');
+  {
+    const { nid, st } = await enLaVilla('SO-J1', 'j1');
+    id = nid; s = await camino(id, 'cabildo');
+    check('el cabildo ofrece presentarse, pero no todavía defenderse', ids(s).includes('juicio-abrir') && !ids(s).includes('juicio-defensa'));
+    s = await pulsar(id, 'juicio-abrir');
+    const j = ids(s);
+    check('abierta la sesión: defenderse o callar', j.includes('juicio-defensa') && j.includes('juicio-callar'));
+    check('acusar al Comisario exige haber visto su libro', !j.includes('juicio-acusar'));
+    await conClue(id, 'El libro de cuentas del Comisario lista conventos de todo Cuyo y Chile con un tilde o una cruz y un mismo signo.');
+    s = (await loadState(id)).state;
+    check('con la pista del libro, acusar se ofrece', ids(s).includes('juicio-acusar'));
+    await sospA(id, 25);                       // 35 + 25 = 60
+    s = (await loadState(id)).state;
+    const base = sosp(s);
+    s = await pulsar(id, 'juicio-defensa');
+    const d = sosp(s) - base;
+    check('la defensa baja 25 si sale y sube 25 si falla', d === -25 || d === 25, String(d));
+    check('en cualquier caso el juicio queda concluido', s.consequences.some((c) => c.description.includes('concluyó el juicio ante el Cabildo')));
+    if (d === 25) check('y a 85 el Cabildo lo lleva preso', s.world.currentLocation === 'carcel' && s.consequences.some((c) => c.description.includes('fue detenido y llevado a la cárcel')), s.world.currentLocation);
+    else check('y si sale, sigue libre en el cabildo', s.world.currentLocation === 'cabildo');
+    check('el juicio no se repite', !ids(s).includes('juicio-defensa') && !ids(s).includes('juicio-abrir'));
+  }
+  {
+    const { nid } = await enLaVilla('SO-J2', 'j2');
+    id = nid; s = await camino(id, 'cabildo');
+    s = await pulsar(id, 'juicio-abrir');
+    await sospA(id, 45);                       // 35 + 45 = 80
+    const antes = sosp((await loadState(id)).state);
+    s = await pulsar(id, 'juicio-callar');
+    check('callar suma 10 sin tirada de por medio', sosp(s) === antes + 10, antes + ' → ' + sosp(s));
+    check('y a 90 lo llevan preso', s.world.currentLocation === 'carcel', s.world.currentLocation);
+    check('en la cárcel no hay «ir» hasta que pase algo', !ids(s).some((x) => x.startsWith('ir:')), ids(s).filter((x) => x.startsWith('ir:')).join(','));
+    check('se ofrece esperar y fugarse, y no sobornar sin la bolsa', ids(s).includes('carcel-esperar') && ids(s).includes('carcel-fugarse') && !ids(s).includes('carcel-sobornar'));
+    const antesEsp = sosp(s);
+    s = await pulsar(id, 'carcel-esperar');
+    check('esperar (sin Ignacio a favor) lo saca Albornoz: baja 30 y queda como su oráculo', sosp(s) === Math.max(0, antesEsp - 30) && s.consequences.some((c) => c.description.includes('Albornoz decidió usarlo como prisionero-oráculo')), antesEsp + ' → ' + sosp(s));
+    check('y la cárcel se abre hacia la plaza', ids(s).includes('ir:plaza'));
+    s = await camino(id, 'plaza');
+    check('con el juicio concluido, el piedemonte se abre', ids(s).includes('ir:camino-piedemonte'));
+  }
+
+  console.log('\nACTO II: preso a 85 sin juicio, y comprar la salida');
+  {
+    const { nid } = await enLaVilla('SO-P1', 'p1');
+    id = nid; s = await camino(id, 'pulperia');
+    s = await pulsar(id, 'comprar:it-soborno');
+    check('la bolsa queda en el inventario', s.items['it-soborno']?.owner === s.activeInvestigator);
+    await sospA(id, 50);                        // 35 + 50 = 85
+    s = (await loadState(id)).state;
+    check('a 85 se cierran las calles de la villa', !ids(s).some((x) => x.startsWith('ir:')), ids(s).filter((x) => x.startsWith('ir:')).join(','));
+    check('y sólo queda dejarse detener', ids(s).includes('ser-arrestado'));
+    s = await pulsar(id, 'ser-arrestado');
+    check('la detención lo lleva a la cárcel', s.world.currentLocation === 'carcel');
+    check('con la bolsa se ofrece sobornar', ids(s).includes('carcel-sobornar'));
+    const antes = sosp(s);
+    s = await pulsar(id, 'carcel-sobornar');
+    check('sobornar baja 30, entrega la bolsa y abre la puerta', sosp(s) === Math.max(0, antes - 30) && s.items['it-soborno']?.owner === 'carcel' && ids(s).includes('ir:plaza'));
+    check('y ya no vuelve a ser detenido por lo mismo', !ids(s).includes('ser-arrestado'));
+  }
+
+  console.log('\nACTO II: la oferta del Comisario');
+  {
+    const { nid } = await enLaVilla('SO-O1', 'o1');
+    id = nid;
+    await conClue(id, 'El Comisario Albornoz dice que quiere al investigador vivo y hablando, «no con el Tribunal, conmigo».');
+    await conConsecuencia(id, 'En 1710, el investigador concluyó el juicio ante el Cabildo de San Juan.');
+    s = await camino(id, 'cabildo');
+    check('con el juicio concluido y sin haber estado preso, se puede hablar a solas con él', ids(s).includes('oferta-albornoz'));
+    s = await pulsar(id, 'oferta-albornoz');
+    check('con poca sospecha y valor mostrado, ofrece reclutar: se puede aceptar o rechazar', ids(s).includes('aceptar-oferta') && ids(s).includes('rechazar-oferta'));
+    const maxAntes = s.investigators[s.activeInvestigator]!.derived.maxSan;
+    s = await pulsar(id, 'aceptar-oferta');
+    check('aceptar entrega el salvoconducto', s.items['it-salvoconducto']?.owner === s.activeInvestigator);
+    check('cuesta Mitos +4: el techo de Cordura baja 4 para siempre', s.investigators[s.activeInvestigator]!.derived.maxSan === maxAntes - 4, maxAntes + ' → ' + s.investigators[s.activeInvestigator]!.derived.maxSan);
+    check('y queda anotado que aceptó, y que Albornoz decidió reclutarlo', s.consequences.some((c) => c.description.includes('aceptó ser agente')) && s.consequences.some((c) => c.description.includes('Albornoz decidió reclutar')));
+    check('la decisión no se repite', !ids(s).includes('aceptar-oferta') && !ids(s).includes('oferta-albornoz'));
+  }
+  {
+    const { nid } = await enLaVilla('SO-O2', 'o2');
+    id = nid;
+    await conClue(id, 'El Comisario Albornoz dice que quiere al investigador vivo y hablando, «no con el Tribunal, conmigo».');
+    await conConsecuencia(id, 'En 1710, el investigador concluyó el juicio ante el Cabildo de San Juan.');
+    s = await camino(id, 'cabildo');
+    s = await pulsar(id, 'oferta-albornoz');
+    s = await pulsar(id, 'rechazar-oferta');
+    check('rechazar sube la sospecha y lo deja como oráculo', s.consequences.some((c) => c.description.includes('rechazó la oferta')) && s.consequences.some((c) => c.description.includes('Albornoz decidió usarlo como prisionero-oráculo')));
+  }
+  {
+    const { nid } = await enLaVilla('SO-O3', 'o3');
+    id = nid; await sospA(id, 30);              // 65: demasiado alta para reclutar
+    await conClue(id, 'El Comisario Albornoz dice que quiere al investigador vivo y hablando, «no con el Tribunal, conmigo».');
+    await conConsecuencia(id, 'En 1710, el investigador concluyó el juicio ante el Cabildo de San Juan.');
+    s = await camino(id, 'cabildo');
+    s = await pulsar(id, 'oferta-albornoz');
+    check('con sospecha alta no hay reclutamiento: lo usa', !ids(s).includes('aceptar-oferta') && s.consequences.some((c) => c.description.includes('Albornoz decidió usarlo como prisionero-oráculo')));
+  }
+
+  console.log('\nACTO II: los dos mundos se cruzan por contacto, y Josefa');
+  {
+    const { nid, st } = await empezarHuarpe('SO-X1', 'x1');
+    id = nid; s = await camino(id, 'totoral-noche', 'altar-sauce', 'ranchada');
+    check('sin contacto, la ranchada no da a la iglesia matriz', !ids(s).includes('ir:iglesia-matriz'));
+    await conClue(id, 'Takillpa dice que un prior dominico, viejo y colorado, deja sin trancar la puerta lateral de la iglesia matriz para los indios que van a misa de madrugada.');
+    s = (await loadState(id)).state;
+    check('con el contacto de Takillpa, se abre la puerta lateral', ids(s).includes('ir:iglesia-matriz'));
+    s = await camino(id, 'cueva-pinturas');
+    check('la cueva no se lee sin permiso de la anciana', !ids(s).includes('mirar-pinturas'));
+    await conClue(id, 'La anciana dice que en la cueva se pinta una raya de almagre sobre la anterior cada vez que la tierra se abre.');
+    s = (await loadState(id)).state;
+    s = await pulsar(id, 'mirar-pinturas');
+    check('con permiso, las pinturas entregan la cuenta de las siete rayas (salga o no la tirada)', s.board.clues.some((c) => c.description.includes('siete rayas de almagre')));
+    check('y no se repite', !ids(s).includes('mirar-pinturas'));
+  }
+  {
+    const { nid } = await enLaVilla('SO-X2', 'x2');
+    id = nid; s = await camino(id, 'sd-porton', 'sd-huerta');
+    check('sin contacto, la huerta no da a la cueva', !ids(s).includes('ir:cueva-pinturas'));
+    await conClue(id, 'Fray Ignacio conoce un sendero de las acequias que sale del fondo de la huerta de Santo Domingo y llega a la cueva de las pinturas.');
+    s = (await loadState(id)).state;
+    check('con el contacto de Ignacio, se abre el sendero de las acequias', ids(s).includes('ir:cueva-pinturas'));
+  }
+  {
+    const { nid } = await enLaVilla('SO-X3', 'x3');
+    id = nid; s = await camino(id, 'casa-josefa');
+    check('el padrinazgo no se ofrece sin haber hablado con ella', !ids(s).includes('ser-padrino'));
+    await conClue(id, 'Josefa dice que Fray Ignacio pidió que no lo dejara agarrar con esa mano nada de lo que se escribe.');
+    s = (await loadState(id)).state;
+    check('con lo que ella cuenta, se ofrecen las dos maneras de tratar al niño', ids(s).includes('ser-padrino') && ids(s).includes('alejarse-del-nino'));
+    s = await pulsar(id, 'ser-padrino');
+    check('ser padrino deja una consecuencia que cruza de aventura', s.consequences.some((c) => c.scope === 'campaign' && c.description.includes('padrino oculto del hijo zurdo')));
+    check('y elegir esconde la otra', !ids(s).includes('alejarse-del-nino'));
+  }
+
+
+
+  console.log('\nACTO II: el fugitivo en la villa, y el movimiento forzado del motor');
+  {
+    const { nid } = await empezarHuarpe('SO-X4', 'x4');
+    id = nid;
+    s = await camino(id, 'camino-villa', 'sd-porton', 'plaza');
+    check('el fugitivo que llega a la plaza puede intentar cruzarla sin que lo reconozcan', ids(s).includes('cruzar-la-plaza'));
+    const a0 = sosp(s);
+    s = await pulsar(id, 'cruzar-la-plaza');
+    check('cruzarla no baja la sospecha (queda igual o sube 20)', sosp(s) === a0 || sosp(s) === a0 + 20, a0 + ' → ' + sosp(s));
+    check('y no se repite', !ids(s).includes('cruzar-la-plaza'));
+  }
+  {
+    const nid = await createCampaign(SO, 'SO-M1', seed('m1'));
+    const tt = await Turn.open(nid);
+    const normal = tt.executeTool('move_to_location', { location_id: 'labor-nucleo', reason: 'prueba' });
+    check('el movimiento normal sigue exigiendo una conexión', !normal.ok);
+    const forzado = tt.executeTool('move_to_location', { location_id: 'carcel', forced: 'true' });
+    check('el forzado (sólo de una escena) no la exige', forzado.ok);
+    await tt.commit();
+    check('y efectivamente lo lleva', (await loadState(nid)).state.world.currentLocation === 'carcel');
+  }
+
+
   console.log("\nAUDITORÍA ESTÁTICA (las mismas comprobaciones que el resto del catálogo)");
   {
     const imp = actitudesImposibles(SO);

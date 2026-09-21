@@ -59,6 +59,129 @@
         "source": "scenario"
       },
       "usageCount": 0
+    },
+    {
+      "aliases": [
+        "limosna"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-cera-limosna",
+      "name": "Una limosna para la iglesia",
+      "categoria": "material",
+      "value": 10,
+      "owner": "pulperia",
+      "shortDescription": "Un puñado de velas de sebo y unas monedas de cobre envueltas en un trapo, de las que se dejan en la iglesia matriz. Una limosna generosa cuenta a favor de quien la da."
+    },
+    {
+      "aliases": [
+        "bolsa",
+        "soborno"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-soborno",
+      "name": "Una bolsa para el carcelero",
+      "categoria": "material",
+      "value": 35,
+      "owner": "pulperia",
+      "shortDescription": "Una bolsita de cuero con monedas de plata, del peso justo que un guardia acepta sin preguntar nada. Se compra en voz baja."
+    },
+    {
+      "aliases": [
+        "polvora",
+        "la polvora"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-polvora-cabildo",
+      "name": "Pólvora de los barriles del Cabildo",
+      "categoria": "material",
+      "value": 25,
+      "owner": "pulperia",
+      "shortDescription": "Una bolsa de pólvora gruesa, de la que se guarda para las salvas de fiesta. Es delito tenerla sin licencia; la pulpera lo sabe y la vende igual, a un precio que dice que lo sabe."
+    },
+    {
+      "aliases": [
+        "salvoconducto"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-salvoconducto",
+      "name": "Salvoconducto del Santo Oficio",
+      "categoria": "documento",
+      "owner": "npc-albornoz",
+      "noSeHereda": true,
+      "shortDescription": "Una hoja doblada con el sello del Santo Oficio de Lima y una firma que no se puede leer entera. Dice que su portador viaja en servicio de la comisión y que no debe ser detenido. Es el tipo de papel que se saca de a un solo cajón."
+    },
+    {
+      "aliases": [
+        "mosquete"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-mosquete-estrada",
+      "name": "El mosquete de Don Gonzalo",
+      "categoria": "arma",
+      "value": 60,
+      "owner": "hacienda-estrada",
+      "armaId": "mosquete-chispa",
+      "shortDescription": "Un mosquete español de chispa, con la caja de nogal gastada por una sola mano. Don Gonzalo lo vendería sin regatear: ya no lo quiere ver."
     }
   ],
   "npcs": [
@@ -293,6 +416,148 @@
         "distancia": 10,
         "armadura": 1
       }
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que el Comisario se lleve por delante al Cabildo entero."
+      ],
+      "refusals": [
+        "No dice si le dieron una orden anterior al juicio."
+      ],
+      "secrets": [],
+      "id": "npc-videla",
+      "name": "Don Blas de Videla",
+      "description": "Alcalde ordinario, sesenta años, panza de bien comido y manos de firmar. De una familia que lleva el Cabildo desde antes que el Cabildo tuviera sala. Sabe que hay cosas que se hacen sin preguntar por qué.",
+      "motivation": "Que nada de lo que pase en su mandato quede escrito de manera que después se le pueda reprochar. Preside porque tiene que hacerlo, no porque le guste."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que un fraile o un comisario decida qué hacer con la mano de su hijo."
+      ],
+      "refusals": [
+        "No repite lo que Fray Ignacio le dijo sobre el niño."
+      ],
+      "secrets": [],
+      "id": "npc-josefa",
+      "name": "Josefa Sosa",
+      "description": "Veintitantos años, vecina de la villa, viuda de un arriero. Su niño es el primero de la familia en nacer zurdo en tres generaciones, y todos en la casa lo saben y nadie lo dice.",
+      "motivation": "Que el niño crezca. No le importa qué mano use, pero le importa que no lo miren."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que le embarguen la cosecha por haber tratado con quien no debía."
+      ],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-gonzalo",
+      "name": "Don Gonzalo de Estrada",
+      "description": "Hacendado, cuarenta y tantos años, con la postura de quien sabe usar una espada y ya no la quiere. Dos noches atrás dirigía a los hombres de la desecación; hoy lo tienen contra el Cabildo.",
+      "motivation": "Salvar lo que le queda de la hacienda. No le debe nada al forastero, pero le debe menos al Cabildo.",
+      "comercio": {
+        "vende": [
+          "it-mosquete-estrada"
+        ],
+        "compra": [
+          "arma",
+          "herramienta"
+        ],
+        "margen": 0.5,
+        "nota": "Don Gonzalo dice un número una vez. Si lo regateás, cierra el trato en silencio."
+      }
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-mercader",
+      "name": "Gregoria Quiroga",
+      "description": "La pulpera de la villa. Cuarenta años, mestiza, con los brazos gordos de tanto levantar cajones y la memoria de quien fía a medio pueblo. Oye todo, repite poco.",
+      "motivation": "Cobrar lo que se le debe. Le da lo mismo quién manda con tal de que pague.",
+      "comercio": {
+        "vende": [
+          "it-cera-limosna",
+          "it-soborno",
+          "it-polvora-cabildo"
+        ],
+        "compra": [
+          "hallazgo",
+          "personal",
+          "herramienta"
+        ],
+        "margen": 0.5,
+        "nota": "La pulpera dice los precios de corrido y no vuelve a hablar del asunto. Vender lo que toca el Umbral tiene su costo: ella no lo sabe, pero lo huele."
+      }
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [],
+      "refusals": [
+        "No dice quién le pagó por llevar peones a la labor."
+      ],
+      "secrets": [],
+      "id": "npc-arriero",
+      "name": "Ventura Lucero",
+      "description": "Arriero, mestizo, cincuenta años, con el sombrero calado y la cara de haber visto pasar demasiadas cosas por el mismo camino. Conoce cada piedra de la sierra y no se fía de nadie que las pise por primera vez.",
+      "motivation": "Cobrar en efectivo y no saber para qué."
     }
   ],
   "documents": [
@@ -490,7 +755,8 @@
       ],
       "connections": [
         "sd-porton",
-        "camino-villa"
+        "camino-villa",
+        "cueva-pinturas"
       ],
       "itemsPresent": [],
       "npcsPresent": [
@@ -621,7 +887,8 @@
       "connections": [
         "altar-sauce",
         "isla-juncos",
-        "cueva-pinturas"
+        "cueva-pinturas",
+        "iglesia-matriz"
       ],
       "itemsPresent": [],
       "npcsPresent": [
@@ -670,9 +937,18 @@
     "plaza": {
       "id": "plaza",
       "name": "La plaza de San Juan",
-      "aliases": [],
-      "description": "[PENDIENTE] El centro de la villa. Todo el Acto II gira acá, con el Santo Oficio vigilando.",
-      "atmosphere": [],
+      "aliases": [
+        "plaza",
+        "la plaza",
+        "la villa",
+        "san juan"
+      ],
+      "description": "Un cuadrado de tierra apisonada con un algarrobo viejo en el medio y, alrededor, el Cabildo, la iglesia matriz y las casas de los vecinos, todas de adobe y todas con la misma puerta baja. A esta hora hay gente, pero habla despacio. En la esquina del Cabildo, dos soldados con mosquete miran a todos por igual.",
+      "atmosphere": [
+        "El algarrobo da sombra a nadie: los vecinos rodean el círculo de sol para no pasar bajo él.",
+        "Un mulero descarga en silencio, sin mirar a los soldados.",
+        "Se siente que alguien anotó la hora a la que llegaste."
+      ],
       "connections": [
         "sd-porton",
         "cabildo",
@@ -686,121 +962,234 @@
       "itemsPresent": [],
       "npcsPresent": [],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 5,
+      "senses": {
+        "sound": [
+          "Un martillo de herrero, a lo lejos, sin apuro."
+        ]
+      }
     },
     "cabildo": {
       "id": "cabildo",
       "name": "El Cabildo",
-      "aliases": [],
-      "description": "[PENDIENTE] La sala del juicio. La escena central de todo el Acto II, con el medidor de sospecha a la vista.",
-      "atmosphere": [],
+      "aliases": [
+        "cabildo",
+        "el cabildo",
+        "la sala"
+      ],
+      "description": "Una sala larga de techo de cañas y una mesa de algarrobo con seis sillas. En la cabecera, el sitial del alcalde; a la derecha, una silla de respaldo bajo donde se sienta quien no es del Cabildo pero manda más que el Cabildo. Los vecinos que asisten se quedan de pie contra la pared, con el sombrero en la mano.",
+      "atmosphere": [
+        "Un escribano afila la pluma sin apurarse.",
+        "La silla de la derecha está ocupada desde antes de que llegue nadie.",
+        "Hay olor a cera nueva y a miedo viejo."
+      ],
       "connections": [
         "plaza"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-videla",
+        "npc-albornoz"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 8,
+      "senses": {
+        "smell": [
+          "Cera nueva, tinta, cuero."
+        ]
+      }
     },
     "carcel": {
       "id": "carcel",
       "name": "La cárcel del Cabildo",
-      "aliases": [],
-      "description": "[PENDIENTE] Donde se cae con sospecha 85 o más. Solo se sale por una vía preparada antes.",
-      "atmosphere": [],
+      "aliases": [
+        "carcel",
+        "la carcel",
+        "calabozo"
+      ],
+      "description": "Un cuarto de adobe sin ventana, con una puerta de algarrobo y un ventanuco del ancho de una mano. Hay paja en el piso, un balde, y una cadena que va de la pared al tobillo de quien la haya usado antes. Se oye a los guardias hablar de cosas sin importancia.",
+      "atmosphere": [
+        "El aire es espeso, de cuerpos y de paja húmeda.",
+        "Por el ventanuco entra una franja de luz que se mueve con las horas.",
+        "Alguien, antes, rayó en la pared una fila de trazos."
+      ],
       "connections": [
         "plaza"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-ledesma"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 6,
+      "senses": {
+        "smell": [
+          "Paja, sudor, orín viejo."
+        ]
+      }
     },
     "iglesia-matriz": {
       "id": "iglesia-matriz",
       "name": "La iglesia matriz",
-      "aliases": [],
-      "description": "[PENDIENTE] Confesarse baja la sospecha, pero deja algo dicho. Puerta lateral: cruce hacia los huarpes.",
-      "atmosphere": [],
+      "aliases": [
+        "iglesia",
+        "la iglesia",
+        "matriz"
+      ],
+      "description": "Una nave de adobe con el techo de cañas y un retablo pintado por alguien que vio santos sólo en láminas. En el confesionario, una cortina raída. Junto al altar lateral hay una puerta baja que da a un callejón, y que a esa hora nadie usa.",
+      "atmosphere": [
+        "Velas de sebo, pocas.",
+        "Una vieja reza en voz baja, siempre la misma oración, siempre un poco distinto.",
+        "La puerta lateral no tiene aldaba por dentro."
+      ],
       "connections": [
-        "plaza"
+        "plaza",
+        "ranchada"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-anselmo"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 4,
+      "senses": {
+        "smell": [
+          "Sebo, incienso barato, polvo."
+        ]
+      }
     },
     "casa-josefa": {
       "id": "casa-josefa",
       "name": "La casa de Josefa Sosa",
-      "aliases": [],
-      "description": "[PENDIENTE] El niño zurdo. De quien depende el linaje que 220 años después llega a Eusebio.",
-      "atmosphere": [],
+      "aliases": [
+        "casa de josefa",
+        "josefa",
+        "la casa"
+      ],
+      "description": "Dos cuartos de adobe con un patio de tierra y un parral sin uvas. Josefa tiene un niño en brazos, de meses, que agarra todo con la mano izquierda. Cada vez que el niño agarra algo con la izquierda, Josefa lo mira un instante de más y después le cambia la mano de lugar, con suavidad.",
+      "atmosphere": [
+        "El niño llora y se calla solo.",
+        "Hay una jarra de barro en el patio, con agua que nadie usa.",
+        "Josefa no invita a sentarse, pero tampoco pide que se vaya."
+      ],
       "connections": [
         "plaza"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-josefa"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 7,
+      "senses": {
+        "sound": [
+          "Un arrullo bajo, siempre el mismo."
+        ]
+      }
     },
     "pulperia": {
       "id": "pulperia",
       "name": "La pulpería de la villa",
-      "aliases": [],
-      "description": "[PENDIENTE] La economía: comprar pólvora, mula, papel; vender lo cargado cuesta. Limosnas que bajan sospecha.",
-      "atmosphere": [],
+      "aliases": [
+        "pulperia",
+        "la pulperia",
+        "el almacen"
+      ],
+      "description": "Un cuarto largo con un mostrador de algarrobo, estantes de tela y aguardiente, y un rincón al fondo donde se juega a los dados. La dueña no levanta la vista cuando entra un extraño: cuenta lo que le debe cada uno en voz baja, para sí.",
+      "atmosphere": [
+        "Dos arrieros discuten un precio en susurros.",
+        "Hay una bolsa de pólvora sobre un barril, sin mucho disimulo.",
+        "Un perro duerme bajo el mostrador, sin importarle nada."
+      ],
       "connections": [
         "plaza"
       ],
-      "itemsPresent": [],
-      "npcsPresent": [],
+      "itemsPresent": [
+        "it-cera-limosna",
+        "it-soborno",
+        "it-polvora-cabildo"
+      ],
+      "npcsPresent": [
+        "npc-mercader"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 3,
+      "senses": {
+        "smell": [
+          "Aguardiente, cuero, yerba."
+        ]
+      }
     },
     "hacienda-estrada": {
       "id": "hacienda-estrada",
       "name": "La hacienda de Don Gonzalo",
-      "aliases": [],
-      "description": "[PENDIENTE] Estrada, ahora con el Cabildo detrás. Aliado, cobarde o enemigo, según Acto I.",
-      "atmosphere": [],
+      "aliases": [
+        "hacienda",
+        "la hacienda",
+        "estrada"
+      ],
+      "description": "Una casa larga de adobe con galería, un corral y una era donde nadie trilla. Don Gonzalo de Estrada, que dos noches atrás dirigía a sus hombres con un mosquete, está sentado en la galería con la cara de quien hizo cuentas y no le cierran.",
+      "atmosphere": [
+        "Las mulas no comen: alguien les sacó el pasto.",
+        "Un peón mira desde el corral y se va a ningún lado."
+      ],
       "connections": [
         "plaza"
       ],
-      "itemsPresent": [],
-      "npcsPresent": [],
+      "itemsPresent": [
+        "it-mosquete-estrada"
+      ],
+      "npcsPresent": [
+        "npc-gonzalo"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
+      "umbralIntensity": 6,
       "senses": {}
     },
     "cueva-pinturas": {
       "id": "cueva-pinturas",
       "name": "La cueva de las pinturas",
-      "aliases": [],
-      "description": "[PENDIENTE] Arte rupestre huarpe: de acá sale el cálculo de los 234 años. Cruce de ramas: la Iglesia llega por contacto secreto.",
-      "atmosphere": [],
+      "aliases": [
+        "cueva",
+        "la cueva",
+        "pinturas"
+      ],
+      "description": "Una boca baja en un farallón de caliza blanca, tan angosta que hay que entrar de costado. Adentro, la roca se abre en una sala del tamaño de una capilla, y en la pared del fondo hay rayas de almagre, una encima de otra, tan viejas las de abajo que se confunden con la roca.",
+      "atmosphere": [
+        "La luz del día llega hasta la mitad de la sala y ahí se corta.",
+        "El aire es frío y seco, y suena distinto a cualquier otro lugar del valle.",
+        "Alguien dejó una lámpara de sebo apagada en el suelo, como quien vuelve."
+      ],
       "connections": [
         "ranchada",
-        "camino-piedemonte"
+        "camino-piedemonte",
+        "sd-huerta"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-anciana"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 24,
+      "senses": {
+        "smell": [
+          "Piedra fría, cal, sebo viejo."
+        ]
+      }
     },
     "camino-piedemonte": {
       "id": "camino-piedemonte",
       "name": "El camino del piedemonte",
-      "aliases": [],
-      "description": "[PENDIENTE] El único camino a la labor y de regreso. Los arrieros saben quién cruza.",
-      "atmosphere": [],
+      "aliases": [
+        "camino del piedemonte",
+        "piedemonte",
+        "el camino"
+      ],
+      "description": "Una huella de mulas que sale de la villa hacia la sierra, entre jarillas y piedra suelta. Al fondo, contra la caliza blanca, se ve el humo de un campamento de hombres del Cabildo. A la izquierda, más abajo, se ve el zanjón donde todo empezó.",
+      "atmosphere": [
+        "El viento Zonda sopla de a ratos, como si tomara aire.",
+        "Los arrieros que bajan no saludan."
+      ],
       "connections": [
         "plaza",
         "cueva-pinturas",
@@ -808,9 +1197,11 @@
         "zanjon-sellado"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-arriero"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
+      "umbralIntensity": 12,
       "senses": {}
     },
     "labor-campamento": {
@@ -1485,6 +1876,365 @@
           "—No. Todavía no confío en su manera de mirar el fuego."
         ]
       }
+    },
+    {
+      "id": "v-cargos",
+      "npc": "npc-videla",
+      "orden": 1,
+      "etiqueta": "Preguntarle al alcalde de qué se te acusa",
+      "intencion": "Le pregunto al alcalde Videla de qué se me acusa",
+      "claves": [
+        "acusacion",
+        "de que se me acusa",
+        "cargos",
+        "el alcalde"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "notar qué cargo es del Cabildo y cuál es del Comisario"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "El alcalde se acomoda en el sitial y baja la voz, aunque no hay nadie que oiga.\n\n—Los cargos del Cabildo son dos: no haber dado el nombre al llegar, y andar de noche sin licencia. Multas, y a lo sumo un día en el cepo. Los cargos del Comisario son otros, y no se me informaron.\n\n—No me lo tome a mal: no es que no confíe. Es que aprendí a no averiguar."
+        ],
+        "pista": {
+          "description": "Don Blas de Videla dice que los cargos del Cabildo son menores (no dar el nombre, andar de noche sin licencia) y que los del Comisario «son otros» y no le fueron informados.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Eso se verá en sesión. Yo no anticipo."
+        ]
+      }
+    },
+    {
+      "id": "j-nino",
+      "npc": "npc-josefa",
+      "orden": 1,
+      "etiqueta": "Preguntarle a Josefa por su hijo",
+      "intencion": "Le pregunto a Josefa por su hijo",
+      "claves": [
+        "el nino",
+        "su hijo",
+        "el chiquito",
+        "la mano"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "entender qué le pesa más: el niño o lo que dijeron del niño"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Josefa lo acomoda contra el pecho y lo mira un rato antes de contestar.\n\n—Nació con la izquierda. Mi marido, que Dios lo tenga, decía que eso venía de la familia de su madre. Fray Ignacio vino a verlo a los tres días y no dijo nada. Se quedó mirando la mano. Después me pidió que no lo dejara agarrar con esa mano nada de lo que se escribe.\n\n—No sé qué es lo que se escribe. Pero desde entonces no lo dejo."
+        ],
+        "pista": {
+          "description": "Josefa dice que Fray Ignacio fue a ver al niño a los tres días de nacer, miró la mano izquierda y le pidió que no lo dejara agarrar con esa mano nada de lo que se escribe.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—No hay nada que contar. Es un niño."
+        ]
+      }
+    },
+    {
+      "id": "g-cabildo",
+      "npc": "npc-gonzalo",
+      "orden": 1,
+      "etiqueta": "Preguntarle a Don Gonzalo qué le hizo el Cabildo",
+      "intencion": "Le pregunto a Don Gonzalo qué le hizo el Cabildo",
+      "claves": [
+        "el cabildo",
+        "la cosecha",
+        "el embargo",
+        "gonzalo"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "que un hombre orgulloso admita que lo acorralaron"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Don Gonzalo se ríe sin ganas.\n\n—Me embargaron la cosecha por haber dirigido a mis hombres contra las órdenes del Cabildo. Las órdenes que no supe que había. Y sé quién las dio, aunque no las firmó.\n\n—No le echo la culpa a usted. Le echo la culpa a quien decidió que yo era descartable."
+        ],
+        "pista": {
+          "description": "A Don Gonzalo de Estrada le embargaron la cosecha por dirigir a sus hombres contra órdenes del Cabildo que él nunca vio; sabe quién las dio, aunque no las firmó.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Mis asuntos con el Cabildo son míos."
+        ]
+      }
+    },
+    {
+      "id": "g-testigo",
+      "npc": "npc-gonzalo",
+      "orden": 2,
+      "etiqueta": "Pedirle a Don Gonzalo que declare a tu favor en el juicio",
+      "intencion": "Le pido a Don Gonzalo que declare a mi favor",
+      "claves": [
+        "declarar",
+        "testigo",
+        "a mi favor",
+        "el juicio"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "le embargaron la cosecha"
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 3,
+        "razon": "que un hombre acorralado se juegue el resto por alguien que no le debe nada"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Don Gonzalo se queda un rato mirando el corral vacío.\n\n—No tengo nada más que perder. Diré lo que vi: que usted y el fraile cerraron esa ciénaga, y que si no la cerraban se llevaba el valle. Que el Cabildo quiera hacer con eso lo que quiera."
+        ],
+        "pista": {
+          "description": "Don Gonzalo de Estrada acepta declarar ante el Cabildo a favor del investigador: dirá que él y Fray Ignacio cerraron la ciénaga y salvaron el valle.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Todavía no. Cuando sepa de qué lado está el alcalde, hablamos."
+        ]
+      }
+    },
+    {
+      "id": "q-rumores",
+      "npc": "npc-mercader",
+      "orden": 1,
+      "etiqueta": "Preguntarle a la pulpera qué se dice en la villa",
+      "intencion": "Le pregunto a la pulpera qué se dice en la villa",
+      "claves": [
+        "rumores",
+        "que se dice",
+        "la villa",
+        "noticias"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "que la pulpera repita algo que oyó"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Gregoria sigue contando monedas en voz baja. Sin levantar la vista, dice:\n\n—El Comisario pidió el padrón de los indios de las lagunas. No lo pidió por escrito: lo pidió de palabra al alcalde. Y el alcalde dijo que iba a ver.\n\n—Cuando alguien pide un padrón de palabra, es que no quiere que quede en el libro."
+        ],
+        "pista": {
+          "description": "La pulpera Gregoria Quiroga dice que el Comisario pidió de palabra, no por escrito, el padrón de los indios de las lagunas, y que el alcalde dijo que iba a ver.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Se dice lo de siempre. ¿Va a llevar algo?"
+        ]
+      }
+    },
+    {
+      "id": "q-cateadores",
+      "npc": "npc-mercader",
+      "orden": 2,
+      "etiqueta": "Preguntarle a la pulpera por los hombres de la sierra",
+      "intencion": "Le pregunto a la pulpera por los hombres de la sierra",
+      "claves": [
+        "la sierra",
+        "los cateadores",
+        "la labor",
+        "las minas"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "notar qué tanto sabe la pulpera de lo que se lleva a la sierra"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Hace dos semanas un pelotón del Cabildo salió hacia el piedemonte con doce mulas cargadas de barretas y pólvora. Dicen que abrieron una labor vieja, de antes de los cristianos, y que sacan peones de mita de la ranchada para trabajarla.\n\n—Nadie me lo dijo. Yo vendo las barretas."
+        ],
+        "pista": {
+          "description": "La pulpera Gregoria dice que hace dos semanas un pelotón del Cabildo salió hacia el piedemonte con mulas cargadas de barretas y pólvora, a abrir una labor vieja «de antes de los cristianos» con peones de mita de las lagunas.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Yo no sé qué se lleva a la sierra. Sólo lo que sale de acá."
+        ]
+      }
+    },
+    {
+      "id": "ar-labor",
+      "npc": "npc-arriero",
+      "orden": 1,
+      "etiqueta": "Preguntarle al arriero por la labor del piedemonte",
+      "intencion": "Le pregunto al arriero por la labor del piedemonte",
+      "claves": [
+        "la labor",
+        "la sierra",
+        "las minas",
+        "cateadores"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "que un arriero diga algo sin que se lo paguen"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "El arriero se calza el sombrero un poco más abajo.\n\n—Abrieron una boca vieja en la caliza, donde dicen que ya se sacaba plata antes de que llegaran los españoles. La tenían tapiada. La destaparon con pólvora y desde entonces se oye un zumbido que no se oye en ningún otro lado de la sierra. Los peones no duermen. Los perros no se acercan."
+        ],
+        "pista": {
+          "description": "El arriero Ventura Lucero dice que abrieron con pólvora una boca vieja en la caliza del piedemonte, donde se sacaba plata «antes de que llegaran los españoles», y que desde entonces se oye un zumbido y los perros no se acercan.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Yo llevo cargas. No pregunto qué son."
+        ]
+      }
+    },
+    {
+      "id": "t-fraile",
+      "npc": "npc-takillpa",
+      "orden": 4,
+      "etiqueta": "Preguntarle a Takillpa si conoce a alguien dentro de la Iglesia",
+      "intencion": "Le pregunto a Takillpa si conoce a alguien dentro de la Iglesia",
+      "claves": [
+        "la iglesia",
+        "un fraile",
+        "alguien de confianza",
+        "los frailes"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "que el viejo diga con quién se entiende del otro lado"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Takillpa se toma su tiempo.\n\n—Uno. Un prior de los dominicos, viejo, colorado, de los que cuidan viña. Deja sin trancar la puerta de la iglesia matriz, la de al costado, para los indios que van a misa de madrugada. Nunca preguntó qué hacemos con lo que nos escondemos. Es lo que más le agradezco."
+        ],
+        "pista": {
+          "description": "Takillpa dice que un prior dominico, viejo y colorado, deja sin trancar la puerta lateral de la iglesia matriz para los indios que van a misa de madrugada, y nunca pregunta nada.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Cuando sea el momento, se lo digo."
+        ]
+      }
+    },
+    {
+      "id": "i-huarpes",
+      "npc": "npc-ignacio",
+      "orden": 4,
+      "etiqueta": "Preguntarle a Fray Ignacio si sabe llegar a los huarpes sin pasar por las lagunas",
+      "intencion": "Le pregunto a Fray Ignacio si sabe llegar a los huarpes sin pasar por las lagunas",
+      "claves": [
+        "los huarpes",
+        "llegar a los indios",
+        "sin pasar por las lagunas",
+        "la cueva"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "que Ignacio admita que conoce un camino que no debería conocer"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Ignacio se queda mirando las parras.\n\n—Hay un sendero de las acequias. Sale por el fondo de la huerta, sigue el agua hasta el pie de la sierra y llega a una cueva de caliza donde los indios pintan. Lo usó mi antecesor hace treinta años para hablar con ellos. Yo lo usé una vez. Nunca lo conté."
+        ],
+        "pista": {
+          "description": "Fray Ignacio conoce un sendero de las acequias que sale del fondo de la huerta de Santo Domingo y llega a la cueva de las pinturas de los huarpes; lo usó su antecesor y él una sola vez.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—No hay camino que se pueda decir en voz alta."
+        ]
+      }
+    },
+    {
+      "id": "an-intercesion",
+      "npc": "npc-anselmo",
+      "orden": 4,
+      "etiqueta": "Pedirle al prior que interceda por vos ante el Cabildo",
+      "intencion": "Le pido al prior que interceda por mi ante el Cabildo",
+      "claves": [
+        "interceder",
+        "el juicio",
+        "hablar por mi",
+        "el cabildo"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 4,
+        "razon": "que un prior arriesgue su casa ante el Cabildo por alguien que no es de la orden"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "El prior se pasa la mano por la cara.\n\n—Voy a hablar con Videla antes de la sesión. Diré que usted durmió bajo mi techo y no vi nada que un cristiano no pudiera ver. Es cierto, hasta donde yo sé. No le prometo que alcance."
+        ],
+        "pista": {
+          "description": "El prior Anselmo acepta interceder ante el alcalde Videla antes de la sesión: dirá que el investigador durmió bajo su techo y no hizo nada que un cristiano no pudiera hacer.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Todavía no. Que el Comisario se muestre antes."
+        ]
+      }
     }
   ],
   "scenes": [
@@ -1775,6 +2525,143 @@
       "cuando": {
         "op": "texto",
         "patron": "me enfrento a los rastreadores"
+      }
+    },
+    {
+      "id": "juicio-abrir",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me presento ante el cabildo"
+      }
+    },
+    {
+      "id": "juicio-defensa",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me defiendo ante el cabildo"
+      }
+    },
+    {
+      "id": "juicio-acusar",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "acuso al comisario ante el cabildo"
+      }
+    },
+    {
+      "id": "juicio-callar",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "guardo silencio ante el cabildo"
+      }
+    },
+    {
+      "id": "oferta-albornoz",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "hablo a solas con el comisario"
+      }
+    },
+    {
+      "id": "aceptar-oferta",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "acepto la oferta del comisario"
+      }
+    },
+    {
+      "id": "rechazar-oferta",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "rechazo la oferta del comisario"
+      }
+    },
+    {
+      "id": "ser-arrestado",
+      "prioridad": 100,
+      "cuando": {
+        "op": "texto",
+        "patron": "dejo que me detengan"
+      }
+    },
+    {
+      "id": "carcel-sobornar",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "le doy la bolsa al carcelero"
+      }
+    },
+    {
+      "id": "carcel-fugarse",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "intento fugarme de la carcel"
+      }
+    },
+    {
+      "id": "carcel-esperar",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "espero en la carcel a que alguien intervenga"
+      }
+    },
+    {
+      "id": "confesarse",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "me confieso en la iglesia matriz"
+      }
+    },
+    {
+      "id": "dar-limosna",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "dejo una limosna en la iglesia matriz"
+      },
+      "tambienAlAgarrar": true
+    },
+    {
+      "id": "ser-padrino",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "me ofrezco como padrino oculto del nino"
+      }
+    },
+    {
+      "id": "alejarse-del-nino",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "me alejo del nino de josefa"
+      }
+    },
+    {
+      "id": "cruzar-la-plaza",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "cruzo la plaza sin que me reconozcan"
+      }
+    },
+    {
+      "id": "mirar-pinturas",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "miro las rayas de almagre de la pared"
       }
     }
   ],
@@ -2598,6 +3485,450 @@
           }
         ]
       }
+    },
+    {
+      "id": "juicio-abrir",
+      "grupo": "decidir",
+      "lugar": "cabildo",
+      "orden": 1,
+      "intencion": "Me presento ante el Cabildo",
+      "etiqueta": "Presentarte ante el Cabildo",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "concluyó el juicio ante el Cabildo"
+        }
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "El Cabildo abre la sesión"
+      }
+    },
+    {
+      "id": "juicio-defensa",
+      "grupo": "hablar",
+      "lugar": "cabildo",
+      "orden": 2,
+      "intencion": "Me defiendo ante el Cabildo",
+      "etiqueta": "Defenderte ante el Cabildo con lo que hiciste",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "El Cabildo abre la sesión"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "concluyó el juicio ante el Cabildo"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "juicio-acusar",
+      "grupo": "hablar",
+      "lugar": "cabildo",
+      "orden": 3,
+      "intencion": "Acuso al Comisario ante el Cabildo",
+      "etiqueta": "Acusar al Comisario ante el Cabildo con lo que sabés de su libro",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "narrado",
+                "contiene": "El Cabildo abre la sesión"
+              },
+              {
+                "op": "no",
+                "de": {
+                  "op": "consecuencia",
+                  "contiene": "concluyó el juicio ante el Cabildo"
+                }
+              }
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "lista conventos de todo Cuyo y Chile"
+              },
+              {
+                "op": "pista",
+                "contiene": "«no le cierran los números»"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "juicio-callar",
+      "grupo": "hablar",
+      "lugar": "cabildo",
+      "orden": 4,
+      "intencion": "Guardo silencio ante el Cabildo",
+      "etiqueta": "Guardar silencio y dejar que decidan",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "El Cabildo abre la sesión"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "concluyó el juicio ante el Cabildo"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "oferta-albornoz",
+      "grupo": "hablar",
+      "lugar": "cabildo",
+      "orden": 5,
+      "intencion": "Hablo a solas con el Comisario",
+      "etiqueta": "Hablar a solas con el Comisario",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "concluyó el juicio ante el Cabildo"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "fue detenido y llevado a la cárcel"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "Albornoz decidió"
+            }
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Albornoz te espera junto a la puerta"
+      }
+    },
+    {
+      "id": "aceptar-oferta",
+      "grupo": "decidir",
+      "lugar": "cabildo",
+      "orden": 6,
+      "intencion": "Acepto la oferta del Comisario",
+      "etiqueta": "Aceptar la oferta del Comisario",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "Albornoz te espera junto a la puerta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "aceptó ser agente"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "rechazó la oferta"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "rechazar-oferta",
+      "grupo": "decidir",
+      "lugar": "cabildo",
+      "orden": 7,
+      "intencion": "Rechazo la oferta del Comisario",
+      "etiqueta": "Rechazar la oferta del Comisario",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "Albornoz te espera junto a la puerta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "aceptó ser agente"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "rechazó la oferta"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ser-arrestado",
+      "grupo": "decidir",
+      "lugar": [
+        "zanjon",
+        "camino-villa",
+        "sd-porton",
+        "sd-archivo",
+        "sd-huerta",
+        "totoral-noche",
+        "altar-sauce",
+        "laguna-baja",
+        "ranchada",
+        "isla-juncos",
+        "plaza",
+        "cabildo",
+        "iglesia-matriz",
+        "casa-josefa",
+        "pulperia",
+        "hacienda-estrada",
+        "cueva-pinturas",
+        "camino-piedemonte"
+      ],
+      "orden": 90,
+      "intencion": "Dejo que me detengan",
+      "etiqueta": "Dejar que los soldados te detengan",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "sospecha",
+            "minimo": 85,
+            "maximo": 99
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "fue detenido y llevado a la cárcel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "carcel-sobornar",
+      "grupo": "usar",
+      "lugar": "carcel",
+      "orden": 1,
+      "intencion": "Le doy la bolsa al carcelero",
+      "etiqueta": "Darle la bolsa al carcelero",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "fue detenido y llevado a la cárcel"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió de la cárcel"
+            }
+          },
+          {
+            "op": "lleva",
+            "item": "it-soborno"
+          }
+        ]
+      }
+    },
+    {
+      "id": "carcel-fugarse",
+      "grupo": "usar",
+      "lugar": "carcel",
+      "orden": 2,
+      "intencion": "Intento fugarme de la carcel",
+      "etiqueta": "Intentar fugarte de la cárcel",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "fue detenido y llevado a la cárcel"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió de la cárcel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "carcel-esperar",
+      "grupo": "usar",
+      "lugar": "carcel",
+      "orden": 3,
+      "intencion": "Espero en la carcel a que alguien intervenga",
+      "etiqueta": "Esperar a que alguien intervenga",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "fue detenido y llevado a la cárcel"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió de la cárcel"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "confesarse",
+      "grupo": "usar",
+      "lugar": "iglesia-matriz",
+      "orden": 1,
+      "intencion": "Me confieso en la iglesia matriz",
+      "etiqueta": "Confesarte con el prior",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "La cortina raída se cierra"
+      }
+    },
+    {
+      "id": "dar-limosna",
+      "grupo": "usar",
+      "lugar": "iglesia-matriz",
+      "orden": 2,
+      "intencion": "Dejo una limosna en la iglesia matriz",
+      "etiqueta": "Dejar la limosna en la iglesia",
+      "visible": {
+        "op": "lleva",
+        "item": "it-cera-limosna"
+      }
+    },
+    {
+      "id": "ser-padrino",
+      "grupo": "usar",
+      "lugar": "casa-josefa",
+      "orden": 1,
+      "intencion": "Me ofrezco como padrino oculto del nino",
+      "etiqueta": "Ofrecerte como padrino oculto del niño",
+      "visible": {
+        "op": "pista",
+        "contiene": "no lo dejara agarrar con esa mano"
+      },
+      "hecha": {
+        "op": "o",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "Josefa te mira un largo rato"
+          },
+          {
+            "op": "narrado",
+            "contiene": "Te vas sin volver a mirar el patio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "alejarse-del-nino",
+      "grupo": "usar",
+      "lugar": "casa-josefa",
+      "orden": 2,
+      "intencion": "Me alejo del nino de Josefa",
+      "etiqueta": "Alejarte del niño",
+      "visible": {
+        "op": "pista",
+        "contiene": "no lo dejara agarrar con esa mano"
+      },
+      "hecha": {
+        "op": "o",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "Josefa te mira un largo rato"
+          },
+          {
+            "op": "narrado",
+            "contiene": "Te vas sin volver a mirar el patio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cruzar-la-plaza",
+      "grupo": "usar",
+      "lugar": "plaza",
+      "orden": 1,
+      "intencion": "Cruzo la plaza sin que me reconozcan",
+      "etiqueta": "Cruzar la plaza sin que te reconozcan",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "del lado de los huarpes"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "narrado",
+              "contiene": "Cruzás la plaza pegado a las paredes"
+            }
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Cruzás la plaza pegado a las paredes"
+      }
+    },
+    {
+      "id": "mirar-pinturas",
+      "grupo": "observar",
+      "lugar": "cueva-pinturas",
+      "orden": 1,
+      "intencion": "Miro las rayas de almagre de la pared",
+      "etiqueta": "Mirar las rayas de almagre de la pared",
+      "visible": {
+        "op": "pista",
+        "contiene": "raya de almagre sobre la anterior"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Son siete rayas"
+      }
     }
   ],
   "endings": [
@@ -3009,6 +4340,1109 @@
               "de": {
                 "op": "narrado",
                 "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "ranchada",
+      "hasta": "iglesia-matriz",
+      "hastaQue": {
+        "op": "pista",
+        "contiene": "puerta lateral de la iglesia matriz"
+      }
+    },
+    {
+      "desde": "iglesia-matriz",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "pista",
+        "contiene": "puerta lateral de la iglesia matriz"
+      }
+    },
+    {
+      "desde": "sd-huerta",
+      "hasta": "cueva-pinturas",
+      "hastaQue": {
+        "op": "pista",
+        "contiene": "sendero de las acequias"
+      }
+    },
+    {
+      "desde": "cueva-pinturas",
+      "hasta": "sd-huerta",
+      "hastaQue": {
+        "op": "pista",
+        "contiene": "sendero de las acequias"
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "camino-piedemonte",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "concluyó el juicio ante el Cabildo"
+      }
+    },
+    {
+      "desde": "camino-piedemonte",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "concluyó el juicio ante el Cabildo"
+      }
+    },
+    {
+      "desde": "cueva-pinturas",
+      "hasta": "camino-piedemonte",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "concluyó el juicio ante el Cabildo"
+      }
+    },
+    {
+      "desde": "camino-piedemonte",
+      "hasta": "cueva-pinturas",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "concluyó el juicio ante el Cabildo"
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "carcel",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "fue detenido y llevado a la cárcel"
+      }
+    },
+    {
+      "desde": "carcel",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "fue detenido y llevado a la cárcel"
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "salió de la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "zanjon",
+      "hasta": "camino-villa",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "zanjon",
+      "hasta": "totoral-noche",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "camino-villa",
+      "hasta": "zanjon",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "camino-villa",
+      "hasta": "sd-porton",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-porton",
+      "hasta": "camino-villa",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-porton",
+      "hasta": "sd-archivo",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-porton",
+      "hasta": "sd-huerta",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-porton",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-archivo",
+      "hasta": "sd-porton",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-huerta",
+      "hasta": "sd-porton",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-huerta",
+      "hasta": "camino-villa",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-huerta",
+      "hasta": "cueva-pinturas",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "totoral-noche",
+      "hasta": "zanjon",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "totoral-noche",
+      "hasta": "altar-sauce",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "totoral-noche",
+      "hasta": "laguna-baja",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "altar-sauce",
+      "hasta": "totoral-noche",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "altar-sauce",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "laguna-baja",
+      "hasta": "totoral-noche",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "laguna-baja",
+      "hasta": "isla-juncos",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "ranchada",
+      "hasta": "altar-sauce",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "ranchada",
+      "hasta": "isla-juncos",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "ranchada",
+      "hasta": "cueva-pinturas",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "isla-juncos",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "isla-juncos",
+      "hasta": "laguna-baja",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "sd-porton",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "cabildo",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "iglesia-matriz",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "casa-josefa",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "pulperia",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "hacienda-estrada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "plaza",
+      "hasta": "camino-piedemonte",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "cabildo",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "iglesia-matriz",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "iglesia-matriz",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "casa-josefa",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "pulperia",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "hacienda-estrada",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "cueva-pinturas",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "cueva-pinturas",
+      "hasta": "camino-piedemonte",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "cueva-pinturas",
+      "hasta": "sd-huerta",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "camino-piedemonte",
+      "hasta": "plaza",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "camino-piedemonte",
+      "hasta": "cueva-pinturas",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "sospecha",
+              "minimo": 85,
+              "maximo": 99
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "fue detenido y llevado a la cárcel"
               }
             }
           ]

@@ -174,6 +174,13 @@ export interface EfectoEscena {
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };
   /**
+   * Lleva al investigador a otro lugar SIN exigir una conexión: lo que no fue
+   * decisión suya —lo llevan preso, lo sacan del pueblo—. Es lo único que mueve
+   * a alguien fuera del grafo de conexiones; el «ir» normal sigue exigiéndola.
+   * La escena narra el traslado en su `texto`.
+   */
+  llevaA?: { lugar: LocationId; minutos?: number; cause: string };
+  /**
    * Cambia el RÓTULO del tiempo del mundo sin moverlo.
    *
    * El encabezado muestra `world.time.display`, y hasta acá ese texto sólo
