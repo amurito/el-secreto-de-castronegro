@@ -331,7 +331,7 @@ const crucesUnicos = [...new Map(cruces.map((c) => [c.de + '>' + c.a + '>' + c.f
  */
 const enDiseno = CATALOGO.some((e) => e.scenario.id === 'santo-oficio-de-cuyo') ? null : {
   id: 'santo-oficio-de-cuyo', title: 'El Santo Oficio de Cuyo', requiere: ['la-merced-de-las-animas'],
-  epoca: 'Febrero de 1710 · 2-3 semanas', estado: 'diseño aprobado, sin escribir',
+  epoca: 'Noviembre de 1710 · 2-3 semanas', estado: 'diseño aprobado, sin escribir',
   aperturas: [
     { id: 'firmar-actas', nombre: 'Iglesia', detalle: 'Amanecer en el zanjón con Fray Ignacio. Sospecha inicial 35.' },
     { id: 'fuga-final', nombre: 'Huarpe', detalle: 'La misma noche, en el totoral, con la Rastrillería atrás.' },
@@ -343,6 +343,22 @@ const enDiseno = CATALOGO.some((e) => e.scenario.id === 'santo-oficio-de-cuyo') 
     { id: 'salida-quedarse', nombre: 'Quedarse · reforzar el sello', detalle: 'Con el ingrediente de Hualilán. El 1944 queda sin resolver.' },
   ],
 };
+
+// El esqueleto acordado (src/santo-oficio.esqueleto.json), pasado a la misma forma que un lugar real
+// para reusar el dibujo de mapa. Si el archivo ya no existe, la aventura ya se escribió.
+const rutaEsqueleto = path.join(aca, 'santo-oficio.esqueleto.json');
+if (enDiseno && fs.existsSync(rutaEsqueleto)) {
+  const e = JSON.parse(fs.readFileSync(rutaEsqueleto, 'utf8'));
+  const npcNombre: Record<string, string> = Object.fromEntries(e.npcs.map((n: any) => [n.id, n.name]));
+  (enDiseno as any).esqueleto = {
+    ...e,
+    locations: e.lugares.map((l: any) => ({
+      id: l.id, name: l.name, start: l.id === e.startLocation, tag: l.tag, conn: l.conn,
+      npcs: l.npcs.length, npcIds: l.npcs, itemIds: [], featIds: [], desc: l.desc,
+    })),
+    npcNombre,
+  };
+}
 
 const datos = { campania, aventuras, cruces: crucesUnicos, enDiseno, generado: new Date().toISOString().slice(0, 16).replace('T', ' ') };
 

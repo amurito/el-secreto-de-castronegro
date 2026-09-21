@@ -57,7 +57,10 @@ export function cargarAventura(
   /** Equipo de época para quien juegue, sea quien sea (`kit1930.ts`). */
   kitDeEpoca: Item[] = [],
 ): Scenario {
-  validarContenido(contenido, logica.map((l) => l.id));
+  validarContenido(
+    contenido, logica.map((l) => l.id),
+    [...itemsDeInvestigadores, ...kitDeEpoca].map((i) => i.id),
+  );
 
   const porId = new Map(logica.map((l) => [l.id, l]));
   const scenes: Escenas = contenido.scenes.map((e): EscenaAutoral => {

@@ -1,0 +1,1831 @@
+{
+  "id": "santo-oficio-de-cuyo",
+  "title": "El Santo Oficio de Cuyo",
+  "surfacePremise": "San Juan de la Frontera, noviembre de 1710. Un forastero de otro siglo cerró anoche un borde entre dos mundos y se quedó de este lado. Esta mañana llegó a la villa un Comisario del Santo Oficio que no pregunta por herejes: pregunta por cuentas.",
+  "items": [
+    {
+      "aliases": [
+        "libro de cuentas",
+        "el libro",
+        "libro"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [
+        {
+          "id": "p-libro-capitulos",
+          "description": "Las columnas no son de dineros sino de conventos y de años. Al pie de cada una, un mismo signo: un círculo pintado en almagre, tachado con una raya.",
+          "revealedBy": "examinar con atención mientras el Comisario no mira",
+          "revealed": false
+        }
+      ],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-libro-cuentas",
+      "name": "El libro de cuentas del Comisario",
+      "categoria": "documento",
+      "shortDescription": "Un libro apaisado de tapa negra, con una cinta roja de marcador. Está abierto sobre la mesa, del lado de la silla con respaldo. La letra es pequeña y cuidadosa, la de alguien que anota lo que otros preferirían olvidar.",
+      "owner": "sd-cripta"
+    }
+  ],
+  "npcs": [
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que el Comisario lo declare hereje antes de que termine de explicarse.",
+        "Que el forastero, después de todo, sea la prueba de que se equivocó."
+      ],
+      "refusals": [
+        "No admite en voz alta que le escribe informes a alguien más arriba que el Cabildo."
+      ],
+      "secrets": [
+        {
+          "id": "s-ignacio-informes",
+          "content": "Fray Ignacio le escribe informes a Fray Bartolomé de Albornoz desde hace tres años, sin que el Comisario nunca lo haya visitado. Sabe que él mismo es un eslabón de una cadena que empieza mucho más arriba, y no sabe dónde termina.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=5",
+          "revealed": false
+        }
+      ],
+      "id": "npc-ignacio",
+      "name": "Fray Ignacio de la Cruz",
+      "description": "Mercedario, escribano del Cabildo, cuarenta años bien llevados. Anoche cerró un borde que su orden llevaba treinta y seis años intentando entender, y hoy no parece más tranquilo por eso.",
+      "motivation": "Que lo hecho en el zanjón cuente, y que lo que sabe no se lo lleve otro. Cree que si el Comisario se entera de todo de una vez, el legajo se pierde."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que lo que anota se pierda antes de que alguien más lo lea."
+      ],
+      "refusals": [
+        "No dice para quién trabaja, más allá del tribunal de Lima."
+      ],
+      "secrets": [
+        {
+          "id": "s-albornoz-aparato",
+          "content": "La comisión del Santo Oficio es una cobertura. Fray Bartolomé visita, uno por uno, los capítulos del mismo aparato que Fray Ignacio sirve en San Juan, y anota cuáles siguen cerrando bien los bordes y cuáles no. El libro de cuentas es el registro.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=4",
+          "revealed": false
+        }
+      ],
+      "id": "npc-albornoz",
+      "name": "Fray Bartolomé de Albornoz",
+      "description": "Comisario del Santo Oficio, cincuenta y pocos años, delgado, con las manos de quien no trabajó nunca y la mirada de quien no se distrae nunca. No levanta la voz. Habla como quien lee en voz alta un expediente que ya conoce de memoria.",
+      "motivation": "Que ninguna frontera entre este mundo y otro quede a cargo de gente que no sabe lo que cuida. Para él, un forastero de otro tiempo no es una herejía: es un dato, y los datos se administran."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que el Comisario le cierre el archivo, o algo peor, por haber dejado entrar a alguien."
+      ],
+      "refusals": [
+        "No dice qué papeles guarda el archivo de la fundación, hasta que se le pida sabiendo qué se pide."
+      ],
+      "secrets": [
+        {
+          "id": "s-anselmo-hoja",
+          "content": "En el legajo de la fundación de San Juan falta una hoja, arrancada al ras, y el prior sabe cuál era y quién la sacó: un antecesor suyo, hace sesenta años, después de un temblor. No la quemó: la guardó, y no sabe dónde.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=3",
+          "revealed": false
+        }
+      ],
+      "id": "npc-anselmo",
+      "name": "Fray Anselmo de Oro",
+      "description": "Prior de Santo Domingo, sesenta años, de una familia que da frailes desde que hay frailes en San Juan. Cara ancha y colorada de quien pasa mucho tiempo en la viña, y unas manos que no dejan de moverse cuando está preocupado.",
+      "motivation": "Que su convento siga siendo un convento y no un expediente. No tiene nada contra el forastero; tiene mucho contra que lo usen para llenar el registro de otro."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-takillpa",
+      "name": "Takillpa",
+      "description": "Guardián huarpe del borde. [Rama huarpe pendiente de escribir: acá sólo el nombre.]",
+      "motivation": "[PENDIENTE]"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-legajo-fundacion",
+      "title": "El legajo de la fundación de San Juan",
+      "author": "Escribanos del Cabildo, 1562-1650",
+      "date": "1562-1650",
+      "location": "Convento de Santo Domingo",
+      "kind": "letter",
+      "content": "«Que consta a los vecinos que en el año de la fundación, el día siguiente al de San Antonio, se sintió temblar tres veces la tierra del valle, y que un indio del pueblo de Guanacache, de nombre no asentado, advirtió al Corregidor que no se abriese acequia hacia el paraje donde después hubo ciénaga.\n\nQue el Corregidor no le dio crédito; que ese verano el agua no llegó a la villa; que se abrió acequia igualmente. Que veinte años después, un fraile de esta casa asentó al margen: “cuando el agua se suelta de golpe, la tierra se abre por donde estaba cerrada”. La hoja que seguía a ésta fue arrancada al ras.\n\nQue el año de sesenta y cinco, después de un temblor grande, se pintó con almagre un círculo en el lugar, por costumbre y no por saber, y se dio por hecho.»",
+      "authenticity": "authentic",
+      "accuracy": "accurate",
+      "cluesContained": [],
+      "obtainedAt": null,
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "DISCOVERABLE",
+        "source": "scenario"
+      }
+    }
+  ],
+  "locations": {
+    "zanjon": {
+      "id": "zanjon",
+      "name": "El zanjón partido",
+      "aliases": [
+        "zanjon",
+        "el zanjon",
+        "la grieta"
+      ],
+      "description": "Un tajo en el barro seco, todavía tibio, donde anoche se cerró algo. El almagre o la marca de piedra —según cómo haya terminado— brilla apenas en la cara que mira contra el viento. Del otro lado del cauce, el camino que sube a la villa; del lado de los totorales, una neblina baja que huele a agua estancada.",
+      "atmosphere": [
+        "El aire ya no se pliega: es solamente aire de noviembre, frío y con olor a tierra removida.",
+        "A lo lejos, un perro ladra una vez y no insiste.",
+        "La piedra pintada o grabada no hace ruido. Eso es lo que más pesa."
+      ],
+      "connections": [
+        "camino-villa",
+        "totoral-noche"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-ignacio",
+        "npc-takillpa"
+      ],
+      "visited": false,
+      "umbralIntensity": 18,
+      "senses": {
+        "smell": [
+          "Tierra mojada, ceniza fría, algo dulce de juncos."
+        ],
+        "sound": [
+          "Una acequia, más allá, que corre como si nada."
+        ]
+      }
+    },
+    "camino-villa": {
+      "id": "camino-villa",
+      "name": "El camino a la villa",
+      "aliases": [
+        "camino",
+        "el camino",
+        "camino a la villa"
+      ],
+      "description": "Una legua de polvo entre acequias y algarrobos, con San Juan de la Frontera al final, baja y de adobe. A esta hora los que salen a las chacras todavía no salieron: el camino es de quien lo quiera.",
+      "atmosphere": [
+        "Las acequias corren llenas; alguien abrió las compuertas anoche.",
+        "Se ve humo de fogones en la villa, uno por casa, ni uno más."
+      ],
+      "connections": [
+        "zanjon",
+        "sd-porton"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 6,
+      "senses": {
+        "sound": [
+          "Cascos de caballo, lejos, sobre tierra dura."
+        ]
+      }
+    },
+    "sd-porton": {
+      "id": "sd-porton",
+      "name": "Santo Domingo: la portería",
+      "aliases": [
+        "porteria",
+        "la porteria",
+        "santo domingo",
+        "convento",
+        "el convento"
+      ],
+      "description": "Un portón de algarrobo con dos batientes, tan viejo que las bisagras tienen forma de manos. Detrás, un claustro de adobe encalado y una huerta con parras. Los dominicos llevan más de cien años en este bloque de la villa, con viñas y con paciencia, y se nota que no piensan irse por un comisario.",
+      "atmosphere": [
+        "Huele a cera de abejas y a vino nuevo.",
+        "Una campana chica marca la hora sin apuro.",
+        "El prior está de pie junto a la puerta, como quien lleva un buen rato esperando que alguien llegue."
+      ],
+      "connections": [
+        "camino-villa",
+        "sd-cripta",
+        "sd-archivo",
+        "sd-huerta",
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-anselmo"
+      ],
+      "visited": false,
+      "umbralIntensity": 4,
+      "senses": {
+        "smell": [
+          "Cera, vino, adobe encalado."
+        ]
+      }
+    },
+    "sd-cripta": {
+      "id": "sd-cripta",
+      "name": "Santo Domingo: la cripta",
+      "aliases": [
+        "cripta",
+        "la cripta",
+        "sotano"
+      ],
+      "description": "Un sótano de piedra bajo el claustro, con bóveda baja y una sola mesa de algarrobo. Hace frío de bodega y el aire tiene sal. Alguien puso una silla de cada lado de la mesa: una sola tiene respaldo.",
+      "atmosphere": [
+        "Se pega a la ropa y a la garganta, esa humedad de bodega.",
+        "Una vela de sebo dobla la sombra de la bóveda contra la pared.",
+        "Del techo baja, por un tiro estrecho, un hilo de aire con olor a hierba: la ventilación."
+      ],
+      "connections": [
+        "sd-porton",
+        "sd-huerta"
+      ],
+      "itemsPresent": [
+        "it-libro-cuentas"
+      ],
+      "npcsPresent": [
+        "npc-albornoz"
+      ],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {
+        "smell": [
+          "Salitre, sebo, piedra húmeda."
+        ],
+        "sound": [
+          "Gotas, y arriba, pasos de sandalias que no se detienen."
+        ]
+      }
+    },
+    "sd-archivo": {
+      "id": "sd-archivo",
+      "name": "Santo Domingo: el archivo",
+      "aliases": [
+        "archivo",
+        "el archivo",
+        "biblioteca"
+      ],
+      "description": "Un cuarto de estantes de algarrobo con legajos atados con cinta. La luz entra por una sola ventana alta y cae en una franja sobre la mesa. Los papeles de la fundación de San Juan están en el último estante, donde nadie los pide.",
+      "atmosphere": [
+        "Polvo en suspensión, quieto.",
+        "Un ratón se detiene, decide que no lo miran, y sigue."
+      ],
+      "connections": [
+        "sd-porton"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 9,
+      "senses": {
+        "smell": [
+          "Papel viejo, cola de pescado, cedro."
+        ]
+      }
+    },
+    "sd-huerta": {
+      "id": "sd-huerta",
+      "name": "Santo Domingo: huerta y ventilación",
+      "aliases": [
+        "huerta",
+        "la huerta",
+        "ventilacion"
+      ],
+      "description": "Parras sobre un emparrado, hileras de hortalizas y, contra el muro de la cripta, la boca de un tiro de piedra con una rejilla oxidada. La huerta da a un callejón de acequia que sale, por un portillo, al camino que rodea la villa.",
+      "atmosphere": [
+        "El emparrado corta el sol en pedazos.",
+        "Un hermano riega con una pala, sin alzar la vista.",
+        "La rejilla del tiro está floja de un lado."
+      ],
+      "connections": [
+        "sd-porton",
+        "camino-villa"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [
+        "npc-ignacio"
+      ],
+      "visited": false,
+      "umbralIntensity": 5,
+      "senses": {
+        "smell": [
+          "Tomillo, tierra regada, humo de leña."
+        ]
+      }
+    },
+    "totoral-noche": {
+      "id": "totoral-noche",
+      "name": "El totoral, de noche",
+      "aliases": [],
+      "description": "[PENDIENTE] Barro hasta la rodilla y perros a lo lejos. La persecución activa arranca acá.",
+      "atmosphere": [],
+      "connections": [
+        "zanjon",
+        "altar-sauce",
+        "laguna-baja"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "altar-sauce": {
+      "id": "altar-sauce",
+      "name": "El altar del sauce",
+      "aliases": [],
+      "description": "[PENDIENTE] Tronco seco con amuleto de hueso y almagre. Acá se aprende el Manto de la Ciénaga, y se decide si se ofrenda un objeto de 1930.",
+      "atmosphere": [],
+      "connections": [
+        "totoral-noche",
+        "ranchada"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "laguna-baja": {
+      "id": "laguna-baja",
+      "name": "La laguna baja",
+      "aliases": [],
+      "description": "[PENDIENTE] Por donde cierra la Rastrillería. Escena de persecución con tirada de sigilo o de orientación.",
+      "atmosphere": [],
+      "connections": [
+        "totoral-noche",
+        "isla-juncos"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "ranchada": {
+      "id": "ranchada",
+      "name": "La ranchada de Guanacache",
+      "aliases": [],
+      "description": "[PENDIENTE] El campamento de los guardianes. La anciana no confía en un forastero de metal.",
+      "atmosphere": [],
+      "connections": [
+        "altar-sauce",
+        "isla-juncos",
+        "cueva-pinturas"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "isla-juncos": {
+      "id": "isla-juncos",
+      "name": "La isla de los juncos",
+      "aliases": [],
+      "description": "[PENDIENTE] Refugio temporal, sin sabuesos. Se puede descansar, pero no por mucho.",
+      "atmosphere": [],
+      "connections": [
+        "ranchada",
+        "laguna-baja"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "plaza": {
+      "id": "plaza",
+      "name": "La plaza de San Juan",
+      "aliases": [],
+      "description": "[PENDIENTE] El centro de la villa. Todo el Acto II gira acá, con el Santo Oficio vigilando.",
+      "atmosphere": [],
+      "connections": [
+        "sd-porton",
+        "cabildo",
+        "carcel",
+        "iglesia-matriz",
+        "casa-josefa",
+        "pulperia",
+        "hacienda-estrada",
+        "camino-piedemonte"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "cabildo": {
+      "id": "cabildo",
+      "name": "El Cabildo",
+      "aliases": [],
+      "description": "[PENDIENTE] La sala del juicio. La escena central de todo el Acto II, con el medidor de sospecha a la vista.",
+      "atmosphere": [],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "carcel": {
+      "id": "carcel",
+      "name": "La cárcel del Cabildo",
+      "aliases": [],
+      "description": "[PENDIENTE] Donde se cae con sospecha 85 o más. Solo se sale por una vía preparada antes.",
+      "atmosphere": [],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "iglesia-matriz": {
+      "id": "iglesia-matriz",
+      "name": "La iglesia matriz",
+      "aliases": [],
+      "description": "[PENDIENTE] Confesarse baja la sospecha, pero deja algo dicho. Puerta lateral: cruce hacia los huarpes.",
+      "atmosphere": [],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "casa-josefa": {
+      "id": "casa-josefa",
+      "name": "La casa de Josefa Sosa",
+      "aliases": [],
+      "description": "[PENDIENTE] El niño zurdo. De quien depende el linaje que 220 años después llega a Eusebio.",
+      "atmosphere": [],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "pulperia": {
+      "id": "pulperia",
+      "name": "La pulpería de la villa",
+      "aliases": [],
+      "description": "[PENDIENTE] La economía: comprar pólvora, mula, papel; vender lo cargado cuesta. Limosnas que bajan sospecha.",
+      "atmosphere": [],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "hacienda-estrada": {
+      "id": "hacienda-estrada",
+      "name": "La hacienda de Don Gonzalo",
+      "aliases": [],
+      "description": "[PENDIENTE] Estrada, ahora con el Cabildo detrás. Aliado, cobarde o enemigo, según Acto I.",
+      "atmosphere": [],
+      "connections": [
+        "plaza"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "cueva-pinturas": {
+      "id": "cueva-pinturas",
+      "name": "La cueva de las pinturas",
+      "aliases": [],
+      "description": "[PENDIENTE] Arte rupestre huarpe: de acá sale el cálculo de los 234 años. Cruce de ramas: la Iglesia llega por contacto secreto.",
+      "atmosphere": [],
+      "connections": [
+        "ranchada",
+        "camino-piedemonte"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "camino-piedemonte": {
+      "id": "camino-piedemonte",
+      "name": "El camino del piedemonte",
+      "aliases": [],
+      "description": "[PENDIENTE] El único camino a la labor y de regreso. Los arrieros saben quién cruza.",
+      "atmosphere": [],
+      "connections": [
+        "plaza",
+        "cueva-pinturas",
+        "labor-campamento",
+        "zanjon-sellado"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "labor-campamento": {
+      "id": "labor-campamento",
+      "name": "La Labor Vieja: el real de cateadores",
+      "aliases": [],
+      "description": "[PENDIENTE] Una docena de hombres del Cabildo con mosquetes acampan al pie de una cantera de cal vieja. Se entra con sigilo, con el reloj como distracción, con el Manto o por la escolta oficial.",
+      "atmosphere": [],
+      "connections": [
+        "camino-piedemonte",
+        "labor-bocamina"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "labor-bocamina": {
+      "id": "labor-bocamina",
+      "name": "La Labor Vieja: la boca de la labor",
+      "aliases": [],
+      "description": "[PENDIENTE] Una boca tapiada por los cateadores con vigas y cadenas. Fuerza, maña o el conducto estrecho.",
+      "atmosphere": [],
+      "connections": [
+        "labor-campamento",
+        "labor-socavon",
+        "labor-ventilacion"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "labor-socavon": {
+      "id": "labor-socavon",
+      "name": "La Labor Vieja: el socavón de los peones",
+      "aliases": [],
+      "description": "[PENDIENTE] Peones indios de mita cavan en galerías angostas. La cercanía al filón torcía la luz: las sombras llegan tres segundos tarde. Posible motín con el cantar.",
+      "atmosphere": [],
+      "connections": [
+        "labor-bocamina",
+        "labor-nucleo"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "labor-ventilacion": {
+      "id": "labor-ventilacion",
+      "name": "La Labor Vieja: el conducto de ventilación",
+      "aliases": [],
+      "description": "[PENDIENTE] Un tiro de ventilación de los que hacían los antiguos. Paso estrecho: se deja el equipo voluminoso.",
+      "atmosphere": [],
+      "connections": [
+        "labor-bocamina",
+        "labor-cripta"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "labor-cripta": {
+      "id": "labor-cripta",
+      "name": "La Labor Vieja: la cámara de los antiguos",
+      "aliases": [],
+      "description": "[PENDIENTE] Una cámara natural en la caliza. El cuerpo de un investigador de otro bucle, con un objeto de 1930 en la mano. La paradoja: el bucle ya se cerró antes.",
+      "atmosphere": [],
+      "connections": [
+        "labor-ventilacion",
+        "labor-nucleo"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "labor-nucleo": {
+      "id": "labor-nucleo",
+      "name": "La Labor Vieja: el filón",
+      "aliases": [],
+      "description": "[PENDIENTE] Donde la caliza se abre y asoma plata nativa, cruzada por calcita. Ahí se decide la salida, y ahí está Albornoz.",
+      "atmosphere": [],
+      "connections": [
+        "labor-socavon",
+        "labor-cripta",
+        "camino-piedemonte"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    },
+    "zanjon-sellado": {
+      "id": "zanjon-sellado",
+      "name": "El zanjón, sellado",
+      "aliases": [],
+      "description": "[PENDIENTE] De vuelta donde empezó. Las tres salidas se ejecutan acá.",
+      "atmosphere": [],
+      "connections": [
+        "camino-piedemonte"
+      ],
+      "itemsPresent": [],
+      "npcsPresent": [],
+      "visited": false,
+      "umbralIntensity": 10,
+      "senses": {}
+    }
+  },
+  "startLocation": "zanjon",
+  "startTime": {
+    "iso": "1710-11-04T05:30:00",
+    "precision": "vague",
+    "display": "el amanecer siguiente"
+  },
+  "startUmbralPermeability": 20,
+  "timeline": [
+    {
+      "id": "te-hoja-arrancada",
+      "description": "Un fraile de Santo Domingo arranca del legajo de la fundación la hoja que seguía a la anotación sobre el agua que se suelta de golpe, y la guarda.",
+      "when": {
+        "iso": "1650-01-01T00:00:00",
+        "precision": "vague",
+        "display": "hace sesenta años"
+      },
+      "category": "STABLE",
+      "categoryHistory": [],
+      "knownTo": [],
+      "altered": false,
+      "alterationAttempts": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      }
+    }
+  ],
+  "conversations": [
+    {
+      "id": "an-refugio",
+      "npc": "npc-anselmo",
+      "orden": 1,
+      "etiqueta": "Pedirle al prior que te dé refugio en el convento",
+      "intencion": "Le pido refugio al prior Anselmo",
+      "claves": [
+        "refugio",
+        "esconderme",
+        "quedarme en el convento",
+        "asilo"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "que el prior arriesgue la casa por un forastero"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Un dominico no pregunta de dónde viene quien pide sombra. Pregunta si se va a comportar. Yo no lo sé todavía, hijo, pero tampoco lo voy a dejar en la calle esta noche con el Comisario en la villa.\n\n—Puede dormir en la hospedería. Y sepa que las paredes de este convento son gruesas, pero no tanto."
+        ],
+        "pista": {
+          "description": "El prior Anselmo le ofrece la hospedería del convento y avisa que las paredes de Santo Domingo no protegen del Comisario.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Hoy no. Hoy sólo le puedo decir que por acá no lo vio nadie. Vuelva cuando sepa qué es lo que me está pidiendo."
+        ]
+      }
+    },
+    {
+      "id": "an-albornoz",
+      "npc": "npc-anselmo",
+      "orden": 2,
+      "etiqueta": "Preguntarle al prior quién es el Comisario",
+      "intencion": "Le pregunto al prior quién es el Comisario del Santo Oficio",
+      "claves": [
+        "comisario",
+        "albornoz",
+        "quien es el comisario",
+        "santo oficio"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "hospedería del convento"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 3,
+        "razon": "notar qué calla el prior cuando dice el nombre"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Fray Bartolomé de Albornoz. Viene de Lima con una comisión del Santo Oficio y una carta del Provincial que nadie le pidió. Ya pasó por Mendoza y por San Luis: en los dos conventos se quedó una semana, no preguntó por herejes, y pidió ver los libros de cuentas.\n\n—Nunca vi a un inquisidor tan interesado en cuentas."
+        ],
+        "pista": {
+          "description": "El Comisario Albornoz visitó los conventos de Mendoza y San Luis y sólo pidió ver los libros de cuentas, sin preguntar por herejes.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-anselmo-hoja"
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Un comisario es un comisario. Pregúntele a él, si se atreve."
+        ]
+      }
+    },
+    {
+      "id": "an-fundacion",
+      "npc": "npc-anselmo",
+      "orden": 3,
+      "etiqueta": "Pedirle al prior que te deje leer el legajo de la fundación",
+      "intencion": "Le pido al prior leer el legajo de la fundación",
+      "claves": [
+        "legajo",
+        "archivo",
+        "fundacion",
+        "papeles de la fundacion"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "hospedería del convento"
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 2,
+        "razon": "que el prior te abra un archivo que nadie pide"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "El prior se queda un rato mirando la puerta del archivo, como si esperara que se abriera sola.\n\n—El legajo de la fundación lo piden dos veces por siglo, y las dos veces es por una disputa de acequias. Usted no parece de acequias. Pase, pero no se lleve nada, y si me preguntan, no vino."
+        ],
+        "pista": {
+          "description": "El prior Anselmo autoriza, a escondidas, la lectura del legajo de la fundación de San Juan, en el archivo del convento.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Ese legajo no es mío para prestar. Vuelva cuando yo pueda decir que lo pidió otro."
+        ]
+      }
+    },
+    {
+      "id": "i-comisario",
+      "npc": "npc-ignacio",
+      "orden": 1,
+      "etiqueta": "Preguntarle a Fray Ignacio qué sabe del Comisario",
+      "intencion": "Le pregunto a Fray Ignacio qué sabe del Comisario",
+      "claves": [
+        "comisario",
+        "inquisidor",
+        "santo oficio",
+        "albornoz"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "notar cuánto de lo que dice Ignacio lo sabe de antes"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Llegó anoche, mientras nosotros estábamos en el zanjón. Trae una comisión del tribunal de Lima, y una carta que dice que viene a visitar. No sé a visitar qué.\n\n—Lo que sé es que en la portería preguntó por mí antes de preguntar por el prior. Y yo no le había escrito."
+        ],
+        "pista": {
+          "description": "Fray Ignacio dice que el Comisario preguntó por él por su nombre en la portería, sin que él le hubiera escrito.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Lo que yo sepa, lo va a saber por él antes que por mí. Es mejor así."
+        ]
+      }
+    },
+    {
+      "id": "i-legajo",
+      "npc": "npc-ignacio",
+      "orden": 2,
+      "etiqueta": "Preguntarle a Fray Ignacio qué dice el legajo de la fundación",
+      "intencion": "Le pregunto a Fray Ignacio qué dice el legajo de la fundación",
+      "claves": [
+        "legajo",
+        "fundacion",
+        "hoja arrancada",
+        "el agua se suelta"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 3,
+        "razon": "que Ignacio diga lo que leyó y no lo que le conviene"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—Lo leí entero, hace años. Dice lo que dicen todos los legajos: que hubo un temblor, que alguien avisó y nadie escuchó. Pero al margen, de mano de un hermano de Santo Domingo, hay una línea que nunca me dejó tranquilo.\n\n—“Cuando el agua se suelta de golpe, la tierra se abre por donde estaba cerrada”. Y la hoja que seguía, arrancada. Yo creí siempre que era una advertencia. Ahora que usted cruzó por ahí, ya no sé si era una advertencia o una receta."
+        ],
+        "pista": {
+          "description": "Un fraile de Santo Domingo anotó en el legajo de la fundación que «cuando el agua se suelta de golpe, la tierra se abre por donde estaba cerrada»; la hoja siguiente fue arrancada al ras.",
+          "kind": "documentary",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Eso está en Santo Domingo, no en mi memoria. Si lo quiere, pídaselo al prior, y no me nombre."
+        ]
+      }
+    },
+    {
+      "id": "i-informes",
+      "npc": "npc-ignacio",
+      "orden": 3,
+      "etiqueta": "Preguntarle a Fray Ignacio a quién más le escribe",
+      "intencion": "Le pregunto a Fray Ignacio a quién le escribe además del Cabildo",
+      "claves": [
+        "escribe",
+        "informes",
+        "cartas",
+        "a quien le escribe"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 5,
+        "razon": "que Ignacio admita lo que hace de noche con la pluma"
+      },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "Ignacio se queda mirando el suelo de la huerta. Cuando habla, lo hace en un tono más bajo, sin mirarlo.\n\n—Hace tres años me llegó una carta sin firma con instrucciones, y una dirección en Lima adonde mandar un informe cada cuatro meses. Nunca supe a quién. Nunca me pidieron nada más. Hasta anoche.\n\n—Anoche, cuando llegó el Comisario a la portería, vi la misma letra en el sobre que traía en la mano."
+        ],
+        "pista": {
+          "description": "Fray Ignacio le manda informes, cada cuatro meses, a alguien de Lima que nunca firmó; la letra del sobre que trajo el Comisario es la misma de esa correspondencia.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-ignacio-informes"
+      },
+      "esquiva": {
+        "texto": [
+          "—No. Eso no. Todavía no."
+        ]
+      }
+    },
+    {
+      "id": "a-oferta",
+      "npc": "npc-albornoz",
+      "orden": 1,
+      "etiqueta": "Preguntarle al Comisario qué quiere de vos",
+      "intencion": "Le pregunto al Comisario qué quiere de mí",
+      "claves": [
+        "que quiere",
+        "que quiere de mi",
+        "propuesta"
+      ],
+      "disponible": {
+        "op": "narrado",
+        "contiene": "La interrogación termina"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "hard",
+        "actitudMinima": 0,
+        "razon": "leer, detrás de la voz pareja, qué busca de verdad"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "—Lo que quiero es simple, y por eso no lo va a creer. Quiero que siga vivo, y que siga hablando. No con el Tribunal: conmigo. Lo que usted sabe no está en ningún expediente, y yo llevo veinte años juntando expedientes.\n\n—Lo demás, la sotana, el Santo Oficio, la cripta, es lo que hace falta para que nadie más se pregunte por qué lo quiero vivo."
+        ],
+        "pista": {
+          "description": "El Comisario Albornoz dice que quiere al investigador vivo y hablando, «no con el Tribunal, conmigo», y que la comisión del Santo Oficio es lo que hace falta para que nadie se pregunte por qué.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Eso lo va a saber en su momento. Todavía no ha decidido de qué lado quiere estar; cuando lo decida, hablamos."
+        ]
+      }
+    },
+    {
+      "id": "a-aparato",
+      "npc": "npc-albornoz",
+      "orden": 2,
+      "etiqueta": "Preguntarle al Comisario para quién trabaja de verdad",
+      "intencion": "Le pregunto al Comisario para quién trabaja de verdad",
+      "claves": [
+        "para quien trabaja",
+        "el libro",
+        "el circulo",
+        "a quien responde"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "quiere al investigador vivo"
+      },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "extreme",
+        "actitudMinima": 4,
+        "razon": "que el Comisario, por una sola vez, no conteste con otra pregunta"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "El Comisario cierra el libro de cuentas con un dedo, sin apuro.\n\n—Trabajo para que lo que se anota se anote bien. El Círculo, como usted lo llama, no es un grupo de fanáticos: es una contaduría. Alguien tiene que llevar cuentas de las cosas que no se pueden pagar.\n\n—Fray Ignacio lleva las suyas en San Juan. Yo llevo las de todos, y hace tiempo que no me cierran los números."
+        ],
+        "pista": {
+          "description": "El Comisario Albornoz describe al Círculo como «una contaduría» de cosas que no se pueden pagar; dice que Fray Ignacio lleva las cuentas de San Juan y él las de todos, y que «no le cierran los números».",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-albornoz-aparato"
+      },
+      "esquiva": {
+        "actitud": -1,
+        "texto": [
+          "—Es una pregunta que hacen los que quieren dejar de hacerse otras. No se la voy a contestar hoy."
+        ]
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "alba",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me levanto del fondo del zanjon"
+      }
+    },
+    {
+      "id": "comitiva",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "espero en el camino a que llegue la comitiva"
+      }
+    },
+    {
+      "id": "cripta-entrada",
+      "prioridad": 80,
+      "cuando": {
+        "op": "texto",
+        "patron": "me siento frente al comisario"
+      }
+    },
+    {
+      "id": "mirar-libro-cuentas",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "miro el libro de cuentas|examino el libro de cuentas"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "sd-cripta"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "q1-flandes",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "orfebres de flandes"
+      }
+    },
+    {
+      "id": "q1-franco",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "explico como funciona el reloj"
+      }
+    },
+    {
+      "id": "q2-signos",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "senales del cielo y de la tierra"
+      }
+    },
+    {
+      "id": "q2-nativos",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "lo aprendi de los indigenas"
+      }
+    },
+    {
+      "id": "q3-agua",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "agua vieja bajo el zanjon"
+      }
+    },
+    {
+      "id": "q3-frontera",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "hay un limite bajo el zanjon"
+      }
+    },
+    {
+      "id": "esperar-ignacio",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "espero a que intervenga fray ignacio"
+      }
+    },
+    {
+      "id": "forzar-ventilacion",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "fuerzo el tiro de ventilacion"
+      }
+    },
+    {
+      "id": "leer-legajo",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "leo el legajo de la fundacion"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "sd-archivo"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "notar-borrado",
+      "prioridad": 60,
+      "cuando": {
+        "op": "y",
+        "de": [
+          {
+            "op": "texto",
+            "patron": "examino los bordes de la hoja arrancada"
+          },
+          {
+            "op": "lugar",
+            "es": [
+              "sd-archivo"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "mostrar-reloj-ignacio",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "le muestro el reloj a fray ignacio"
+      }
+    },
+    {
+      "id": "negar-a-ignacio",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "le digo a fray ignacio que no llevo nada"
+      }
+    },
+    {
+      "id": "hoguera",
+      "prioridad": 100,
+      "cuando": {
+        "op": "texto",
+        "patron": "el auto de fe"
+      }
+    },
+    {
+      "id": "salida-1930",
+      "prioridad": 100,
+      "cuando": {
+        "op": "texto",
+        "patron": "aflojo el sello"
+      }
+    },
+    {
+      "id": "salida-1944",
+      "prioridad": 100,
+      "cuando": {
+        "op": "texto",
+        "patron": "dejo que reviente"
+      }
+    },
+    {
+      "id": "quedarse",
+      "prioridad": 100,
+      "cuando": {
+        "op": "texto",
+        "patron": "refuerzo el sello"
+      }
+    },
+    {
+      "id": "muerte-en-la-mina",
+      "prioridad": 100,
+      "cuando": {
+        "op": "texto",
+        "patron": "caigo en la labor"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "alba",
+      "grupo": "observar",
+      "lugar": "zanjon",
+      "orden": 1,
+      "intencion": "Me levanto del fondo del zanjon y miro alrededor",
+      "etiqueta": "Levantarte y mirar alrededor",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Se incorpora despacio, con la ropa rígida de barro seco"
+      }
+    },
+    {
+      "id": "comitiva",
+      "grupo": "observar",
+      "lugar": "camino-villa",
+      "orden": 1,
+      "intencion": "Espero en el camino a que llegue la comitiva",
+      "etiqueta": "Esperar en el camino a que llegue la comitiva",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Un jinete de sotana negra"
+      }
+    },
+    {
+      "id": "cripta-entrada",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 1,
+      "intencion": "Me siento frente al Comisario",
+      "etiqueta": "Sentarte frente al Comisario",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "El Comisario no se levanta"
+      }
+    },
+    {
+      "id": "mirar-libro-cuentas",
+      "grupo": "observar",
+      "lugar": "sd-cripta",
+      "orden": 5,
+      "intencion": "Miro el libro de cuentas",
+      "etiqueta": "Mirar el libro de cuentas de reojo",
+      "visible": {
+        "op": "narrado",
+        "contiene": "El Comisario no se levanta"
+      },
+      "hecha": {
+        "op": "propiedad",
+        "item": "it-libro-cuentas",
+        "prop": "p-libro-capitulos"
+      }
+    },
+    {
+      "id": "q1-flandes",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 10,
+      "intencion": "Digo que es una curiosidad de los orfebres de Flandes",
+      "etiqueta": "Responder: «una curiosidad de los orfebres de Flandes»",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "El Comisario no se levanta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Una curiosidad de los orfebres de Flandes"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Del reloj sale una explicación"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q1-franco",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 11,
+      "intencion": "Explico como funciona el reloj",
+      "etiqueta": "Responder explicando cómo funciona de verdad",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "El Comisario no se levanta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Una curiosidad de los orfebres de Flandes"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Del reloj sale una explicación"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q2-signos",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 12,
+      "intencion": "Hablo de senales del cielo y de la tierra",
+      "etiqueta": "Responder: «señales del cielo y de la tierra»",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "narrado",
+                "contiene": "Una curiosidad de los orfebres de Flandes"
+              },
+              {
+                "op": "narrado",
+                "contiene": "Del reloj sale una explicación"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Los signos del tiempo y de la tierra"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Se lo enseñaron los indios"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q2-nativos",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 13,
+      "intencion": "Digo que lo aprendi de los indigenas",
+      "etiqueta": "Responder: «lo aprendí de los indios»",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "narrado",
+                "contiene": "Una curiosidad de los orfebres de Flandes"
+              },
+              {
+                "op": "narrado",
+                "contiene": "Del reloj sale una explicación"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Los signos del tiempo y de la tierra"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Se lo enseñaron los indios"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q3-agua",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 14,
+      "intencion": "Digo que solo hay agua vieja bajo el zanjon",
+      "etiqueta": "Responder: «sólo agua vieja»",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "narrado",
+                "contiene": "Los signos del tiempo y de la tierra"
+              },
+              {
+                "op": "narrado",
+                "contiene": "Se lo enseñaron los indios"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Nada más que agua vieja"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Es una frontera"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q3-frontera",
+      "grupo": "hablar",
+      "lugar": "sd-cripta",
+      "orden": 15,
+      "intencion": "Digo que hay un limite bajo el zanjon",
+      "etiqueta": "Responder: «hay un límite»",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "narrado",
+                "contiene": "Los signos del tiempo y de la tierra"
+              },
+              {
+                "op": "narrado",
+                "contiene": "Se lo enseñaron los indios"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Nada más que agua vieja"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Es una frontera"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "esperar-ignacio",
+      "grupo": "usar",
+      "lugar": "sd-cripta",
+      "orden": 20,
+      "intencion": "Espero a que intervenga Fray Ignacio",
+      "etiqueta": "Esperar a que Fray Ignacio intervenga",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "quedó encerrado en la cripta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió de la cripta"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "forzar-ventilacion",
+      "grupo": "usar",
+      "lugar": "sd-cripta",
+      "orden": 21,
+      "intencion": "Fuerzo el tiro de ventilacion",
+      "etiqueta": "Forzar el tiro de ventilación",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "quedó encerrado en la cripta"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió de la cripta"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "leer-legajo",
+      "grupo": "observar",
+      "lugar": "sd-archivo",
+      "orden": 1,
+      "intencion": "Leo el legajo de la fundacion",
+      "etiqueta": "Leer el legajo de la fundación",
+      "visible": {
+        "op": "o",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "autoriza, a escondidas, la lectura"
+              }
+            ]
+          },
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "consecuencia",
+                "contiene": "salió de la cripta"
+              }
+            ]
+          }
+        ]
+      },
+      "hecha": {
+        "op": "documento",
+        "id": "doc-legajo-fundacion"
+      }
+    },
+    {
+      "id": "notar-borrado",
+      "grupo": "observar",
+      "lugar": "sd-archivo",
+      "orden": 2,
+      "intencion": "Examino los bordes de la hoja arrancada",
+      "etiqueta": "Examinar los bordes de la hoja arrancada",
+      "visible": {
+        "op": "documento",
+        "id": "doc-legajo-fundacion"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Al ras, con una hoja de afeitar"
+      }
+    },
+    {
+      "id": "mostrar-reloj-ignacio",
+      "grupo": "usar",
+      "lugar": "sd-huerta",
+      "orden": 1,
+      "intencion": "Le muestro el reloj a Fray Ignacio",
+      "etiqueta": "Mostrarle el reloj de pulsera a Fray Ignacio",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-reloj-pulsera"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Ignacio no aparta la vista del reloj"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Ignacio no insiste"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "negar-a-ignacio",
+      "grupo": "usar",
+      "lugar": "sd-huerta",
+      "orden": 2,
+      "intencion": "Le digo a Fray Ignacio que no llevo nada",
+      "etiqueta": "Decirle a Fray Ignacio que no llevás nada raro",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-reloj-pulsera"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "Ignacio no aparta la vista del reloj"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Ignacio no insiste"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hoguera",
+      "grupo": "decidir",
+      "orden": 99,
+      "intencion": "El auto de fe",
+      "etiqueta": "Aceptar el Auto de Fe",
+      "final": true,
+      "visible": {
+        "op": "sospecha",
+        "minimo": 100
+      }
+    },
+    {
+      "id": "salida-1930",
+      "grupo": "decidir",
+      "lugar": "zanjon-sellado",
+      "orden": 90,
+      "intencion": "Aflojo el sello",
+      "etiqueta": "Aflojar el sello",
+      "final": true,
+      "visible": {
+        "op": "narrado",
+        "contiene": "§PENDIENTE-salida-1930§"
+      }
+    },
+    {
+      "id": "salida-1944",
+      "grupo": "decidir",
+      "lugar": "zanjon-sellado",
+      "orden": 91,
+      "intencion": "Dejo que reviente",
+      "etiqueta": "Dejar que reviente",
+      "final": true,
+      "visible": {
+        "op": "narrado",
+        "contiene": "§PENDIENTE-salida-1944§"
+      }
+    },
+    {
+      "id": "quedarse",
+      "grupo": "decidir",
+      "lugar": "zanjon-sellado",
+      "orden": 92,
+      "intencion": "Refuerzo el sello",
+      "etiqueta": "Reforzar el sello",
+      "final": true,
+      "visible": {
+        "op": "narrado",
+        "contiene": "§PENDIENTE-quedarse§"
+      }
+    },
+    {
+      "id": "muerte-en-la-mina",
+      "grupo": "decidir",
+      "lugar": "labor-nucleo",
+      "orden": 93,
+      "intencion": "Caigo en la labor",
+      "etiqueta": "Caer en la labor",
+      "final": true,
+      "visible": {
+        "op": "narrado",
+        "contiene": "§PENDIENTE-muerte-en-la-mina§"
+      }
+    }
+  ],
+  "endings": [
+    {
+      "id": "salida-1930",
+      "title": "Aflojar el sello",
+      "condition": "Se llega al zanjón con el sello sin reforzar y con la fecha inferida: el agua se pierde de golpe y el investigador cruza a febrero de 1930."
+    },
+    {
+      "id": "salida-1944",
+      "title": "Dejar que reviente",
+      "condition": "Se deja que la tensión acumulada llegue sola al 15 de enero de 1944: se cruza en el terremoto. La más peligrosa."
+    },
+    {
+      "id": "quedarse",
+      "title": "Reforzar el sello",
+      "condition": "Se usa el ingrediente de Hualilán para reforzar el sello y se elige quedarse en 1710. El 1944 histórico queda sin resolver."
+    },
+    {
+      "id": "hoguera",
+      "title": "El Auto de Fe",
+      "condition": "La sospecha llega a 100. Fin de la aventura, con muerte del investigador."
+    },
+    {
+      "id": "muerte-en-la-mina",
+      "title": "Lo que había en la veta",
+      "condition": "El investigador cae en Hualilán (Sombra del Socavón o derrumbe) sin haber preparado la salida."
+    }
+  ],
+  "opening": "El zanjón ya no respira. Donde anoche el aire se plegaba sobre sí mismo hay barro seco, una capa de pintura o de piedra grabada, y nada más. Es la primera mañana de un mundo en el que no hay camino de vuelta, y el cielo se está poniendo de un color que no pide permiso.\n\nEl frío de noviembre huele a tierra removida. Todavía no se ve a nadie, pero el valle ya sabe que está pasando algo: los perros de las chacras callaron todos a la vez.",
+  "bloqueoDecision": {
+    "op": "sospecha",
+    "minimo": 100
+  },
+  "conexionesOcultas": [
+    {
+      "desde": "sd-cripta",
+      "hasta": "sd-porton",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "quedó encerrado en la cripta"
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "consecuencia",
+                "contiene": "salió de la cripta"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "sd-cripta",
+      "hasta": "sd-huerta",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "escapó por el tiro de ventilación"
+      }
+    }
+  ]
+}

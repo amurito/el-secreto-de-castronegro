@@ -1,6 +1,6 @@
 # El Santo Oficio de Cuyo — diseño acordado (decimocuarta aventura)
 
-Continuación directa de *La Merced de las Ánimas*. **Estado: diseño aprobado,
+Continuación directa de *La Merced de las Ánimas* (noviembre de 1710: la Merced arranca el 3 y ésta, el amanecer del 4). **Estado: diseño aprobado,
 contenido sin escribir.** Este archivo existe para que las decisiones no
 dependan de una conversación; cuando la aventura se publique, pasa a ser una
 entrada de `ROADMAP.md` y esto se archiva.
@@ -15,7 +15,10 @@ corrigió (ver «Correcciones»).
   que la Exposición no decaiga), `requiere: ['la-merced-de-las-animas']`,
   `continuacion: true`.
 - **Duración en ficción:** 2-3 semanas desde el amanecer siguiente.
-- **Tamaño:** ~28 lugares, tres actos.
+- **Tamaño:** 27 lugares, tres actos (el esqueleto los detalla).
+- **Arranque único:** las dos ramas empiezan en el mismo lugar (`zanjon`); una
+  escena de apertura lee el final de Merced, fija la sospecha inicial y manda a
+  cada una a su mundo. El motor sólo admite un `startLocation`.
 - **Dos aperturas que convergen**, según el final de Merced:
   - `firmar-actas` (Iglesia): amanecer en el zanjón, con Fray Ignacio.
     Sospecha inicial 35.
@@ -29,9 +32,13 @@ corrigió (ver «Correcciones»).
   CRUZAN acá: la Iglesia puede llegar a Takillpa y los huarpes a Fray Ignacio.
   Escena central: interrogatorio/juicio con el medidor de sospecha y riesgo
   real de hoguera.
-- **Acto III (días 13-18): Hualilán.** Campamento, bocamina, socavón, cripta
-  de la veta, núcleo del yacimiento. El ingrediente para reforzar el sello es
-  algo de la geología real (caliza, almagre, plata), NO un «metal primordial».
+- **Acto III (días 13-18): La Labor Vieja.** Campamento de cateadores, boca de la labor,
+  socavón de los peones de mita, tiro de ventilación, cámara de los antiguos y el
+  filón. **Hualilán se descartó**: no era mina en 1710 (fue estancia ganadera hasta
+  que un arriero la descubrió en 1751). La Labor Vieja es ficticia y se apoya en
+  geología real: las calizas ordovícicas de la Precordillera sanjuanina, con plata
+  nativa y calcita. El ingrediente que refuerza el sello sale de ahí, NO es un
+  «metal primordial».
 
 ## Mecánicas nuevas (ya construidas, commit `0396572`)
 
@@ -63,7 +70,7 @@ corrigió (ver «Correcciones»).
   clave (protegerlo, mentirle, abandonarlo).
 - Takillpa, Josefa Sosa (y el niño zurdo: el linaje del que sale Eusebio),
   Don Gonzalo de Estrada. Nuevos por definir: un alcalde del Cabildo, una
-  anciana huarpe de las lagunas, un capataz de Hualilán, un arriero, el
+  anciana huarpe de las lagunas, un capataz de la Labor Vieja, un arriero, el
   sargento mayor de la Rastrillería, el prior dominico.
 
 ## Las salidas y el regreso
@@ -75,7 +82,7 @@ el Nodo 01**: se infiere, no se regala tras una tirada.
 - **1930, liberación controlada:** aflojar el sello a propósito; el agua se
   pierde de golpe, como en el fenómeno original.
 - **1944, dejarlo reventar:** se cruza en el terremoto. La más peligrosa.
-- **Quedarse:** reforzar el sello con el ingrediente de Hualilán. Qué pasa con
+- **Quedarse:** reforzar el sello con el ingrediente de la Labor Vieja. Qué pasa con
   el 1944 histórico queda deliberadamente sin resolver (regla de oro del canon).
 
 Cada final deja **consecuencias permanentes** de alcance campaña; las aventuras
@@ -107,10 +114,44 @@ con temblores; lo grabado (rama huarpe) acumula sin avisar. Ambos llegan a 1944.
 ## Pendiente de hacer, en orden
 
 1. ~~Recortar los epílogos de Merced que saltan en el tiempo~~ (hecho).
-2. Esqueleto de contenido: lugares, NPCs, ítems, final de cada rama.
-3. Acto I, rama Iglesia → rama huarpe.
+2. ~~Esqueleto de contenido~~ (hecho): `src/santo-oficio.esqueleto.json` — 27 lugares,
+   12 NPCs, escalones de sospecha, los tres destinos de Ignacio, los caminos de
+   Albornoz, 5 desenlaces y las consecuencias que dejará. Se ve en el mapa
+   (`npm run mapa`, clic en el nodo punteado). Los nombres ya salen de fuentes de época (ver «Ajustes»); los
+   nombres de pila son inventados a propósito. Ítems y tiradas: ya propuestos en el esqueleto
+   (7 ítems propios, 10 tiradas clave); falta que los apruebes.
+3. Acto I: **rama Iglesia escrita** (`santooficio.contenido.json` + `.logica.ts`, suite `prueba-santo-oficio.ts`: interrogatorio de 3 preguntas, encierro y dos salidas, archivo, primer momento con Ignacio, hoguera). Falta la **rama huarpe** (totoral, altar del sauce, ranchada, persecución) y sus escenas; el arranque (`alba`) ya la distingue. Las llegadas son ACCIONES explícitas porque una escena con `destino` reemplaza el movimiento.
 4. Acto II (cruce de ramas, juicio, sospecha).
-5. Acto III (Hualilán) y los tres finales con sus consecuencias.
+5. Acto III (La Labor Vieja) y los tres finales con sus consecuencias.
 6. `catalogo.ts`, auditoría (`prueba-auditoria.ts`), `prueba:todo`.
 7. Jugar las dos aperturas en el navegador.
 8. Entrada en `ROADMAP.md`.
+
+## Ajustes tras la revisión (2026-09-21)
+
+Aplicados desde los comentarios de una segunda lectura, más una investigación de
+época. El detalle vive en `src/santo-oficio.esqueleto.json` y se ve en el mapa.
+
+- **Sospecha en la rama huarpe = cerco, no interrogatorio.** Un solo medidor con
+  dos tablas de consecuencias: la Iglesia dispara interrogatorios al cruzar 35 y
+  60; los huarpes disparan cerco y fugas anticipadas (20 rastro fresco, 40 cerco,
+  60 encima, 85 capturado). En la villa rige la tabla de la villa.
+- **Cada salida necesita una cadena de pistas alcanzable.** 1930: lo vivido en
+  Zonda + el legajo de Ignacio. 1944: DOS fuentes independientes (pinturas de la
+  cueva + intervalos de temblores medidos con el reloj). Quedarse: la técnica de
+  grabado de la anciana + el filón.
+- **Ocultismo/Geología no entregan el plazo.** El fallo da el dato básico (la
+  piedra tiene fisuras por presión); el éxito, el mecanismo (la presión se
+  acumula). El «poco más de dos siglos» se deduce cruzando fuentes: si una tirada
+  lo diera, regalaría la fecha del 1944. Tratar el terremoto real con seriedad.
+- **Josefa y el niño zurdo, acotado.** No se toca la costumbre de «corregir» al
+  zurdo (ya publicada en 1926). Sólo se elige cómo relacionarse con el niño, y se
+  guarda como consecuencia que únicamente una aventura posterior puede leer.
+- **Reclutamiento.** Da: salvoconducto (tope de sospecha 30), acceso a un archivo
+  del aparato, pesos y una mula, y un hechizo. Cuesta: Mitos +4 (permanente),
+  Cordura por cada colaboración y una fobia o manía al tercer acto, una
+  consecuencia de campaña (el aparato lo tiene anotado) y cierra «quedarse».
+- **Nombres.** Apellidos documentados en Cuyo (Videla, Oro, Quiroga, Lucero,
+  Sayanca) con nombres de pila inventados, para no tocar a ninguna persona real.
+  Los comisarios reales de Cuyo (Corbalán, Peláez) no se usan. Cuyo dependía de la
+  Capitanía General de Chile y, en lo inquisitorial, del tribunal de Lima.

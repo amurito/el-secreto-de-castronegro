@@ -114,6 +114,13 @@ const duplicados = (ids: string[]): string[] => {
 export function validarContenido(
   contenido: ContenidoAventura,
   idsDeLogica: string[] = [],
+  /**
+   * Ids de ítems que existen pero no viven en `contenido.items`: los que llegan
+   * al investigador desde afuera —el equipo de oficio y el kit de época—. Sin
+   * esto, una condición `lleva` sobre el reloj de 1930 se rechazaba como «no
+   * existe el ítem» aunque el motor se lo da a quien juegue.
+   */
+  itemsExternos: string[] = [],
 ): void {
   const problemas: string[] = [];
 
@@ -132,7 +139,7 @@ export function validarContenido(
 
   // ── Los conjuntos contra los que se validan las referencias ─────────────
   const lugares = new Set(Object.keys(contenido.locations));
-  const items = new Set(contenido.items.map((i) => i.id));
+  const items = new Set([...contenido.items.map((i) => i.id), ...itemsExternos]);
   const npcs = new Set(contenido.npcs.map((n) => n.id));
   const documentos = new Set(contenido.documents.map((d) => d.id));
 

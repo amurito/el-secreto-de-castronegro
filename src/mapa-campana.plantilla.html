@@ -93,7 +93,7 @@ function nav() {
   let h = '<button class="' + (vista === 'campania' ? 'on' : '') + '" data-v="campania">Campaña</button><span class="sep"></span>';
   h += '<select id="sel-av"><option value="">Aventura…</option>' +
     D.campania.map((c) => '<option value="' + c.id + '"' + (vista === c.id ? ' selected' : '') + '>' + esc(c.epoca.split('·')[0].trim() + ' — ' + c.title) + '</option>').join('') + '</select>';
-  if (vista !== 'campania') {
+  if (vista !== 'campania' && vista !== '__diseno') {
     h += '<span class="sep"></span>' + [['mapa', 'Lugares'], ['causa', 'Causa y efecto'], ['cons', 'Consecuencias']]
       .map(([k, t]) => '<button class="' + (sub === k ? 'on' : '') + '" data-s="' + k + '">' + t + '</button>').join('');
   }
@@ -103,7 +103,7 @@ function nav() {
   $('#sel-av').onchange = (e) => e.target.value && ir(e.target.value);
 }
 function ir(v) { vista = v; sel = null; dibujar(); window.scrollTo(0, 0); }
-function dibujar() { nav(); $('#main').innerHTML = ''; (vista === 'campania' ? campania : aventura)(); }
+function dibujar() { nav(); $('#main').innerHTML = ''; (vista === 'campania' ? campania : vista === '__diseno' ? diseno : aventura)(); }
 
 /* ───────────────────────── CAMPAÑA ───────────────────────── */
 
@@ -181,9 +181,10 @@ function campania() {
   $('#main').innerHTML =
     '<div class="leyenda"><span><i style="border-color:var(--dim)"></i>«requiere» — sigue a</span>' +
     '<span><i class="pu" style="border-color:var(--cons)"></i>una consecuencia de la primera que la segunda lee</span>' +
-    '<span><i class="pu" style="border-color:var(--dim)"></i>en diseño, todavía sin escribir</span><span>Clic en una aventura para abrirla</span></div>' +
+    '<span><i class="pu" style="border-color:var(--dim)"></i>en diseño, todavía sin escribir (clic para ver el esqueleto)</span><span>Clic en una aventura para abrirla</span></div>' +
     '<div class="lienzo"><svg width="' + ancho2 + '" height="' + (alto + 20) + '">' + lineas + nodosSvg + '</svg></div>' + tablaCruces();
   document.querySelectorAll('.nodo[data-id]').forEach((n) => (n.onclick = () => ir(n.dataset.id)));
+  document.querySelectorAll('.nodo[data-fant]').forEach((n) => (n.onclick = () => ir('__diseno')));
 }
 
 function tablaCruces() {
@@ -203,6 +204,34 @@ function aventura() {
     '<span class="chip">' + c.lugares + ' lugares</span><span class="chip">' + c.npcs + ' NPCs</span><span class="chip">' + c.escenas + ' escenas</span><span class="chip">' + c.temas + ' temas</span></div>';
   $('#main').innerHTML = cab + '<div id="cuerpo"></div>';
   window.__lugarSel = null; if (sub === 'mapa') mapa(A); else if (sub === 'cons') consecuencias(c, A); else causa(A);
+}
+
+/* El esqueleto de la aventura en diseño */
+function diseno() {
+  const dsn = D.enDiseno, E = dsn.esqueleto;
+  $('#main').innerHTML = '<div style="margin-bottom:12px"><span style="font-size:18px">' + esc(dsn.title) + '</span> <span class="chip">' + esc(dsn.estado) + '</span>' +
+    '<span class="chip">' + E.locations.length + ' lugares</span><span class="chip">' + E.npcs.length + ' NPCs</span><span class="chip">' + E.finales.length + ' desenlaces</span></div><div id="cuerpo"></div>';
+  mapa({ locations: E.locations, ocultas: E.ocultas.map((o) => ({ desde: o.desde, hasta: o.hasta, cond: o.cond })), nodos: [], npcs: E.npcNombre, items: {} });
+  const filas = (l, f) => l.map(f).join('');
+  const caja = (t, cuerpo) => '<div class="caja"><h2>' + t + '</h2>' + cuerpo + '</div>';
+  const extra =
+    caja('Actos', '<table><tr><th>Acto</th><th>Días</th></tr>' + filas(E.actos, (a) => '<tr><td><b>' + esc(a.nombre) + '</b></td><td>' + a.dias + '</td></tr>') + '</table>') +
+    caja('Personajes (' + E.npcs.length + ')', '<table><tr><th>Quién</th><th>Rol</th><th>Qué le pasa</th></tr>' + filas(E.npcs, (n) => '<tr><td><b>' + esc(n.name) + '</b></td><td>' + esc(n.rol) + '</td><td>' + esc(n.arco) + '</td></tr>') + '</table>') +
+    caja('Medidor de sospecha', '<p class="nota" style="margin:4px 0 8px">' + esc(E.sospecha.arranque) + '</p><table><tr><th>Rango</th><th>Escalón</th><th>Qué pasa</th></tr>' +
+      filas(E.sospecha.escalones, (s) => '<tr><td>' + s.desde + (s.hasta !== s.desde ? '–' + s.hasta : '') + '</td><td><b>' + esc(s.nombre) + '</b></td><td>' + esc(s.efecto) + '</td></tr>') + '</table>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px"><div><h2>Lo que la sube</h2><ul>' + filas(E.sospecha.suben, (x) => '<li>' + esc(x) + '</li>') + '</ul></div><div><h2>Lo que la baja</h2><ul>' + filas(E.sospecha.bajan, (x) => '<li>' + esc(x) + '</li>') + '</ul></div></div>') +
+    caja('Fray Ignacio: tres destinos', '<ul>' + filas(E.ignacio.momentos, (x) => '<li>' + esc(x) + '</li>') + '</ul><table><tr><th>Destino</th><th>Qué significa</th></tr>' + filas(E.ignacio.estados, (s) => '<tr><td><b>' + s.id + '</b></td><td>' + esc(s.texto) + '</td></tr>') + '</table>') +
+    caja('Albornoz: qué quiere de vos', '<table><tr><th>Camino</th><th>Cómo se da</th></tr><tr><td><b>Te recluta</b></td><td>' + esc(E.albornoz.reclutar) + '</td></tr><tr><td><b>Te usa</b></td><td>' + esc(E.albornoz.usar) + '</td></tr><tr><td><b>Su final posible</b></td><td>' + esc(E.albornoz.final.join(' · ')) + '</td></tr></table>') +
+    caja('Cómo se descubre cada salida', '<table><tr><th>Salida</th><th>Cómo se sabe que existe</th></tr>' + filas(E.salidas, (s) => '<tr><td><b>' + esc(s.nombre) + '</b></td><td>' + esc(s.descubre) + '</td></tr>') + '</table><p class="nota">' + esc(E.regla1944) + '</p>') +
+    caja('Sospecha en la rama huarpe: el cerco', '<table><tr><th>Rango</th><th>Estado</th><th>Qué pasa</th></tr>' + filas(E.sospecha.escalonesHuarpe, (s) => '<tr><td>' + s.desde + (s.hasta !== s.desde ? '–' + s.hasta : '') + '</td><td><b>' + esc(s.nombre) + '</b></td><td>' + esc(s.efecto) + '</td></tr>') + '</table><p class="nota">' + esc(E.sospecha.nota) + '</p>') +
+    caja('Reclutamiento: qué da y qué cuesta', '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div><h2>Da</h2><ul>' + filas(E.reclutamiento.da, (x) => '<li>' + esc(x) + '</li>') + '</ul></div><div><h2>Cuesta</h2><ul>' + filas(E.reclutamiento.cuesta, (x) => '<li>' + esc(x) + '</li>') + '</ul></div></div><p class="nota">' + esc(E.reclutamiento.regla) + '</p>') +
+    caja('Josefa y el niño zurdo', '<p>' + esc(E.josefa.regla) + '</p><ul>' + filas(E.josefa.opciones, (x) => '<li>' + esc(x) + '</li>') + '</ul><p class="nota">' + esc(E.josefa.consecuencia) + '</p>') +
+    caja('Ítems propios (' + E.items.length + ')', '<table><tr><th>Ítem</th><th>Dónde</th><th>Para qué sirve</th><th>Riesgo</th></tr>' + filas(E.items, (i) => '<tr><td><b>' + esc(i.nombre) + '</b></td><td>' + esc(i.donde) + '</td><td>' + esc(i.uso) + '</td><td>' + esc(i.riesgo) + '</td></tr>') + '</table>') +
+    caja('Tiradas clave (' + E.tiradas.length + ')', '<table><tr><th>Escena</th><th>Habilidad</th><th>Dificultad</th><th>Si falla</th></tr>' + filas(E.tiradas, (t) => '<tr><td><b>' + esc(t.escena) + '</b></td><td>' + esc(t.skill) + '</td><td>' + t.dif + '</td><td>' + esc(t.falla) + '</td></tr>') + '</table>') +
+    caja('Desenlaces (' + E.finales.length + ')', '<table><tr><th>Título</th><th>Cuándo se llega</th></tr>' + filas(E.finales, (f) => '<tr><td><b>' + esc(f.title) + '</b></td><td>' + esc(f.condition) + '</td></tr>') + '</table>') +
+    caja('Lo que lee de Merced', '<table><tr><th>Fragmento</th><th>Para qué</th></tr>' + filas(E.lee, (x) => '<tr><td><b>' + esc(x.fragmento) + '</b></td><td>' + esc(x.para) + '</td></tr>') + '</table>') +
+    caja('Consecuencias que dejará (las aventuras futuras las leen)', '<table><tr><th>Qué queda escrito</th><th>Quién lo necesita</th></tr>' + filas(E.consecuencias, (x) => '<tr><td><b>' + esc(x.clave) + '</b></td><td>' + esc(x.para) + '</td></tr>') + '</table>');
+  $('#main').insertAdjacentHTML('beforeend', '<div style="margin-top:18px">' + extra + '</div>');
 }
 
 /* Lugares: capas por distancia desde el inicio */
@@ -244,7 +273,7 @@ function mapa(A) {
   A.locations.forEach((l) => {
     const p = pos[l.id];
     s += '<g class="nodo' + (l.start ? ' sel' : '') + '" transform="translate(' + p.x + ',' + p.y + ')"><rect width="' + W + '" height="' + H + '" rx="4"/>' +
-      '<text x="10" y="21" font-size="12.5">' + esc(trunc(l.name, 24)) + '</text><text class="m" x="10" y="38">' + (l.start ? '◆ inicio · ' : '') + l.npcs + ' NPC' + (l.npcs === 1 ? '' : 's') + '</text></g>';
+      '<text x="10" y="21" font-size="12.5">' + esc(trunc(l.name, 24)) + '</text><text class="m" x="10" y="38">' + (l.start ? '◆ inicio · ' : '') + (l.tag ? l.tag + ' · ' : '') + l.npcs + ' NPC' + (l.npcs === 1 ? '' : 's') + '</text></g>';
   });
   window.__mapaA = A;
   $('#cuerpo').innerHTML =
