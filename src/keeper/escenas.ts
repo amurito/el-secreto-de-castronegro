@@ -179,6 +179,14 @@ function aplicarEfecto(
     });
     out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
   }
+  if (efecto.sospecha) {
+    // Se muestra por lo mismo que la Cordura: que un número suba en silencio
+    // mientras la prosa sigue de largo es lo que se reportó jugando.
+    const r = run('adjust_suspicion', {
+      amount: efecto.sospecha.amount, cause: efecto.sospecha.cause,
+    });
+    out.push(r.message.replace('RECHAZADO POR EL MOTOR: ', ''));
+  }
   if (efecto.jugadorNota) {
     run('note_player_knowledge', {
       statement: efecto.jugadorNota.statement,

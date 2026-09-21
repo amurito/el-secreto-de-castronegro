@@ -171,6 +171,48 @@ export const HECHIZOS: Hechizo[] = [
     magnitud: 6,
     esperaMinutos: 120,
   },
+  {
+    // Sigilo del que huye, no del que se esconde: es lo que enseñan los
+    // huarpes de Guanacache a quien tiene un rastreo encima. Mismo dado que
+    // «Adivinar la forma» (un dado, no dos: dos rompería la calibración de las
+    // tiradas difíciles de toda la aventura), pero más barato en PM y de
+    // espera más larga, porque acá el que lo lanza tiene motivos para
+    // querer encadenarlo. La Cordura que cuesta no es por lo que ve sino por
+    // lo que deja de ver: quien lo usa se acostumbra a que el borde de la
+    // ciénaga lo cubra, y eso también se paga.
+    id: 'manto-de-la-cienaga',
+    nombre: 'Manto de la Ciénaga',
+    costoPM: 2,
+    costoCordura: 1,
+    descripcion:
+      'Un soplido bajo, dicho contra el viento del Zonda, y la niebla de la ' +
+      'ciénaga se espesa donde uno pisa. No hace invisible: hace que quien ' +
+      'mire tenga que decidir si lo que ve es un hombre o un juncal. Un dado ' +
+      'de bonificación en la próxima tirada, sea para no ser visto o para ' +
+      'no perderse.',
+    efecto: 'bono_dado',
+    magnitud: 1,
+    esperaMinutos: 60,
+  },
+  {
+    // Baja Exposición, como «Contar lo que no se anota», pero a otro precio y
+    // por otro camino: acá lo que se borra no es lo que se vio sino lo que
+    // uno dejó al pasar. Deliberadamente más flojo (5, no 8) y más lento a
+    // volver (4 horas): es un ritual de huida, no una salida de la barra.
+    id: 'cantar-de-las-sombras-de-sal',
+    nombre: 'El cantar de las sombras de sal',
+    costoPM: 4,
+    costoCordura: 1,
+    descripcion:
+      'Ceniza seca y polvo de piedra caliza, soplados con una tonada que ' +
+      'ningún huarpe repite igual dos veces. Borra el rastro: pisadas, ' +
+      'olor, el eco de la propia voz. Lo que queda es menos de uno mismo ' +
+      'pegado al lugar, y eso baja la Exposición. No devuelve ningún umbral ' +
+      'ya cruzado ni baja del piso que dejó el pico.',
+    efecto: 'exposicion',
+    magnitud: 5,
+    esperaMinutos: 240,
+  },
 ];
 
 export const HECHIZO_POR_ID: Record<string, Hechizo> = Object.fromEntries(

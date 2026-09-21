@@ -41,6 +41,12 @@ export interface Scenario {
   surfacePremise: string;
   investigators: Investigator[];
   items: Item[];
+  /**
+   * Equipo de época que se le da al investigador activo al abrir la aventura,
+   * sea pregenerado o creado a mano (`kit1930.ts`). Los ítems vienen sin dueño;
+   * el motor se lo pone. Ver `createCampaign` para cuándo NO se da.
+   */
+  kitDeEpoca?: Item[];
   npcs: NpcSeed[];
   documents: DiegeticDocument[];
   locations: Record<LocationId, GameLocation>;

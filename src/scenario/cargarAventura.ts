@@ -54,6 +54,8 @@ export function cargarAventura(
    * `engine.ts` le suma a un investigador creado a mano.
    */
   itemsDeInvestigadores: Item[] = [],
+  /** Equipo de época para quien juegue, sea quien sea (`kit1930.ts`). */
+  kitDeEpoca: Item[] = [],
 ): Scenario {
   validarContenido(contenido, logica.map((l) => l.id));
 
@@ -117,6 +119,7 @@ export function cargarAventura(
     surfacePremise: contenido.surfacePremise,
     investigators: investigadores,
     items: [...contenido.items, ...itemsDeInvestigadores],
+    ...(kitDeEpoca.length ? { kitDeEpoca } : {}),
     npcs: contenido.npcs,
     documents: contenido.documents,
     locations: contenido.locations,

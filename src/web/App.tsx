@@ -1040,7 +1040,7 @@ export function App() {
         ) : (
           <div className="input-area">
             <Acciones
-              options={options}
+              options={options.filter((o) => !esAccionDeInventario(o))}
               nuevas={marcas.pendientes}
               busy={busy}
               onPick={send}
@@ -1108,7 +1108,14 @@ export function App() {
         </div>
         <div className="tab-body">
           {tab === 'tablero' && <Board board={state?.board} />}
-          {tab === 'inventario' && <Inventory items={state?.items ?? []} />}
+          {tab === 'inventario' && (
+            <Inventory
+              items={state?.items ?? []}
+              acciones={options.filter(esAccionDeInventario)}
+              busy={busy}
+              onPick={send}
+            />
+          )}
           {tab === 'documentos' && <Documents docs={state?.documents ?? []} />}
           {tab === 'hechizos' && (
             <div className="hechizos">
@@ -1771,6 +1778,14 @@ Si no: ${r.stakesFailure ?? '—'}`;
   }
   return cabecera;
 }
+
+/**
+ * Soltar y deshacerse de un objeto no son cosas que se hagan «acá y ahora»
+ * sino que le pasan a un objeto concreto: viven en la pestaña de Inventario,
+ * junto a él, y no entre las acciones de la escena, donde con diez objetos
+ * encima ocupaban más que todo lo demás junto (reportado jugando).
+ */
+const esAccionDeInventario = (o: Opcion) => o.id.startsWith('dejar:') || o.id.startsWith('tirar:');
 
 function Acciones({
   options, nuevas, busy, onPick, cuantosFinales,

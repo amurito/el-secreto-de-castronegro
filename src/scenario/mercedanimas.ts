@@ -44,6 +44,7 @@ import type { Scenario } from './types.ts';
 import type { ContenidoAventura } from './contenido.schema.ts';
 import { cargarAventura } from './cargarAventura.ts';
 import { ELENA, TOMAS, ITEMS_DE_OCUPACION } from './pregens.ts';
+import { KIT_DE_1930 } from './kit1930.ts';
 import { LA_MERCED_DE_LAS_ANIMAS_LOGICA } from './mercedanimas.logica.ts';
 import contenido from './mercedanimas.contenido.json' with { type: 'json' };
 
@@ -52,4 +53,7 @@ export const LA_MERCED_DE_LAS_ANIMAS: Scenario = cargarAventura(
   LA_MERCED_DE_LAS_ANIMAS_LOGICA,
   [ELENA, TOMAS],
   ITEMS_DE_OCUPACION,
+  // Por si la partida viene de una Grieta del Zonda jugada antes de que
+  // existiera el kit: el motor se lo da sólo a quien nunca lo tuvo.
+  KIT_DE_1930,
 );

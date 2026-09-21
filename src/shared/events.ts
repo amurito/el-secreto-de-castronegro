@@ -159,7 +159,7 @@ export interface StatChangedPayload {
    * una causa escrita. El reducer de `STAT_CHANGED` ya es genérico sobre
    * este campo, así que no hizo falta tocarlo.
    */
-  stat: 'hp' | 'san' | 'mp' | 'luck' | 'efectivo';
+  stat: 'hp' | 'san' | 'mp' | 'luck' | 'efectivo' | 'sospecha';
   from: number;
   to: number;
   delta: number;

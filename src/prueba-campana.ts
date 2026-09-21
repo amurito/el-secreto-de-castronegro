@@ -420,6 +420,93 @@ async function main() {
       sB.investigators[inv]?.derived.efectivo === quedaba, `${quedaba} pesos`);
   }
 
+  console.log('\nEL KIT DE 1930: LO RECIBE QUIEN JUEGUE, UNA SOLA VEZ, Y SOLTAR ES PARA SIEMPRE');
+  {
+    const { LA_GRIETA_DEL_ZONDA } = await import('./scenario/grietadelzonda.ts');
+    const { LA_MERCED_DE_LAS_ANIMAS } = await import('./scenario/mercedanimas.ts');
+    const { TOMAS } = await import('./scenario/pregens.ts');
+    const KIT = ['it-encendedor-1930', 'it-reloj-pulsera', 'it-linterna-1930'];
+    const llevaTodo = (s: GameState, quien: string) =>
+      KIT.every((k) => s.items[k]?.owner === quien && s.items[k]?.carried);
+
+    // Pregenerado: lo recibe el activo, no el de reserva.
+    const idA = await createCampaign(LA_GRIETA_DEL_ZONDA, 'KIT-A', 'k1'.repeat(32));
+    const sA = (await loadState(idA)).state;
+    check('el investigador activo arranca con el kit', llevaTodo(sA, sA.activeInvestigator));
+
+    // Investigador creado por el jugador (camino `propio`): también.
+    const idP = await createCampaign(LA_GRIETA_DEL_ZONDA, 'KIT-P', 'k2'.repeat(32), undefined, TOMAS);
+    const sP = (await loadState(idP)).state;
+    check('un investigador propio también lo recibe', llevaTodo(sP, TOMAS.id));
+
+    // Cruza a la aventura siguiente por herencia, sin duplicarse.
+    const idM = await createCampaign(LA_MERCED_DE_LAS_ANIMAS, 'KIT-M', 'k3'.repeat(32), {
+      estadoAnterior: sA, mesesTranscurridos: 0,
+    });
+    const sM = (await loadState(idM)).state;
+    check('cruza a Merced, una sola copia de cada uno',
+      llevaTodo(sM, sM.activeInvestigator)
+      && Object.values(sM.items).filter((i) => KIT.includes(i.id)).length === KIT.length);
+
+    // Quien lo soltó en la aventura anterior no lo recupera.
+    const tirado: GameState = {
+      ...sA, items: { ...sA.items, 'it-reloj-pulsera': { ...sA.items['it-reloj-pulsera']!, owner: null, carried: false } },
+    };
+    const idT = await createCampaign(LA_MERCED_DE_LAS_ANIMAS, 'KIT-T', 'k4'.repeat(32), {
+      estadoAnterior: tirado, mesesTranscurridos: 0,
+    });
+    const sT = (await loadState(idT)).state;
+    check('lo que se descartó para siempre no se regala de nuevo',
+      sT.items['it-reloj-pulsera']?.owner !== sT.activeInvestigator);
+
+    // Una partida guardada de antes de que existiera el kit, que llega a Merced sin él.
+    const sinKit: GameState = {
+      ...sA, items: Object.fromEntries(Object.entries(sA.items).filter(([k]) => !KIT.includes(k))),
+    };
+    const idV = await createCampaign(LA_MERCED_DE_LAS_ANIMAS, 'KIT-V', 'k5'.repeat(32), {
+      estadoAnterior: sinKit, mesesTranscurridos: 0,
+    });
+    const sV = (await loadState(idV)).state;
+    check('quien viene de una partida sin kit lo recibe al llegar a Merced',
+      llevaTodo(sV, sV.activeInvestigator));
+  }
+
+  console.log('\nLA SOSPECHA: SUBE, BAJA, TIENE TOPE, SE LEE COMO CONDICIÓN Y NO CRUZA');
+  {
+    const { LA_GRIETA_DEL_ZONDA } = await import('./scenario/grietadelzonda.ts');
+    const id = await createCampaign(LA_GRIETA_DEL_ZONDA, 'SOSPECHA', 'v6'.repeat(32));
+    const t = await Turn.open(id);
+    const inv = t.state.activeInvestigator;
+    check('arranca en cero', (t.investigator.derived.sospecha ?? 0) === 0);
+
+    const r1 = t.executeTool('adjust_suspicion', { amount: 35, cause: 'prueba' });
+    check('sube y lo dice', r1.ok && /0 → 35/.test(r1.message), r1.message);
+    t.executeTool('adjust_suspicion', { amount: 90, cause: 'prueba' });
+    check('tiene tope en 100', t.investigator.derived.sospecha === 100);
+    t.executeTool('adjust_suspicion', { amount: -30, cause: 'prueba' });
+    check('baja con amount negativo', t.investigator.derived.sospecha === 70);
+    const rCero = t.executeTool('adjust_suspicion', { amount: 0, cause: 'prueba' });
+    check('rechaza un movimiento nulo', !rCero.ok);
+    t.executeTool('adjust_suspicion', { amount: -500, cause: 'prueba' });
+    check('y no baja de cero', t.investigator.derived.sospecha === 0);
+
+    t.executeTool('adjust_suspicion', { amount: 70, cause: 'prueba' });
+    await t.commit();
+    const s = (await loadState(id)).state;
+    const ctx = { estado: s };
+    check('la condición lee el rango',
+      evaluarCondicion({ op: 'sospecha', minimo: 60 }, ctx)
+      && !evaluarCondicion({ op: 'sospecha', minimo: 80 }, ctx)
+      && evaluarCondicion({ op: 'sospecha', maximo: 70 }, ctx));
+
+    const idB = await createCampaign(AGUA_QUIETA, 'SOSPECHA-B', 'v7'.repeat(32), {
+      estadoAnterior: s, mesesTranscurridos: 0,
+    });
+    const sB = (await loadState(idB)).state;
+    check('no cruza a la aventura siguiente (es de la situación, no de la persona)',
+      (sB.investigators[inv]?.derived.sospecha ?? 0) === 0);
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

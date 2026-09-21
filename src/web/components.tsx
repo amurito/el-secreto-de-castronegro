@@ -3,6 +3,7 @@ import { DadosPercentiles, useRevelacionTardia } from './dados.tsx';
 import { pisoDeExposicion } from '../rules/umbral.ts';
 import { meetsDifficulty } from '../rules/dice.ts';
 import type { SuccessDegree, Difficulty } from '../shared/types.ts';
+import type { Opcion } from '../scenario/acciones.ts';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FICHA
@@ -56,6 +57,16 @@ export function Sheet({ inv }: { inv: any }) {
         <div className="efectivo">
           <span className="efectivo-label">Efectivo</span>
           <span className="efectivo-valor">{d.efectivo} pesos</span>
+        </div>
+      )}
+      {/* La sospecha, a diferencia del efectivo, SÍ tiene barra: llegar al
+          100 es la hoguera, y ver cuánto falta es el punto. Sólo aparece
+          cuando hay alguna. */}
+      {(d.sospecha ?? 0) > 0 && (
+        <div className={`sospecha${(d.sospecha ?? 0) >= 70 ? ' sospecha-alta' : ''}`}>
+          <span className="sospecha-label">Sospecha</span>
+          <span className="sospecha-barra"><span style={{ width: `${d.sospecha}%` }} /></span>
+          <span className="sospecha-valor">{d.sospecha}</span>
         </div>
       )}
       {inv.pendingLuckBonus > 0 && (
@@ -428,13 +439,27 @@ const CATEGORIAS: Array<{ id: string; titulo: string }> = [
   { id: 'hallazgo', titulo: 'Hallazgos' },
 ];
 
-function ItemCard({ i }: { i: any }) {
+const GLIFO_CATEGORIA: Record<string, string> = {
+  arma: '⚔', documento: '✎', herramienta: '⚒', material: '◈', personal: '❖', hallazgo: '✦',
+};
+
+/** Detalle de UN objeto: lo que antes era la tarjeta, más lo que se puede hacer con él. */
+function ItemDetalle({ i, dejar, tirar, busy, onPick, onCerrar }: {
+  i: any; dejar?: Opcion; tirar?: Opcion; busy: boolean;
+  onPick: (intencion: string, id: string) => void; onCerrar: () => void;
+}) {
+  // Deshacerse es para siempre y no tiene marcha atrás: dos clicks, como los
+  // desenlaces. Antes era un botón más entre los de la acción y se apretaba
+  // sin querer.
+  const [seguro, setSeguro] = useState(false);
   return (
-    <div className={`card card-item ${i.carried ? 'carried' : ''}`}>
+    <div className="card card-item inv-detalle">
       <div className="item-head">
+        <span className="inv-glifo">{GLIFO_CATEGORIA[i.categoria ?? 'hallazgo'] ?? '✦'}</span>
         <b>{i.name}</b>
         {i.carried && <span className="carried-tag">encima</span>}
         {i.roto && <span className="broken-tag">rota</span>}
+        <button className="inv-cerrar" onClick={onCerrar} aria-label="Cerrar">×</button>
       </div>
       <div className="item-desc">{i.shortDescription}</div>
       {i.properties.map((p: any, n: number) => (
@@ -444,39 +469,90 @@ function ItemCard({ i }: { i: any }) {
         </div>
       ))}
       {i.hasUndiscovered && <div className="prop-hint">Este objeto no ha terminado de decir lo que tiene para decir.</div>}
+      {(dejar || tirar) && (
+        <div className="inv-acciones">
+          {dejar && (
+            <button disabled={busy} onClick={() => onPick(dejar.intencion, dejar.id)}>Dejar acá</button>
+          )}
+          {tirar && (
+            <button
+              disabled={busy}
+              className={`inv-tirar ${seguro ? 'inv-tirar-seguro' : ''}`}
+              onClick={() => { if (seguro) onPick(tirar.intencion, tirar.id); else setSeguro(true); }}
+              onBlur={() => setSeguro(false)}
+            >
+              {seguro ? '¿Seguro? Es para siempre' : 'Deshacerte (para siempre)'}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
 /**
- * Agrupado por categoría desde que el inventario cruza de una aventura a la
- * siguiente: con lo juntado en siete aventuras, una lista plana de veinte
- * objetos no se lee. Un cajón sólo aparece si tiene algo adentro, así que en
- * una aventura suelta —tres objetos, todos hallazgos— se ve casi igual que
- * antes.
+ * Una grilla de fichas, no una lista de tarjetas. Con lo juntado en siete
+ * aventuras la lista larga obligaba a scrollear para llegar a cualquier
+ * objeto, y la descripción de cada uno —el 90% del alto— casi nunca se lee.
+ * Ahora se ve todo de un vistazo, agrupado por cajón, y la descripción y los
+ * botones de soltar/descartar aparecen sólo del objeto que se toca.
+ *
+ * `acciones` trae los `dejar:`/`tirar:` que antes ensuciaban el panel
+ * principal: viven acá, junto al objeto al que se refieren.
  */
-export function Inventory({ items }: { items: any[] }) {
+export function Inventory({ items, acciones = [], busy = false, onPick = () => {} }: {
+  items: any[]; acciones?: Opcion[]; busy?: boolean;
+  onPick?: (intencion: string, id: string) => void;
+}) {
+  const [sel, setSel] = useState<string | null>(null);
   if (!items?.length) return <div className="empty">Nada al alcance.</div>;
   const encima = items.filter((i) => i.carried);
   const alrededor = items.filter((i) => !i.carried);
+  const elegido = items.find((i) => i.id === sel) ?? null;
+
+  const ficha = (i: any) => (
+    <button
+      key={i.id}
+      className={`inv-ficha ${i.carried ? 'inv-ficha-encima' : ''} ${sel === i.id ? 'inv-ficha-sel' : ''}`}
+      onClick={() => setSel(sel === i.id ? null : i.id)}
+      title={i.name}
+    >
+      <span className="inv-glifo">{GLIFO_CATEGORIA[i.categoria ?? 'hallazgo'] ?? '✦'}</span>
+      <span className="inv-nombre">{i.name}</span>
+      {i.roto && <span className="broken-tag">rota</span>}
+    </button>
+  );
+
   return (
-    <div className="board">
+    <div className="board inventario">
+      {elegido && (
+        <ItemDetalle
+          key={elegido.id}
+          i={elegido}
+          dejar={acciones.find((o) => o.id === `dejar:${elegido.id}`)}
+          tirar={acciones.find((o) => o.id === `tirar:${elegido.id}`)}
+          busy={busy}
+          onPick={(intencion, id) => { setSel(null); onPick(intencion, id); }}
+          onCerrar={() => setSel(null)}
+        />
+      )}
       {CATEGORIAS.map(({ id, titulo }) => {
         const delCajon = encima.filter((i) => (i.categoria ?? 'hallazgo') === id);
         if (!delCajon.length) return null;
         return (
           <div key={id} className="inv-grupo">
             <div className="inv-grupo-titulo">{titulo} <span className="inv-grupo-cuenta">{delCajon.length}</span></div>
-            {delCajon.map((i) => <ItemCard key={i.id} i={i} />)}
+            <div className="inv-grilla">{delCajon.map(ficha)}</div>
           </div>
         );
       })}
       {alrededor.length > 0 && (
         <div className="inv-grupo">
           <div className="inv-grupo-titulo">Acá cerca <span className="inv-grupo-cuenta">{alrededor.length}</span></div>
-          {alrededor.map((i) => <ItemCard key={i.id} i={i} />)}
+          <div className="inv-grilla">{alrededor.map(ficha)}</div>
         </div>
       )}
+      {!elegido && <div className="inv-pista">Tocá un objeto para verlo.</div>}
     </div>
   );
 }

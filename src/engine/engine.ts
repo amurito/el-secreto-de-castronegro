@@ -238,6 +238,29 @@ export async function createCampaign(
         && !i.noSeHereda && !yaDeclarados.has(i.id));
   })();
 
+  // EL KIT DE ÉPOCA (`scenario/kit1930.ts`): equipo que lleva quien juegue,
+  // no un oficio. Se le da al investigador activo salvo en dos casos, y los
+  // dos importan:
+  //  - Ya cruzó de la aventura anterior (está en `itemsHeredados`): sería
+  //    duplicarlo.
+  //  - La campaña anterior YA lo conoció (existe en su estado, esté donde
+  //    esté, incluso con dueño `null`): quien lo tiró con «soltar» lo tiró
+  //    para siempre, y regalárselo de nuevo contradiría el botón. Sólo lo
+  //    recibe quien nunca lo tuvo, p. ej. una partida guardada de antes.
+  const itemsDeKit: Item[] = (() => {
+    const kit = scenario.kitDeEpoca ?? [];
+    if (!kit.length) return [];
+    const activoId = propio ? propio.id : activoDe(scenario, herencia);
+    const yaExistian = new Set([
+      ...scenario.items.map((i) => i.id),
+      ...itemsHeredados.map((i) => i.id),
+      ...Object.keys(herencia?.estadoAnterior.items ?? {}),
+    ]);
+    return kit
+      .filter((k) => !yaExistian.has(k.id))
+      .map((k) => ({ ...k, owner: activoId, carried: true }));
+  })();
+
   const meta: CampaignIndexEntry = {
     campaignId,
     title: title ?? scenario.title,
@@ -274,7 +297,7 @@ export async function createCampaign(
         : investigadoresDe(scenario, herencia)
             .map((i) => i.id)
             .filter((x) => x !== activoDe(scenario, herencia)),
-      items: [...scenario.items, itemArmaInicial, itemOcupacionInicial, ...itemsHeredados]
+      items: [...scenario.items, itemArmaInicial, itemOcupacionInicial, ...itemsHeredados, ...itemsDeKit]
         .filter((i): i is Item => i !== null),
       npcs: scenario.npcs,
       documents: scenario.documents,
@@ -338,7 +361,9 @@ function heredarInvestigador(inv: Investigator, meses: number): Investigator {
     // El efectivo cruza por el spread, y es lo correcto: la plata que le
     // quedó al terminar una aventura es la que tiene al empezar la
     // siguiente, igual que el inventario. Lo único que se repone son los PV.
-    derived: { ...inv.derived, hp: inv.derived.maxHp },
+    // La sospecha NO cruza: es de la situación (quién te vigila, dónde), no
+    // de la persona. Se repone acá y la aventura que la necesita la siembra.
+    derived: { ...inv.derived, hp: inv.derived.maxHp, sospecha: 0 },
     umbral: {
       ...inv.umbral,
       stability: estabilidad,
@@ -836,6 +861,7 @@ export class Turn {
         case 'use_item': return this.toolUseItem(raw);
         case 'reveal_document': return this.toolRevealDocument(raw);
         case 'transfer_item': return this.toolTransferItem(raw);
+        case 'adjust_suspicion': return this.toolAdjustSuspicion(raw);
         case 'buy_item': return this.toolBuyItem(raw);
         case 'sell_item': return this.toolSellItem(raw);
         case 'move_to_location': return this.toolMoveToLocation(raw);
@@ -2827,6 +2853,28 @@ export class Turn {
       cause: String(raw.cause ?? ''),
     });
     return { ok: true, message: `«${item.name}» ahora está en: ${dest ?? 'perdido'}.` };
+  }
+
+  // ── SOSPECHA ───────────────────────────────────────────────────────────────
+
+  /**
+   * Sube o baja la sospecha (0-100, con tope en los dos extremos). Sólo lleva
+   * la cuenta: qué se hace al llegar a 100 es del escenario, no del motor.
+   * Igual que `moverEfectivo`, reusa `STAT_CHANGED` en vez de un evento propio.
+   */
+  private toolAdjustSuspicion(raw: Record<string, unknown>): ToolOutcome {
+    const amount = Number(raw.amount);
+    if (!Number.isFinite(amount) || amount === 0) {
+      return this.reject('adjust_suspicion', raw, '`amount` debe ser un número distinto de cero.');
+    }
+    const inv = this.investigator;
+    const from = inv.derived.sospecha ?? 0;
+    const to = Math.min(100, Math.max(0, from + Math.trunc(amount)));
+    this.emit('STAT_CHANGED', {
+      investigatorId: inv.id, stat: 'sospecha', from, to, delta: to - from,
+      cause: String(raw.cause ?? ''),
+    });
+    return { ok: true, message: `Sospecha ${from} → ${to}.` };
   }
 
   // ── PLATA ──────────────────────────────────────────────────────────────────

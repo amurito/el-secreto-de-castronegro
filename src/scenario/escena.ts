@@ -102,6 +102,12 @@ export interface EfectoEscena {
     };
   };
   /**
+   * Mueve la sospecha (0-100) de quien puede quemarte. `amount` negativo la
+   * baja. El motor sólo lleva la cuenta; qué pasa al llegar a 100 lo decide el
+   * escenario con `{op:'sospecha'}` (ver `DerivedStats.sospecha`).
+   */
+  sospecha?: { amount: number; cause: string };
+  /**
    * Puntos de Mitos de Cthulhu. Baja el techo de Cordura PARA SIEMPRE
    * (99 − Mitos) y recorta la Cordura actual si queda por encima — ver
    * `apply_mythos_knowledge` en `engine.ts`.

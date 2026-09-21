@@ -1043,6 +1043,50 @@ button { font-family: inherit; cursor: pointer; }
 }
 .efectivo-valor { font-family: var(--mono); font-size: 0.8rem; color: var(--text); }
 
+/* La sospecha, en la ficha. Con barra: llegar al tope es la hoguera. */
+.sospecha {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.35rem 0.6rem; margin-top: 0.4rem;
+  border: 1px solid var(--line); border-radius: 2px;
+}
+.sospecha-label {
+  font-family: var(--mono); font-size: 0.6rem; color: var(--text-dim);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.sospecha-barra { flex: 1; height: 4px; background: var(--bg-raised); border-radius: 2px; overflow: hidden; }
+.sospecha-barra > span { display: block; height: 100%; background: var(--text-dim); transition: width 0.3s; }
+.sospecha-valor { font-family: var(--mono); font-size: 0.8rem; color: var(--text); }
+.sospecha-alta { border-color: var(--hp); }
+.sospecha-alta .sospecha-barra > span { background: var(--hp); }
+
+/* Inventario en fichas. Ver `Inventory` en components.tsx. */
+.inv-grilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+.inv-ficha {
+  display: flex; align-items: center; gap: 0.5rem; text-align: left;
+  padding: 0.5rem 0.6rem; min-height: 2.6rem;
+  background: var(--bg-raised); border: 1px solid var(--line); border-radius: 3px;
+  color: var(--text-dim); font-size: 0.78rem; line-height: 1.2; cursor: pointer;
+}
+.inv-ficha:hover { border-color: var(--text-dim); color: var(--text); }
+.inv-ficha-encima { color: var(--text); }
+.inv-ficha-sel { border-color: var(--text); background: var(--bg); }
+.inv-glifo { font-size: 1.05rem; line-height: 1; opacity: 0.85; flex: none; }
+.inv-nombre { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.inv-pista { font-family: var(--mono); font-size: 0.65rem; color: var(--text-faint); text-align: center; margin-top: 0.4rem; }
+.inv-detalle { margin-bottom: 1rem; }
+.inv-detalle .item-head { align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.inv-cerrar {
+  margin-left: auto; background: none; border: none; color: var(--text-dim);
+  font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0 0.2rem;
+}
+.inv-acciones { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.inv-acciones button {
+  font-size: 0.72rem; padding: 0.35rem 0.6rem; background: none; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 3px; color: var(--text-dim);
+}
+.inv-acciones button:hover:not(:disabled) { color: var(--text); border-color: var(--text-dim); }
+.inv-tirar-seguro { border-color: var(--hp) !important; color: var(--hp) !important; }
+
 /* Cajones del inventario. Ver `Inventory` en components.tsx. */
 .inv-grupo { margin-bottom: 1.1rem; }
 .inv-grupo-titulo {

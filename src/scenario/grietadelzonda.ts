@@ -33,6 +33,7 @@ import type { Scenario } from './types.ts';
 import type { ContenidoAventura } from './contenido.schema.ts';
 import { cargarAventura } from './cargarAventura.ts';
 import { ELENA, TOMAS, ITEMS_DE_OCUPACION } from './pregens.ts';
+import { KIT_DE_1930 } from './kit1930.ts';
 import { LA_GRIETA_DEL_ZONDA_LOGICA } from './grietadelzonda.logica.ts';
 import contenido from './grietadelzonda.contenido.json' with { type: 'json' };
 
@@ -41,4 +42,5 @@ export const LA_GRIETA_DEL_ZONDA: Scenario = cargarAventura(
   LA_GRIETA_DEL_ZONDA_LOGICA,
   [ELENA, TOMAS],
   ITEMS_DE_OCUPACION,
+  KIT_DE_1930,
 );

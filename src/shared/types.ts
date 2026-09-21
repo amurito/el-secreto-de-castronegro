@@ -142,6 +142,18 @@ export interface DerivedStats {
    * inventario.
    */
   efectivo: number;
+  /**
+   * Cuánto sospecha de vos quien tiene poder para quemarte, de 0 a 100. No es
+   * una característica del investigador sino de su situación, y por eso no lo
+   * deriva nada: arranca en 0, lo mueve la escena que lo declara y se repone
+   * a 0 al empezar cada aventura (`heredarInvestigador`) — quien lo necesita
+   * lo siembra con su primera escena. Opcional para que una partida guardada
+   * de antes de que existiera se siga leyendo como «sin sospecha».
+   *
+   * El motor sólo lleva la cuenta. Qué pasa al llegar a 100 lo decide el
+   * escenario (`bloqueoDecision` + un desenlace con `{op:'sospecha'}`).
+   */
+  sospecha?: number;
 }
 
 export interface SkillValue {

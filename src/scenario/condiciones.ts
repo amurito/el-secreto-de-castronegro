@@ -42,6 +42,8 @@ export type Condicion =
   | { op: 'pistas'; minimo: number }
   /** Exposición al Umbral del investigador activo. */
   | { op: 'exposicion'; minimo: number }
+  /** Sospecha del investigador activo (0-100), dentro del rango dado. */
+  | { op: 'sospecha'; minimo?: number; maximo?: number }
   /** Contradicciones en el tablero (la mecánica que estrenó La Legua). */
   | { op: 'contradicciones'; minimo: number }
   /** Este documento ya se obtuvo. */
@@ -134,6 +136,12 @@ export function evaluarCondicion(cond: Condicion, ctx: ContextoCondicion): boole
       return s.board.clues.length >= cond.minimo;
     case 'exposicion':
       return (s.investigators[s.activeInvestigator]?.umbral.exposure ?? 0) >= cond.minimo;
+    case 'sospecha': {
+      const v = s.investigators[s.activeInvestigator]?.derived.sospecha ?? 0;
+      if (cond.minimo !== undefined && v < cond.minimo) return false;
+      if (cond.maximo !== undefined && v > cond.maximo) return false;
+      return true;
+    }
     case 'contradicciones':
       return s.board.contradictions.length >= cond.minimo;
     case 'documento':
