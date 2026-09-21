@@ -202,7 +202,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'mirar-libro-cuentas',
     prueba: () => ({
-      skill: 'descubrir', difficulty: 'hard',
+      skill: 'descubrir', difficulty: 'regular',
       reason: 'leer, sin que se note, lo que dice el libro del Comisario mientras él mira otra cosa',
       stakes_success: 'ves de qué son las columnas y qué signo hay al pie',
       stakes_failure: 'ves que son columnas y no distingues de qué',
@@ -264,7 +264,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'q2-signos',
     prueba: () => ({
-      skill: 'historia', difficulty: 'hard',
+      skill: 'historia', difficulty: 'regular',
       reason: 'citar bien los prodigios que registran las crónicas, en el orden en que un comisario los esperaría',
       stakes_success: 'el Comisario reconoce los precedentes y no insiste',
       stakes_failure: 'el Comisario reconoce que la cita está hueca',
@@ -301,7 +301,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'q3-agua',
     prueba: () => ({
-      skill: 'psicologia', difficulty: 'hard',
+      skill: 'psicologia', difficulty: 'regular',
       reason: 'sostener que no hay nada mientras se lee si el Comisario ya lo sabe',
       stakes_success: 'lo convencés de que no sabés más de lo que dijiste, y ves que él sabe más de lo que pregunta',
       stakes_failure: 'no lo convencés, y no ves qué sabe',
@@ -375,7 +375,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     prueba: (s) => {
       const luz = llevaEncima(s, 'it-encendedor-1930');
       return {
-        skill: 'trepar', difficulty: 'hard',
+        skill: 'trepar', difficulty: 'regular',
         reason: 'subir por un tiro de piedra de un hombre de ancho, a oscuras',
         stakes_success: 'llegás a la rejilla suelta de la huerta y la sacás',
         stakes_failure: 'te quedás trabado a mitad de camino y hacés ruido',
@@ -592,7 +592,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'espiar-rastrilleria',
     prueba: (s) => ({
-      skill: 'sigilo', difficulty: 'hard',
+      skill: 'sigilo', difficulty: 'regular',
       reason: 'llegar a la orilla y escuchar a la partida de la rastrillería sin que los perros te huelan',
       stakes_success: 'oís quién los manda y por qué cobran',
       stakes_failure: 'te ven la cabeza entre los juncos',
@@ -660,7 +660,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'rastrilleria-fuga',
     prueba: (s) => ({
-      skill: 'orientarse', difficulty: 'hard',
+      skill: 'orientarse', difficulty: 'regular',
       reason: 'perder a los perros en el agua, sin salirte del fondo firme',
       stakes_success: 'los perros pierden el rastro y la partida da la vuelta',
       stakes_failure: 'el agua te devuelve exactamente al lugar donde te buscan',
@@ -812,7 +812,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     prueba: (s) => {
       const { bonus, penalidad } = pesoDelJuicio(s);
       return {
-        skill: 'persuasion', difficulty: 'hard',
+        skill: 'persuasion', difficulty: 'regular',
         reason: 'defenderte ante el alcalde con lo que hiciste y lo que otros van a decir de vos',
         stakes_success: 'Videla acepta que hiciste un servicio y los cargos se desinflan',
         stakes_failure: 'el alcalde deja que el Comisario marque el paso',
@@ -841,7 +841,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
       const extra = hayPista(s, 'lista conventos de todo Cuyo y Chile') && hayPista(s, 'no le cierran los números') ? 1 : 0;
       const b = Math.min(2, bonus + extra);
       return {
-        skill: 'persuasion', difficulty: 'extreme',
+        skill: 'persuasion', difficulty: 'hard',
         reason: 'acusar de frente a quien manda más que el Cabildo, con lo poco que sabés de su libro',
         stakes_success: 'Videla se da cuenta de que el Comisario le mintió también a él',
         stakes_failure: 'el Cabildo se pone del lado del Comisario y contra vos',
@@ -983,7 +983,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'carcel-fugarse',
     prueba: () => ({
-      skill: 'sigilo', difficulty: 'hard',
+      skill: 'sigilo', difficulty: 'regular',
       reason: 'salir de una cárcel de adobe sin que el carcelero, que juega a los dados en el pasillo, levante la vista',
       stakes_success: 'salís por donde el techo de cañas se apoya mal',
       stakes_failure: 'el ruido de la caña rota llama a los guardias',
@@ -1078,7 +1078,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'entrar-sigilo',
     prueba: (s) => ({
-      skill: 'sigilo', difficulty: 'hard',
+      skill: 'sigilo', difficulty: 'regular',
       reason: 'cruzar de noche un real con seis centinelas que miran hacia afuera',
       stakes_success: 'pasás entre las tiendas sin que nadie te vea',
       stakes_failure: 'un centinela te ve, y te lleva ante el capataz',
@@ -1100,7 +1100,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'abrir-forzando',
     prueba: () => ({
-      skill: 'mecanica', difficulty: 'hard',
+      skill: 'mecanica', difficulty: 'regular',
       reason: 'aflojar las cadenas nuevas y correr las vigas de algarrobo sin que se oiga',
       stakes_success: 'las vigas ceden con un solo empujón',
       stakes_failure: 'algo se cae con estrépito y te lastimás',
@@ -1149,7 +1149,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     prueba: (s) => {
       const canta = s.investigators[s.activeInvestigator]?.spellsKnown.some((h) => h.id === 'cantar-de-las-sombras-de-sal');
       return {
-        skill: 'persuasion', difficulty: 'hard',
+        skill: 'persuasion', difficulty: 'regular',
         reason: 'que unos peones que llevan semanas callando decidan dejar la pala todos a la vez',
         stakes_success: 'los peones dejan de cavar y los guardias no saben a quién apuntar',
         stakes_failure: 'el capataz te ve hablar y da la voz de alarma',
@@ -1173,7 +1173,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'pasar-de-largo-socavon',
     prueba: () => ({
-      skill: 'sigilo', difficulty: 'hard',
+      skill: 'sigilo', difficulty: 'regular',
       reason: 'cruzar las galerías entre las lámparas sin que las sombras delaten dónde estás',
       stakes_success: 'pasás entre los peones y ninguno levanta la cabeza',
       stakes_failure: 'tu sombra llega tarde a la pared y un guardia la ve moverse',
@@ -1331,7 +1331,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
   {
     id: 'volar-con-mecha-larga',
     prueba: () => ({
-      skill: 'mecanica', difficulty: 'hard',
+      skill: 'mecanica', difficulty: 'regular',
       reason: 'calcular la mecha para que se consuma cuando ya estés afuera, y no antes',
       stakes_success: 'salís antes de la explosión y el filón cae sobre el Comisario',
       stakes_failure: 'la mecha corre más rápido de lo que calculaste',
@@ -1366,7 +1366,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
         hayConsecuencia(s, 'los peones se amotinaron'), hayConsecuencia(s, 'acusó al Comisario'),
       ].filter(Boolean).length;
       return {
-        skill: 'persuasion', difficulty: 'extreme',
+        skill: 'persuasion', difficulty: 'hard',
         reason: 'decir en voz alta, delante de los soldados y los peones, para quién trabaja el Comisario de verdad',
         stakes_success: 'los suyos dudan de él, y él lo sabe',
         stakes_failure: 'el Comisario no se mueve, y los soldados no se mueven contra él',

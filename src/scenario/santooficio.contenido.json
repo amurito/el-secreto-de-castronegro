@@ -452,7 +452,7 @@
       "refusals": [],
       "secrets": [],
       "id": "npc-rastreador",
-      "name": "Un rastreador de la rastrillería",
+      "name": "Rastreador del Cabildo",
       "description": "Un mestizo de la milicia del Cabildo, con un mosquete al hombro y un perro sabueso atado a la cintura. No odia a nadie; hace su trabajo.",
       "motivation": "Cobrar la recompensa y volver.",
       "combate": {
@@ -654,8 +654,8 @@
       "refusals": [],
       "secrets": [],
       "id": "npc-peon",
-      "name": "Un peón de mita",
-      "description": "Un huarpe joven, de la ranchada, con la mano vendada y la vista fija en un punto que no está en la pared. Los otros peones lo dejan hablar porque él ya no tiene mucho que perder.",
+      "name": "Nicolás Talquenca",
+      "description": "Un peón huarpe de mita, joven, con la mano vendada y la vista fija en un punto que no está en la pared. Los otros peones lo dejan hablar porque él ya no tiene mucho que perder.",
       "motivation": "Que lo dejen volver a las lagunas."
     },
     {
@@ -675,7 +675,7 @@
       "refusals": [],
       "secrets": [],
       "id": "npc-guardia",
-      "name": "Un guardia del Cabildo",
+      "name": "Guardia Pereyra",
       "description": "Un soldado joven con un mosquete y cara de no haber dormido. Hace lo que le dijeron; no le dijeron qué hacer si los peones dejan de trabajar.",
       "combate": {
         "hp": 12,
@@ -708,7 +708,7 @@
       "refusals": [],
       "secrets": [],
       "id": "npc-sombra",
-      "name": "La Sombra del Socavón",
+      "name": "Sombra del Socavón",
       "description": "No tiene forma sostenible: es una densidad en el aire del filón, un lugar donde la luz llega tarde. Se mueve por dentro de las sombras de las cosas. Donde pasa, las lámparas se apagan una por una.",
       "motivation": "Lo que hay en el filón y lo que hay debajo. Reacciona a lo que carga peso de otro tiempo.",
       "combate": {
@@ -1577,7 +1577,7 @@
   },
   "startLocation": "zanjon",
   "startTime": {
-    "iso": "1710-11-04T05:30:00",
+    "iso": "1710-11-04T06:20:00",
     "precision": "vague",
     "display": "el amanecer siguiente"
   },
@@ -1609,7 +1609,7 @@
       "npc": "npc-anselmo",
       "orden": 1,
       "etiqueta": "Pedirle al prior que te dé refugio en el convento",
-      "intencion": "Le pido refugio al prior Anselmo",
+      "intencion": "Le pregunto a Fray Anselmo si me da refugio en el convento",
       "claves": [
         "refugio",
         "esconderme",
@@ -1645,7 +1645,7 @@
       "npc": "npc-anselmo",
       "orden": 2,
       "etiqueta": "Preguntarle al prior quién es el Comisario",
-      "intencion": "Le pregunto al prior quién es el Comisario del Santo Oficio",
+      "intencion": "Le pregunto a Fray Anselmo quién es el Comisario del Santo Oficio",
       "claves": [
         "comisario",
         "albornoz",
@@ -1686,7 +1686,7 @@
       "npc": "npc-anselmo",
       "orden": 3,
       "etiqueta": "Pedirle al prior que te deje leer el legajo de la fundación",
-      "intencion": "Le pido al prior leer el legajo de la fundación",
+      "intencion": "Le pregunto a Fray Anselmo si puedo leer el legajo de la fundación",
       "claves": [
         "legajo",
         "archivo",
@@ -1770,7 +1770,7 @@
       ],
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 3,
         "razon": "que Ignacio diga lo que leyó y no lo que le conviene"
       },
@@ -1884,7 +1884,7 @@
       },
       "prueba": {
         "skill": "psicologia",
-        "difficulty": "extreme",
+        "difficulty": "hard",
         "actitudMinima": 4,
         "razon": "que el Comisario, por una sola vez, no conteste con otra pregunta"
       },
@@ -2022,7 +2022,7 @@
       "npc": "npc-anciana",
       "orden": 1,
       "etiqueta": "Pedirle a la anciana que te deje quedarte en la ranchada",
-      "intencion": "Le pido a la anciana que me deje quedarme en la ranchada",
+      "intencion": "Le pregunto a María Sayanca si me deja quedarme en la ranchada",
       "claves": [
         "quedarme",
         "refugio",
@@ -2031,7 +2031,7 @@
       ],
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 0,
         "razon": "que una mujer que vio pasar tres levas acepte a un forastero de metal"
       },
@@ -2059,7 +2059,7 @@
       "npc": "npc-anciana",
       "orden": 2,
       "etiqueta": "Preguntarle a la anciana por las pinturas de la cueva",
-      "intencion": "Le pregunto a la anciana por las pinturas de la cueva",
+      "intencion": "Le pregunto a María Sayanca por las pinturas de la cueva",
       "claves": [
         "pinturas",
         "la cueva",
@@ -2072,7 +2072,7 @@
       },
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 4,
         "razon": "que la anciana hable de lo que sólo hablan los que las cuidan"
       },
@@ -2099,7 +2099,7 @@
       "npc": "npc-anciana",
       "orden": 3,
       "etiqueta": "Pedirle a la anciana que te enseñe el cantar",
-      "intencion": "Le pido a la anciana que me enseñe el cantar",
+      "intencion": "Le pregunto a María Sayanca si me enseña el cantar",
       "claves": [
         "cantar",
         "el cantar",
@@ -2112,7 +2112,7 @@
       },
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 4,
         "razon": "que la anciana decida confiarte algo que no se repite delante de extraños"
       },
@@ -2139,7 +2139,7 @@
       "npc": "npc-videla",
       "orden": 1,
       "etiqueta": "Preguntarle al alcalde de qué se te acusa",
-      "intencion": "Le pregunto al alcalde Videla de qué se me acusa",
+      "intencion": "Le pregunto a Don Blas de qué se me acusa",
       "claves": [
         "acusacion",
         "de que se me acusa",
@@ -2247,7 +2247,7 @@
       "npc": "npc-gonzalo",
       "orden": 2,
       "etiqueta": "Pedirle a Don Gonzalo que declare a tu favor en el juicio",
-      "intencion": "Le pido a Don Gonzalo que declare a mi favor",
+      "intencion": "Le pregunto a Don Gonzalo si declara a mi favor en el juicio",
       "claves": [
         "declarar",
         "testigo",
@@ -2260,7 +2260,7 @@
       },
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 3,
         "razon": "que un hombre acorralado se juegue el resto por alguien que no le debe nada"
       },
@@ -2322,7 +2322,7 @@
       "npc": "npc-mercader",
       "orden": 2,
       "etiqueta": "Preguntarle a la pulpera por los hombres de la sierra",
-      "intencion": "Le pregunto a la pulpera por los hombres de la sierra",
+      "intencion": "Le pregunto a Gregoria por los hombres de la sierra",
       "claves": [
         "la sierra",
         "los cateadores",
@@ -2357,7 +2357,7 @@
       "npc": "npc-arriero",
       "orden": 1,
       "etiqueta": "Preguntarle al arriero por la labor del piedemonte",
-      "intencion": "Le pregunto al arriero por la labor del piedemonte",
+      "intencion": "Le pregunto a Ventura por la labor del piedemonte",
       "claves": [
         "la labor",
         "la sierra",
@@ -2463,7 +2463,7 @@
       "npc": "npc-anselmo",
       "orden": 4,
       "etiqueta": "Pedirle al prior que interceda por vos ante el Cabildo",
-      "intencion": "Le pido al prior que interceda por mi ante el Cabildo",
+      "intencion": "Le pregunto a Fray Anselmo si puede interceder por mí ante el Cabildo",
       "claves": [
         "interceder",
         "el juicio",
@@ -2472,7 +2472,7 @@
       ],
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 4,
         "razon": "que un prior arriesgue su casa ante el Cabildo por alguien que no es de la orden"
       },
@@ -2498,7 +2498,7 @@
       "npc": "npc-capataz",
       "orden": 1,
       "etiqueta": "Preguntarle al capataz qué hay en la labor",
-      "intencion": "Le pregunto al capataz Cárdenas qué hay en la labor",
+      "intencion": "Le pregunto a Bautista qué hay en la labor",
       "claves": [
         "la labor",
         "el filon",
@@ -2534,12 +2534,14 @@
       "npc": "npc-peon",
       "orden": 1,
       "etiqueta": "Preguntarle al peón qué se siente al fondo de la labor",
-      "intencion": "Le pregunto al peón qué se siente al fondo de la labor",
+      "intencion": "Le pregunto a Nicolás qué se siente al fondo de la labor",
       "claves": [
         "el fondo",
         "el zumbido",
         "la mita",
-        "el peon"
+        "el peon",
+        "fondo de la labor",
+        "que se siente"
       ],
       "prueba": {
         "skill": "psicologia",
@@ -2579,7 +2581,7 @@
       ],
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 5,
         "razon": "que el viejo diga cómo se deshace lo que él mismo ayudó a hacer"
       },
@@ -2605,7 +2607,7 @@
       "npc": "npc-anciana",
       "orden": 4,
       "etiqueta": "Pedirle a la anciana que te enseñe a grabar el sello",
-      "intencion": "Le pido a la anciana que me ensene a grabar el sello",
+      "intencion": "Le pregunto a María Sayanca cómo se graba el sello",
       "claves": [
         "grabar",
         "el sello",
@@ -2618,7 +2620,7 @@
       },
       "prueba": {
         "skill": "persuasion",
-        "difficulty": "hard",
+        "difficulty": "regular",
         "actitudMinima": 4,
         "razon": "que la anciana enseñe una técnica que sólo pasa entre los que cuidan"
       },

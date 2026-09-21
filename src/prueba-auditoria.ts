@@ -296,7 +296,19 @@ async function auditar(esc: Scenario) {
           // al revés de lo que la escena quiere decir.
           'canaverales→canaverales-fuga',
         ]
-        : [],
+        : esc.id === 'santo-oficio-de-cuyo'
+          ? [
+            // Escapar de la cripta por el tiro de ventilación: sale a la huerta y
+            // no hay vuelta a la cripta.
+            'sd-cripta→sd-huerta',
+            // El portillo trasero de la huerta al camino: se sale por atrás, se
+            // vuelve por la portería.
+            'sd-huerta→camino-villa',
+            // Salir del filón hacia el camino: se abre sólo al resolver a
+            // Albornoz, y no se vuelve a entrar.
+            'labor-nucleo→camino-piedemonte',
+          ]
+          : [],
   );
   const ida = conexionesDeIda(esc).filter((c) => !IDA_CONOCIDA.has(`${c.desde}→${c.hasta}`));
   for (const c of ida) console.log(`   ⚠ ${c.desde} → ${c.hasta} sin vuelta`);
@@ -334,7 +346,13 @@ async function auditar(esc: Scenario) {
   for (const t of esc.conversations) {
     const loc = Object.values(esc.locations).find((l) => l.npcsPresent.includes(t.npc));
     if (!loc) continue; // ya lo caza la validación de carga: NPC sin lugar.
-    const s: GameState = { ...base, world: { ...base.world, currentLocation: loc.id } };
+    // Con el NPC presente aunque una escena lo haga aparecer más tarde (Ignacio y
+    // Takillpa arrancan ausentes en El Santo Oficio de Cuyo y `alba` habilita a
+    // uno u otro): lo que se prueba es la frase, no el estado.
+    const s: GameState = {
+      ...base, world: { ...base.world, currentLocation: loc.id },
+      npcs: { ...base.npcs, [t.npc]: { ...base.npcs[t.npc]!, present: true } },
+    };
     const i = classify(s, t.intencion);
     const idNpc = i.target.kind === 'npc' ? i.target.npc.id : null;
     if (i.target.kind === 'npc' && idNpc === t.npc && i.verbExplicit) continue;

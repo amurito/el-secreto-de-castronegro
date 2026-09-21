@@ -1,7 +1,7 @@
 # El Santo Oficio de Cuyo — diseño acordado (decimocuarta aventura)
 
-Continuación directa de *La Merced de las Ánimas* (noviembre de 1710: la Merced arranca el 3 y ésta, el amanecer del 4). **Estado: diseño aprobado,
-contenido sin escribir.** Este archivo existe para que las decisiones no
+Continuación directa de *La Merced de las Ánimas* (noviembre de 1710: la Merced arranca el 3 y ésta, el amanecer del 4). **Estado: REGISTRADA en el catálogo (contenido completo).
+Sin desplegar todavía: falta que se juegue a mano.** Este archivo existe para que las decisiones no
 dependan de una conversación; cuando la aventura se publique, pasa a ser una
 entrada de `ROADMAP.md` y esto se archiva.
 
@@ -256,3 +256,34 @@ ahora falla si un nombre o alias se repite entre lugares.
 2. Jugarla en el navegador, las dos aperturas de punta a punta.
 3. Calibrar la sospecha jugando (los valores +10/+15/+20/+25 son de borrador).
 4. Entrada en `ROADMAP.md` y borrar `santo-oficio.esqueleto.json`.
+
+## Registro en el catálogo (2026-09-21)
+
+Registrada en `catalogo.ts` (`requiere: ['la-merced-de-las-animas']`, `continuacion`,
+`1930-02-10`), y con el esqueleto de diseño ya borrado. `prueba:todo` completo en
+verde con 14 aventuras. Lo que la auditoría del catálogo y el navegador encontraron:
+
+- **Las frases de las conversaciones no llegaban a los NPC** (21 temas). El
+  clasificador nombra al NPC por la *primera palabra* de su nombre, «pido» no es
+  un verbo de habla (usar «Le pregunto a…»), y los nombres que empiezan con
+  «Un»/«La» matchean casi cualquier frase (por eso «Nicolás Talquenca»,
+  «Guardia Pereyra», «Sombra del Socavón» y «Rastreador del Cabildo»). Ninguno
+  de mis tests lo veía porque agregaban las pistas a mano. Por eso el audit ahora
+  sondea cada frase con el NPC presente aunque una escena lo haga aparecer más
+  tarde (Ignacio y Takillpa arrancan ausentes).
+- **Tres conexiones de ida son intencionales** y quedaron en la lista de
+  conocidas del audit: cripta→huerta (el escape), huerta→camino y filón→camino.
+- **El panel de rivales mostraba a un rival que todavía no existía**
+  («Rastreador del Cabildo · ENTERO» en el primer turno): filtraba por `aqui` y no
+  por `present`. Es el mismo bug que ya se había arreglado en el texto para el
+  Pólipo de Merced. Corregido en `Rivales` (`components.tsx`) para todas las
+  aventuras.
+- **Calibración de tiradas.** Elena tiene Sigilo 20 y Persuasión 40: una tirada
+  «difícil» le queda en 10–20%, y como el fallo cuesta sospecha, casi toda
+  partida terminaba en encierro. Las difíciles pasaron a regulares y las extremas
+  a difíciles; Ocultismo y Geología quedan difíciles (por diseño sólo profundizan).
+  Los valores de sospecha siguen siendo de borrador.
+- El arranque decía «Ya es de noche» a las 05:32: ahora empieza a las 06:20.
+- El mapa de campaña no ve los ganchos de Merced → esta aventura, porque `alba`
+  los lee con un ayudante (`hayConsecuencia`) y no con el patrón que busca el
+  generador. Es una limitación de la herramienta, no un hueco del juego.

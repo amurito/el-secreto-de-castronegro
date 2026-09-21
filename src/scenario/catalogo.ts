@@ -31,6 +31,7 @@ import { EL_HOMBRE_QUE_MIRABA_EL_AGUA } from './hombreagua.ts';
 import { EL_CIRCULO_ROJO } from './circulorojo.ts';
 import { LA_GRIETA_DEL_ZONDA } from './grietadelzonda.ts';
 import { LA_MERCED_DE_LAS_ANIMAS } from './mercedanimas.ts';
+import { EL_SANTO_OFICIO_DE_CUYO } from './santooficio.ts';
 
 export interface EntradaCatalogo {
   scenario: Scenario;
@@ -252,13 +253,29 @@ const ENTRADAS: EntradaCatalogo[] = [
     // La Grieta del Zonda —cruzar la grieta— igual que Agua Blanca → El
     // Vigésimo comparten la misma noche.
     //
-    // ES LA ÚLTIMA DE LA CADENA, Y TERMINA SIN VOLVER. Sus dos desenlaces
-    // dejan al investigador en 1710: cerrar el borde —que es lo que las dos
-    // ramas le piden hacer— lo cierra en las dos direcciones, y la grieta
-    // por la que cruzó deja de existir. Nada la requiere todavía; lo que
-    // venga después arranca de un investigador de 1930 viviendo doscientos
-    // veinte años antes de nacer, no de uno que volvió a contarlo.
+    // TERMINA SIN VOLVER. Sus dos desenlaces dejan al investigador en 1710:
+    // cerrar el borde —que es lo que las dos ramas le piden hacer— lo cierra
+    // en las dos direcciones, y la grieta por la que cruzó deja de existir.
+    // Lo que sigue es *El Santo Oficio de Cuyo*, que arranca ese mismo
+    // amanecer y es la única que puede devolverlo.
     requiere: ['la-grieta-del-zonda'],
+    continuacion: true,
+  },
+  {
+    scenario: EL_SANTO_OFICIO_DE_CUYO,
+    // Misma fecha que Zonda y Merced, y por la misma razón: cruzar es
+    // instantáneo, así que la Exposición no decae entre actos (`mesesEntre`
+    // da 0). La época que se muestra es la vivida (1710), no la de la fecha.
+    cuando: '1930-02-10',
+    epoca: 'San Juan colonial, 1710 · noviembre',
+    duracion: 'Unas tres horas aproximadamente',
+    // Continuación DIRECTA de Merced: arranca el amanecer siguiente y lee cuál
+    // de sus dos finales elegiste (`firmar-actas` → Iglesia, `fuga-final` →
+    // huarpes) para fijar la sospecha inicial y el tipo de persecución. Es la
+    // única aventura que puede devolver al investigador a su siglo: tres
+    // desenlaces de cierre (1930, 1944, quedarse), más la hoguera y la muerte.
+    // Ver `docs/SANTO-OFICIO-DISENO.md`.
+    requiere: ['la-merced-de-las-animas'],
     continuacion: true,
   },
 ];

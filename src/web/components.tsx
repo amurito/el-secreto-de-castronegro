@@ -338,7 +338,12 @@ const ESTADO_LABEL: Record<string, string> = {
  * se mueve. Esto es la versión visual de esa regla, no una excepción.
  */
 export function Rivales({ npcs }: { npcs: any[] }) {
-  const enPelea = npcs.filter((n) => n.aqui && n.status === 'alive' && n.estadoCombate);
+  // `present` además de `aqui`: un rival listado en el lugar pero que todavía no
+  // «entró en la historia» (`present: false`, lo hace aparecer una escena) no
+  // se muestra. Sin esto, «Rastreador del Cabildo · Mosquete español de chispa ·
+  // ENTERO» aparecía en el primer turno de El Santo Oficio de Cuyo, antes de
+  // que nadie lo persiguiera. Mismo bug que el Pólipo de Merced, en la interfaz.
+  const enPelea = npcs.filter((n) => n.aqui && n.present && n.status === 'alive' && n.estadoCombate);
   if (!enPelea.length) return null;
   return (
     <div className="rivales">
