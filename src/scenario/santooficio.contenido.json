@@ -182,6 +182,58 @@
       "owner": "hacienda-estrada",
       "armaId": "mosquete-chispa",
       "shortDescription": "Un mosquete español de chispa, con la caja de nogal gastada por una sola mano. Don Gonzalo lo vendería sin regatear: ya no lo quiere ver."
+    },
+    {
+      "aliases": [
+        "plata",
+        "la plata",
+        "plata nativa"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-plata-nativa",
+      "name": "Plata nativa y calcita",
+      "categoria": "material",
+      "owner": "labor-nucleo",
+      "cargado": true,
+      "value": 80,
+      "noSeHereda": false,
+      "shortDescription": "Hilos de plata sin fundir, cruzados por calcita blanca, sacados de la caliza con un pico. Pesan poco y están fríos en la mano aunque la cueva es caliente. El que los toca siente, por un momento, que el zumbido de la sierra pasa por sus huesos."
+    },
+    {
+      "aliases": [
+        "libreta",
+        "la libreta"
+      ],
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0,
+      "id": "it-objeto-1930-cripta",
+      "name": "La libreta del cuerpo",
+      "categoria": "hallazgo",
+      "owner": "labor-cripta",
+      "shortDescription": "Una libreta de tapa negra, hinchada por la humedad, sujeta entre las manos del cuerpo. Está escrita con lápiz, con una letra que reconocés antes de leerla: la letra que te enseñaron a escribir. Las últimas páginas están en blanco."
     }
   ],
   "npcs": [
@@ -558,6 +610,120 @@
       "name": "Ventura Lucero",
       "description": "Arriero, mestizo, cincuenta años, con el sombrero calado y la cara de haber visto pasar demasiadas cosas por el mismo camino. Conoce cada piedra de la sierra y no se fía de nadie que las pise por primera vez.",
       "motivation": "Cobrar en efectivo y no saber para qué."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que el zumbido llegue al campamento.",
+        "Que los peones dejen de trabajar todos a la vez."
+      ],
+      "refusals": [
+        "No dice cuántos peones murieron desde que abrieron la boca."
+      ],
+      "secrets": [],
+      "id": "npc-capataz",
+      "name": "Bautista Cárdenas",
+      "description": "Capataz de los cateadores, cincuenta años, gordo de a ratos y flaco de a ratos, con una cicatriz de látigo en la propia espalda que no le gusta enseñar. Cumple, pero cumple con la vista en la salida.",
+      "motivation": "Terminar la labor, cobrar y no dormir en la sierra. Le da igual quién mande siempre que pague."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-peon",
+      "name": "Un peón de mita",
+      "description": "Un huarpe joven, de la ranchada, con la mano vendada y la vista fija en un punto que no está en la pared. Los otros peones lo dejan hablar porque él ya no tiene mucho que perder.",
+      "motivation": "Que lo dejen volver a las lagunas."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-guardia",
+      "name": "Un guardia del Cabildo",
+      "description": "Un soldado joven con un mosquete y cara de no haber dormido. Hace lo que le dijeron; no le dijeron qué hacer si los peones dejan de trabajar.",
+      "combate": {
+        "hp": 12,
+        "maxHp": 12,
+        "pelea": 40,
+        "esquivar": 30,
+        "armaId": "mosquete-chispa",
+        "bonificacionDano": "0",
+        "defensaPorDefecto": "contraataca",
+        "dex": 45,
+        "build": 1,
+        "distancia": 6,
+        "armadura": 1
+      }
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-sombra",
+      "name": "La Sombra del Socavón",
+      "description": "No tiene forma sostenible: es una densidad en el aire del filón, un lugar donde la luz llega tarde. Se mueve por dentro de las sombras de las cosas. Donde pasa, las lámparas se apagan una por una.",
+      "motivation": "Lo que hay en el filón y lo que hay debajo. Reacciona a lo que carga peso de otro tiempo.",
+      "combate": {
+        "hp": 18,
+        "maxHp": 18,
+        "pelea": 50,
+        "esquivar": 15,
+        "armaId": "garras-vagabundo",
+        "bonificacionDano": "+1D6",
+        "defensaPorDefecto": "contraataca",
+        "dex": 60,
+        "build": 2,
+        "distancia": 0,
+        "armadura": 4
+      }
     }
   ],
   "documents": [
@@ -741,11 +907,10 @@
     },
     "sd-huerta": {
       "id": "sd-huerta",
-      "name": "Santo Domingo: huerta y ventilación",
+      "name": "Santo Domingo: la huerta",
       "aliases": [
         "huerta",
-        "la huerta",
-        "ventilacion"
+        "la huerta"
       ],
       "description": "Parras sobre un emparrado, hileras de hortalizas y, contra el muro de la cripta, la boca de un tiro de piedra con una rejilla oxidada. La huerta da a un callejón de acequia que sale, por un portillo, al camino que rodea la villa.",
       "atmosphere": [
@@ -875,8 +1040,7 @@
       "name": "La ranchada de Guanacache",
       "aliases": [
         "ranchada",
-        "la ranchada",
-        "el campamento"
+        "la ranchada"
       ],
       "description": "Ocho o diez ranchos de junco y barro, armados sobre una loma que el agua no llega a cubrir. Hay redes colgadas, pescado abierto secándose al sol y una hoguera que nunca se apaga. Los que viven acá no levantan la vista cuando llega un extraño: la levantan cuando llega el silencio de un extraño que no sabe dónde pararse.",
       "atmosphere": [
@@ -1183,7 +1347,7 @@
       "aliases": [
         "camino del piedemonte",
         "piedemonte",
-        "el camino"
+        "el piedemonte"
       ],
       "description": "Una huella de mulas que sale de la villa hacia la sierra, entre jarillas y piedra suelta. Al fondo, contra la caliza blanca, se ve el humo de un campamento de hombres del Cabildo. A la izquierda, más abajo, se ve el zanjón donde todo empezó.",
       "atmosphere": [
@@ -1206,10 +1370,20 @@
     },
     "labor-campamento": {
       "id": "labor-campamento",
-      "name": "La Labor Vieja: el real de cateadores",
-      "aliases": [],
-      "description": "[PENDIENTE] Una docena de hombres del Cabildo con mosquetes acampan al pie de una cantera de cal vieja. Se entra con sigilo, con el reloj como distracción, con el Manto o por la escolta oficial.",
-      "atmosphere": [],
+      "name": "El real de cateadores",
+      "aliases": [
+        "real",
+        "el real",
+        "campamento",
+        "el campamento",
+        "cateadores"
+      ],
+      "description": "Un real de tiendas de cuero al pie de una cantera de caliza blanca, con doce mulas atadas a una cuerda y seis centinelas que se turnan sin hablar. En el centro, una hoguera grande donde nadie se calienta. Más arriba, en la pared de piedra, se ve la boca tapiada de la labor.",
+      "atmosphere": [
+        "Los centinelas miran hacia afuera, no hacia adentro: esperan algo que venga de la sierra.",
+        "El zumbido llega hasta acá, bajo, casi en el hueso.",
+        "Nadie duerme en las tiendas. Duermen sentados."
+      ],
       "connections": [
         "camino-piedemonte",
         "labor-bocamina"
@@ -1217,15 +1391,28 @@
       "itemsPresent": [],
       "npcsPresent": [],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 22,
+      "senses": {
+        "sound": [
+          "Un zumbido parejo, del lado de la piedra."
+        ]
+      }
     },
     "labor-bocamina": {
       "id": "labor-bocamina",
-      "name": "La Labor Vieja: la boca de la labor",
-      "aliases": [],
-      "description": "[PENDIENTE] Una boca tapiada por los cateadores con vigas y cadenas. Fuerza, maña o el conducto estrecho.",
-      "atmosphere": [],
+      "name": "La boca de la labor",
+      "aliases": [
+        "boca",
+        "la boca",
+        "bocamina",
+        "portones"
+      ],
+      "description": "Una boca de piedra con dintel de caliza tallada, tapiada por dentro con vigas de algarrobo y cadenas nuevas. Alguien, mucho antes que los cateadores, cortó el dintel con una regularidad que ningún pico de mula explica. Por un costado, entre la roca y el muro, se ve un tiro angosto por donde entra el aire.",
+      "atmosphere": [
+        "El aire que sale de la boca es tibio y huele a piedra mojada.",
+        "Las cadenas nuevas tienen óxido en los eslabones nuevos.",
+        "Sobre el dintel hay rayas de almagre, muy borradas."
+      ],
       "connections": [
         "labor-campamento",
         "labor-socavon",
@@ -1234,31 +1421,56 @@
       "itemsPresent": [],
       "npcsPresent": [],
       "visited": false,
-      "umbralIntensity": 10,
+      "umbralIntensity": 26,
       "senses": {}
     },
     "labor-socavon": {
       "id": "labor-socavon",
-      "name": "La Labor Vieja: el socavón de los peones",
-      "aliases": [],
-      "description": "[PENDIENTE] Peones indios de mita cavan en galerías angostas. La cercanía al filón torcía la luz: las sombras llegan tres segundos tarde. Posible motín con el cantar.",
-      "atmosphere": [],
+      "name": "El socavón de los peones",
+      "aliases": [
+        "socavon",
+        "el socavon",
+        "galeria",
+        "galerias"
+      ],
+      "description": "Galerías angostas donde los peones de mita cavan a la luz de lámparas de sebo. La pared que abren es de una caliza tan blanca que devuelve la luz. Cuando la lámpara se mueve, las sombras en la pared llegan tres segundos después, como si algo las estuviera pensando.",
+      "atmosphere": [
+        "Los picos suenan parejo y ninguno mira hacia arriba.",
+        "Un peón tiene la mano izquierda vendada, y una fila de puntos negros le sube por el brazo.",
+        "El capataz camina detrás con un látigo enrollado y no lo usa."
+      ],
       "connections": [
         "labor-bocamina",
         "labor-nucleo"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-capataz",
+        "npc-peon",
+        "npc-guardia"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 32,
+      "senses": {
+        "sound": [
+          "Picos, de a uno, sin ritmo. Y debajo, el zumbido."
+        ]
+      }
     },
     "labor-ventilacion": {
       "id": "labor-ventilacion",
-      "name": "La Labor Vieja: el conducto de ventilación",
-      "aliases": [],
-      "description": "[PENDIENTE] Un tiro de ventilación de los que hacían los antiguos. Paso estrecho: se deja el equipo voluminoso.",
-      "atmosphere": [],
+      "name": "El conducto de ventilación",
+      "aliases": [
+        "conducto",
+        "el conducto",
+        "tiro",
+        "ventilacion"
+      ],
+      "description": "Un tiro de piedra de un ancho de hombre, tallado con la misma regularidad que el dintel, que baja en pendiente hacia el interior. No lo abrieron los cateadores: ya estaba. Para entrar hay que dejar afuera todo lo que no pase de costado.",
+      "atmosphere": [
+        "El aire que sube es tibio, regular, casi respirado.",
+        "Las paredes están pulidas por siglos de nadie."
+      ],
       "connections": [
         "labor-bocamina",
         "labor-cripta"
@@ -1266,55 +1478,100 @@
       "itemsPresent": [],
       "npcsPresent": [],
       "visited": false,
-      "umbralIntensity": 10,
+      "umbralIntensity": 30,
       "senses": {}
     },
     "labor-cripta": {
       "id": "labor-cripta",
-      "name": "La Labor Vieja: la cámara de los antiguos",
-      "aliases": [],
-      "description": "[PENDIENTE] Una cámara natural en la caliza. El cuerpo de un investigador de otro bucle, con un objeto de 1930 en la mano. La paradoja: el bucle ya se cerró antes.",
-      "atmosphere": [],
+      "name": "La cámara de los antiguos",
+      "aliases": [
+        "camara",
+        "la camara",
+        "antiguos"
+      ],
+      "description": "Una sala natural del tamaño de una capilla, con el techo cubierto de calcita en gotas quietas. Contra la pared del fondo, sentado, hay un cuerpo seco, con la cabeza caída y las manos sobre las rodillas. La ropa no es de acá.",
+      "atmosphere": [
+        "El silencio es más denso que en el resto de la labor.",
+        "La calcita del techo gotea, una gota cada varios latidos.",
+        "El cuerpo está tan quieto que parece esperar a alguien."
+      ],
       "connections": [
         "labor-ventilacion",
         "labor-nucleo"
       ],
-      "itemsPresent": [],
+      "itemsPresent": [
+        "it-objeto-1930-cripta"
+      ],
       "npcsPresent": [],
       "visited": false,
-      "umbralIntensity": 10,
+      "umbralIntensity": 40,
       "senses": {}
     },
     "labor-nucleo": {
       "id": "labor-nucleo",
-      "name": "La Labor Vieja: el filón",
-      "aliases": [],
-      "description": "[PENDIENTE] Donde la caliza se abre y asoma plata nativa, cruzada por calcita. Ahí se decide la salida, y ahí está Albornoz.",
-      "atmosphere": [],
+      "name": "El filón",
+      "aliases": [
+        "filon",
+        "el filon",
+        "nucleo",
+        "el nucleo",
+        "la veta"
+      ],
+      "description": "Una caverna alta donde la caliza se abre como una boca y deja ver, en el fondo, un filón de plata nativa cruzado por calcita, que devuelve la luz en hilos. El aire vibra con un zumbido que se siente más en los dientes que en los oídos. La temperatura sube al acercarse. El suelo, alrededor del filón, está liso como si lo hubieran pisado siempre en el mismo sentido.",
+      "atmosphere": [
+        "El zumbido no tiene fuente; parece salir de todas las paredes.",
+        "Hay marcas viejas de almagre alrededor del filón, en círculo.",
+        "Las sombras aquí no se quedan quietas, y ninguna tiene dueño."
+      ],
       "connections": [
         "labor-socavon",
         "labor-cripta",
         "camino-piedemonte"
       ],
-      "itemsPresent": [],
-      "npcsPresent": [],
+      "itemsPresent": [
+        "it-plata-nativa"
+      ],
+      "npcsPresent": [
+        "npc-albornoz",
+        "npc-ignacio",
+        "npc-sombra"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 55,
+      "senses": {
+        "sound": [
+          "Un zumbido grave, sostenido."
+        ],
+        "smell": [
+          "Piedra caliente, metal, algo dulce."
+        ]
+      }
     },
     "zanjon-sellado": {
       "id": "zanjon-sellado",
       "name": "El zanjón, sellado",
-      "aliases": [],
-      "description": "[PENDIENTE] De vuelta donde empezó. Las tres salidas se ejecutan acá.",
-      "atmosphere": [],
+      "aliases": [
+        "el sello",
+        "la piedra",
+        "zanjon sellado",
+        "el zanjon sellado"
+      ],
+      "description": "El mismo tajo en el barro, ya frío. La marca de piedra —o el almagre— está en su lugar, más gastada de lo que recordás, como si hubieran pasado más de unos días. Se siente la presión, callada, de algo que está guardado en lugar de estar cerrado.",
+      "atmosphere": [
+        "El aire está quieto de un modo que no es de quietud.",
+        "El agua de la acequia, más allá, corre con un ruido que ahora suena a advertencia.",
+        "Parado acá, cualquiera de las tres salidas se siente posible."
+      ],
       "connections": [
         "camino-piedemonte"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-takillpa",
+        "npc-ignacio"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
+      "umbralIntensity": 45,
       "senses": {}
     }
   },
@@ -2235,6 +2492,152 @@
           "—Todavía no. Que el Comisario se muestre antes."
         ]
       }
+    },
+    {
+      "id": "c-labor",
+      "npc": "npc-capataz",
+      "orden": 1,
+      "etiqueta": "Preguntarle al capataz qué hay en la labor",
+      "intencion": "Le pregunto al capataz Cárdenas qué hay en la labor",
+      "claves": [
+        "la labor",
+        "el filon",
+        "que hay adentro",
+        "el capataz"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "que un capataz que no quiere estar acá admita lo que ve"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "Cárdenas mira hacia la boca de la labor y baja la voz.\n\n—Plata hay. Se ve desde la entrada. Pero desde que la abrimos, los peones se enferman. Les salen puntos negros en los brazos, no comen, no duermen. Los que bajan al fondo vuelven callados, y algunos no vuelven. Yo cobro por tonelada. No pregunto por qué se pierden."
+        ],
+        "pista": {
+          "description": "El capataz Cárdenas dice que hay plata a la vista, pero que los peones que bajan enferman con puntos negros en los brazos y algunos no vuelven; él cobra por tonelada y no pregunta.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Eso se lo pregunta al Comisario. Yo sólo cuento las mulas."
+        ]
+      }
+    },
+    {
+      "id": "p-mita",
+      "npc": "npc-peon",
+      "orden": 1,
+      "etiqueta": "Preguntarle al peón qué se siente al fondo de la labor",
+      "intencion": "Le pregunto al peón qué se siente al fondo de la labor",
+      "claves": [
+        "el fondo",
+        "el zumbido",
+        "la mita",
+        "el peon"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "que el peón diga lo que sus compañeros callan"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "El peón no levanta la vista de la pared.\n\n—Al fondo hay algo que se mueve. No es un animal. Es como cuando el agua se retira antes de un aluvión: se siente la falta antes que la cosa. La luz de la lámpara se dobla cuando pasa. Y lo peor es que, cuando estás cerca, creés que te está reconociendo.\n\n—No le tiene miedo al fuego. Le tiene miedo a lo que brilla sin fuego."
+        ],
+        "pista": {
+          "description": "Un peón de mita dice que al fondo de la labor hay algo que se mueve como el agua antes de un aluvión, que no teme al fuego y que se aparta de lo que brilla sin llama.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—No hablo de eso. Los otros se enojan."
+        ]
+      }
+    },
+    {
+      "id": "t-soltar",
+      "npc": "npc-takillpa",
+      "orden": 5,
+      "etiqueta": "Preguntarle a Takillpa cómo se abre lo que se cierra",
+      "intencion": "Le pregunto a Takillpa cómo se abre lo que se cierra",
+      "claves": [
+        "abrir",
+        "como se abre",
+        "soltar",
+        "volver"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 5,
+        "razon": "que el viejo diga cómo se deshace lo que él mismo ayudó a hacer"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "Takillpa se toma un tiempo largo.\n\n—Lo que se cierra con agua contenida, se abre con agua soltada. Así se abrió la ciénaga la primera vez: el agua estuvo quieta tanto tiempo que cuando se rompió, se llevó el borde. Se puede hacer a propósito. Se hizo una vez. No se me ocurre por qué querría hacerse otra."
+        ],
+        "pista": {
+          "description": "Takillpa dice que el borde se abre si el agua contenida se suelta de golpe, como cuando se rompió la ciénaga la primera vez; que se puede hacer a propósito.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Eso no se pregunta en voz alta."
+        ]
+      }
+    },
+    {
+      "id": "a-grabar",
+      "npc": "npc-anciana",
+      "orden": 4,
+      "etiqueta": "Pedirle a la anciana que te enseñe a grabar el sello",
+      "intencion": "Le pido a la anciana que me ensene a grabar el sello",
+      "claves": [
+        "grabar",
+        "el sello",
+        "reforzar",
+        "la marca"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "acepta que el investigador se quede en la ranchada"
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 4,
+        "razon": "que la anciana enseñe una técnica que sólo pasa entre los que cuidan"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "La anciana se queda un rato con las manos abiertas sobre las rodillas.\n\n—No se pinta: se graba. Con una punta de piedra dura sobre la caliza, una raya, después otra, siguiendo la forma de lo que hay que guardar. Y se rellena con plata, para que lo grabado no se borre con el tiempo. La plata guarda; el almagre solo avisa.\n\n—Si quiere reforzar, trae la plata. No la compre: sáquela de donde nace."
+        ],
+        "pista": {
+          "description": "La anciana María Sayanca enseña la técnica de grabado: una punta de piedra dura sobre la caliza, rellena con plata nativa para que no se borre; la plata guarda y el almagre sólo avisa.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "texto": [
+          "—Todavía no. Cuando sepa qué es lo que quiere guardar."
+        ]
+      }
     }
   ],
   "scenes": [
@@ -2662,6 +3065,190 @@
       "cuando": {
         "op": "texto",
         "patron": "miro las rayas de almagre de la pared"
+      }
+    },
+    {
+      "id": "entrar-salvoconducto",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "muestro el salvoconducto a los centinelas"
+      }
+    },
+    {
+      "id": "entrar-escolta",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "entro al real con la escolta del comisario"
+      }
+    },
+    {
+      "id": "entrar-fuego",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "prendo la maleza seca con el encendedor"
+      }
+    },
+    {
+      "id": "entrar-sigilo",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "me cuelo de noche entre las tiendas"
+      }
+    },
+    {
+      "id": "abrir-forzando",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "fuerzo los portones de la boca"
+      }
+    },
+    {
+      "id": "abrir-con-polvora",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "abro la boca con la polvora"
+      }
+    },
+    {
+      "id": "pasar-el-conducto",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "paso por el conducto de ventilacion"
+      }
+    },
+    {
+      "id": "incitar-motin",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "incito a los peones al motin"
+      }
+    },
+    {
+      "id": "pasar-de-largo-socavon",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "paso de largo por el socavon"
+      }
+    },
+    {
+      "id": "combatir-a-los-guardias",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "combato a los guardias"
+      }
+    },
+    {
+      "id": "sobornar-al-capataz",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "le doy la bolsa al capataz"
+      }
+    },
+    {
+      "id": "mirar-el-cuerpo",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "miro el cuerpo de la camara"
+      }
+    },
+    {
+      "id": "mirar-el-filon",
+      "prioridad": 60,
+      "cuando": {
+        "op": "texto",
+        "patron": "miro el filon de cerca"
+      }
+    },
+    {
+      "id": "encandilar-a-la-sombra",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "encandilo a la sombra con la luz"
+      }
+    },
+    {
+      "id": "enfrentar-a-la-sombra",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "enfrento a la sombra"
+      }
+    },
+    {
+      "id": "extraer-la-plata",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "extraigo la plata del filon"
+      }
+    },
+    {
+      "id": "pedir-a-ignacio",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "le pido a fray ignacio que decida"
+      }
+    },
+    {
+      "id": "volar-con-mecha-larga",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "vuelo el filon con la mecha larga"
+      }
+    },
+    {
+      "id": "volar-quedandome",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "vuelo el filon quedandome a encender la mecha"
+      }
+    },
+    {
+      "id": "exponer-a-albornoz",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "expongo al comisario ante todos"
+      }
+    },
+    {
+      "id": "entregar-la-plata",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "le entrego la plata al comisario"
+      }
+    },
+    {
+      "id": "medir-los-temblores",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "mido los temblores con el reloj"
+      }
+    },
+    {
+      "id": "inferir-la-fecha",
+      "prioridad": 85,
+      "cuando": {
+        "op": "texto",
+        "patron": "calculo cuando va a reventar el sello"
       }
     }
   ],
@@ -3139,8 +3726,17 @@
       "etiqueta": "Aflojar el sello",
       "final": true,
       "visible": {
-        "op": "narrado",
-        "contiene": "§PENDIENTE-salida-1930§"
+        "op": "o",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "cuando el agua se suelta de golpe"
+          },
+          {
+            "op": "pista",
+            "contiene": "se abre si el agua contenida se suelta de golpe"
+          }
+        ]
       }
     },
     {
@@ -3152,8 +3748,8 @@
       "etiqueta": "Dejar que reviente",
       "final": true,
       "visible": {
-        "op": "narrado",
-        "contiene": "§PENDIENTE-salida-1944§"
+        "op": "consecuencia",
+        "contiene": "infirió la fecha"
       }
     },
     {
@@ -3165,8 +3761,24 @@
       "etiqueta": "Reforzar el sello",
       "final": true,
       "visible": {
-        "op": "narrado",
-        "contiene": "§PENDIENTE-quedarse§"
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-plata-nativa"
+          },
+          {
+            "op": "pista",
+            "contiene": "enseña la técnica de grabado"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "aceptó ser agente"
+            }
+          }
+        ]
       }
     },
     {
@@ -3178,8 +3790,17 @@
       "etiqueta": "Caer en la labor",
       "final": true,
       "visible": {
-        "op": "narrado",
-        "contiene": "§PENDIENTE-muerte-en-la-mina§"
+        "op": "o",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "encendió la mecha"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "el techo cedió"
+          }
+        ]
       }
     },
     {
@@ -3928,6 +4549,707 @@
       "hecha": {
         "op": "narrado",
         "contiene": "Son siete rayas"
+      }
+    },
+    {
+      "id": "entrar-salvoconducto",
+      "grupo": "usar",
+      "lugar": "labor-campamento",
+      "orden": 1,
+      "intencion": "Muestro el salvoconducto a los centinelas",
+      "etiqueta": "Mostrar el salvoconducto del Santo Oficio a los centinelas",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-salvoconducto"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "pasó el real de cateadores"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "entrar-escolta",
+      "grupo": "usar",
+      "lugar": "labor-campamento",
+      "orden": 2,
+      "intencion": "Entro al real con la escolta del Comisario",
+      "etiqueta": "Entrar al real con la escolta del Comisario",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "Albornoz decidió usarlo como prisionero-oráculo"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "pasó el real de cateadores"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "entrar-fuego",
+      "grupo": "usar",
+      "lugar": "labor-campamento",
+      "orden": 3,
+      "intencion": "Prendo la maleza seca con el encendedor",
+      "etiqueta": "Prender la maleza seca con el encendedor para distraer a los centinelas",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-encendedor-1930"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "pasó el real de cateadores"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "entrar-sigilo",
+      "grupo": "usar",
+      "lugar": "labor-campamento",
+      "orden": 4,
+      "intencion": "Me cuelo de noche entre las tiendas",
+      "etiqueta": "Colarte de noche entre las tiendas",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "pasó el real de cateadores"
+        }
+      }
+    },
+    {
+      "id": "abrir-forzando",
+      "grupo": "usar",
+      "lugar": "labor-bocamina",
+      "orden": 1,
+      "intencion": "Fuerzo los portones de la boca",
+      "etiqueta": "Forzar los portones y las cadenas",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "abrió la boca de la labor"
+        }
+      }
+    },
+    {
+      "id": "abrir-con-polvora",
+      "grupo": "usar",
+      "lugar": "labor-bocamina",
+      "orden": 2,
+      "intencion": "Abro la boca con la polvora",
+      "etiqueta": "Abrir la boca con la pólvora del Cabildo",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-polvora-cabildo"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "abrió la boca de la labor"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pasar-el-conducto",
+      "grupo": "usar",
+      "lugar": "labor-ventilacion",
+      "orden": 1,
+      "intencion": "Paso por el conducto de ventilacion",
+      "etiqueta": "Pasar por el conducto de costado, dejando el equipo",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "pasó el conducto de ventilación"
+        }
+      }
+    },
+    {
+      "id": "incitar-motin",
+      "grupo": "hablar",
+      "lugar": "labor-socavon",
+      "orden": 1,
+      "intencion": "Incito a los peones al motin",
+      "etiqueta": "Incitar a los peones al motín",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "pasó el socavón"
+        }
+      }
+    },
+    {
+      "id": "pasar-de-largo-socavon",
+      "grupo": "usar",
+      "lugar": "labor-socavon",
+      "orden": 2,
+      "intencion": "Paso de largo por el socavon",
+      "etiqueta": "Pasar de largo entre las galerías",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "pasó el socavón"
+        }
+      }
+    },
+    {
+      "id": "combatir-a-los-guardias",
+      "grupo": "usar",
+      "lugar": "labor-socavon",
+      "orden": 3,
+      "intencion": "Combato a los guardias",
+      "etiqueta": "Combatir a los guardias",
+      "visible": {
+        "op": "no",
+        "de": {
+          "op": "consecuencia",
+          "contiene": "pasó el socavón"
+        }
+      }
+    },
+    {
+      "id": "sobornar-al-capataz",
+      "grupo": "usar",
+      "lugar": "labor-socavon",
+      "orden": 4,
+      "intencion": "Le doy la bolsa al capataz",
+      "etiqueta": "Darle la bolsa al capataz",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-soborno"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "pasó el socavón"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "mirar-el-cuerpo",
+      "grupo": "observar",
+      "lugar": "labor-cripta",
+      "orden": 1,
+      "intencion": "Miro el cuerpo de la camara",
+      "etiqueta": "Mirar el cuerpo de la cámara",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "El cuerpo lleva ropa de 1930"
+      }
+    },
+    {
+      "id": "mirar-el-filon",
+      "grupo": "observar",
+      "lugar": "labor-nucleo",
+      "orden": 1,
+      "intencion": "Miro el filon de cerca",
+      "etiqueta": "Mirar el filón de cerca",
+      "hecha": {
+        "op": "narrado",
+        "contiene": "La Sombra del Socavón se despega"
+      }
+    },
+    {
+      "id": "encandilar-a-la-sombra",
+      "grupo": "usar",
+      "lugar": "labor-nucleo",
+      "orden": 2,
+      "intencion": "Encandilo a la sombra con la luz",
+      "etiqueta": "Encandilar a la Sombra con la luz",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "La Sombra del Socavón se despega"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "lleva",
+                "item": "it-linterna-1930"
+              },
+              {
+                "op": "lleva",
+                "item": "it-encendedor-1930"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "consecuencia",
+                  "contiene": "la Sombra del Socavón retrocedió ante la luz"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "entró en combate real contra la Sombra del Socavón"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "enfrentar-a-la-sombra",
+      "grupo": "usar",
+      "lugar": "labor-nucleo",
+      "orden": 3,
+      "intencion": "Enfrento a la sombra",
+      "etiqueta": "Enfrentar a la Sombra",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "narrado",
+            "contiene": "La Sombra del Socavón se despega"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "consecuencia",
+                  "contiene": "la Sombra del Socavón retrocedió ante la luz"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "entró en combate real contra la Sombra del Socavón"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "extraer-la-plata",
+      "grupo": "usar",
+      "lugar": "labor-nucleo",
+      "orden": 4,
+      "intencion": "Extraigo la plata del filon",
+      "etiqueta": "Extraer la plata del filón",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "consecuencia",
+                "contiene": "la Sombra del Socavón retrocedió ante la luz"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "entró en combate real contra la Sombra del Socavón"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "extrajo la plata del filón"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pedir-a-ignacio",
+      "grupo": "hablar",
+      "lugar": "labor-nucleo",
+      "orden": 5,
+      "intencion": "Le pido a Fray Ignacio que decida",
+      "etiqueta": "Pedirle a Fray Ignacio que decida de qué lado está",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "y",
+            "de": [
+              {
+                "op": "no",
+                "de": {
+                  "op": "consecuencia",
+                  "contiene": "del lado de los huarpes"
+                }
+              },
+              {
+                "op": "no",
+                "de": {
+                  "op": "consecuencia",
+                  "contiene": "Fray Ignacio de la Cruz te protegió"
+                }
+              },
+              {
+                "op": "no",
+                "de": {
+                  "op": "consecuencia",
+                  "contiene": "Fray Ignacio de la Cruz te entregó"
+                }
+              },
+              {
+                "op": "no",
+                "de": {
+                  "op": "consecuencia",
+                  "contiene": "Fray Ignacio de la Cruz murió"
+                }
+              }
+            ]
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "consecuencia",
+                "contiene": "la Sombra del Socavón retrocedió ante la luz"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "entró en combate real contra la Sombra del Socavón"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "volar-con-mecha-larga",
+      "grupo": "usar",
+      "lugar": "labor-nucleo",
+      "orden": 6,
+      "intencion": "Vuelo el filon con la mecha larga",
+      "etiqueta": "Volar el filón con la mecha larga, y correr",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-polvora-cabildo"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "consecuencia",
+                "contiene": "la Sombra del Socavón retrocedió ante la luz"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "entró en combate real contra la Sombra del Socavón"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz murió en la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz huyó de la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz fue expuesto ante los suyos"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz se salió con la suya"
+                }
+              ]
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "encendió la mecha"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "volar-quedandome",
+      "grupo": "usar",
+      "lugar": "labor-nucleo",
+      "orden": 7,
+      "intencion": "Vuelo el filon quedandome a encender la mecha",
+      "etiqueta": "Volar el filón quedándote a encender la mecha",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-polvora-cabildo"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "consecuencia",
+                "contiene": "la Sombra del Socavón retrocedió ante la luz"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "entró en combate real contra la Sombra del Socavón"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz murió en la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz huyó de la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz fue expuesto ante los suyos"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz se salió con la suya"
+                }
+              ]
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "encendió la mecha"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "exponer-a-albornoz",
+      "grupo": "hablar",
+      "lugar": "labor-nucleo",
+      "orden": 8,
+      "intencion": "Expongo al Comisario ante todos",
+      "etiqueta": "Exponer al Comisario ante los guardias y los peones",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "consecuencia",
+                "contiene": "la Sombra del Socavón retrocedió ante la luz"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "entró en combate real contra la Sombra del Socavón"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz murió en la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz huyó de la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz fue expuesto ante los suyos"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz se salió con la suya"
+                }
+              ]
+            }
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "lista conventos de todo Cuyo y Chile"
+              },
+              {
+                "op": "pista",
+                "contiene": "«no le cierran los números»"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "acusó al Comisario"
+              },
+              {
+                "op": "consecuencia",
+                "contiene": "los peones se amotinaron"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "entregar-la-plata",
+      "grupo": "decidir",
+      "lugar": "labor-nucleo",
+      "orden": 9,
+      "intencion": "Le entrego la plata al Comisario",
+      "etiqueta": "Entregarle la plata al Comisario",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "extrajo la plata del filón"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz murió en la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz huyó de la labor"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz fue expuesto ante los suyos"
+                },
+                {
+                  "op": "consecuencia",
+                  "contiene": "Albornoz se salió con la suya"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "medir-los-temblores",
+      "grupo": "usar",
+      "lugar": "camino-piedemonte",
+      "orden": 1,
+      "intencion": "Mido los temblores con el reloj",
+      "etiqueta": "Medir los temblores con el reloj de pulsera",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-reloj-pulsera"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "concluyó el juicio ante el Cabildo"
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Los temblores llegan cada"
+      }
+    },
+    {
+      "id": "inferir-la-fecha",
+      "grupo": "decidir",
+      "lugar": "zanjon-sellado",
+      "orden": 1,
+      "intencion": "Calculo cuando va a reventar el sello",
+      "etiqueta": "Sentarte a calcular cuándo va a reventar el sello",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "pista",
+            "contiene": "siete rayas de almagre superpuestas"
+          },
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "pista",
+                "contiene": "intervalo entre los temblores"
+              },
+              {
+                "op": "pista",
+                "contiene": "temblores grandes en 1562"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "infirió la fecha"
+            }
+          }
+        ]
       }
     }
   ],
@@ -5447,6 +6769,63 @@
             }
           ]
         }
+      }
+    },
+    {
+      "desde": "labor-campamento",
+      "hasta": "labor-bocamina",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "pasó el real de cateadores"
+      }
+    },
+    {
+      "desde": "labor-bocamina",
+      "hasta": "labor-socavon",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "abrió la boca de la labor"
+      }
+    },
+    {
+      "desde": "labor-ventilacion",
+      "hasta": "labor-cripta",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "pasó el conducto de ventilación"
+      }
+    },
+    {
+      "desde": "labor-socavon",
+      "hasta": "labor-nucleo",
+      "hastaQue": {
+        "op": "consecuencia",
+        "contiene": "pasó el socavón"
+      }
+    },
+    {
+      "desde": "labor-nucleo",
+      "hasta": "camino-piedemonte",
+      "hastaQue": {
+        "op": "o",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "Albornoz murió en la labor"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "Albornoz huyó de la labor"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "Albornoz fue expuesto ante los suyos"
+          },
+          {
+            "op": "consecuencia",
+            "contiene": "Albornoz se salió con la suya"
+          }
+        ]
       }
     }
   ]

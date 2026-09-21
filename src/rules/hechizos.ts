@@ -213,6 +213,26 @@ export const HECHIZOS: Hechizo[] = [
     magnitud: 5,
     esperaMinutos: 240,
   },
+  {
+    // El que enseña Albornoz al reclutar. Es el gesto que el aparato del
+    // Círculo usa con quien nace zurdo en cierta sangre —«que la mano que
+    // escribe sea la que el resto del mundo espera ver»—, vuelto contra uno
+    // mismo: se acomoda lo que se hizo para que coincida con lo que se
+    // esperaba. Repara Estabilidad, no da nada gratis: el costo de Cordura es
+    // el más alto de los cinco porque quien lo lanza sabe para qué se inventó.
+    id: 'corregir-la-mano',
+    nombre: 'Corregir la mano',
+    costoPM: 4,
+    costoCordura: 2,
+    descripcion:
+      'Una palabra que no se escribe, dicha mirándose la propia mano. Lo que se ' +
+      'hizo mal, o se hizo de más, se acomoda hasta parecerse a lo que se ' +
+      'esperaba de uno. Devuelve Estabilidad de golpe. Quien la enseñó la usa ' +
+      'con los niños; quien la aprende sabe con quiénes.',
+    efecto: 'estabilidad',
+    magnitud: 7,
+    esperaMinutos: 90,
+  },
 ];
 
 export const HECHIZO_POR_ID: Record<string, Hechizo> = Object.fromEntries(

@@ -444,6 +444,219 @@ async function main() {
   }
 
 
+
+  // ───────────────────────────────── ACTO III ─────────────────────────────────
+  /** Iglesia, con el juicio concluido, camino al piedemonte. `compras`: qué se compra antes en la pulpería. */
+  const haciaElPiedemonte = async (nombre: string, semilla: string, compras: string[] = []) => {
+    const nid = await createCampaign(SO, nombre, seed(semilla));
+    await jugar(nid, 'Me levanto del fondo del zanjon y miro alrededor');
+    await camino(nid, 'camino-villa', 'sd-porton', 'plaza');
+    if (compras.length) {
+      await camino(nid, 'pulperia');
+      for (const c of compras) await pulsar(nid, 'comprar:' + c);
+      await camino(nid, 'plaza');
+    }
+    await conConsecuencia(nid, 'En 1710, el investigador concluyó el juicio ante el Cabildo de San Juan.');
+    const st = await camino(nid, 'camino-piedemonte');
+    return { nid, st };
+  };
+  /** Del piedemonte hasta la boca abierta con pólvora (necesita haberla comprado). */
+  const hastaLaBocaAbierta = async (nid: string) => {
+    await camino(nid, 'labor-campamento');
+    await pulsar(nid, 'entrar-fuego');
+    await camino(nid, 'labor-bocamina');
+    return pulsar(nid, 'abrir-con-polvora');
+  };
+
+  console.log('\nACTO III: el real, la boca y los caminos que se abren de a uno');
+  {
+    const { nid, st } = await haciaElPiedemonte('SO-L1', 'l1', ['it-soborno', 'it-polvora-cabildo']);
+    id = nid; s = st;
+    check('desde el piedemonte se llega al real y al zanjón sellado', ids(s).includes('ir:labor-campamento') && ids(s).includes('ir:zanjon-sellado'));
+    check('el reloj se puede usar para medir los temblores', ids(s).includes('medir-los-temblores'));
+    const m0 = sosp(s);
+    s = await pulsar(id, 'medir-los-temblores');
+    check('medirlos deja la pista del intervalo y sube 10 la sospecha', s.board.clues.some((c) => c.description.includes('intervalo entre los temblores')) && sosp(s) === m0 + 10, m0 + ' → ' + sosp(s));
+    s = await camino(id, 'labor-campamento');
+    const r = ids(s);
+    check('en el real hay cuatro maneras de entrar (sin salvoconducto ni escolta, dos)', r.includes('entrar-fuego') && r.includes('entrar-sigilo') && !r.includes('entrar-salvoconducto') && !r.includes('entrar-escolta'));
+    check('y la boca no se ve hasta pasar el real', !r.includes('ir:labor-bocamina'));
+    const f0 = sosp(s);
+    s = await pulsar(id, 'entrar-fuego');
+    check('el fuego sin pedernal cuesta 15 de sospecha y abre el camino', sosp(s) === f0 + 15 && ids(s).includes('ir:labor-bocamina'), f0 + ' → ' + sosp(s));
+    s = await camino(id, 'labor-bocamina');
+    check('en la boca: forzar o abrir con pólvora, y el conducto siempre; el socavón no', ids(s).includes('abrir-forzando') && ids(s).includes('abrir-con-polvora') && ids(s).includes('ir:labor-ventilacion') && !ids(s).includes('ir:labor-socavon'));
+    s = await pulsar(id, 'abrir-con-polvora');
+    check('la pólvora abre la boca y se gasta', ids(s).includes('ir:labor-socavon') && s.items['it-polvora-cabildo']?.owner === 'labor-bocamina');
+    s = await camino(id, 'labor-socavon');
+    check('en el socavón hay cuatro maneras de pasar, contando el soborno', ids(s).includes('incitar-motin') && ids(s).includes('pasar-de-largo-socavon') && ids(s).includes('combatir-a-los-guardias') && ids(s).includes('sobornar-al-capataz'));
+    check('y el filón no se ve hasta pasar', !ids(s).includes('ir:labor-nucleo'));
+    s = await pulsar(id, 'sobornar-al-capataz');
+    check('sobornar entrega la bolsa y abre el filón', s.items['it-soborno']?.owner === 'npc-capataz' && ids(s).includes('ir:labor-nucleo'));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-L2', 'l2', ['it-polvora-cabildo']);
+    id = nid; s = await hastaLaBocaAbierta(nid);
+    s = await camino(id, 'labor-socavon');
+    s = await pulsar(id, 'combatir-a-los-guardias');
+    check('combatir a los guardias abre un combate real', Boolean(s.activeCombat));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-L3', 'l3');
+    id = nid; s = await camino(nid, 'labor-campamento');
+    s = await pulsar(id, 'entrar-fuego');
+    s = await camino(id, 'labor-bocamina');
+    s = await pulsar(id, 'abrir-forzando');
+    const fuerza = s.consequences.some((c) => c.description.includes('abrió la boca de la labor'));
+    check('forzar la boca: si sale se abre, si falla se sigue pudiendo (y cuesta)', fuerza ? ids(s).includes('ir:labor-socavon') : ids(s).includes('abrir-forzando'));
+  }
+
+  console.log('\nACTO III: el conducto, la cámara y el cuerpo');
+  {
+    const { nid } = await haciaElPiedemonte('SO-C1', 'c1');
+    id = nid; s = await camino(nid, 'labor-campamento');
+    s = await pulsar(id, 'entrar-fuego');
+    s = await camino(id, 'labor-bocamina', 'labor-ventilacion');
+    check('la cámara no se ve antes de pasar el conducto', !ids(s).includes('ir:labor-cripta'));
+    s = await pulsar(id, 'pasar-el-conducto');
+    check('pasarlo (salga o no la tirada) abre la cámara', ids(s).includes('ir:labor-cripta'));
+    s = await camino(id, 'labor-cripta');
+    const san0 = s.investigators[s.activeInvestigator]!.derived.san;
+    s = await pulsar(id, 'mirar-el-cuerpo');
+    check('mirar el cuerpo cuesta Cordura', s.investigators[s.activeInvestigator]!.derived.san < san0, san0 + ' → ' + s.investigators[s.activeInvestigator]!.derived.san);
+    check('y entrega la libreta con la letra del investigador', s.items['it-objeto-1930-cripta']?.owner === s.activeInvestigator);
+    check('y una pista de que el bucle ya se cerró', s.board.clues.some((c) => c.description.includes('bucle ya se cerró antes')));
+    check('sin repetirse', !ids(s).includes('mirar-el-cuerpo'));
+    check('desde la cámara se llega al filón', ids(s).includes('ir:labor-nucleo'));
+  }
+
+  console.log('\nACTO III: el filón, la Sombra, Ignacio y Albornoz');
+  {
+    const { nid } = await haciaElPiedemonte('SO-N1', 'n1');
+    id = nid; s = await camino(nid, 'labor-campamento');
+    s = await pulsar(id, 'entrar-fuego');
+    s = await camino(id, 'labor-bocamina', 'labor-ventilacion');
+    s = await pulsar(id, 'pasar-el-conducto');
+    s = await camino(id, 'labor-cripta', 'labor-nucleo');
+    check('al llegar sólo se ofrece mirar el filón, todavía no extraer', ids(s).includes('mirar-el-filon') && !ids(s).includes('extraer-la-plata'));
+    check('y desde el filón no se sale al camino hasta resolver a Albornoz', !ids(s).includes('ir:camino-piedemonte'));
+    s = await pulsar(id, 'mirar-el-filon');
+    check('mirarlo despierta a la Sombra: encandilar o enfrentar', ids(s).includes('encandilar-a-la-sombra') && ids(s).includes('enfrentar-a-la-sombra'));
+    const l0 = sosp(s);
+    s = await pulsar(id, 'encandilar-a-la-sombra');
+    check('la luz de 1930 aparta a la Sombra pero la sospecha sube (10 o 20)', (sosp(s) === l0 + 10 || sosp(s) === l0 + 20) && s.consequences.some((c) => c.description.includes('la Sombra del Socavón retrocedió ante la luz')), l0 + ' → ' + sosp(s));
+    check('resuelta la Sombra se puede extraer la plata', ids(s).includes('extraer-la-plata'));
+    s = await pulsar(id, 'extraer-la-plata');
+    check('la plata (limpia o impura) queda en el inventario', s.items['it-plata-nativa']?.owner === s.activeInvestigator && s.consequences.some((c) => c.description.includes('extrajo la plata del filón')));
+    check('con Ignacio a mano se le puede pedir que decida', ids(s).includes('pedir-a-ignacio'));
+    s = await pulsar(id, 'pedir-a-ignacio');
+    check('con su actitud de arranque (15), Ignacio intenta protegerte y muere', s.consequences.some((c) => c.description.includes('Fray Ignacio de la Cruz murió en la Labor Vieja')) && !ids(s).includes('pedir-a-ignacio'));
+    check('sin pólvora no hay trampa; sí entregar la plata o exponerlo', !ids(s).includes('volar-quedandome') && ids(s).includes('entregar-la-plata'));
+    s = await pulsar(id, 'entregar-la-plata');
+    check('entregarla: Albornoz se sale con la suya y la plata cambia de manos', s.consequences.some((c) => c.description.includes('Albornoz se salió con la suya')) && s.items['it-plata-nativa']?.owner === 'npc-albornoz');
+    check('y recién entonces el filón deja salir al camino', ids(s).includes('ir:camino-piedemonte'));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-N2', 'n2');
+    id = nid; s = await camino(nid, 'labor-campamento');
+    s = await pulsar(id, 'entrar-fuego');
+    s = await camino(id, 'labor-bocamina', 'labor-ventilacion');
+    s = await pulsar(id, 'pasar-el-conducto');
+    s = await camino(id, 'labor-cripta', 'labor-nucleo');
+    s = await pulsar(id, 'mirar-el-filon');
+    s = await pulsar(id, 'encandilar-a-la-sombra');
+    check('sin nada con qué acusarlo, exponerlo no se ofrece', !ids(s).includes('exponer-a-albornoz'));
+    await conClue(id, 'El libro de cuentas del Comisario lista conventos de todo Cuyo y Chile con un tilde o una cruz y un mismo signo.');
+    s = (await loadState(id)).state;
+    check('con lo que vio en su libro, se ofrece exponerlo', ids(s).includes('exponer-a-albornoz'));
+    const e0 = sosp(s);
+    s = await pulsar(id, 'exponer-a-albornoz');
+    const salio = s.consequences.some((c) => c.description.includes('Albornoz huyó de la labor') || c.description.includes('Albornoz fue expuesto ante los suyos'));
+    check('exponerlo: si sale, Albornoz se va; si falla, la sospecha sube 30', salio ? ids(s).includes('ir:camino-piedemonte') : sosp(s) === e0 + 30, e0 + ' → ' + sosp(s));
+    check('sin peones amotinados, lo que sale es que huye (no que lo expongan ante los suyos)', !s.consequences.some((c) => c.description.includes('fue expuesto ante los suyos')));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-N3', 'n3', ['it-polvora-cabildo']);
+    id = nid; s = await camino(nid, 'labor-campamento');
+    s = await pulsar(id, 'entrar-fuego');
+    s = await camino(id, 'labor-bocamina', 'labor-ventilacion');
+    s = await pulsar(id, 'pasar-el-conducto');
+    s = await camino(id, 'labor-cripta', 'labor-nucleo');
+    s = await pulsar(id, 'mirar-el-filon');
+    s = await pulsar(id, 'encandilar-a-la-sombra');
+    check('con pólvora se ofrecen las dos trampas', ids(s).includes('volar-con-mecha-larga') && ids(s).includes('volar-quedandome'));
+    s = await pulsar(id, 'volar-quedandome');
+    check('quedarse a encender la mecha deja sólo el desenlace de la mina', ids(s).includes('muerte-en-la-mina'));
+    s = await pulsar(id, 'muerte-en-la-mina');
+    check('y cierra la aventura, con la libreta del cuerpo como eco', Boolean(s.ending) && !JSON.stringify(s.ending).includes('PENDIENTE'), JSON.stringify(s.ending)?.slice(0, 80));
+  }
+
+  console.log('\nACTO III: la fecha, y las tres salidas del zanjón');
+  {
+    const { nid } = await haciaElPiedemonte('SO-F1', 'f1');
+    id = nid; s = await camino(nid, 'zanjon-sellado');
+    check('en el zanjón sellado no hay salida sin haberse enterado de cómo', !ids(s).includes('salida-1930') && !ids(s).includes('salida-1944') && !ids(s).includes('quedarse'));
+    check('ni se puede calcular la fecha con una sola fuente', !ids(s).includes('inferir-la-fecha'));
+    await conClue(id, 'La cueva tiene siete rayas de almagre superpuestas: las seis primeras separadas por una distancia pareja de tiempo.');
+    s = (await loadState(id)).state;
+    check('siete rayas solas no alcanzan: hace falta una segunda fuente independiente', !ids(s).includes('inferir-la-fecha'));
+    await conClue(id, 'El legajo de la fundación de San Juan anota temblores grandes en 1562, hacia 1580 y en 1665, con el año de cada uno.');
+    s = (await loadState(id)).state;
+    check('con las rayas y el legajo, se puede calcular', ids(s).includes('inferir-la-fecha'));
+    check('sin el reloj, la fecha que sale no incluye el día', true);
+    s = await pulsar(id, 'inferir-la-fecha');
+    check('la cuenta deja la consecuencia del 1944', s.consequences.some((c) => c.scope === 'campaign' && c.description.includes('infirió la fecha') && c.description.includes('1944')));
+    check('y sin el reloj medido, sólo «un enero de 1944, hacia mediados»', s.consequences.some((c) => c.description.includes('un enero de 1944, hacia mediados')));
+    check('habilita dejar que reviente', ids(s).includes('salida-1944'));
+    s = await pulsar(id, 'salida-1944');
+    check('y ese desenlace cierra la aventura, ya escrito', Boolean(s.ending) && !JSON.stringify(s.ending).includes('PENDIENTE'));
+    check('dejando una consecuencia permanente que las aventuras siguientes pueden leer', s.consequences.some((c) => c.scope === 'campaign' && c.permanent && c.description.includes('cruzó, en el terremoto, al 15 de enero de 1944')));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-F2', 'f2');
+    id = nid; s = await camino(nid, 'zanjon-sellado');
+    await conClue(id, 'Takillpa dice que el borde se abre si el agua contenida se suelta de golpe, como cuando se rompió la ciénaga la primera vez.');
+    s = (await loadState(id)).state;
+    check('sabiendo cómo se abre, se puede aflojar el sello', ids(s).includes('salida-1930'));
+    s = await pulsar(id, 'salida-1930');
+    check('aflojar el sello cierra la aventura con su consecuencia', Boolean(s.ending) && s.consequences.some((c) => c.description.includes('aflojó el sello del zanjón')) && !JSON.stringify(s.ending).includes('PENDIENTE'));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-F3', 'f3');
+    id = nid; s = await camino(nid, 'zanjon-sellado');
+    await conClue(id, 'La anciana María Sayanca enseña la técnica de grabado: una punta de piedra dura sobre la caliza, rellena con plata nativa.');
+    s = (await loadState(id)).state;
+    check('sin la plata, no se puede reforzar el sello', !ids(s).includes('quedarse'));
+    { const tt = await Turn.open(id); tt.executeTool('transfer_item', { item_id: 'it-plata-nativa', to: s.activeInvestigator, carried: 'true', cause: 'prueba' }); await tt.commit(); }
+    s = (await loadState(id)).state;
+    check('con la plata y la técnica, sí', ids(s).includes('quedarse'));
+    s = await pulsar(id, 'quedarse');
+    check('reforzar el sello cierra la aventura, ya escrito', Boolean(s.ending) && s.consequences.some((c) => c.description.includes('grabó el sello con plata')) && !JSON.stringify(s.ending).includes('PENDIENTE'));
+  }
+  {
+    const { nid } = await haciaElPiedemonte('SO-F4', 'f4');
+    id = nid; s = await camino(nid, 'zanjon-sellado');
+    await conClue(id, 'La anciana María Sayanca enseña la técnica de grabado: una punta de piedra dura sobre la caliza.');
+    await conConsecuencia(id, 'En 1710, el investigador aceptó ser agente del aparato de Albornoz.');
+    { const tt = await Turn.open(id); tt.executeTool('transfer_item', { item_id: 'it-plata-nativa', to: (await loadState(id)).state.activeInvestigator, carried: 'true', cause: 'prueba' }); await tt.commit(); }
+    s = (await loadState(id)).state;
+    check('quien aceptó ser agente del Comisario no puede quedarse (Albornoz se queda con el ingrediente)', !ids(s).includes('quedarse'));
+  }
+
+  console.log('\nACTO III: el hechizo que enseña Albornoz');
+  {
+    const nid = await createCampaign(SO, 'SO-H5', seed('h5'));
+    await jugar(nid, 'Me levanto del fondo del zanjon y miro alrededor');
+    await camino(nid, 'camino-villa', 'sd-porton', 'plaza');
+    await conClue(nid, 'El Comisario Albornoz dice que quiere al investigador vivo y hablando, «no con el Tribunal, conmigo».');
+    await conConsecuencia(nid, 'En 1710, el investigador concluyó el juicio ante el Cabildo de San Juan.');
+    await camino(nid, 'cabildo');
+    await pulsar(nid, 'oferta-albornoz');
+    s = await pulsar(nid, 'aceptar-oferta');
+    check('aceptar la oferta enseña «Corregir la mano»', s.investigators[s.activeInvestigator]!.spellsKnown.some((h) => h.id === 'corregir-la-mano'));
+  }
+
+
   console.log("\nAUDITORÍA ESTÁTICA (las mismas comprobaciones que el resto del catálogo)");
   {
     const imp = actitudesImposibles(SO);
@@ -452,6 +665,17 @@ async function main() {
     check("todos los lugares tienen camino desde el inicio", inalc.length === 0, inalc.join(", "));
     const perd = objetosPerdidos(SO);
     check("ningún objeto queda donde nadie lo alcanza", perd.length === 0, perd.join(", "));
+    // Cuatro bugs de jugabilidad de esta aventura fueron el mismo: el clasificador no distingue a qué lugar
+    // se refiere «Voy a X» cuando dos lugares comparten un nombre o un alias («La laguna baja» leída como
+    // el verbo bajar, «ventilación» en dos lugares, seis lugares que empezaban igual). Se comprueba acá.
+    const porNombre = new Map<string, string[]>();
+    for (const l of Object.values(SO.locations)) {
+      const clave = (x: string) => x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/^(el|la|los|las) /, '');
+      const nombres = new Set([clave(l.name), ...(l.aliases ?? []).map(clave)]);
+      for (const n of nombres) porNombre.set(n, [...(porNombre.get(n) ?? []), l.id]);
+    }
+    const repetidos = [...porNombre].filter(([, v]) => v.length > 1).map(([n, v]) => n + ' → ' + v.join(', '));
+    check('ningún nombre ni alias se repite entre dos lugares distintos', repetidos.length === 0, repetidos.join(' | '));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);

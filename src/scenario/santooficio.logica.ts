@@ -4,7 +4,7 @@
 * ESTADO: en construcción. Escritos: el arranque compartido, el Acto I de las
  * dos ramas (Iglesia: interrogatorio, encierro, archivo, huerta; huarpe: barro,
  * altar, ofrenda, espionaje, ranchada, la rastrillería encima) y el desenlace
- * de la hoguera. Escrito también el Acto II (villa, juicio, cárcel, oferta, cruces de rama). Pendientes: el Acto III y los cuatro
+ * de la hoguera. Escrito también el Acto II (villa, juicio, cárcel, oferta, cruces de rama) y el Acto III (La Labor Vieja, la Sombra, Ignacio, Albornoz, la fecha del 1944 y los cinco desenlaces). Sin pendientes de contenido; falta registrarla en `catalogo.ts` y jugarla en el navegador. Antes decía: pendientes los
  * desenlaces restantes (sus escenas existen sólo para que el contenido cargue;
  * dicen «PENDIENTE»). No está registrada en `catalogo.ts`. Ver
  * `docs/SANTO-OFICIO-DISENO.md`.
@@ -426,7 +426,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
             'La hoja que sigue no está. Fue arrancada al ras.',
           ],
           documento: { id: 'doc-legajo-fundacion', how: 'el prior le dejó leerlo a escondidas' },
-          pistas: [{ description: 'Un fraile de Santo Domingo anotó en el legajo de la fundación que «cuando el agua se suelta de golpe, la tierra se abre por donde estaba cerrada»; la hoja siguiente fue arrancada al ras.', kind: 'documentary', source: 'el archivo de Santo Domingo', reliability: 'reliable' }],
+          pistas: [{ description: 'Un fraile de Santo Domingo anotó en el legajo de la fundación que «cuando el agua se suelta de golpe, la tierra se abre por donde estaba cerrada»; la hoja siguiente fue arrancada al ras.', kind: 'documentary', source: 'el archivo de Santo Domingo', reliability: 'reliable' }, { description: 'El legajo de la fundación de San Juan anota temblores grandes en 1562, hacia 1580 y en 1665, con el año de cada uno: sirve para medir cuánto tarda la tierra en volver a cargarse.', kind: 'documentary', source: 'el archivo de Santo Domingo', reliability: 'reliable' }],
         };
       }
       return {
@@ -435,6 +435,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
           'Hay una hoja que falta. No hace falta leer latín para ver el borde: alguien la arrancó.',
         ],
         documento: { id: 'doc-legajo-fundacion', how: 'el prior le dejó leerlo a escondidas' },
+        pistas: [{ description: 'El legajo de la fundación de San Juan anota temblores grandes en 1562, hacia 1580 y en 1665, con el año de cada uno: sirve para medir cuánto tarda la tierra en volver a cargarse.', kind: 'documentary', source: 'el archivo de Santo Domingo', reliability: 'reliable' }],
       };
     },
   },
@@ -915,6 +916,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
           'Lo que te enseña no se escribe. Se retiene con la boca. Cuando termina, sentís que te pesa algo que antes no tenías, del lado de la cabeza que no sabés nombrar.',
         ],
         traslada: { itemId: 'it-salvoconducto', a: estado.activeInvestigator, carried: true, cause: 'Albornoz se lo entregó al aceptar' },
+        aprenderHechizo: { id: 'corregir-la-mano', source: 'el Comisario Albornoz, al aceptar su oferta, 1710' },
         mitos: { amount: 4, source: 'aceptar lo que Albornoz enseña sobre cómo el aparato corrige lo que no debe quedar escrito' },
         cordura: { amount: 1, cause: 'saber, sin poder dejar de saberlo, que el Círculo corrige a los niños zurdos' },
         sospecha: { amount: -20, cause: 'el salvoconducto del Santo Oficio' },
@@ -1049,11 +1051,477 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
       },
     }),
   },
-  ...['salida-1930', 'salida-1944', 'quedarse', 'muerte-en-la-mina'].map((id) => ({
-    id,
+  // ───────────────────────────────── ACTO III ─────────────────────────────────
+  // El real de cateadores: cuatro maneras de entrar.
+  {
+    id: 'entrar-salvoconducto',
     resolver: () => ({
-      texto: ['[PENDIENTE] Este desenlace todavía no está escrito.'],
-      desenlace: { id, title: id, text: '[PENDIENTE]' },
+      texto: ['Pasás el real de cateadores con la hoja doblada en la mano, sin apuro. El centinela la lee moviendo los labios, se detiene en el sello, y se hace a un lado con la cara de quien preferiría no haber sabido leer.'],
+      consecuencia: { description: 'En 1710, el investigador pasó el real de cateadores con el salvoconducto del Santo Oficio.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+  {
+    id: 'entrar-escolta',
+    resolver: () => ({
+      texto: ['Pasás el real de cateadores entre dos soldados de la comitiva, con el Comisario adelante y sin mirar atrás. Los centinelas se cuadran sin que nadie se lo pida. Nadie te pregunta quién sos; todos saben de quién es el huésped.'],
+      consecuencia: { description: 'En 1710, el investigador pasó el real de cateadores escoltado por la comitiva del Comisario.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+  {
+    id: 'entrar-fuego',
+    resolver: () => ({
+      texto: ['Pasás el real de cateadores mientras un matorral seco al otro lado del campamento se enciende de golpe, sin chispa ni pedernal a la vista. Los centinelas corren con las palas hacia el humo. Alguno se persigna antes de correr.'],
+      sospecha: { amount: 15, cause: 'un fuego que se encendió sin pedernal ante los centinelas del Cabildo' },
+      consecuencia: { description: 'En 1710, el investigador pasó el real de cateadores distrayendo a los centinelas con un fuego que nadie supo explicar.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+  {
+    id: 'entrar-sigilo',
+    prueba: (s) => ({
+      skill: 'sigilo', difficulty: 'hard',
+      reason: 'cruzar de noche un real con seis centinelas que miran hacia afuera',
+      stakes_success: 'pasás entre las tiendas sin que nadie te vea',
+      stakes_failure: 'un centinela te ve, y te lleva ante el capataz',
+      ...(llevaEncima(s, 'it-amuleto-hueso') ? { bonus_dice: 1, modifier_reason: 'el amuleto de hueso baja el ruido de alrededor' } : {}),
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? {
+        texto: ['Pasás el real de cateadores pegado a las tiendas, con el paso de quien conoce el barro que se arrastra. Un centinela bosteza a tres metros. Ninguno se gira.'],
+        consecuencia: { description: 'En 1710, el investigador pasó el real de cateadores a oscuras, sin que nadie lo viera.', scope: 'scene', permanent: false, worldReminder: '' },
+      }
+      : {
+        texto: ['Pasás el real de cateadores, pero uno de los centinelas te ve en el último tramo y te toma del brazo sin brusquedad. No te detiene: te lleva a la boca de la labor y te suelta con una sola frase.\n\n—Si te dejan entrar, es asunto del Comisario.'],
+        sospecha: { amount: 25, cause: 'un centinela lo sorprendió cruzando el real de noche' },
+        consecuencia: { description: 'En 1710, el investigador pasó el real de cateadores, pero un centinela lo vio y lo dejó pasar bajo su propia responsabilidad.', scope: 'scene', permanent: false, worldReminder: '' },
+      },
+  },
+
+  // La boca y el conducto.
+  {
+    id: 'abrir-forzando',
+    prueba: () => ({
+      skill: 'mecanica', difficulty: 'hard',
+      reason: 'aflojar las cadenas nuevas y correr las vigas de algarrobo sin que se oiga',
+      stakes_success: 'las vigas ceden con un solo empujón',
+      stakes_failure: 'algo se cae con estrépito y te lastimás',
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? {
+        texto: ['La boca de la labor cede con un chirrido largo cuando aflojás el último eslabón. Las vigas caen hacia adentro, sin estrépito. Del hueco sale una bocanada de aire tibio y regular, casi respirado.'],
+        consecuencia: { description: 'En 1710, el investigador abrió la boca de la labor forzando las cadenas y las vigas.', scope: 'scene', permanent: false, worldReminder: '' },
+      }
+      : {
+        texto: ['Una viga se te suelta de las manos y cae con un estrépito que se oye hasta el real. Alcanza a lastimarte el hombro antes de rodar. Desde abajo, alguien grita algo en voz baja.'],
+        dano: { amount: 1, cause: 'una viga de algarrobo le cayó sobre el hombro' },
+        sospecha: { amount: 10, cause: 'el estrépito de las vigas se oyó desde el real' },
+      },
+  },
+  {
+    id: 'abrir-con-polvora',
+    resolver: () => ({
+      texto: ['La pólvora abre la boca con un solo golpe, hacia adentro. Las vigas saltan, las cadenas se enroscan como culebras. Un instante después el eco baja por las galerías y vuelve mucho más lento de lo que fue.'],
+      traslada: { itemId: 'it-polvora-cabildo', a: 'labor-bocamina', carried: false, cause: 'la usó para abrir la boca de la labor' },
+      sospecha: { amount: 25, cause: 'una explosión en la boca de la labor, con pólvora del Cabildo sin licencia' },
+      consecuencia: { description: 'En 1710, el investigador abrió la boca de la labor con pólvora del Cabildo.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+  {
+    id: 'pasar-el-conducto',
+    prueba: () => ({
+      skill: 'trepar', difficulty: 'regular',
+      reason: 'meterte por un tiro de un ancho de hombre, de costado, sin nada que arrastre',
+      stakes_success: 'pasás sin un roce',
+      stakes_failure: 'te raspás contra la piedra pulida',
+    }),
+    resolver: ({ tirada }) => ({
+      texto: [
+        'Pasás el conducto de costado, con las rodillas y los codos, dejando afuera lo que no cabe. La piedra es tan lisa que no encuentra asidero: hay que dejarse llevar por la pendiente, con el aire tibio empujando desde adelante.',
+        tirada?.exito ? 'Salís del otro lado con la ropa apenas rozada.' : 'Salís del otro lado con los codos ardiendo, y con la sensación de que alguien te acompañó todo el trayecto.',
+      ],
+      ...(tirada?.exito ? {} : { dano: { amount: 1, cause: 'se raspó contra la piedra pulida del conducto' } }),
+      consecuencia: { description: 'En 1710, el investigador pasó el conducto de ventilación de la Labor Vieja y llegó a la cámara de los antiguos.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+
+  // El socavón: cuatro maneras de pasar.
+  {
+    id: 'incitar-motin',
+    prueba: (s) => {
+      const canta = s.investigators[s.activeInvestigator]?.spellsKnown.some((h) => h.id === 'cantar-de-las-sombras-de-sal');
+      return {
+        skill: 'persuasion', difficulty: 'hard',
+        reason: 'que unos peones que llevan semanas callando decidan dejar la pala todos a la vez',
+        stakes_success: 'los peones dejan de cavar y los guardias no saben a quién apuntar',
+        stakes_failure: 'el capataz te ve hablar y da la voz de alarma',
+        ...(canta ? { bonus_dice: 1, modifier_reason: 'el cantar de la sal es una tonada que ellos reconocen como propia' } : {}),
+      };
+    },
+    resolver: ({ tirada }) => tirada?.exito
+      ? [
+        {
+          texto: ['Un peón deja la pala. Otro, junto a él, la apoya contra la pared. Después son diez, callados, con los picos bajos y la vista fija en el capataz. Nadie grita. Es un motín como lo hacen los que ya no tienen nada que perder: sin ruido.',
+            'Los guardias levantan los mosquetes hacia una pared de hombres callados y no saben a quién apuntar. Cárdenas se mete entre ellos con el látigo enrollado, alza las dos manos y dice que él no vio nada.'],
+          consecuencia: { description: 'En 1710, en el socavón de la Labor Vieja, los peones se amotinaron a instancias del investigador: dejaron de cavar todos a la vez.', scope: 'campaign', permanent: true, worldReminder: 'Los peones de la Labor Vieja se amotinaron por él.' },
+        },
+        { consecuencia: { description: 'En 1710, el investigador pasó el socavón mientras los peones se amotinaban.', scope: 'scene', permanent: false, worldReminder: '' } },
+      ]
+      : {
+        texto: ['Le hablás a un peón en voz baja, en su idioma, y el peón te mira sin decir nada. Detrás, Cárdenas levanta la cabeza. No grita; sólo silba dos veces con una tonada corta, y los guardias se acomodan los mosquetes.'],
+        sospecha: { amount: 15, cause: 'el capataz vio al forastero hablándoles a los peones' },
+      },
+  },
+  {
+    id: 'pasar-de-largo-socavon',
+    prueba: () => ({
+      skill: 'sigilo', difficulty: 'hard',
+      reason: 'cruzar las galerías entre las lámparas sin que las sombras delaten dónde estás',
+      stakes_success: 'pasás entre los peones y ninguno levanta la cabeza',
+      stakes_failure: 'tu sombra llega tarde a la pared y un guardia la ve moverse',
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? {
+        texto: ['Pasás el socavón agachado, midiendo cada paso contra el ritmo de los picos. Tu sombra llega tres segundos después que vos, y para cuando llega ya estás en otra galería. Nadie levanta la cabeza. Nadie, salvo un peón joven que te ve y vuelve a mirar la pared.'],
+        consecuencia: { description: 'En 1710, el investigador pasó el socavón sin que los guardias lo vieran.', scope: 'scene', permanent: false, worldReminder: '' },
+      }
+      : {
+        texto: ['Tu sombra llega tarde a la pared y un guardia la ve moverse antes de verte a vos. Grita una sola palabra. Los picos se detienen todos a la vez.'],
+        sospecha: { amount: 20, cause: 'un guardia del socavón lo descubrió por la sombra' },
+      },
+  },
+  {
+    id: 'combatir-a-los-guardias',
+    resolver: () => [
+      {
+        texto: ['Salís de entre las sombras con lo que tengas en la mano. El guardia joven gira el mosquete con la cara de quien no está seguro de que le hayan dicho que hiciera esto. Los peones se apartan contra las paredes, sin gritar, y por primera vez dejan de cavar.'],
+        npc: { id: 'npc-guardia', present: true, cause: 'estaba en el socavón' },
+        iniciaCombate: { npcIds: ['npc-guardia'], reason: 'un guardia del Cabildo lo enfrentó en el socavón de la Labor Vieja' },
+        consecuencia: { description: 'En 1710, en el socavón de la Labor Vieja, el investigador entró en combate real contra un guardia del Cabildo.', scope: 'scene', permanent: false, worldReminder: '' },
+      },
+      { consecuencia: { description: 'En 1710, el investigador pasó el socavón peleando con los guardias.', scope: 'scene', permanent: false, worldReminder: '' } },
+    ],
+  },
+  {
+    id: 'sobornar-al-capataz',
+    resolver: () => [
+      {
+        texto: ['Le pasás la bolsa a Cárdenas con la mano a medio cerrar. La pesa sin abrirla, mira al techo, y dice hacia las galerías, sin dirigirse a nadie:\n\n—Los que pasan por acá son de la comitiva. Nadie ha visto nada.'],
+        traslada: { itemId: 'it-soborno', a: 'npc-capataz', carried: false, cause: 'se la dio al capataz Cárdenas' },
+        npc: { id: 'npc-capataz', attitudeDelta: 5, cause: 'aceptó la bolsa sin preguntar' },
+      },
+      { consecuencia: { description: 'En 1710, el investigador pasó el socavón comprando al capataz Cárdenas con una bolsa de plata.', scope: 'scene', permanent: false, worldReminder: '' } },
+    ],
+  },
+
+  // La cámara de los antiguos.
+  {
+    id: 'mirar-el-cuerpo',
+    resolver: ({ estado }) => ({
+      texto: [
+        'El cuerpo lleva ropa de 1930: saco de paño, chaleco, botines de suela cosida a máquina. Está tan seco que no huele a nada. Tiene las manos sobre las rodillas y entre ellas una libreta de tapa negra.',
+        'No le ves la cara: la calcita del techo dejó caer, durante décadas, gota por gota, un velo blanco sobre la frente y las mejillas. Pero la libreta tiene una letra que reconocés antes de leerla, y en la primera página, en lápiz, una sola línea: «Cerré yo también.»',
+        'La última página tiene una fecha borrada por la humedad, con dos números apenas legibles: el 17 y el 10.',
+      ],
+      cordura: { amount: 3, cause: 'ver que el bucle ya se había cerrado antes, con alguien de tu misma época, en esta misma cámara' },
+      exposicion: { amount: 4, source: 'santooficio:cuerpo', cause: 'estar frente a algo que parece ser el propio futuro' },
+      traslada: { itemId: 'it-objeto-1930-cripta', a: estado.activeInvestigator, carried: true, cause: 'la tomó de las manos del cuerpo' },
+      pistas: [{ description: 'En la cámara de los antiguos hay un cuerpo seco con ropa de 1930 y una libreta con la letra del investigador: «Cerré yo también», y una fecha borrada terminada en 10. El bucle ya se cerró antes.', kind: 'physical', source: 'la cámara de los antiguos', reliability: 'reliable' }],
+      jugadorNota: { statement: 'Quien está sentado ahí quizá sea tu propio futuro: alguien que también cerró el borde y se quedó. Nada confirma que sea el mismo. Nada confirma que no lo sea.', source: 'la cámara de los antiguos', reliability: 'unknown' },
+    }),
+  },
+
+  // El filón: la Sombra, la plata, Ignacio y Albornoz.
+  {
+    id: 'mirar-el-filon',
+    resolver: () => ({
+      texto: [
+        'El filón brilla en hilos, y por debajo brilla otra cosa que no es plata. El aire vibra en los dientes. Las marcas de almagre alrededor están renovadas: alguien las pintó hace días, sin saber lo que pintaba.',
+        'La Sombra del Socavón se despega de la pared sin ruido. No es un cuerpo: es la ausencia de luz en el sitio donde la luz debería llegar, y donde pasa las lámparas se apagan de a una. Todavía no se acerca. Está reconociendo lo que trae cada uno.',
+        'Junto al filón, el Comisario espera con las manos a la espalda y un libro bajo el brazo. No dice nada. Sabe lo que va a pasar y no necesita apurar.',
+      ],
+      cordura: { amount: 2, cause: 'ver una densidad de sombra que se despega de la pared y reconoce lo que uno trae encima' },
+      exposicion: { amount: 3, source: 'santooficio:filon', cause: 'estar en el punto donde la tierra guarda lo que se cerró' },
+    }),
+  },
+  {
+    id: 'encandilar-a-la-sombra',
+    resolver: ({ estado }) => {
+      const linterna = llevaEncima(estado, 'it-linterna-1930');
+      return {
+        texto: [
+          linterna
+            ? 'Encendés la linterna y el haz blanco, fijo, sin llama, cruza el filón. La Sombra se retuerce hacia atrás como un animal que se quemó. El zumbido baja de tono. Detrás de vos, alguien inhala con un silbido corto: un soldado, un fraile, el Comisario.'
+            : 'Raspás la rueda del encendedor y una llama chica, amarilla, aparece en el aire quieto. La Sombra se aparta de ella con un temblor de fastidio, no de miedo. Alcanza para abrir el paso, no para más.',
+          'Se aparta lo bastante como para que el filón quede a tu alcance.',
+        ],
+        sospecha: { amount: linterna ? 20 : 10, cause: linterna ? 'una luz blanca y fija, sin llama, delante del Comisario' : 'un fuego sin pedernal delante del Comisario' },
+        consecuencia: { description: 'En 1710, en el filón de la Labor Vieja, la Sombra del Socavón retrocedió ante la luz de 1930 que el investigador encendió.', scope: 'scene', permanent: false, worldReminder: '' },
+      };
+    },
+  },
+  {
+    id: 'enfrentar-a-la-sombra',
+    resolver: () => ({
+      texto: ['No tenés nada que la aparte, y decidís no dejarle la iniciativa. La Sombra se mueve por dentro de las sombras de las cosas, y donde pasa las lámparas se apagan una a una. Lo que llega no es un cuerpo sino una presión que te busca el pecho.'],
+      npc: { id: 'npc-sombra', present: true, cause: 'se despegó de la pared del filón' },
+      cordura: { amount: 3, cause: 'pelear contra una densidad de sombra que no tiene forma que la vista pueda sostener' },
+      iniciaCombate: { npcIds: ['npc-sombra'], reason: 'la Sombra del Socavón te alcanzó en el filón de la Labor Vieja' },
+      consecuencia: { description: 'En 1710, en el filón de la Labor Vieja, el investigador entró en combate real contra la Sombra del Socavón.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+  {
+    id: 'extraer-la-plata',
+    prueba: (s) => {
+      const canta = s.investigators[s.activeInvestigator]?.spellsKnown.some((h) => h.id === 'cantar-de-las-sombras-de-sal');
+      return {
+        skill: 'geologia', difficulty: 'regular',
+        reason: 'sacar la plata hilada de la caliza sin quebrarla ni contaminarla',
+        stakes_success: 'sacás hilos limpios, de una sola veta',
+        stakes_failure: 'sacás la plata, pero mezclada con calcita y con polvo',
+        ...(canta ? { bonus_dice: 1, modifier_reason: 'el cantar de la sal aquieta la veta mientras se la trabaja' } : {}),
+      };
+    },
+    resolver: ({ tirada, estado }) => ({
+      texto: [
+        tirada?.exito
+          ? 'La plata sale hilada de la caliza, en hebras largas y limpias, con un ruido como de cuerda que se afloja. La veta no se resiste: parece entregarse.'
+          : 'La plata sale de la caliza mezclada con calcita y con polvo, en trozos que no quieren separarse. Hay que golpear más de lo debido, y cada golpe suena más hondo.',
+        'El zumbido baja un tono. Lo que tenés en la mano es frío aunque la cueva es caliente, y sentís que la piedra te reconoce el peso.',
+      ],
+      traslada: { itemId: 'it-plata-nativa', a: estado.activeInvestigator, carried: true, cause: 'la extrajo del filón' },
+      consecuencia: {
+        description: tirada?.exito
+          ? 'En 1710, el investigador extrajo la plata del filón de la Labor Vieja, limpia y de una sola veta.'
+          : 'En 1710, el investigador extrajo la plata del filón de la Labor Vieja, mezclada con calcita: una plata impura.',
+        scope: 'campaign', permanent: true, worldReminder: 'Sacó la plata del filón.',
+      },
+    }),
+  },
+  {
+    id: 'pedir-a-ignacio',
+    resolver: ({ estado }) => {
+      const a = actitudDeIgnacio(estado);
+      if (a >= 20) {
+        return [
+          {
+            texto: ['Ignacio da un paso adelante, con el sombrero de escribano en las dos manos. Le habla al Comisario sin mirarlo, en el tono con que se le habla a un superior en un confesionario.\n\n—Fray Bartolomé. Yo escribí los informes. Los escribí todos. Y ahora le digo que este hombre cerró el borde, y que lo que hizo hay que dejar que lo termine.',
+              'Los soldados no saben a quién obedecer. El Comisario cierra el libro con un dedo.\n\n—Fray Ignacio. Es la última vez que me dice «yo».'],
+            sospecha: { amount: -15, cause: 'Fray Ignacio se puso de tu lado delante de los soldados' },
+            npc: { id: 'npc-ignacio', attitudeDelta: 5, cause: 'eligió protegerte' },
+            consecuencia: { description: 'En 1710, Fray Ignacio de la Cruz te protegió en la Labor Vieja: se puso de tu lado ante el Comisario y los soldados.', scope: 'campaign', permanent: true, worldReminder: 'Fray Ignacio lo protegió ante el Comisario.' },
+          },
+        ];
+      }
+      if (a >= 5) {
+        return {
+          texto: ['Ignacio da un paso adelante, y se para entre vos y el Comisario con el gesto de quien nunca supo pelear. Alcanza a decir:\n\n—No.',
+            'Un soldado levanta el mosquete. El disparo suena una sola vez, corto, y en la caverna el eco tarda demasiado en volver. Ignacio se queda de pie un instante, mirando hacia abajo con sorpresa, y después se sienta.'],
+          cordura: { amount: 2, cause: 'ver morir a Fray Ignacio delante de vos, por no haberlo sabido cuidar' },
+          npc: { id: 'npc-ignacio', cause: 'lo mató un soldado del Comisario' },
+          consecuencia: { description: 'En 1710, Fray Ignacio de la Cruz murió en la Labor Vieja al interponerse entre el investigador y los soldados del Comisario.', scope: 'campaign', permanent: true, worldReminder: 'Fray Ignacio murió por interponerse.' },
+        };
+      }
+      return {
+        texto: ['Ignacio te mira, mira al Comisario, y baja los ojos.\n\n—Él se lleva el legajo. Yo, lo que me queda de la orden. Lo siento.',
+          'Le hace una seña a los soldados y los soldados te rodean, sin dureza. El fraile no vuelve a mirarte.'],
+        sospecha: { amount: 25, cause: 'Fray Ignacio te entregó a los soldados del Comisario' },
+        consecuencia: { description: 'En 1710, Fray Ignacio de la Cruz te entregó en la Labor Vieja al Comisario Albornoz: eligió obedecer.', scope: 'campaign', permanent: true, worldReminder: 'Fray Ignacio lo entregó al Comisario.' },
+      };
+    },
+  },
+  {
+    id: 'volar-con-mecha-larga',
+    prueba: () => ({
+      skill: 'mecanica', difficulty: 'hard',
+      reason: 'calcular la mecha para que se consuma cuando ya estés afuera, y no antes',
+      stakes_success: 'salís antes de la explosión y el filón cae sobre el Comisario',
+      stakes_failure: 'la mecha corre más rápido de lo que calculaste',
+    }),
+    resolver: ({ tirada }) => tirada?.exito
+      ? {
+        texto: ['Dejás la pólvora al pie del filón, corrés la mecha hasta la boca de la galería y la encendés con lo que tengas. Corrés. Detrás, alguien grita una sola palabra en latín. La explosión llega cuando ya estás en el conducto: un golpe seco que sube por la piedra y se sostiene un buen rato.',
+          'Cuando vuelvas a mirar, el filón ya no está. Ni el Comisario tampoco.'],
+        traslada: { itemId: 'it-polvora-cabildo', a: 'labor-nucleo', carried: false, cause: 'la usó para volar el filón' },
+        consecuencia: { description: 'En 1710, el investigador voló el filón de la Labor Vieja con pólvora y mecha larga: Albornoz murió en la labor bajo el derrumbe.', scope: 'campaign', permanent: true, worldReminder: 'Voló el filón con Albornoz adentro.' },
+      }
+      : {
+        texto: ['La mecha corre más rápido de lo que calculaste. Corrés, pero el conducto es de un ancho de hombre y no se corre por él. La explosión te alcanza a mitad de camino, y el techo cede.'],
+        traslada: { itemId: 'it-polvora-cabildo', a: 'labor-nucleo', carried: false, cause: 'la usó para volar el filón' },
+        consecuencia: { description: 'En 1710, el investigador voló el filón de la Labor Vieja con mecha larga, la calculó mal, y el techo cedió sobre él.', scope: 'scene', permanent: false, worldReminder: '' },
+      },
+  },
+  {
+    id: 'volar-quedandome',
+    resolver: () => ({
+      texto: ['Dejás la pólvora al pie del filón y te quedás. No hay heroísmo en esto: es el único modo de estar seguro de que no falla. El Comisario te mira sin entender, y cuando entiende, ya es tarde.',
+        'Encendés la mecha con el pulgar. El zumbido de la sierra baja de tono, casi como un suspiro.'],
+      traslada: { itemId: 'it-polvora-cabildo', a: 'labor-nucleo', carried: false, cause: 'la usó para volar el filón' },
+      consecuencia: { description: 'En 1710, el investigador voló el filón de la Labor Vieja quedándose a encender la mecha: encendió la mecha.', scope: 'scene', permanent: false, worldReminder: '' },
+    }),
+  },
+  {
+    id: 'exponer-a-albornoz',
+    prueba: (s) => {
+      const b = [
+        hayPista(s, 'lista conventos de todo Cuyo y Chile'), hayPista(s, 'no le cierran los números'),
+        hayConsecuencia(s, 'los peones se amotinaron'), hayConsecuencia(s, 'acusó al Comisario'),
+      ].filter(Boolean).length;
+      return {
+        skill: 'persuasion', difficulty: 'extreme',
+        reason: 'decir en voz alta, delante de los soldados y los peones, para quién trabaja el Comisario de verdad',
+        stakes_success: 'los suyos dudan de él, y él lo sabe',
+        stakes_failure: 'el Comisario no se mueve, y los soldados no se mueven contra él',
+        ...(b ? { bonus_dice: Math.min(2, b), modifier_reason: 'hay quien lo va a escuchar' } : {}),
+      };
+    },
+    resolver: ({ tirada, estado }) => {
+      if (!tirada?.exito) {
+        return {
+          texto: ['Decís lo que sabés, y los soldados no se mueven. El Comisario espera a que termines sin interrumpirte, y cuando terminás, no contesta la acusación: contesta el tono.\n\n—Tiene razón en casi todo. Es una lástima que eso no cambie nada.'],
+          sospecha: { amount: 30, cause: 'acusó al Comisario delante de sus soldados y no pudo sostenerlo' },
+        };
+      }
+      const motin = hayConsecuencia(estado, 'los peones se amotinaron');
+      return motin
+        ? {
+          texto: ['Decís lo que sabés, con los peones callados detrás y los soldados mirando por primera vez hacia el Comisario en vez de hacia vos. Algo cambia en el aire del filón. Los mosquetes bajan, uno por uno, sin que nadie dé la orden.',
+            'Albornoz no se defiende. Guarda el libro bajo el brazo, mira a cada uno de sus hombres, y dice:\n\n—Ya. Entonces terminó.\n\nNadie lo detiene. Nadie lo acompaña. Sale de la labor solo, con el paso de quien ya escribió el renglón siguiente.'],
+          consecuencia: { description: 'En 1710, en la Labor Vieja, Albornoz fue expuesto ante los suyos: los soldados y los peones vieron que el Comisario del Santo Oficio trabajaba para otra cosa, y lo dejaron ir sin escolta.', scope: 'campaign', permanent: true, worldReminder: 'Expuso a Albornoz ante sus propios hombres.' },
+        }
+        : {
+          texto: ['Decís lo que sabés, y algo en la cara del Comisario se cierra por primera vez. No es miedo: es la certeza de que el juego cambió de tablero.\n\n—No me van a detener aquí. Pero van a tener que buscar dónde poner esto, y yo no voy a estar donde lo busquen.',
+            'Se va hacia la galería con dos soldados que ya no saben si son escolta o testigos, y desaparece por el conducto que usó para entrar.'],
+          consecuencia: { description: 'En 1710, en la Labor Vieja, Albornoz huyó de la labor cuando el investigador lo acusó delante de sus soldados, y nadie lo detuvo.', scope: 'campaign', permanent: true, worldReminder: 'Albornoz huyó.' },
+        };
+    },
+  },
+  {
+    id: 'entregar-la-plata',
+    resolver: ({ estado }) => ({
+      texto: [
+        hayConsecuencia(estado, 'aceptó ser agente')
+          ? 'Le tendés la plata al Comisario sin que te lo pida, con el gesto de quien cumple lo que prometió. Él la recibe con las dos manos, la cierra en un pañuelo de lino, y asiente una sola vez.\n\n—No lo dudé.'
+          : 'Le tendés la plata al Comisario con las manos abiertas. No es una decisión: es la única salida que no termina con un soldado apuntando. Él la toma sin apuro, la pesa, y sonríe apenas.\n\n—Sabía que iba a ser razonable.',
+        'La cierra en un pañuelo de lino y la guarda bajo el libro. El zumbido de la sierra baja un semitono, como si el filón se hubiera quedado sin algo.',
+      ],
+      traslada: { itemId: 'it-plata-nativa', a: 'npc-albornoz', carried: false, cause: 'se la entregó al Comisario' },
+      sospecha: { amount: -20, cause: 'entregarle lo que el Comisario quería' },
+      consecuencia: { description: 'En 1710, en la Labor Vieja, Albornoz se salió con la suya: el investigador le entregó la plata del filón y el Comisario se la llevó.', scope: 'campaign', permanent: true, worldReminder: 'Albornoz se llevó la plata del filón.' },
+    }),
+  },
+
+  // Antes del final: medir y calcular.
+  {
+    id: 'medir-los-temblores',
+    resolver: () => ({
+      texto: [
+        'Los temblores llegan cada vez más seguido. Los medís con el segundero del reloj, sentado sobre una piedra del camino, con la muñeca quieta: uno a los cuarenta minutos, el siguiente a los treinta y dos, el siguiente a los veintisiete. Nadie más los nota. Son de los que se sienten en los huesos y no en los ojos.',
+        'Anotás los intervalos en el dorso de la mano con el mismo lápiz que usás para lo demás. El reloj marcha parejo, sin que nadie de acá tenga cómo saberlo.',
+      ],
+      sospecha: { amount: 10, cause: 'un soldado del camino vio al forastero mirando un mecanismo que marcha solo' },
+      tiempo: { minutes: 60, reason: 'medir los temblores con el segundero del reloj' },
+      pistas: [{ description: 'Medidos con el reloj de pulsera, los temblores premonitorios llegan cada vez más seguido: cada intervalo es un veinte por ciento más corto que el anterior. Es el intervalo entre los temblores de un sello que se está cargando.', kind: 'experiential', source: 'el camino del piedemonte, con el reloj', reliability: 'reliable' }],
+    }),
+  },
+  {
+    id: 'inferir-la-fecha',
+    resolver: ({ estado }) => {
+      const conReloj = hayPista(estado, 'intervalo entre los temblores');
+      return {
+        texto: [
+          'Te sentás sobre una piedra del zanjón y sacás las cuentas con el lápiz sobre el dorso de la mano. Siete rayas de almagre, seis separadas por lo que la anciana llama «tres abuelas» y la séptima sola. Un legajo que anota el año de cada temblor grande.',
+          conReloj
+            ? 'Los temblores que medís con el reloj empujan la cuenta un poco más lejos, y la respuesta sale limpia, casi sin resistencia. Un enero de 1944. El día quince, si el segundero no miente.'
+            : 'La cuenta no da un día: da una estación y un año. Un enero de 1944, hacia mediados.',
+          'Doscientos treinta y cuatro años desde hoy. Es demasiado lejos para que le importe a alguien de acá, y demasiado cerca para que a vos no te importe. En 1930, cuando cruzaste, ese año todavía no había llegado.',
+        ],
+        cordura: { amount: 2, cause: 'calcular la fecha exacta de una catástrofe que ya sabés que va a pasar' },
+        jugadorNota: { statement: 'En el mundo que dejaste, 1944 es catorce años en el futuro. Un terremoto en enero de ese año sería el que un día destruya San Juan. Nada de lo que viste acá lo confirma. Todo lo que viste acá lo hace posible.', source: 'el zanjón, con las rayas de almagre y los temblores', reliability: 'unknown' },
+        consecuencia: {
+          description: conReloj
+            ? 'En 1710, el investigador infirió la fecha en que el sello va a reventar: el 15 de enero de 1944.'
+            : 'En 1710, el investigador infirió la fecha en que el sello va a reventar: un enero de 1944, hacia mediados.',
+          scope: 'campaign', permanent: true, worldReminder: 'Sabe que el sello revienta en enero de 1944.',
+        },
+      };
+    },
+  },
+
+  // ─────────────────────────────── DESENLACES ───────────────────────────────
+  ...([
+    {
+      id: 'salida-1930',
+      title: 'Aflojar el sello',
+      consecuencia: 'En 1710, el investigador aflojó el sello del zanjón soltando el agua de golpe, como la primera vez, y cruzó de vuelta a febrero de 1930.',
+      texto: (e: GameState) => [
+        'Rompés la acequia arriba del zanjón con una barreta y el agua contenida por semanas baja de golpe, roja de barro, hacia el tajo donde todo empezó. La marca de piedra la recibe. El aire se pliega sobre sí mismo, otra vez, como la primera noche.',
+        ...(hayConsecuencia(e, 'Fray Ignacio de la Cruz te protegió') ? ['Fray Ignacio está en el talud, con el sombrero de escribano contra el pecho. No dice nada, y hace la señal de la cruz sobre el zanjón como quien bendice un cauce.'] : []),
+        'Cruzás con el pie derecho y no sentís nada: sólo el cambio de la luz. Después, el olor: polvo, salitre, y el humo lejano de una locomotora que hace décadas no debería pasar por acá.',
+      ],
+      epilogo: [
+        'En febrero de 1930, en el Valle de Zonda, una acequia seca vuelve a llenarse durante una noche. Al amanecer, un hombre que nadie contrató está sentado en el borde de un tajo en la tierra, con la ropa rígida de barro seco y una libreta de lápiz entre las manos.',
+        'Nadie le pregunta de dónde viene. En ese valle ya nadie pregunta.',
+      ],
+    },
+    {
+      id: 'salida-1944',
+      title: 'Dejar que reviente',
+      consecuencia: 'En 1710, el investigador dejó que el sello reventara solo y cruzó, en el terremoto, al 15 de enero de 1944.',
+      texto: (e: GameState) => [
+        'No hacés nada. Esperás. Dejás que los temblores lleguen cada vez más seguidos, que el aire del zanjón se cargue, que la marca de piedra empiece a vibrar con un zumbido que se siente en los dientes. No hay ceremonia: sólo un hombre sentado en el barro, mirando cómo se llena de presión lo que se cerró.',
+        ...(hayConsecuencia(e, 'infirió la fecha en que el sello va a reventar: el 15') ? ['Cuando el piso se abre, es un quince de enero, y es exactamente la hora que dio la cuenta.'] : ['Cuando el piso se abre, es un enero, y es más o menos lo que dijo la cuenta.']),
+        'El cruce no se siente como un cruce: se siente como una montaña que se sienta encima. Lo último que ves es el cielo de 1710 partirse, y detrás, otro cielo, más pálido, con el polvo levantado de una ciudad entera.',
+      ],
+      epilogo: [
+        'El quince de enero de 1944, a las nueve menos cuarto de la noche, un temblor destruye la ciudad de San Juan. En medio del polvo, entre casas que se caen sobre calles que ya no se reconocen, un hombre con ropa de 1930 se pone de pie.',
+        'Es el único que parece saber adónde ir, y el único que no puede decirlo.',
+      ],
+    },
+    {
+      id: 'quedarse',
+      title: 'Reforzar el sello',
+      consecuencia: 'En 1710, el investigador grabó el sello con plata de la Labor Vieja para reforzarlo y se quedó en 1710, sin volver.',
+      texto: (e: GameState) => [
+        'Grabás el sello como te enseñó la anciana: una punta de piedra dura sobre la caliza, raya tras raya, siguiendo la forma de lo que hay que guardar. Y rellenás cada raya con la plata del filón, que se acomoda en la caliza como si hubiera nacido ahí.',
+        ...(hayConsecuencia(e, 'extrajo la plata del filón de la Labor Vieja, mezclada') ? ['La plata impura no llena las rayas del todo. El sello queda firme, pero con una vetita por donde el tiempo va a poder pasar.'] : ['La plata limpia llena hasta el final de la raya, sin costura.']),
+        'Cuando terminás, el zumbido baja hasta ser un silencio que se siente en el pecho. El borde está reforzado. También, del otro lado, ya no hay puerta de regreso, ni siquiera por 1944: lo que guardaste no se abre solo.',
+      ],
+      epilogo: [
+        'Nadie sabe qué pasa en San Juan en enero de 1944. Nada en el archivo de esta villa lo dice. Nada en el cielo lo confirma.',
+        'En el zanjón, una piedra de caliza blanca tiene grabadas siete líneas de plata. Con los años se cubre de musgo. Alguien viene a verla, de tanto en tanto, y no dice a qué.',
+      ],
+    },
+    {
+      id: 'muerte-en-la-mina',
+      title: 'Lo que había en la veta',
+      consecuencia: 'En 1710, el investigador murió en la Labor Vieja al volar el filón, con la pólvora del Cabildo, sin volver a salir.',
+      texto: (e: GameState) => [
+        hayConsecuencia(e, 'encendió la mecha')
+          ? 'La mecha corre hacia la pólvora con un siseo corto, y no hay nada más que hacer que mirarla. El zumbido baja a un solo tono, sostenido, casi cantado. Después la caverna se abre hacia adentro.'
+          : 'El techo cede con un golpe que se siente antes de oírse. Una losa de caliza blanca cae donde estabas, y el resto viene detrás con paciencia de siglos. El conducto queda cegado. La cámara, sin luz.',
+        'No hay dolor. Hay una presión enorme, y después el filón, mirado desde abajo, brillando en hilos. Hay una libreta de tapa negra en un bolsillo que nadie va a leer, y una última frase de lápiz.',
+      ],
+      epilogo: [
+        'En la cámara de los antiguos, sentado contra la pared del fondo, hay un cuerpo seco con ropa de otro siglo y una libreta entre las manos. No hay fecha en la última página, sólo un final abierto.',
+        'Doscientos años más tarde alguien lo va a encontrar, y va a reconocer la letra.',
+      ],
+    },
+  ]).map((f) => ({
+    id: f.id,
+    resolver: ({ estado }: { estado: GameState }) => ({
+      texto: f.texto(estado),
+      consecuencia: { description: f.consecuencia, scope: 'campaign' as const, permanent: true, worldReminder: f.title },
+      desenlace: {
+        id: f.id, title: f.title,
+        text: [
+          ...f.epilogo,
+          ...(hayConsecuencia(estado, 'Albornoz murió en la labor') ? ['En el libro de cuentas del Comisario, en la columna de San Juan, no hay cruz ni fecha. Hay una mancha de tinta, y el libro no está.'] : []),
+          ...(hayConsecuencia(estado, 'Albornoz se salió con la suya') ? ['En Lima, en una contaduría sin letrero, un hombre delgado cierra una columna y anota al margen una cifra que no va a compartir.'] : []),
+          ...(hayConsecuencia(estado, 'Albornoz huyó de la labor') || hayConsecuencia(estado, 'Albornoz fue expuesto ante los suyos') ? ['El Comisario Albornoz no vuelve a pisar San Juan. Se dice que sigue visitando conventos, y que ninguno le abre la puerta dos veces.'] : []),
+          ...(hayConsecuencia(estado, 'Fray Ignacio de la Cruz murió') ? ['Fray Ignacio de la Cruz está enterrado en el cementerio de la Merced, con una cruz sin fecha.'] : []),
+          ...(hayConsecuencia(estado, 'padrino oculto del hijo zurdo') ? ['Un niño zurdo de San Juan aprende a escribir con la mano derecha, y cada tanto, cuando nadie mira, con la izquierda.'] : []),
+        ],
+      },
     }),
   })),
 ];
+

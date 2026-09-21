@@ -204,3 +204,55 @@ del Cabildo, la cárcel, la oferta de Albornoz y los dos cruces entre ramas.
 - **Trampa del clasificador**: una escena cuya frase empieza con un verbo de
   soltar o tomar sobre un ítem (`Dejo una limosna…`) pierde contra el genérico si
   no declara `tambienAlAgarrar`.
+
+## Estado del Acto III (2026-09-21) — el contenido está completo
+
+Escrito y probado (`prueba-santo-oficio.ts`, ~190 comprobaciones): La Labor Vieja
+de punta a punta y los desenlaces. **Sin pendientes de contenido.**
+
+- **Entrar al real:** salvoconducto, escolta del Comisario, fuego sin pedernal
+  (+15) o colarse de noche (sigilo difícil; si falla te llevan ante Albornoz).
+- **La boca:** forzar (mecánica difícil), o pólvora (se gasta, +25). El conducto
+  siempre está. **El socavón:** motín (persuasión difícil; el cantar da un
+  dado), pasar de largo, combatir a los guardias o sobornar al capataz.
+- **La cámara de los antiguos:** el cuerpo con ropa de 1930 y la libreta con la
+  letra del investigador («Cerré yo también»). Cordura −3. Es el bucle de otro
+  —o el propio futuro—: nada lo confirma ni lo niega.
+- **El filón:** la Sombra se aparta con la luz de 1930 (linterna +20 de
+  sospecha, encendedor +10) o se pelea de verdad. La plata sale limpia o impura
+  (el cantar da un dado; el fallo también la entrega: no gatea).
+- **Ignacio (M3)** según su actitud: ≥20 te protege, 5–19 intenta protegerte y
+  muere, <5 te entrega.
+- **Albornoz nunca se pelea de frente** y hay que resolverlo para salir del
+  filón: muere (volar el filón con mecha larga, mecánica difícil), huye (lo
+  exponés sin peones amotinados), es expuesto ante los suyos (lo exponés con los
+  peones amotinados) o se sale con la suya (le entregás la plata).
+- **La fecha del 1944** se calcula en el zanjón con DOS fuentes independientes:
+  las siete rayas de la cueva y (los temblores medidos con el reloj o las fechas
+  del legajo). Con el reloj sale «el 15 de enero de 1944»; sin él, «un enero de
+  1944, hacia mediados». Ninguna tirada la entrega.
+- **Los cinco desenlaces**, con consecuencias de campaña que las aventuras
+  siguientes leerán: aflojar el sello (1930), dejar que reviente (1944, en el
+  terremoto real), reforzar el sello (quedarse; imposible para quien aceptó ser
+  agente), morir en la mina, y la hoguera. Cada epílogo se compone según lo que
+  pasó con Albornoz, Ignacio y el hijo de Josefa.
+- **Hechizo nuevo:** «Corregir la mano» (lo enseña Albornoz al reclutar).
+
+### Cuatro bugs de nombres de lugar (y un chequeo que ya los ata)
+
+El clasificador no distingue a qué lugar apunta «Voy a X» si dos lugares
+comparten un nombre o un alias. Aparecieron cuatro veces: «La laguna baja»
+(«baja» leído como el verbo *bajar*), «huerta y ventilación» (alias que chocaba
+con «El conducto de ventilación»), seis lugares que empezaban con «La Labor
+Vieja:», y aliases repetidos entre `zanjon`/`zanjon-sellado`,
+`camino-villa`/`camino-piedemonte`, `ranchada`/`labor-campamento`. La suite
+ahora falla si un nombre o alias se repite entre lugares.
+
+### Lo que falta para publicarla
+
+1. Registrarla en `catalogo.ts` (`requiere: ['la-merced-de-las-animas']`,
+   `continuacion: true`, fecha `1930-02-10`) y correr `prueba-auditoria.ts`
+   sobre ella con el resto.
+2. Jugarla en el navegador, las dos aperturas de punta a punta.
+3. Calibrar la sospecha jugando (los valores +10/+15/+20/+25 son de borrador).
+4. Entrada en `ROADMAP.md` y borrar `santo-oficio.esqueleto.json`.
