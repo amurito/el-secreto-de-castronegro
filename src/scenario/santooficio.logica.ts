@@ -1,9 +1,10 @@
 /**
  * EL SANTO OFICIO DE CUYO — lógica de escenas.
  *
- * ESTADO: en construcción. Escritos: el arranque compartido, el Acto I de la
- * rama Iglesia (interrogatorio, encierro, archivo, huerta) y el desenlace de
- * la hoguera. Pendientes: la rama huarpe, el Acto II, el Acto III y los cuatro
+* ESTADO: en construcción. Escritos: el arranque compartido, el Acto I de las
+ * dos ramas (Iglesia: interrogatorio, encierro, archivo, huerta; huarpe: barro,
+ * altar, ofrenda, espionaje, ranchada, la rastrillería encima) y el desenlace
+ * de la hoguera. Pendientes: el Acto II, el Acto III y los cuatro
  * desenlaces restantes (sus escenas existen sólo para que el contenido cargue;
  * dicen «PENDIENTE»). No está registrada en `catalogo.ts`. Ver
  * `docs/SANTO-OFICIO-DISENO.md`.
@@ -444,6 +445,206 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
         npc: { id: 'npc-ignacio', attitudeDelta: -8, cause: 'el investigador le mintió y no lo disimuló bien' },
       };
     },
+  },
+
+  // ───────────────────────────── RAMA HUARPE ─────────────────────────────
+  {
+    id: 'cruzar-el-barro',
+    prueba: (s) => ({
+      skill: 'sigilo', difficulty: 'regular',
+      reason: 'pisar exactamente donde pisa Takillpa, sin hacer ruido, con los faroles cerca',
+      stakes_success: 'los perros pierden el rastro en el agua',
+      stakes_failure: 'un ruido de más y los faroles giran hacia vos',
+      ...(llevaEncima(s, 'it-amuleto-hueso') ? { bonus_dice: 1, modifier_reason: 'el amuleto de hueso baja el ruido de alrededor' } : {}),
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: ['Takillpa cruza por donde el fondo aguanta, y el investigador pone el pie exactamente donde él lo saca. Es una danza lenta, sin música. El barro suelta cada bota con un ruido que se confunde con el de las ranas.',
+            'Un farol pasa a menos de veinte pasos, se detiene, y sigue. Los perros olfatean el agua y no encuentran nada que seguir.'],
+          pistas: [{ description: 'Takillpa pisa siempre donde el barro aguanta y sabe cuál es el tramo donde los perros pierden el rastro en el agua.', kind: 'experiential', source: 'el totoral de Guanacache', reliability: 'reliable' }],
+        };
+      }
+      return {
+        texto: ['Takillpa cruza por donde el fondo aguanta, pero el investigador apoya el pie medio paso a un costado. El barro cede con un chasquido húmedo y una salpicadura que en el silencio suena a disparo.',
+          'Los dos faroles se detienen a la vez. Se miran entre ellos. Giran.'],
+        sospecha: { amount: 15, cause: 'un chapoteo delató su posición a los faroles de la rastrillería' },
+      };
+    },
+  },
+
+  ...(['reloj', 'encendedor', 'linterna'] as const).map((k) => {
+    const cosa = {
+      reloj: { item: 'it-reloj-pulsera', nombre: 'el reloj de pulsera', cierre: 'El tic todavía se oye un momento bajo el agua, parejo, sin cuerda. Después no.' },
+      encendedor: { item: 'it-encendedor-1930', nombre: 'el encendedor de bencina', cierre: 'La tapa alcanza a abrirse una vez al hundirse y una chispa chica se apaga sola bajo la superficie.' },
+      linterna: { item: 'it-linterna-1930', nombre: 'la linterna eléctrica', cierre: 'La luz no se apaga: baja, blanca y fija, cada vez más abajo, hasta que el agua se la traga entera.' },
+    }[k];
+    return {
+      id: `ofrendar-${k}`,
+      resolver: ({ estado }: { estado: GameState }) => [
+        {
+          texto: [
+            `Le extiende ${cosa.nombre} a Takillpa. El viejo no lo toma en seguida: lo mira un rato, como quien decide si una deuda se paga así. Después lo recibe con las dos manos, camina hasta el borde del agua y lo suelta.`,
+            `La laguna se traga lo que le dan. ${cosa.cierre}`,
+            'Takillpa vuelve y descuelga un amuleto de hueso y almagre de una rama baja. Se lo pone en la palma sin decir nada.',
+          ],
+          traslada: { itemId: cosa.item, a: 'npc-takillpa', carried: false, cause: 'se lo ofrendó a Takillpa, que lo arrojó a la laguna' },
+          npc: { id: 'npc-takillpa', attitudeDelta: 8, cause: 'el investigador se desprendió de algo que le costaba' },
+          consecuencia: {
+            description: `En 1710, el investigador ofrendó ${cosa.nombre} a Takillpa, que lo arrojó a la laguna de Guanacache: dejó atrás un objeto de su tiempo para ganarse la confianza de los guardianes huarpes.`,
+            scope: 'campaign' as const, permanent: true,
+            worldReminder: `Se desprendió de ${cosa.nombre}, ofrendado a la laguna.`,
+          },
+        },
+        {
+          traslada: { itemId: 'it-amuleto-hueso', a: estado.activeInvestigator, carried: true, cause: 'Takillpa se lo dio a cambio de la ofrenda' },
+        },
+      ],
+    };
+  }),
+
+  {
+    id: 'guardar-el-metal',
+    resolver: () => ({
+      texto: [
+        'Takillpa asiente sin sonreír. No dice nada durante un largo rato. Cuando habla, no es un reproche:\n\n—Es suyo. Lo que traiga, lo carga usted. Pero no lo abra cerca del agua, y no lo deje solo de noche. Lo que duerme abajo no distingue entre lo que se usa y lo que se guarda.',
+        'Se da vuelta y sigue caminando. Ya no hay amuleto colgando de la rama baja: alguien lo volvió a guardar.',
+      ],
+      npc: { id: 'npc-takillpa', attitudeDelta: -5, cause: 'el investigador se negó a desprenderse de lo que trae de 1930' },
+      exposicion: { amount: 3, source: 'santooficio:metal', cause: 'cargar cerca de la fosa objetos de un tiempo que todavía no llegó' },
+    }),
+  },
+
+  {
+    id: 'aprender-manto',
+    prueba: () => ({
+      skill: 'ocultismo', difficulty: 'hard',
+      reason: 'seguir un soplo que se dice con la boca casi cerrada y contra el viento',
+      stakes_success: 'lo aprendés limpio, con poco costo',
+      stakes_failure: 'lo aprendés, pero te cuesta más de lo que debería',
+    }),
+    resolver: ({ tirada, estado }) => {
+      const yaSabe = estado.investigators[estado.activeInvestigator]?.spellsKnown.some((h) => h.id === 'manto-de-la-cienaga');
+      const ok = Boolean(tirada?.exito);
+      return {
+        texto: [
+          ok
+            ? 'Aprendió el soplo bajo con la segunda vez: no hace falta decirlo, hace falta dejar que salga contra el viento del Zonda con la boca casi cerrada. Takillpa lo corrige una sola vez, con dos dedos en la garganta.'
+            : 'Aprendió el soplo bajo, pero le cuesta: se le va la voz, le sale por la nariz, se le mezcla con la respiración. Takillpa lo repite tres veces con paciencia. A la cuarta sale, y cuando sale, se le queda agarrado en el pecho.',
+          'Es un soplo, no una palabra. Una niebla que no estaba ahí un instante antes, y que espesa lo que hay alrededor de quien lo dice.',
+        ],
+        cordura: { amount: ok ? 1 : 2, cause: 'aprender a espesar la niebla con la respiración y saber que funciona' },
+        ...(yaSabe ? {} : { aprenderHechizo: { id: 'manto-de-la-cienaga', source: 'Takillpa, en el altar del sauce, 1710' } }),
+      };
+    },
+  },
+
+  {
+    id: 'espiar-rastrilleria',
+    prueba: (s) => ({
+      skill: 'sigilo', difficulty: 'hard',
+      reason: 'llegar a la orilla y escuchar a la partida de la rastrillería sin que los perros te huelan',
+      stakes_success: 'oís quién los manda y por qué cobran',
+      stakes_failure: 'te ven la cabeza entre los juncos',
+      ...(llevaEncima(s, 'it-amuleto-hueso') ? { bonus_dice: 1, modifier_reason: 'el amuleto de hueso baja el ruido de alrededor' } : {}),
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: [
+            'Desde los juncos se ve una hoguera chica y cinco hombres alrededor. Uno habla sin levantar la voz: es el que manda, un sargento mayor de cara curtida. Los otros lo llaman Ledesma.',
+            '—El Comisario paga por cabeza, y más si viene con nombre. No lo quiere muerto: lo quiere vivo y hablando. Al que lo tenga, media paga por adelantado. Los indios que lo escondan, al padrón.',
+            'Uno de los hombres pregunta qué es lo que tiene el forastero. Ledesma escupe al fuego.\n\n—Eso no es asunto de soldados.',
+          ],
+          pistas: [{ description: 'El sargento mayor Ledesma dice que el Comisario quiere al forastero «vivo y hablando», que paga por cabeza y más si viene con nombre, y que los indios que lo escondan irán al padrón.', kind: 'testimonial', source: 'la laguna somera', reliability: 'reliable' }],
+        };
+      }
+      return {
+        texto: [
+          'Desde los juncos se ve una hoguera chica y cinco hombres alrededor. Uno manda: un sargento mayor, al que llaman Ledesma. Alcanza a oír el nombre, y el tono, y después el ruido de una rama que se quiebra bajo su propio peso.',
+          'Un perro levanta la cabeza. El sargento no se da vuelta todavía. Hace un gesto con la mano, corto.',
+        ],
+        sospecha: { amount: 20, cause: 'la partida de la rastrillería lo vio entre los juncos' },
+        pistas: [{ description: 'Un sargento mayor llamado Ledesma manda la partida de la rastrillería que sigue el rastro por la laguna somera.', kind: 'testimonial', source: 'la laguna somera', reliability: 'reliable' }],
+      };
+    },
+  },
+
+  {
+    id: 'descansar-isla',
+    resolver: () => ({
+      texto: [
+        'Dormís en el hueco de los juncos con la ropa todavía húmeda y el amuleto, si lo tenés, apretado en la mano. Nadie pasa. Los perros tampoco.',
+        'Cuando despertás el cielo cambió de color. El cansancio bajó un escalón, y con él el miedo a que alguien esté a punto de aparecer.',
+      ],
+      sospecha: { amount: -5, cause: 'una noche sin rastro cerca en el hueco de los juncos' },
+      tiempo: { minutes: 240, reason: 'dormir unas horas en la isla de los juncos' },
+    }),
+  },
+
+  {
+    id: 'aprender-cantar',
+    prueba: () => ({
+      skill: 'ocultismo', difficulty: 'hard',
+      reason: 'retener de una sola vez una tonada que ningún huarpe repite igual dos veces',
+      stakes_success: 'la aprendés con poco costo',
+      stakes_failure: 'la aprendés, pero te deja más marcado de lo que debería',
+    }),
+    resolver: ({ tirada, estado }) => {
+      const yaSabe = estado.investigators[estado.activeInvestigator]?.spellsKnown.some((h) => h.id === 'cantar-de-las-sombras-de-sal');
+      const ok = Boolean(tirada?.exito);
+      return {
+        texto: [
+          ok
+            ? 'Aprendió el cantar de la sal escuchando una sola vez, con los ojos cerrados y las manos abiertas sobre las rodillas. No son palabras: es una tonada que sube y baja como un cauce, y que se termina cuando ya no queda nadie a quien cantarle.'
+            : 'Aprendió el cantar de la sal, aunque le cuesta: se le corta el aire en la parte que sube y se le pierde la parte que baja. La anciana lo canta una vez, sin repetir. Lo que no oyó, lo termina inventando, y el resultado le suena a algo que no era para cantarse así.',
+          'La anciana ya se volvió hacia el fuego. No va a preguntar si le salió.',
+        ],
+        cordura: { amount: ok ? 1 : 2, cause: 'aprender una tonada que borra lo que uno dejó atrás en el aire y en la tierra' },
+        ...(yaSabe ? {} : { aprenderHechizo: { id: 'cantar-de-las-sombras-de-sal', source: 'María Sayanca, en la ranchada de Guanacache, 1710' } }),
+      };
+    },
+  },
+
+  // La rastrillería encima (sospecha 60+): no se camina, se resuelve.
+  {
+    id: 'rastrilleria-fuga',
+    prueba: (s) => ({
+      skill: 'orientarse', difficulty: 'hard',
+      reason: 'perder a los perros en el agua, sin salirte del fondo firme',
+      stakes_success: 'los perros pierden el rastro y la partida da la vuelta',
+      stakes_failure: 'el agua te devuelve exactamente al lugar donde te buscan',
+      ...(llevaEncima(s, 'it-amuleto-hueso') ? { bonus_dice: 1, modifier_reason: 'el amuleto de hueso baja el ruido de alrededor' } : {}),
+    }),
+    resolver: ({ tirada }) => {
+      if (tirada?.exito) {
+        return {
+          texto: ['Se mete en el agua hasta la cintura, sigue el borde de un canal que Takillpa le enseñó, y cuenta hasta cien sin respirar hondo. Los perros llegan al mismo lugar, ladran, giran, y ladran hacia otro lado.',
+            'La rastrillería perdió el rastro. No por mucho tiempo, pero por ahora. Uno de los hombres maldice en voz baja; otro escupe al agua.'],
+          sospecha: { amount: -20, cause: 'despistó a la rastrillería en el agua' },
+        };
+      }
+      return {
+        texto: ['El agua lo devuelve a la orilla por donde entró. Un perro sale de entre los juncos a tres metros, con la lengua colgando y los ojos fijos, y detrás del perro se oye una voz que da una orden corta.',
+          'No hay dónde ir que no sea hacia ellos.'],
+        sospecha: { amount: 25, cause: 'la fuga por el agua falló y la rastrillería lo tiene a la vista' },
+      };
+    },
+  },
+  {
+    id: 'rastrilleria-combate',
+    resolver: () => ({
+      texto: [
+        'Se para, se da vuelta y los espera. Un perro sale de entre los juncos y un rastreador detrás, con el mosquete a medio levantar.',
+        'La rastrillería perdió el rastro de lo demás: ahora sólo hay un hombre y un perro delante, y el barro entre los dos.',
+      ],
+      npc: { id: 'npc-rastreador', present: true, cause: 'la partida de la rastrillería lo alcanzó en las lagunas' },
+      iniciaCombate: { npcIds: ['npc-rastreador'], reason: 'la rastrillería del Cabildo lo alcanzó en las lagunas de Guanacache' },
+      consecuencia: {
+        description: 'En 1710, en las lagunas de Guanacache, el investigador se enfrentó a un rastreador de la rastrillería del Cabildo en lugar de huir.',
+        scope: 'scene', permanent: false, worldReminder: '',
+      },
+    }),
   },
 
   // ─────────────────────────────── DESENLACES ───────────────────────────────

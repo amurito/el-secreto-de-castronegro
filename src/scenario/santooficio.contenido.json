@@ -34,6 +34,31 @@
       "categoria": "documento",
       "shortDescription": "Un libro apaisado de tapa negra, con una cinta roja de marcador. Está abierto sobre la mesa, del lado de la silla con respaldo. La letra es pequeña y cuidadosa, la de alguien que anota lo que otros preferirían olvidar.",
       "owner": "sd-cripta"
+    },
+    {
+      "id": "it-amuleto-hueso",
+      "name": "Amuleto de hueso y almagre",
+      "categoria": "personal",
+      "aliases": [
+        "amuleto",
+        "el amuleto",
+        "amuleto de hueso"
+      ],
+      "shortDescription": "Un hueso de flamenco tallado en espiral y atado con cuero, con una mancha de almagre en un extremo. No pesa nada. Cuando se lo aprieta en la mano, el ruido de alrededor baja un poco, como si alguien hubiera tapado una ventana.",
+      "owner": "altar-sauce",
+      "carried": false,
+      "roto": false,
+      "publicProperties": [],
+      "hiddenProperties": [],
+      "discoveredProperties": [],
+      "conditionalProperties": [],
+      "temporalProperties": [],
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "usageCount": 0
     }
   ],
   "npcs": [
@@ -150,13 +175,124 @@
       "present": false,
       "isCompanion": false,
       "createdAt": "inicio",
+      "fears": [
+        "Que el metal del forastero atraiga la mirada de lo que duerme en la fosa.",
+        "Que la rastrillería llegue a la ranchada por culpa de un rastro mal cortado."
+      ],
+      "refusals": [
+        "No dice cuántos guardianes quedan, ni dónde están, ni cuántas veces se tuvo que cerrar antes."
+      ],
+      "secrets": [
+        {
+          "id": "s-takillpa-metal",
+          "content": "El metal que viene «de más adelante» resuena con lo que hay en la fosa: la fosa guarda cosas que recuerdan a quien las trajo, y un reloj que marca una hora que todavía no llegó es un llamado. Por eso los guardianes nunca dejan que un objeto de otro tiempo pase la noche cerca del agua.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=3",
+          "revealed": false
+        },
+        {
+          "id": "s-takillpa-otros",
+          "content": "Hace muchos años, antes de que él naciera, otro forastero de ropa rara llegó a las lagunas. Los ancianos lo cuentan sin nombre. No volvió a cruzar: se quedó del otro lado del sello, en un lugar que Takillpa no dice.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=5",
+          "revealed": false
+        }
+      ],
+      "id": "npc-takillpa",
+      "name": "Takillpa",
+      "description": "Los españoles lo llaman «el viejo Gregorio». Sobrevivió a dos levas de mita hacia Chile y volvió las dos veces. Camina sin ruido, habla poco y mira siempre un poco al costado de lo que le hablan, como si la fosa fuera una persona más en la conversación.",
+      "motivation": "Que la ciénaga siga contenida y que alguien más sepa cómo. No necesita que le crean: necesita que no la sequen, y que el forastero sirva para eso en vez de complicarlo."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": true,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Que el Comisario del Cabildo registre la ranchada en un padrón: un padrón es una leva.",
+        "Que el cantar se pierda con ella."
+      ],
+      "refusals": [
+        "No repite las palabras del cantar delante de alguien a quien no le confió el silencio."
+      ],
+      "secrets": [
+        {
+          "id": "s-anciana-pinturas",
+          "content": "Las pinturas de la cueva se repintan en cada gran sacudida de la tierra. Llevan la cuenta: cada capa de almagre es una vez que el agua se soltó y la tierra se abrió. Entre una capa y la siguiente pasaron siempre más generaciones de las que ella sabe contar, y la última capa es de hace más de cien años.",
+          "disclosure": "KEEPER_SECRET",
+          "revealGate": "actitud>=4",
+          "revealed": false
+        }
+      ],
+      "id": "npc-anciana",
+      "name": "María Sayanca",
+      "description": "La más vieja de la ranchada, de una familia de caciques que ya no lo es para nadie más que para los suyos. Tiene el nombre cristiano de la partida de bautismo y otro que no dice. Se sienta siempre frente al fuego, de espaldas a lo que no quiere ver.",
+      "motivation": "Que las pinturas de la cueva sigan siendo de quienes las cuidan y no de quien las quiera medir. Un forastero que aprende el cantar sin entender lo que canta es peor que uno que no lo aprende."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
+      "fears": [
+        "Volver a la villa con las manos vacías."
+      ],
+      "refusals": [],
+      "secrets": [],
+      "id": "npc-ledesma",
+      "name": "Sargento Mayor Ledesma",
+      "description": "Jefe de la rastrillería del Cabildo, cuarenta y tantos años, la cara curtida de quien pasó media vida a caballo. Cumple órdenes sin entusiasmo y sin dudas. Cobra por cabeza.",
+      "motivation": "Cumplir la orden y cobrar. No le interesa por qué buscan al forastero; le interesa que lo encuentren."
+    },
+    {
+      "canon": {
+        "truth": "CANON_SETTING",
+        "disclosure": "PUBLIC",
+        "source": "scenario"
+      },
+      "status": "alive",
+      "knowledge": [],
+      "relationships": [],
+      "attitude": {},
+      "present": false,
+      "isCompanion": false,
+      "createdAt": "inicio",
       "fears": [],
       "refusals": [],
       "secrets": [],
-      "id": "npc-takillpa",
-      "name": "Takillpa",
-      "description": "Guardián huarpe del borde. [Rama huarpe pendiente de escribir: acá sólo el nombre.]",
-      "motivation": "[PENDIENTE]"
+      "id": "npc-rastreador",
+      "name": "Un rastreador de la rastrillería",
+      "description": "Un mestizo de la milicia del Cabildo, con un mosquete al hombro y un perro sabueso atado a la cintura. No odia a nadie; hace su trabajo.",
+      "motivation": "Cobrar la recompensa y volver.",
+      "combate": {
+        "hp": 11,
+        "maxHp": 11,
+        "pelea": 45,
+        "esquivar": 30,
+        "armaId": "mosquete-chispa",
+        "bonificacionDano": "0",
+        "defensaPorDefecto": "contraataca",
+        "dex": 50,
+        "build": 1,
+        "distancia": 10,
+        "armadura": 1
+      }
     }
   ],
   "documents": [
@@ -201,7 +337,8 @@
       "itemsPresent": [],
       "npcsPresent": [
         "npc-ignacio",
-        "npc-takillpa"
+        "npc-takillpa",
+        "npc-rastreador"
       ],
       "visited": false,
       "umbralIntensity": 18,
@@ -370,84 +507,165 @@
     "totoral-noche": {
       "id": "totoral-noche",
       "name": "El totoral, de noche",
-      "aliases": [],
-      "description": "[PENDIENTE] Barro hasta la rodilla y perros a lo lejos. La persecución activa arranca acá.",
-      "atmosphere": [],
+      "aliases": [
+        "totoral",
+        "el totoral",
+        "los juncos"
+      ],
+      "description": "Una selva baja de totora y junco donde el barro llega a la rodilla y el agua no tiene orilla. No hay camino: hay lugares donde el fondo aguanta y lugares donde no, y sólo quien creció acá sabe cuáles son. Más allá de los juncos, a lo lejos, dos faroles se mueven en zigzag.",
+      "atmosphere": [
+        "El barro chupa cada paso con un ruido de boca.",
+        "Los juncos altos cierran el cielo. Todo lo que se ve, se ve a un brazo de distancia.",
+        "Un ladrido corto, lejos, y después nada."
+      ],
       "connections": [
         "zanjon",
         "altar-sauce",
         "laguna-baja"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-takillpa",
+        "npc-rastreador"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 14,
+      "senses": {
+        "smell": [
+          "Agua estancada, raíz podrida, algo dulce y verde."
+        ],
+        "sound": [
+          "Ranas, y debajo de las ranas, perros."
+        ]
+      }
     },
     "altar-sauce": {
       "id": "altar-sauce",
       "name": "El altar del sauce",
-      "aliases": [],
-      "description": "[PENDIENTE] Tronco seco con amuleto de hueso y almagre. Acá se aprende el Manto de la Ciénaga, y se decide si se ofrenda un objeto de 1930.",
-      "atmosphere": [],
+      "aliases": [
+        "altar",
+        "el altar",
+        "el sauce"
+      ],
+      "description": "Un sauce seco, más viejo que la villa, con el tronco ahuecado a la altura de un hombre. Colgados de las ramas bajas hay huesos atados con cuero, plumas grises y trozos de almagre. Nadie habla en voz alta acá, ni siquiera Takillpa.",
+      "atmosphere": [
+        "Un amuleto de hueso y almagre cuelga de una rama, más nuevo que los otros.",
+        "El agua, a los pies del tronco, está completamente quieta.",
+        "Se siente una presión leve en los oídos, como al bajar de la cordillera."
+      ],
       "connections": [
         "totoral-noche",
         "ranchada"
       ],
-      "itemsPresent": [],
-      "npcsPresent": [],
+      "itemsPresent": [
+        "it-amuleto-hueso"
+      ],
+      "npcsPresent": [
+        "npc-takillpa",
+        "npc-rastreador"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 20,
+      "senses": {
+        "smell": [
+          "Cuero viejo, ceniza, tierra colorada."
+        ]
+      }
     },
     "laguna-baja": {
       "id": "laguna-baja",
-      "name": "La laguna baja",
-      "aliases": [],
-      "description": "[PENDIENTE] Por donde cierra la Rastrillería. Escena de persecución con tirada de sigilo o de orientación.",
-      "atmosphere": [],
+      "name": "La laguna somera",
+      "aliases": [
+        "laguna",
+        "la laguna",
+        "laguna somera",
+        "la somera"
+      ],
+      "description": "Un espejo de agua poco profunda, del ancho de dos cuadras, con una franja de barro seco alrededor. Es por donde tiene que pasar cualquiera que quiera seguir el rastro hasta las lagunas grandes, y por eso mismo por donde pasan los que lo buscan.",
+      "atmosphere": [
+        "Pasos de caballo, sobre barro seco, todavía lejos.",
+        "En la orilla opuesta, una hoguera chica que no debería estar ahí a esta hora.",
+        "Los flamencos se levantaron todos juntos hace un momento y todavía no se posaron."
+      ],
       "connections": [
         "totoral-noche",
         "isla-juncos"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-rastreador",
+        "npc-ledesma"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 8,
+      "senses": {
+        "sound": [
+          "Agua que se mueve, sin viento."
+        ]
+      }
     },
     "ranchada": {
       "id": "ranchada",
       "name": "La ranchada de Guanacache",
-      "aliases": [],
-      "description": "[PENDIENTE] El campamento de los guardianes. La anciana no confía en un forastero de metal.",
-      "atmosphere": [],
+      "aliases": [
+        "ranchada",
+        "la ranchada",
+        "el campamento"
+      ],
+      "description": "Ocho o diez ranchos de junco y barro, armados sobre una loma que el agua no llega a cubrir. Hay redes colgadas, pescado abierto secándose al sol y una hoguera que nunca se apaga. Los que viven acá no levantan la vista cuando llega un extraño: la levantan cuando llega el silencio de un extraño que no sabe dónde pararse.",
+      "atmosphere": [
+        "Una mujer muele algo en un mortero de piedra sin dejar de mirarlo.",
+        "Los chicos se quedaron quietos de golpe, todos a la vez.",
+        "La anciana está sentada frente a la hoguera y no se dio vuelta."
+      ],
       "connections": [
         "altar-sauce",
         "isla-juncos",
         "cueva-pinturas"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-takillpa",
+        "npc-anciana",
+        "npc-rastreador"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 12,
+      "senses": {
+        "smell": [
+          "Humo de leña verde, pescado, lana mojada."
+        ]
+      }
     },
     "isla-juncos": {
       "id": "isla-juncos",
       "name": "La isla de los juncos",
-      "aliases": [],
-      "description": "[PENDIENTE] Refugio temporal, sin sabuesos. Se puede descansar, pero no por mucho.",
-      "atmosphere": [],
+      "aliases": [
+        "isla",
+        "la isla",
+        "isla de los juncos"
+      ],
+      "description": "Un montículo de barro firme cubierto de juncos altos, tan apretados que desde cualquier orilla parece una mata más. Adentro hay un hueco donde caben tres personas echadas. Es donde se esconden los chicos cuando pasa la leva.",
+      "atmosphere": [
+        "El hueco tiene la forma de un cuerpo que ya estuvo acá.",
+        "El agua a los costados está tibia.",
+        "Desde acá no se ve ni se oye nada de afuera."
+      ],
       "connections": [
         "ranchada",
         "laguna-baja"
       ],
       "itemsPresent": [],
-      "npcsPresent": [],
+      "npcsPresent": [
+        "npc-rastreador"
+      ],
       "visited": false,
-      "umbralIntensity": 10,
-      "senses": {}
+      "umbralIntensity": 6,
+      "senses": {
+        "sound": [
+          "Un silencio blando, de junco."
+        ]
+      }
     },
     "plaza": {
       "id": "plaza",
@@ -1040,6 +1258,233 @@
           "—Es una pregunta que hacen los que quieren dejar de hacerse otras. No se la voy a contestar hoy."
         ]
       }
+    },
+    {
+      "id": "t-cerrar",
+      "npc": "npc-takillpa",
+      "orden": 1,
+      "etiqueta": "Preguntarle a Takillpa por qué cerrar es cerrar «de los dos lados»",
+      "intencion": "Le pregunto a Takillpa por qué cerrar es cerrar de los dos lados",
+      "claves": [
+        "cerrar",
+        "de los dos lados",
+        "por que no puedo volver",
+        "el borde"
+      ],
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "actitudMinima": 0,
+        "razon": "notar qué parte de la respuesta es enseñanza y cuál es consuelo"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "—Un cauce cerrado no deja pasar agua ni para un lado ni para el otro. No se le puede pedir a la tierra que cierre sólo cuando conviene. Usted lo sabía cuando grabó la marca; lo que no sabía es que esa puerta era también la suya.\n\n—No se lo dije antes porque no me habría creído. Ahora ya lo sabe. Es más fácil así."
+        ],
+        "pista": {
+          "description": "Takillpa dice que el borde se cierra por los dos lados a la vez: la misma marca que cerró la fosa cerró el camino de vuelta del investigador.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Ahora no. Hay perros. Cuando estemos donde el agua nos tape, le digo lo que quiera."
+        ]
+      }
+    },
+    {
+      "id": "t-metal",
+      "npc": "npc-takillpa",
+      "orden": 2,
+      "etiqueta": "Preguntarle a Takillpa por qué desconfía de lo que traés de 1930",
+      "intencion": "Le pregunto a Takillpa por qué desconfía de mis cosas de metal",
+      "claves": [
+        "metal",
+        "mis cosas",
+        "el reloj",
+        "la linterna",
+        "el encendedor"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "actitudMinima": 2,
+        "razon": "que el viejo explique lo que suele callar frente a extraños"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "—El metal de más adelante hace ruido donde no se lo oye. Los perros no lo huelen; lo huele lo que duerme abajo. Un reloj que marca una hora que todavía no llegó es un llamado, y la fosa contesta los llamados.\n\n—No es que usted sea malo. Es que carga cosas de un tiempo que no debería estar acá, y la fosa las reconoce."
+        ],
+        "pista": {
+          "description": "Takillpa dice que los objetos de otro tiempo, como un reloj que marca una hora que no llegó, son «un llamado» que la fosa reconoce y contesta.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-takillpa-metal"
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—Cuando sea necesario, se lo voy a pedir. Ahora todavía no."
+        ]
+      }
+    },
+    {
+      "id": "t-otros",
+      "npc": "npc-takillpa",
+      "orden": 3,
+      "etiqueta": "Preguntarle a Takillpa si hubo otros como vos",
+      "intencion": "Le pregunto a Takillpa si hubo otros forasteros como yo",
+      "claves": [
+        "otros",
+        "otro forastero",
+        "alguien como yo",
+        "antes que yo"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 5,
+        "razon": "que el viejo diga algo que los ancianos guardan entre ellos"
+      },
+      "cede": {
+        "actitud": 3,
+        "texto": [
+          "El viejo tarda en contestar. Cuando lo hace, mira el agua y no a quien le pregunta.\n\n—Los ancianos cuentan de uno. De ropa rara, de habla rara. Llegó, hizo lo que había que hacer y no volvió a cruzar. No dicen dónde quedó. Yo creo que lo saben y no lo dicen, y creo que no lo dicen porque si se dijera alguien iría a buscarlo."
+        ],
+        "pista": {
+          "description": "Takillpa cuenta que los ancianos de las lagunas recuerdan a otro forastero de ropa rara que hizo lo mismo y «no volvió a cruzar», sin decir dónde quedó.",
+          "kind": "testimonial",
+          "reliability": "unreliable"
+        },
+        "revelaSecreto": "s-takillpa-otros"
+      },
+      "esquiva": {
+        "texto": [
+          "—Eso es de los ancianos. No es mío para contar."
+        ]
+      }
+    },
+    {
+      "id": "a-quedarse",
+      "npc": "npc-anciana",
+      "orden": 1,
+      "etiqueta": "Pedirle a la anciana que te deje quedarte en la ranchada",
+      "intencion": "Le pido a la anciana que me deje quedarme en la ranchada",
+      "claves": [
+        "quedarme",
+        "refugio",
+        "la anciana",
+        "quedarme aca"
+      ],
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 0,
+        "razon": "que una mujer que vio pasar tres levas acepte a un forastero de metal"
+      },
+      "cede": {
+        "actitud": 4,
+        "texto": [
+          "La anciana no se da vuelta. Habla mirando el fuego.\n\n—Vino con el viejo Gregorio, y el viejo Gregorio no trae a cualquiera. Puede dormir donde duerme el que no tiene lugar. Pero el metal se queda afuera del círculo de la hoguera, y usted no mira las pinturas ni las cuenta.",
+          "Después de un rato, sin volverse:\n\n—Y le voy a preguntar una vez a qué vino. No dos."
+        ],
+        "pista": {
+          "description": "La anciana María Sayanca acepta que el investigador se quede en la ranchada, con la condición de que deje su metal afuera del círculo de la hoguera y no mire las pinturas.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": 1,
+        "texto": [
+          "—No. Todavía no. Vuelva cuando haya dormido una noche entre nosotros y sepamos qué trae con usted."
+        ]
+      }
+    },
+    {
+      "id": "a-pinturas",
+      "npc": "npc-anciana",
+      "orden": 2,
+      "etiqueta": "Preguntarle a la anciana por las pinturas de la cueva",
+      "intencion": "Le pregunto a la anciana por las pinturas de la cueva",
+      "claves": [
+        "pinturas",
+        "la cueva",
+        "las capas",
+        "almagre"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "acepta que el investigador se quede en la ranchada"
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 4,
+        "razon": "que la anciana hable de lo que sólo hablan los que las cuidan"
+      },
+      "cede": {
+        "actitud": 2,
+        "texto": [
+          "La anciana se queda un tiempo sin hablar. Después, con una voz más baja, más vieja:\n\n—Cada vez que la tierra se abre, alguien va a la cueva y pinta encima. No se pinta lo mismo: se pinta una raya de almagre, una sola, sobre la anterior. Así se sabe cuántas veces. Así se sabe cuánto tarda en volver.\n\n—La última raya es de cuando mi abuela era chica. Hace mucho. Hace demasiado."
+        ],
+        "pista": {
+          "description": "La anciana dice que en la cueva se pinta una raya de almagre sobre la anterior cada vez que la tierra se abre, para saber cuántas veces pasó y cuánto tarda en volver; la última es de hace más de cien años.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        },
+        "revelaSecreto": "s-anciana-pinturas"
+      },
+      "esquiva": {
+        "texto": [
+          "—Las pinturas se ven, no se cuentan. Cuando llegue el momento las va a ver."
+        ]
+      }
+    },
+    {
+      "id": "a-cantar",
+      "npc": "npc-anciana",
+      "orden": 3,
+      "etiqueta": "Pedirle a la anciana que te enseñe el cantar",
+      "intencion": "Le pido a la anciana que me enseñe el cantar",
+      "claves": [
+        "cantar",
+        "el cantar",
+        "sombras de sal",
+        "ensenarme"
+      ],
+      "disponible": {
+        "op": "pista",
+        "contiene": "acepta que el investigador se quede en la ranchada"
+      },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "hard",
+        "actitudMinima": 4,
+        "razon": "que la anciana decida confiarte algo que no se repite delante de extraños"
+      },
+      "cede": {
+        "actitud": 1,
+        "texto": [
+          "La anciana se vuelve por primera vez. Tiene los ojos claros, casi blancos, y lo mira un buen rato.\n\n—No es para pelear. No es para huir. Es para que lo que dejó en el suelo, en el aire, en la voz, se vaya. Se canta con ceniza y con polvo de la piedra blanca. Lo que se borra no es el cuerpo: es el rastro.\n\n—Le enseño una vez. Si no lo aprende, no le enseño dos."
+        ],
+        "pista": {
+          "description": "La anciana accede a enseñarle a cantar el «cantar de las sombras de sal», que borra el rastro que uno deja, con ceniza y polvo de piedra blanca; lo enseña una sola vez.",
+          "kind": "testimonial",
+          "reliability": "reliable"
+        }
+      },
+      "esquiva": {
+        "actitud": -1,
+        "texto": [
+          "—No. Todavía no confío en su manera de mirar el fuego."
+        ]
+      }
     }
   ],
   "scenes": [
@@ -1242,6 +1687,94 @@
       "cuando": {
         "op": "texto",
         "patron": "caigo en la labor"
+      }
+    },
+    {
+      "id": "cruzar-el-barro",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "cruzo el barro siguiendo a takillpa"
+      }
+    },
+    {
+      "id": "ofrendar-reloj",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "ofrendo el reloj"
+      }
+    },
+    {
+      "id": "ofrendar-encendedor",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "ofrendo el encendedor"
+      }
+    },
+    {
+      "id": "ofrendar-linterna",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "ofrendo la linterna"
+      }
+    },
+    {
+      "id": "guardar-el-metal",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "me quedo con lo que traigo y se lo digo"
+      }
+    },
+    {
+      "id": "aprender-manto",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "aprendo el manto de la cienaga"
+      }
+    },
+    {
+      "id": "espiar-rastrilleria",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "espio a la rastrilleria desde los juncos"
+      }
+    },
+    {
+      "id": "descansar-isla",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "descanso en el hueco de los juncos"
+      }
+    },
+    {
+      "id": "aprender-cantar",
+      "prioridad": 70,
+      "cuando": {
+        "op": "texto",
+        "patron": "aprendo el cantar de las sombras de sal"
+      }
+    },
+    {
+      "id": "rastrilleria-fuga",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me escabullo de la rastrilleria"
+      }
+    },
+    {
+      "id": "rastrilleria-combate",
+      "prioridad": 90,
+      "cuando": {
+        "op": "texto",
+        "patron": "me enfrento a los rastreadores"
       }
     }
   ],
@@ -1761,6 +2294,310 @@
         "op": "narrado",
         "contiene": "§PENDIENTE-muerte-en-la-mina§"
       }
+    },
+    {
+      "id": "cruzar-el-barro",
+      "grupo": "usar",
+      "lugar": "totoral-noche",
+      "orden": 1,
+      "intencion": "Cruzo el barro siguiendo a Takillpa",
+      "etiqueta": "Cruzar el barro siguiendo a Takillpa",
+      "visible": {
+        "op": "consecuencia",
+        "contiene": "del lado de los huarpes"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Takillpa cruza por donde el fondo aguanta"
+      }
+    },
+    {
+      "id": "ofrendar-reloj",
+      "grupo": "usar",
+      "lugar": "altar-sauce",
+      "orden": 1,
+      "intencion": "Ofrendo el reloj",
+      "etiqueta": "Ofrendarle a Takillpa el reloj de pulsera",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-reloj-pulsera"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "La laguna se traga lo que le dan"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Takillpa asiente sin sonreír"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ofrendar-encendedor",
+      "grupo": "usar",
+      "lugar": "altar-sauce",
+      "orden": 2,
+      "intencion": "Ofrendo el encendedor",
+      "etiqueta": "Ofrendarle a Takillpa el encendedor de bencina",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-encendedor-1930"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "La laguna se traga lo que le dan"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Takillpa asiente sin sonreír"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ofrendar-linterna",
+      "grupo": "usar",
+      "lugar": "altar-sauce",
+      "orden": 3,
+      "intencion": "Ofrendo la linterna",
+      "etiqueta": "Ofrendarle a Takillpa la linterna eléctrica",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "lleva",
+            "item": "it-linterna-1930"
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "La laguna se traga lo que le dan"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Takillpa asiente sin sonreír"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "guardar-el-metal",
+      "grupo": "usar",
+      "lugar": "altar-sauce",
+      "orden": 4,
+      "intencion": "Me quedo con lo que traigo y se lo digo",
+      "etiqueta": "Quedarte con lo que traés de 1930 y decírselo a Takillpa",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "o",
+            "de": [
+              {
+                "op": "lleva",
+                "item": "it-reloj-pulsera"
+              },
+              {
+                "op": "lleva",
+                "item": "it-encendedor-1930"
+              },
+              {
+                "op": "lleva",
+                "item": "it-linterna-1930"
+              }
+            ]
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "o",
+              "de": [
+                {
+                  "op": "narrado",
+                  "contiene": "La laguna se traga lo que le dan"
+                },
+                {
+                  "op": "narrado",
+                  "contiene": "Takillpa asiente sin sonreír"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "aprender-manto",
+      "grupo": "usar",
+      "lugar": "altar-sauce",
+      "orden": 5,
+      "intencion": "Aprendo el Manto de la Cienaga",
+      "etiqueta": "Aprender de Takillpa el Manto de la Ciénaga",
+      "visible": {
+        "op": "consecuencia",
+        "contiene": "del lado de los huarpes"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Aprendió el soplo bajo"
+      }
+    },
+    {
+      "id": "espiar-rastrilleria",
+      "grupo": "observar",
+      "lugar": "laguna-baja",
+      "orden": 1,
+      "intencion": "Espio a la rastrilleria desde los juncos",
+      "etiqueta": "Espiar a la rastrillería desde los juncos",
+      "visible": {
+        "op": "consecuencia",
+        "contiene": "del lado de los huarpes"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Ledesma"
+      }
+    },
+    {
+      "id": "descansar-isla",
+      "grupo": "usar",
+      "lugar": "isla-juncos",
+      "orden": 1,
+      "intencion": "Descanso en el hueco de los juncos",
+      "etiqueta": "Descansar en el hueco de los juncos",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "del lado de los huarpes"
+          },
+          {
+            "op": "sospecha",
+            "maximo": 39
+          }
+        ]
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Dormís en el hueco de los juncos"
+      }
+    },
+    {
+      "id": "aprender-cantar",
+      "grupo": "usar",
+      "lugar": "ranchada",
+      "orden": 5,
+      "intencion": "Aprendo el cantar de las sombras de sal",
+      "etiqueta": "Aprender el cantar de las sombras de sal",
+      "visible": {
+        "op": "pista",
+        "contiene": "accede a enseñarle a cantar el «cantar de las sombras de sal»"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Aprendió el cantar de la sal"
+      }
+    },
+    {
+      "id": "rastrilleria-fuga",
+      "grupo": "usar",
+      "lugar": [
+        "zanjon",
+        "totoral-noche",
+        "altar-sauce",
+        "laguna-baja",
+        "ranchada",
+        "isla-juncos"
+      ],
+      "orden": 1,
+      "intencion": "Me escabullo de la rastrilleria",
+      "etiqueta": "Escabullirte de la rastrillería",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "del lado de los huarpes"
+          },
+          {
+            "op": "sospecha",
+            "minimo": 60
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "narrado",
+              "contiene": "La rastrillería perdió el rastro"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "rastrilleria-combate",
+      "grupo": "usar",
+      "lugar": [
+        "zanjon",
+        "totoral-noche",
+        "altar-sauce",
+        "laguna-baja",
+        "ranchada",
+        "isla-juncos"
+      ],
+      "orden": 2,
+      "intencion": "Me enfrento a los rastreadores",
+      "etiqueta": "Enfrentarte a los rastreadores",
+      "visible": {
+        "op": "y",
+        "de": [
+          {
+            "op": "consecuencia",
+            "contiene": "del lado de los huarpes"
+          },
+          {
+            "op": "sospecha",
+            "minimo": 60
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "narrado",
+              "contiene": "La rastrillería perdió el rastro"
+            }
+          }
+        ]
+      }
     }
   ],
   "endings": [
@@ -1825,6 +2662,357 @@
       "hastaQue": {
         "op": "consecuencia",
         "contiene": "escapó por el tiro de ventilación"
+      }
+    },
+    {
+      "desde": "zanjon",
+      "hasta": "totoral-noche",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "totoral-noche",
+      "hasta": "zanjon",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "totoral-noche",
+      "hasta": "altar-sauce",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "totoral-noche",
+      "hasta": "laguna-baja",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "altar-sauce",
+      "hasta": "totoral-noche",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "altar-sauce",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "laguna-baja",
+      "hasta": "totoral-noche",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "laguna-baja",
+      "hasta": "isla-juncos",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "ranchada",
+      "hasta": "altar-sauce",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "ranchada",
+      "hasta": "isla-juncos",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "isla-juncos",
+      "hasta": "ranchada",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "isla-juncos",
+      "hasta": "laguna-baja",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "desde": "zanjon",
+      "hasta": "camino-villa",
+      "hastaQue": {
+        "op": "no",
+        "de": {
+          "op": "y",
+          "de": [
+            {
+              "op": "consecuencia",
+              "contiene": "del lado de los huarpes"
+            },
+            {
+              "op": "sospecha",
+              "minimo": 60
+            },
+            {
+              "op": "no",
+              "de": {
+                "op": "narrado",
+                "contiene": "La rastrillería perdió el rastro"
+              }
+            }
+          ]
+        }
       }
     }
   ]

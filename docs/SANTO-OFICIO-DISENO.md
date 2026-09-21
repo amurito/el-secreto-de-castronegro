@@ -120,9 +120,7 @@ con temblores; lo grabado (rama huarpe) acumula sin avisar. Ambos llegan a 1944.
    (`npm run mapa`, clic en el nodo punteado). Los nombres ya salen de fuentes de época (ver «Ajustes»); los
    nombres de pila son inventados a propósito. Ítems y tiradas: ya propuestos en el esqueleto
    (7 ítems propios, 10 tiradas clave); falta que los apruebes.
-3. Acto I: **rama Iglesia escrita** (`santooficio.contenido.json` + `.logica.ts`, suite `prueba-santo-oficio.ts`: interrogatorio de 3 preguntas, encierro y dos salidas, archivo, primer momento con Ignacio, hoguera). Falta la **rama huarpe** (totoral, altar del sauce, ranchada, persecución) y sus escenas; el arranque (`alba`) ya la distingue. Las llegadas son ACCIONES explícitas porque una escena con `destino` reemplaza el movimiento.
-4. Acto II (cruce de ramas, juicio, sospecha).
-5. Acto III (La Labor Vieja) y los tres finales con sus consecuencias.
+3. Acto I: **las dos ramas escritas**. Huarpe: barro con tirada de sigilo, altar del sauce (tres ofrendas o quedarse con el metal, y el Manto), espionaje a Ledesma, descanso en la isla, ranchada con 6 temas y el cantar, y la rastrillería encima a 60+ (se cierran las salidas: fuga por el agua o combate real). Iglesia: (`santooficio.contenido.json` + `.logica.ts`, suite `prueba-santo-oficio.ts`: interrogatorio de 3 preguntas, encierro y dos salidas, archivo, primer momento con Ignacio, hoguera). 5. Acto III (La Labor Vieja) y los tres finales con sus consecuencias.
 6. `catalogo.ts`, auditoría (`prueba-auditoria.ts`), `prueba:todo`.
 7. Jugar las dos aperturas en el navegador.
 8. Entrada en `ROADMAP.md`.
@@ -155,3 +153,19 @@ Aplicados desde los comentarios de una segunda lectura, más una investigación 
   Sayanca) con nombres de pila inventados, para no tocar a ninguna persona real.
   Los comisarios reales de Cuyo (Corbalán, Peláez) no se usan. Cuyo dependía de la
   Capitanía General de Chile y, en lo inquisitorial, del tribunal de Lima.
+
+## Estado de la rama huarpe del Acto I (2026-09-21)
+
+- **La sospecha en las lagunas se paga con el cerco**: a 60 o más se cierran las
+  salidas de la zona y sólo quedan escabullirse (orientarse difícil: −20 si sale,
+  +25 si falla) o enfrentar a un rastreador (combate real). A 85 o más debería
+  llevar a la cárcel del Cabildo: **eso es del Acto II y todavía no está**.
+- **Ofrendar el reloj cuesta una de las dos fuentes del 1944** (los intervalos de
+  temblores se miden con él). Es a propósito: obliga a completar la fecha con las
+  pinturas de la cueva y el legajo de Santo Domingo, o sea a cruzar de rama.
+- **Bug de contenido encontrado jugándolo**: un lugar llamado «La laguna baja»
+  rompía el movimiento, porque el botón dice «Voy a la laguna baja» y el
+  clasificador lee «baja» como el verbo *bajar*. Se renombró «La laguna somera».
+  Los nombres de lugar no deben contener verbos de acción.
+- Cruces de rama pendientes del Acto II: `ranchada → iglesia-matriz` y
+  `sd-huerta → cueva-pinturas` (conexiones ocultas por contacto).

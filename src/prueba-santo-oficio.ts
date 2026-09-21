@@ -23,6 +23,7 @@ import { accionesDisponibles } from './scenario/acciones.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
 import type { GameState } from './shared/types.ts';
+import { actitudesImposibles, lugaresInalcanzables, objetosPerdidos } from './scenario/auditoria.ts';
 
 useStore(fileStore);
 let fallos = 0;
@@ -133,6 +134,119 @@ async function main() {
   check('y nada más que desenlaces', solo.every((x) => ['hoguera', 'salida-1930', 'salida-1944', 'quedarse', 'muerte-en-la-mina'].includes(x)), solo.join(','));
   s = await jugar(id, 'El auto de fe');
   check('el desenlace cierra la aventura', Boolean(s.ending), JSON.stringify(s.ending)?.slice(0, 60));
+
+
+  // ───────────────────────────── RAMA HUARPE ─────────────────────────────
+  const empezarHuarpe = async (nombre: string, s0: string) => {
+    const nid = await createCampaign(SO, nombre, seed(s0));
+    const tt = await Turn.open(nid);
+    // Lo que deja «La Merced de las Ánimas» al elegir la fuga: es lo que lee el arranque.
+    tt.executeTool("record_consequence", {
+      description: "En 1710, el investigador se alió con Takillpa y los guardianes huarpes, grabó la marca en la piedra caliza de la Ciénaga de las Ánimas, y al cerrar el borde se quedó de este lado.",
+      scope: "campaign", permanent: "true", world_reminder: "Se quedó en 1710, prófugo.",
+    });
+    await tt.commit();
+    return jugar(nid, "Me levanto del fondo del zanjon y miro alrededor").then(async (st) => ({ nid, st }));
+  };
+
+  console.log("\nHUARPE: el arranque lee el final de Merced y cambia el tipo de presión");
+  {
+    const { nid, st } = await empezarHuarpe("SO-H1", "h1");
+    id = nid; s = st;
+    check("la rama huarpe arranca con sospecha 20, no 35", sosp(s) === 20, String(sosp(s)));
+    check("Takillpa está presente y Fray Ignacio no", s.npcs["npc-takillpa"]!.present && !s.npcs["npc-ignacio"]!.present);
+
+    s = await camino(id, "totoral-noche");
+    check("cruzar el barro se ofrece al llegar al totoral", ids(s).includes("cruzar-el-barro"));
+    const antesBarro = sosp(s);
+    s = await pulsar(id, "cruzar-el-barro");
+    check("cruzar el barro nunca baja la sospecha (sube 15 o queda igual)", sosp(s) === antesBarro || sosp(s) === antesBarro + 15, `${antesBarro} → ${sosp(s)}`);
+    check("y no se puede repetir", !ids(s).includes("cruzar-el-barro"));
+
+    s = await camino(id, "altar-sauce");
+    const altar = ids(s);
+    check("en el altar se ofrecen las tres ofrendas y la negativa", altar.includes("ofrendar-reloj") && altar.includes("ofrendar-encendedor") && altar.includes("ofrendar-linterna") && altar.includes("guardar-el-metal"));
+    check("y aprender el Manto, que no depende de la ofrenda", altar.includes("aprender-manto"));
+    s = await pulsar(id, "ofrendar-reloj");
+    check("ofrendar entrega el reloj a Takillpa", s.items["it-reloj-pulsera"]?.owner === "npc-takillpa");
+    check("y el amuleto pasa al investigador", s.items["it-amuleto-hueso"]?.owner === s.activeInvestigator && s.items["it-amuleto-hueso"]?.carried);
+    check("deja una consecuencia que cruza de aventura", s.consequences.some((c) => c.scope === "campaign" && c.description.includes("ofrendó el reloj de pulsera a Takillpa")));
+    check("decidir esconde las otras tres opciones", !ids(s).some((x) => x.startsWith("ofrendar-") || x === "guardar-el-metal"));
+    s = await pulsar(id, "aprender-manto");
+    check("aprender el Manto lo suma a los hechizos (salga o no la tirada)", s.investigators[s.activeInvestigator]!.spellsKnown.some((h) => h.id === "manto-de-la-cienaga"));
+    check("y no se repite", !ids(s).includes("aprender-manto"));
+
+    s = await camino(id, "totoral-noche", "laguna-baja");
+    s = await pulsar(id, "espiar-rastrilleria");
+    check("espiar entrega una pista con o sin éxito, y nombra a Ledesma", s.board.clues.some((c) => c.description.includes("Ledesma")));
+
+    s = await camino(id, "isla-juncos");
+    const antesDescanso = sosp(s);
+    const puede = ids(s).includes("descansar-isla");
+    check("con poca sospecha se puede descansar en la isla", puede || antesDescanso >= 40, `sospecha ${antesDescanso}`);
+    if (puede) {
+      s = await pulsar(id, "descansar-isla");
+      check("descansar baja la sospecha 5", sosp(s) === Math.max(0, antesDescanso - 5), `${antesDescanso} → ${sosp(s)}`);
+      check("y sólo una vez", !ids(s).includes("descansar-isla"));
+    }
+
+    s = await camino(id, "ranchada");
+    check("en la ranchada, la anciana y Takillpa dan conversación", ids(s).some((x) => x === "tema:a-quedarse") && ids(s).includes("tema:t-cerrar"));
+    check("el cantar no se ofrece sin el permiso de la anciana", !ids(s).includes("aprender-cantar"));
+    { const t3 = await Turn.open(id);
+      t3.executeTool("add_clue", { description: "La anciana accede a enseñarle a cantar el «cantar de las sombras de sal», que borra el rastro que uno deja, con ceniza y polvo de piedra blanca; lo enseña una sola vez.", kind: "testimonial", source: "prueba", reliability: "reliable" });
+      await t3.commit(); }
+    s = (await loadState(id)).state;
+    check("con el permiso, el cantar se ofrece", ids(s).includes("aprender-cantar"));
+    s = await pulsar(id, "aprender-cantar");
+    check("aprenderlo lo suma a los hechizos", s.investigators[s.activeInvestigator]!.spellsKnown.some((h) => h.id === "cantar-de-las-sombras-de-sal"));
+  }
+
+  console.log("\nHUARPE: guardarse el metal se paga, ofrendarlo se agradece");
+  {
+    const { nid, st } = await empezarHuarpe("SO-H2", "h2");
+    id = nid; s = await camino(nid, "totoral-noche", "altar-sauce");
+    const exp0 = s.investigators[s.activeInvestigator]!.umbral.exposure;
+    const att0 = s.npcs["npc-takillpa"]!.attitude[s.activeInvestigator] ?? 0;
+    s = await pulsar(id, "guardar-el-metal");
+    check("guardar el metal baja la confianza de Takillpa", (s.npcs["npc-takillpa"]!.attitude[s.activeInvestigator] ?? 0) < att0);
+    check("y sube la Exposición", s.investigators[s.activeInvestigator]!.umbral.exposure > exp0);
+    check("no hay amuleto para quien se lo guarda", s.items["it-amuleto-hueso"]?.owner === "altar-sauce");
+  }
+
+  console.log("\nHUARPE: con la rastrillería encima (60+) no se camina, se resuelve");
+  {
+    const { nid, st } = await empezarHuarpe("SO-H3", "h3");
+    id = nid; s = st;
+    check("con sospecha baja hay salidas del zanjón", ids(s).some((x) => x.startsWith("ir:")));
+    check("y ningún encuentro forzado", !ids(s).includes("rastrilleria-fuga"));
+    { const t4 = await Turn.open(id); t4.executeTool("adjust_suspicion", { amount: 40, cause: "prueba" }); await t4.commit(); }
+    s = (await loadState(id)).state;
+    check("a 60 o más se cierran todas las salidas", !ids(s).some((x) => x.startsWith("ir:")), ids(s).filter((x) => x.startsWith("ir:")).join(","));
+    check("y se ofrece escabullirse o enfrentarlos", ids(s).includes("rastrilleria-fuga") && ids(s).includes("rastrilleria-combate"));
+    const antesFuga = sosp(s);
+    s = await pulsar(id, "rastrilleria-fuga");
+    const d = sosp(s) - antesFuga;
+    check("la fuga baja 20 si sale y sube 25 si falla", d === -20 || d === 25, String(d));
+    if (d === -20) check("y si sale, reabre el camino", ids(s).some((x) => x.startsWith("ir:")));
+    else check("y si falla, el encuentro sigue en pie", ids(s).includes("rastrilleria-fuga"));
+  }
+  {
+    const { nid } = await empezarHuarpe("SO-H4", "h4");
+    { const t5 = await Turn.open(nid); t5.executeTool("adjust_suspicion", { amount: 40, cause: "prueba" }); await t5.commit(); }
+    s = await pulsar(nid, "rastrilleria-combate");
+    check("enfrentarlos abre un combate real contra el rastreador", Boolean(s.activeCombat), JSON.stringify(s.activeCombat)?.slice(0, 60));
+  }
+
+  console.log("\nAUDITORÍA ESTÁTICA (las mismas comprobaciones que el resto del catálogo)");
+  {
+    const imp = actitudesImposibles(SO);
+    check("ningún umbral de confianza pide más de lo que el NPC puede dar", imp.length === 0, imp.join(" | "));
+    const inalc = lugaresInalcanzables(SO);
+    check("todos los lugares tienen camino desde el inicio", inalc.length === 0, inalc.join(", "));
+    const perd = objetosPerdidos(SO);
+    check("ningún objeto queda donde nadie lo alcanza", perd.length === 0, perd.join(", "));
+  }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
