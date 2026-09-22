@@ -1282,7 +1282,11 @@
         "op": "narrado",
         "contiene": "el marco de una puerta que ya no tiene puerta"
       },
-      "prueba": { "skill": "psicologia", "difficulty": "regular", "razon": "ponerle palabras a una corazonada que ella misma no terminó de entender" },
+      "prueba": {
+        "skill": "psicologia",
+        "difficulty": "regular",
+        "razon": "ponerle palabras a una corazonada que ella misma no terminó de entender"
+      },
       "cede": {
         "actitud": 1,
         "texto": [
@@ -2240,6 +2244,13 @@
               "op": "pista",
               "contiene": "Cirilo se aparta y deja pasar"
             }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió corriendo del patio de los Sosa"
+            }
           }
         ]
       }
@@ -2270,6 +2281,13 @@
             "de": {
               "op": "pista",
               "contiene": "Cirilo se aparta y deja pasar"
+            }
+          },
+          {
+            "op": "no",
+            "de": {
+              "op": "consecuencia",
+              "contiene": "salió corriendo del patio de los Sosa"
             }
           }
         ]

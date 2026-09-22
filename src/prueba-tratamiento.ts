@@ -12,9 +12,10 @@
  *      en ningún momento de la narración — ni en la apertura, ni en el juego.
  */
 
-import { createCampaign, Turn } from './engine/engine.ts';
+import { createCampaign, Turn, loadState } from './engine/engine.ts';
 import { AGUA_QUIETA } from './scenario/aguaquieta.ts';
 import { LA_LEGUA } from './scenario/legua.ts';
+import { TERCER_UMBRAL } from './scenario/tercerumbral.ts';
 import { runOfflineTurn } from './keeper/offline.ts';
 import { useStore } from './engine/store.ts';
 import { fileStore } from './engine/store.node.ts';
@@ -128,6 +129,52 @@ async function main() {
     check(`${nombre}: nunca dice «la» donde debería decir «lo» (varón)`,
       !/\bla dej[oó]|recibirla|mirándola|—La esperan|usted la mandaron/i.test(abiertaVaron),
       abiertaVaron.slice(0, 80));
+  }
+
+  // ── {trato} FUERA DE LA NARRACIÓN: lo que `conTrato` no alcanzaba ───────
+  //
+  // Bug real, reportado jugando: un desenlace de Tercer Umbral («Lo que
+  // contesta», al declarar que no es Alejo) mostraba el token `{trato}`
+  // literal. La causa no era la prosa: `state.ending.text` lo muestra la
+  // interfaz DIRECTO (`App.tsx`), sin pasar por `conTrato` como sí pasa el
+  // resto de la narración (`keeper/offline.ts`). Mismo agujero en el tablero
+  // (pistas, contradicciones, preguntas) y en «Aparte» (nota del jugador):
+  // ninguno de los cuatro pasaba por la narración. El arreglo mueve la
+  // resolución al motor (`toolReachEnding`/`toolAddClue`/etc.), para que
+  // sea imposible que un contenido nuevo vuelva a dejarlo sin resolver.
+  console.log('\n{trato} FUERA DE LA NARRACIÓN: DESENLACES, PISTAS, TABLERO Y "APARTE"');
+  {
+    const id2 = await createCampaign(TERCER_UMBRAL, 'TRATO-FUERA', 'e'.repeat(64), undefined, nico);
+    const t = await Turn.open(id2);
+    t.executeTool('reach_ending', {
+      ending_id: 'prueba', title: 'Un final de prueba, {trato}',
+      text: ['Primer párrafo para {trato}.', 'Segundo, y {lo} despide.'],
+    });
+    t.executeTool('add_clue', {
+      description: 'Una pista que se dirige a {trato} y {lo} nombra.',
+      kind: 'testimonial', source: 'prueba', reliability: 'reliable',
+    });
+    t.executeTool('note_contradiction', {
+      description: 'Una contradicción para {trato}.', between: 'a|b',
+    });
+    t.executeTool('raise_question', { question: '¿Es {trato} quien cree ser?' });
+    t.executeTool('note_player_knowledge', {
+      statement: 'Algo que sólo quien juega nota sobre {trato}.',
+      source: 'prueba', reliability: 'unknown',
+    });
+    await t.commit();
+    const s = (await loadState(id2)).state;
+    check('el desenlace resuelve {trato}/{lo} (antes llegaba crudo a `App.tsx`)',
+      !/\{trato\}|\{lo\}|\{Lo\}/.test(JSON.stringify(s.ending)), JSON.stringify(s.ending));
+    check('y lo hace bien: dice "doctor" (nico es médico varón), no deja "usted" a secas por defecto',
+      String(s.ending?.title).includes('doctor') || JSON.stringify(s.ending?.text).includes('doctor'));
+    check('la pista del tablero también lo resuelve',
+      s.board.clues.some((c) => c.description.includes('doctor') && !/\{trato\}|\{lo\}/.test(c.description)));
+    check('la contradicción también', s.board.contradictions.some((c) => !/\{trato\}/.test(c.description)));
+    check('la pregunta abierta también', s.board.questions.some((q) => q.question.includes('doctor')));
+    const inv2 = s.investigators[s.activeInvestigator]!;
+    check('la nota de jugador ("Aparte") resuelve el token',
+      inv2.knowledge.playerObserved.some((k) => k.statement.includes('doctor') && !k.statement.includes('{trato}')));
   }
 
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);

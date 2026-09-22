@@ -544,11 +544,29 @@ export const INVIERNO_DEBIDO_LOGICA: LogicaDeEscenas = [
   },
 
   {
+    // Huir no es un asalto que se repite hasta ganar, como enfrentarlo: es
+    // una decisión que se toma una vez. Antes sólo llamaba a `resolve_flee`
+    // sin mover a nadie ni cerrar nada, así que «Salir corriendo» se podía
+    // apretar sin límite parado en el mismo patio —el jugador ya podía
+    // seguir ahí después de haber corrido—. Reportado jugando. Ahora, salga
+    // bien o mal el asalto de despedida (`toolResolveFlee` casi siempre deja
+    // vivo a quien huye: sólo pierde si el golpe de Cirilo lo tumba), la
+    // escena SIEMPRE lo saca del patio: si sigue de pie, corriendo de
+    // verdad; si no, no hay patio al que quedarse mirando.
     id: 'huir-de-cirilo',
-    resolver: () => ({
-      texto: ['Le das la espalda a la tranquera y corrés.'],
-      combate: { accion: 'huir' },
-    }),
+    resolver: () => [
+      {
+        texto: ['Le das la espalda a la tranquera y corrés.'],
+        combate: { accion: 'huir' },
+      },
+      {
+        llevaA: { lugar: 'plaza', minutos: 3, cause: 'corrió hasta la plaza sin mirar atrás' },
+        consecuencia: {
+          description: 'En el patio de los Sosa, el investigador salió corriendo del patio de los Sosa en vez de pelear o razonar con Cirilo.',
+          scope: 'scene', permanent: false, worldReminder: '',
+        },
+      },
+    ],
   },
 
   // ══ LOS CINCO DESENLACES ════════════════════════════════════════════════════

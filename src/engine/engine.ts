@@ -38,6 +38,7 @@ import {
 } from '../rules/umbral.ts';
 import { PACIENCIA_INICIAL, PACIENCIA_MAXIMA, RECUPERACION } from '../rules/social.config.ts';
 import { STABILITY_RECOVERY, techoDeEstabilidad, EXPOSURE_THRESHOLDS } from '../rules/umbral.config.ts';
+import { conTrato } from '../rules/tratamiento.ts';
 import {
   marcasDe, mejora, alcanzaMaestria, maxCordura, premioDelKeeper,
   DADOS_SAN_POR_MAESTRIA, AUTOAYUDA, type Marca,
@@ -3007,7 +3008,12 @@ export class Turn {
   private toolAddClue(raw: Record<string, unknown>): ToolOutcome {
     const clue: Clue = {
       id: id(),
-      description: String(raw.description ?? ''),
+      // El tablero la muestra tal cual, sin pasar por el pipeline de
+      // narración que resuelve `{trato}`/`{lo}` (ver `rules/tratamiento.ts`):
+      // una pista escrita con esos tokens —«Remigia deja de hablar si {lo}
+      // ve mirando para ese lado»— quedaba literal en la tarjeta. Reportado
+      // jugando.
+      description: conTrato(String(raw.description ?? ''), this.investigator),
       kind: String(raw.kind ?? 'physical') as Clue['kind'],
       discoveredBy: this.investigator.id,
       discoveredAt: this.pending[this.pending.length - 1]?.id ?? 'inicio',
@@ -3030,14 +3036,18 @@ export class Turn {
   private toolNoteContradiction(raw: Record<string, unknown>): ToolOutcome {
     this.emit('CONTRADICTION_NOTED', {
       id: id(),
-      description: String(raw.description ?? ''),
+      // Mismo motivo que en `toolAddClue`: el tablero la muestra sin pasar
+      // por la narración.
+      description: conTrato(String(raw.description ?? ''), this.investigator),
       between: String(raw.between ?? '').split('|').map((s) => s.trim()).filter(Boolean),
     });
     return { ok: true, message: 'Contradicción registrada en el tablero.' };
   }
 
   private toolRaiseQuestion(raw: Record<string, unknown>): ToolOutcome {
-    const question = String(raw.question ?? '');
+    // Mismo motivo que en `toolAddClue`: el tablero la muestra sin pasar por
+    // la narración.
+    const question = conTrato(String(raw.question ?? ''), this.investigator);
     if (this.state.board.questions.some((q) => q.question === question)) {
       return { ok: true, message: 'Esa pregunta ya estaba en el tablero.' };
     }
@@ -3061,7 +3071,9 @@ export class Turn {
    * y ahí el meta-horror deja de ser del jugador y pasa a ser del modelo.
    */
   private toolNotePlayerKnowledge(raw: Record<string, unknown>): ToolOutcome {
-    const statement = String(raw.statement ?? '').trim();
+    // Mismo motivo que en `toolAddClue`: la ficha lo muestra sin pasar por
+    // la narración.
+    const statement = conTrato(String(raw.statement ?? '').trim(), this.investigator);
     if (!statement) return this.reject('note_player_knowledge', raw, 'Falta `statement`.');
     const source = String(raw.source ?? '').trim();
     const reliability = String(raw.reliability ?? 'unknown') as
@@ -3094,7 +3106,10 @@ export class Turn {
     }
     this.emit('HYPOTHESIS_PROMOTED', {
       hypothesisId, factId: id(),
-      statement: String(raw.statement ?? h.statement),
+      // Mismo motivo que en `toolAddClue`: el tablero lo muestra sin pasar
+      // por la narración. `conTrato` no toca texto sin tokens, así que
+      // resolverlo de nuevo si `h.statement` ya venía resuelto es inocuo.
+      statement: conTrato(String(raw.statement ?? h.statement), this.investigator),
       supportingClues: h.supportingClues,
     });
     return { ok: true, message: 'Hipótesis promovida a hecho: la evidencia alcanzaba.' };
@@ -3397,10 +3412,16 @@ export class Turn {
     const text = Array.isArray(raw.text)
       ? raw.text.map((p) => String(p)).filter((p) => p.trim()).join('\n\n')
       : String(raw.text ?? '');
+    // El desenlace se guarda en `state.ending` y la interfaz lo muestra
+    // DIRECTO (`App.tsx`), sin pasar por el pipeline de narración de
+    // `keeper/offline.ts` que resuelve `{trato}`/`{lo}` — a diferencia del
+    // resto de la prosa de una escena, que sí pasa por ahí antes de llegar a
+    // pantalla. Varios desenlaces (Tercer Umbral, «Lo que contesta») quedaban
+    // con el token literal en pantalla. Reportado jugando.
     this.emit('ENDING_REACHED', {
       id: String(raw.ending_id ?? 'propio'),
-      title: String(raw.title ?? 'Final'),
-      text,
+      title: conTrato(String(raw.title ?? 'Final'), this.investigator),
+      text: conTrato(text, this.investigator),
     });
     return { ok: true, message: 'Final registrado. La campaña queda cerrada; la semilla del RNG puede revelarse para auditoría.' };
   }

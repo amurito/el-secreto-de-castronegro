@@ -264,8 +264,26 @@ async function main() {
     pvCirilo !== 13 || pvInvestigador !== invDe(pelea.estado).derived.maxHp,
     `Cirilo ${pvCirilo}/13 · investigador ${pvInvestigador}/${invDe(pelea.estado).derived.maxHp}`);
 
-  const huida = await jugar('HUIR-CIRILO', 'g', [...AL_CONFLICTO, 'Me voy corriendo de la casa de los Sosa']);
+  // Semilla 'e', la misma que ya prueba `conflicto`: con 'g' —la semilla
+  // original de este bloque— Ramona nunca cede quién lo pintó este año y
+  // Cirilo no llega a bloquear la salida, así que la escena de huir no se
+  // disparaba y las comprobaciones de abajo no probaban nada de verdad.
+  const huida = await jugar('HUIR-CIRILO', 'e', [...AL_CONFLICTO, 'Me voy corriendo de la casa de los Sosa']);
+  check('Cirilo bloqueaba la salida antes de huir (si no, lo de abajo no prueba nada)',
+    pista(conflicto.estado, 'Cirilo bloqueó la salida del patio'));
   check('huir también tira: el golpe de oportunidad', huida.estado.rolls.length > conflicto.estado.rolls.length);
+  // Bug real, reportado jugando: «Salir corriendo» tiraba el golpe de
+  // oportunidad pero no movía a nadie, así que el botón seguía ahí y se podía
+  // apretar sin límite parado en el mismo patio.
+  check('y esta vez sí lo saca del patio: termina en la plaza',
+    huida.estado.world.currentLocation === 'plaza', huida.estado.world.currentLocation);
+  const botonesTrasHuir = accionesDisponibles(huida.estado, INVIERNO_DEBIDO).map((o) => o.id);
+  check('«Enfrentar a Cirilo» y «Salir corriendo» ya no se ofrecen tras huir',
+    !botonesTrasHuir.includes('enfrentar-cirilo') && !botonesTrasHuir.includes('huir-cirilo'),
+    botonesTrasHuir.join(', '));
+  check('y aunque vuelva a la casa de los Sosa, Cirilo no lo vuelve a emboscar',
+    !accionesDisponibles({ ...huida.estado, world: { ...huida.estado.world, currentLocation: 'casa-sosa' } }, INVIERNO_DEBIDO)
+      .map((o) => o.id).includes('huir-cirilo'));
 
   // ── 7-BIS. LA SALIDA DE PALABRA: INTIMIDAR DENTRO DEL COMBATE REAL ────────
   console.log('\n7-BIS. LA SALIDA DE PALABRA, DENTRO DE LA PANTALLA DE COMBATE');
