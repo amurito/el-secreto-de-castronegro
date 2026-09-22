@@ -128,7 +128,9 @@
         "disclosure": "PUBLIC",
         "source": "scenario"
       },
-      "usageCount": 0
+      "usageCount": 0,
+      "categoria": "hallazgo",
+      "value": 18
     },
     {
       "id": "it-cilindro-cera",
@@ -160,7 +162,8 @@
         "disclosure": "PUBLIC",
         "source": "scenario"
       },
-      "usageCount": 0
+      "usageCount": 0,
+      "value": 22
     },
     {
       "id": "it-cuaderno-tachado",
@@ -202,7 +205,8 @@
         "disclosure": "PUBLIC",
         "source": "scenario"
       },
-      "usageCount": 0
+      "usageCount": 0,
+      "value": 6
     },
     {
       "id": "it-hacha-granero",
@@ -453,7 +457,23 @@
       },
       "combate": null,
       "present": true,
-      "isCompanion": false
+      "isCompanion": false,
+      "comercio": {
+        "vende": [
+          "it-talla-verde",
+          "it-cilindro-cera",
+          "it-cuaderno-tachado"
+        ],
+        "compra": [
+          "hallazgo",
+          "documento",
+          "herramienta",
+          "material",
+          "personal"
+        ],
+        "margen": 0.5,
+        "nota": "Herminio contesta un precio con la misma cara de siempre, sin regatear ni mirar dos veces lo que le traen. No pregunta de dónde salió nada, y eso es a propósito."
+      }
     },
     {
       "id": "npc-encarnacion",
@@ -522,7 +542,7 @@
         "dex": 60,
         "build": 0
       },
-      "present": true,
+      "present": false,
       "isCompanion": false
     },
     {
@@ -1840,7 +1860,11 @@
         "caballos"
       ],
       "orden": 1,
-      "prueba": { "skill": "persuasion", "difficulty": "regular", "razon": "que hable de lo único que ella misma prefiere no explicarle a un huésped" },
+      "prueba": {
+        "skill": "persuasion",
+        "difficulty": "regular",
+        "razon": "que hable de lo único que ella misma prefiere no explicarle a un huésped"
+      },
       "cede": {
         "texto": [
           "—Es para los caballos —dice, y no levanta la vista de la pava—. Buena agua, dicen, pero nadie la toma. Ni yo, y hace treinta años que vivo con ese aljibe en el patio.\n\n—No sé quién lo decidió. Un día dejamos todos, y ya está. No es una regla, no está escrita en ningún lado. Es de esas cosas que se hacen y no se explican."

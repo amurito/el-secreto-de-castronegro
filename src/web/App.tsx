@@ -1012,7 +1012,10 @@ export function App() {
                 locura indefinida, contradiciendo al propio motor —cuyo
                 mensaje dice explícitamente "es el mismo cierre que la
                 muerte, AUNQUE NO LO SEA"—. Un investigador loco no está
-                muerto: está fuera de juego. */}
+                muerto: está fuera de juego. Mismo error, encontrado después,
+                con quedar inconsciente: a 0 PV sin golpe mayor no murió
+                tampoco, y decirle que sí es tan falso como decirle "loco" a
+                quien se murió de verdad. */}
             {inv.status === 'insane' ? (
               <>
                 <div className="death-title">{inv.name} cruzó a locura indefinida.</div>
@@ -1020,6 +1023,16 @@ export function App() {
                   No murió: quedó fuera de juego como personaje jugable, con la misma definición que la
                   muerte pero sin serlo. El mundo conserva todas las consecuencias, pistas y relaciones
                   que dejó. Podés continuar con otro investigador.
+                </p>
+              </>
+            ) : inv.status === 'unconscious' ? (
+              <>
+                <div className="death-title">{inv.name} quedó inconsciente.</div>
+                <p>
+                  No murió: el golpe no fue tan grave, pero lo tumbó igual. El juego todavía no tiene
+                  forma de reanimarlo a mitad de partida, así que queda fuera de juego como personaje
+                  jugable, con la misma definición que la muerte pero sin serlo. El mundo conserva todas
+                  las consecuencias, pistas y relaciones que dejó. Podés continuar con otro investigador.
                 </p>
               </>
             ) : (

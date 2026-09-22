@@ -201,6 +201,68 @@ async function main() {
     check('se puede espantarlo sin pelear a muerte', calmado);
   }
 
+  // ── Bug real, reportado jugando ──────────────────────────────────────────
+  //
+  // `npc-cosa-grieta` nacía con `present: true` en la ficha del escenario, así
+  // que ya figuraba entre los presentes del granero —y en el panel de
+  // rivales, `Rivales` en `components.tsx`— desde el primer paso que se daba
+  // ahí, antes de meter la mano en la grieta. El reveal de la escena
+  // (`granero-grieta-mas`) nunca hacía falta para que "apareciera": ya
+  // estaba. Mismo bug de fondo que el Pólipo de Merced, pero en el dato en
+  // vez de en el texto.
+  console.log('\nALGO QUE SALIÓ DE LA GRIETA NO ESTÁ ANTES DE SALIR');
+  {
+    const AL_GRANERO = [
+      'Voy al granero',
+      ...insistir('Mirar mesa de cerca'),
+      ...insistir('Reviso el piso del fondo, abajo de la mesa'),
+    ];
+    const enElGranero = await jugar('AB COSA ANTES', 'c', AL_GRANERO);
+    check('antes de meter el brazo, la cosa de la grieta no está presente',
+      enElGranero.npcs['npc-cosa-grieta']?.present !== true);
+    const trasElReveal = await jugar('AB COSA DESPUES', 'c', [...AL_GRANERO, 'Meto el brazo más adentro de la grieta']);
+    check('recién al meter el brazo, la escena la hace aparecer',
+      trasElReveal.npcs['npc-cosa-grieta']?.present === true);
+  }
+
+  // ── Bug real, reportado jugando ──────────────────────────────────────────
+  //
+  // Herminio no tenía `comercio` declarado, así que sus tres objetos en
+  // venta se ofrecían con el botón genérico de "Llevarte…" —gratis— en vez
+  // de "Comprar…", y no había forma de venderle nada. El bazar existía en el
+  // mapa y en la prosa, pero no como comercio de verdad.
+  console.log('\nEL BAZAR DE HERMINIO ES UN COMERCIO DE VERDAD, NO UN ESTANTE GRATIS');
+  {
+    const idH = await createCampaign(AGUA_BLANCA, 'AB BAZAR', 'd'.repeat(64));
+    let t = await Turn.open(idH);
+    t.executeTool('move_to_location', { location_id: 'tienda', reason: 'prueba' });
+    await t.commit();
+    let s = (await Turn.open(idH)).state;
+    const opciones = accionesDisponibles(s, AGUA_BLANCA).map((o) => o.id);
+    check('se ofrece comprar los tres objetos del bazar',
+      ['it-talla-verde', 'it-cilindro-cera', 'it-cuaderno-tachado'].every((id) => opciones.includes(`comprar:${id}`)),
+      opciones.join(', '));
+    check('y NO se pueden llevar gratis con el botón genérico',
+      !opciones.some((o) => o.startsWith('tomar:it-talla-verde') || o.startsWith('tomar:it-cilindro-cera') || o.startsWith('tomar:it-cuaderno-tachado')));
+
+    const antes = s.investigators[s.activeInvestigator]!.derived.efectivo;
+    t = await Turn.open(idH);
+    const compra = t.executeTool('buy_item', { item_id: 'it-cilindro-cera', npc_id: 'npc-herminio' });
+    await t.commit();
+    s = (await Turn.open(idH)).state;
+    check('comprarle a Herminio descuenta el precio y entrega el objeto',
+      compra.ok && s.items['it-cilindro-cera']?.owner === s.activeInvestigator
+      && s.investigators[s.activeInvestigator]!.derived.efectivo === antes - 22,
+      `${antes} → ${s.investigators[s.activeInvestigator]!.derived.efectivo}`);
+
+    t = await Turn.open(idH);
+    const venta = t.executeTool('sell_item', { item_id: 'it-cilindro-cera', npc_id: 'npc-herminio' });
+    await t.commit();
+    s = (await Turn.open(idH)).state;
+    check('y Herminio también compra de vuelta',
+      venta.ok && s.items['it-cilindro-cera']?.owner === 'npc-herminio');
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

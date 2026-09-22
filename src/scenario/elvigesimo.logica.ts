@@ -448,6 +448,23 @@ export const EL_VIGESIMO_LOGICA: LogicaDeEscenas = [
           npcIds: ['npc-bernardo'],
           reason: 'Bernardo no se para. Ya lo veía venir, y esta vez no va a bastar con hablar.',
           ...(dice > 0 ? { preparacion: { dice, motivo: 'llegó sabiendo con qué se enfrentaba' } } : {}),
+          // Perder ESTA pelea no puede dejar al investigador «inconsciente»
+          // a secas: es el clímax de la aventura, y quedarse sin ending
+          // reportaba como si el juego simplemente se hubiera cortado.
+          // Reportado jugando. Bernardo gana, y hace lo único consistente
+          // con trescientos años de paciencia: no lo mata —no lo necesita—
+          // y decide él lo que el investigador no llegó a decidir.
+          finalSiPierde: {
+            title: 'Lo que decidió Bernardo',
+            text: [
+              'No hace falta más de un golpe bien puesto para que el cuarto se quede quieto. Bernardo no sigue: se queda parado, respirando distinto de como respiraba antes de la pelea, mirando al investigador tirado contra la piedra del laboratorio.',
+              '—Trescientos años —dice, más para sí que para nadie— y sigo sin aprender a que me interrumpan a la mitad de una frase.',
+              'No busca un arma. No hace falta. Se agacha, le revisa los bolsillos con el mismo cuidado con que ordenaría un cajón, y se queda con lo que le sirve: lo que haya escrito, lo que haya fotografiado, lo que haya sacado del sótano. El resto lo deja donde está.',
+              '—Ya lo dije antes de esto: sacarle el anillo, o ponérselo. Las dos cosas terminan conmigo. Usted no llegó a ninguna de las dos, así que hoy elijo yo.',
+              'Se pone de pie, ajusta al Ahijado contra el sillón con la misma mano que un momento antes sostenía el facón, y no vuelve a mirar hacia atrás. El ciclo sigue exactamente donde estaba antes de que el investigador entrara a la Casa.',
+              'Amanece en la vereda de la Casa de Díaz, con la ropa rota y sin nada de lo que encontró adentro. Nadie en el pueblo pregunta qué pasó. Nadie, tampoco, vuelve a dejarlo entrar.',
+            ],
+          },
         },
         consecuencia: {
           description: 'El investigador entró en combate real contra Bernardo Díaz, en el laboratorio de la Casa.',

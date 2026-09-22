@@ -779,6 +779,83 @@ async function main() {
       !fallo.some((e) => e.mitos));
   }
 
+  // ── Bug real, reportado jugando ──────────────────────────────────────────
+  //
+  // Perder la pelea contra Bernardo dejaba al investigador «inconsciente»
+  // en la prosa, pero dos cosas fallaban de fondo:
+  //
+  //  1. `toolApplyDamage` narraba «queda inconsciente» al llegar exacto a 0
+  //     PV sin golpe mayor, pero nunca emitía el evento que cambia `status`.
+  //     El investigador seguía figurando `alive`, con 0 PV, y el juego le
+  //     seguía ofreciendo botones como si no hubiera pasado nada.
+  //  2. Aunque el status cambiara, no había ningún desenlace para «perdiste
+  //     contra el antagonista central de la aventura»: quedaba la pantalla
+  //     genérica de inconsciencia, sin que nada dijera qué hacía Bernardo.
+  //
+  // Se fuerza el golpe con `apply_damage` en vez de insistir con dados —el
+  // combate real ya está probado arriba— para no depender de una tirada con
+  // semilla fija (ver «Pruebas no determinísticas»): lo que se prueba acá es
+  // qué pasa CUANDO se llega exacto a 0, no si se llega.
+  console.log('\nPERDER CONTRA BERNARDO YA NO ES UN CALLEJÓN SIN SALIDA');
+  {
+    const { id, state } = await jugarEn(EL_VIGESIMO, '7b PIERDE', 'pierde1',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    check('llega al combate con activeCombat configurado para perder también',
+      state.activeCombat?.finalSiPierde?.title === 'Lo que decidió Bernardo',
+      JSON.stringify(state.activeCombat?.finalSiPierde));
+
+    const t0 = await Turn.open(id);
+    const inv0 = t0.investigator;
+    const maxHp = inv0.derived.maxHp;
+    const noMayor = Math.floor(maxHp / 2) - 1; // por debajo de la mitad de los PV máximos: nunca "mayor" (p. 119)
+    if (inv0.derived.hp > noMayor) {
+      // Baja primero a un colchón seguro, sin llegar a 0 todavía.
+      t0.executeTool('apply_damage', { amount: inv0.derived.hp - noMayor, cause: 'prueba: colchón' });
+    }
+    await t0.commit();
+    const t1 = await Turn.open(id);
+    const restante = t1.investigator.derived.hp;
+    const r = t1.executeTool('apply_damage', { amount: restante, cause: 'prueba: golpe final, no mayor, exacto a 0' });
+    await t1.commit();
+    check('el golpe exacto a 0 PV, sin ser mayor, narra inconsciencia', r.message.includes('queda inconsciente'), r.message);
+
+    const s = (await Turn.open(id)).state;
+    const invF = s.investigators[s.activeInvestigator]!;
+    check('y AHORA sí cambia el status a inconsciente (antes se quedaba en "alive")',
+      invF.status === 'unconscious', invF.status);
+    check('el combate se cierra solo', !s.activeCombat);
+    check('y se registra un desenlace de verdad, no la pantalla genérica',
+      s.ending?.id === 'derrota' && s.ending?.title === 'Lo que decidió Bernardo',
+      JSON.stringify(s.ending));
+    check('el texto del desenlace dice qué hizo Bernardo, no sólo que el investigador cayó',
+      String(s.ending?.text ?? '').includes('elijo yo'));
+    check('sin acciones después: es un cierre de verdad', accionesDisponibles(s, EL_VIGESIMO).length === 0);
+  }
+
+  // Morir de un golpe mayor sigue siendo la pantalla genérica de muerte —no
+  // se confunde con «Lo que decidió Bernardo», que da por hecho que el
+  // investigador sigue vivo.
+  console.log('\nMORIR DE UN GOLPE MAYOR NO ES "LO QUE DECIDIÓ BERNARDO"');
+  {
+    const { id } = await jugarEn(EL_VIGESIMO, '7b MUERE', 'muere1',
+      [...AL_SOTANO, 'Trato de pasar sin que me vea', 'Voy a la entrada al laberinto', 'Voy al laboratorio', 'Enfrento a Bernardo'],
+      { estadoAnterior: subida, mesesTranscurridos: 0 });
+    const t = await Turn.open(id);
+    // `t.investigator.derived.hp` NO alcanza como monto: si llegó a este punto
+    // ya golpeado por el guardián del trastero, un golpe de ese tamaño podía
+    // no ser "mayor" (p. 119) y caer en el mismo caso de arriba. `maxHp`
+    // entero es siempre mayor o igual a la mitad de sí mismo, así que
+    // garantiza la muerte sin importar cuánto le quedaba.
+    t.executeTool('apply_damage', { amount: t.investigator.derived.maxHp, cause: 'prueba: golpe mayor, muerte' });
+    await t.commit();
+    const s = (await Turn.open(id)).state;
+    check('con un golpe mayor, el investigador muere de verdad',
+      s.investigators[s.activeInvestigator]?.status === 'dead');
+    check('el desenlace NO es el de Bernardo: sigue siendo la muerte genérica',
+      s.ending?.id !== 'derrota', JSON.stringify(s.ending));
+  }
+
   console.log(fallos === 0 ? '\nTODO OK\n' : `\n${fallos} PROBLEMAS\n`);
   process.exit(fallos === 0 ? 0 : 1);
 }

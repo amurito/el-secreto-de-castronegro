@@ -4499,6 +4499,74 @@ nueva (`d-marco`, `d-patron`, `c-hoja`, `h-comprador`), confirmando que se
 destraban en el momento correcto y no antes. `npm run prueba:todo` completo,
 `prueba-auditoria.ts` en verde para el catálogo entero.
 
+### 3.2-sexquinquagies Cinco bugs de una sola run desde cero, y uno de fondo en el motor ✔ HECHA
+
+El usuario empezó una partida desde cero (sin heredar nada) buscando bugs
+explícitamente, catálogo entero. Cinco hallazgos, cuatro de contenido y uno
+de motor, más grave que los otros cuatro juntos:
+
+- **`{trato}`/`{lo}`/`{Lo}` fuera de la narración.** El token se resolvía en
+  `keeper/offline.ts`, el único lugar por el que pasaba TODA la narración —
+  hasta que dejó de serlo: desenlaces, pistas del tablero, contradicciones,
+  preguntas abiertas y notas de jugador («Aparte») escriben directo a
+  `state` y la interfaz los muestra sin pasar por ahí. Encontrado en el
+  desenlace «Lo que contesta» de *Tercer Umbral*. Movida la resolución al
+  motor (`toolReachEnding`, `toolAddClue`, `toolNoteContradiction`,
+  `toolRaiseQuestion`, `toolNotePlayerKnowledge`, `toolProposeFact`), donde
+  no puede volver a faltar aunque se agregue contenido nuevo.
+- **Huir de Cirilo Sosa, en *El Invierno Debido*, no llevaba a ningún lado.**
+  Tiraba el golpe de despedida pero no movía al investigador ni cerraba
+  nada: «Salir corriendo» quedaba ofrecido para siempre, parado en el mismo
+  patio. Ahora usa `EfectoEscena.llevaA` (movimiento forzado sin conexión,
+  construido para *El Santo Oficio de Cuyo*) para sacarlo a la plaza, y una
+  consecuencia nueva evita que Cirilo lo vuelva a emboscar si regresa.
+- **En *Agua Blanca*, "algo que salió de la grieta" ya estaba presente al
+  entrar al granero**, antes del reveal (`npc-cosa-grieta` nacía con
+  `present: true` en la ficha, en vez de aparecer recién cuando la escena lo
+  saca de la grieta). Mismo bug de fondo que el Pólipo de *Merced*, esta vez
+  en el dato y no en el texto.
+- **El bazar de Herminio (*Agua Blanca*) no tenía `comercio`**: sus tres
+  objetos se llevaban gratis con el botón genérico de agarrar, sin precio ni
+  venta. Es contenido de antes de que existiera la economía (creada para
+  *La Grieta del Zonda*) y nunca se retroalimentó. Agregado `comercio` y
+  precio a los tres objetos. Barrido sobre el resto del catálogo: otros dos
+  «almacenes» sin `comercio` (*Agua Blanca*/Faustino, *El Orden Debido*
+  /Adelmo) resultaron ser intencionales —uno vende un ítem de trama que
+  tiene que ser gratis, el otro no tiene nada para vender— y se dejaron así.
+
+**El bug de fondo, encontrado investigando el quinto reporte** ("perdí
+contra Bernardo Díaz y no pasó nada"): `toolApplyDamage` NARRABA "queda
+inconsciente" al llegar exacto a 0 PV sin golpe mayor (p. 119), pero nunca
+emitía el evento que cambia `status` — el investigador seguía figurando
+`alive`, con 0 PV, y el juego le seguía ofreciendo botones enteros como si
+nada. Esto no era de *El Vigésimo*: es un bug del MOTOR, latente en
+cualquier combate del catálogo desde que existe combate real. Arreglado
+emitiendo `INVESTIGATOR_UNCONSCIOUS` en ese caso, y moviendo
+`cerrarCombateSiTerminado()` a `toolApplyDamage` mismo (antes vivía sólo en
+los tools de combate que lo llamaban después de sí mismos, así que un daño
+aplicado por cualquier otra vía podía incapacitar sin cerrar nada). También
+se encontró y corrigió que la pantalla de «game over» (`App.tsx`) llamaba
+"ha muerto" a quedar inconsciente —mismo error, con otro nombre, que ya se
+había corregido para la locura indefinida.
+
+Encima de esto, nuevo: `ActiveCombat.finalSiPierde` /
+`EfectoEscena.iniciaCombate.finalSiPierde` — un antagonista central puede
+declarar qué hace si GANA él, y se resuelve como un desenlace de verdad en
+el mismo turno en que el golpe deja inconsciente al investigador (sólo para
+ese caso, no para la muerte: morir de un golpe mayor ya es su propio cierre
+y el texto de este campo puede dar por hecho que el investigador sigue
+vivo). Usado por primera vez en *El Vigésimo*: perder contra Bernardo Díaz
+ahora es el desenlace «Lo que decidió Bernardo» — no lo mata, decide él lo
+que el investigador no llegó a decidir — en vez de una pantalla genérica
+sin ninguna de las dos cosas que hacían de esa pelea lo que era.
+
+Cinco suites nuevas o ampliadas (`prueba-tratamiento.ts`,
+`prueba-invierno-debido.ts`, `prueba-agua-blanca.ts` ×2,
+`prueba-el-vigesimo.ts` ×2) prueban cada arreglo por separado, incluida la
+distinción entre perder-inconsciente y morir-de-verdad, sin depender de
+ninguna tirada con semilla fija. `npm run prueba:todo` completo, `dist`
+auditado.
+
 ### 3.3 La aventura original publicada
 
 Hueco M. El MVP no la toca, por decisión tuya. Cuando la toques, el material de

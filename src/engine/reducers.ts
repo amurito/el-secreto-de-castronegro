@@ -588,6 +588,7 @@ export function apply(prev: GameState | null, ev: GameEvent): GameState {
       s.activeCombat = {
         npcIds: p.npcIds, startedAt: ev.id, reason: p.reason,
         salidaPacifica: p.salidaPacifica, preparacion: p.preparacion,
+        finalSiPierde: p.finalSiPierde,
       };
       break;
     }

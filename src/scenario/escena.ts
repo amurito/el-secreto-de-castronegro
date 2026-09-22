@@ -170,6 +170,13 @@ export interface EfectoEscena {
      * sólo lo aplica —ver `ActiveCombat.preparacion`—. Sin esto, ningún bono.
      */
     preparacion?: { dice: number; motivo: string };
+    /**
+     * Qué pasa si el investigador pierde este combate en vez de ganarlo.
+     * Ver `ActiveCombat.finalSiPierde`. Sin esto, perder deja la pantalla
+     * genérica de muerte/inconsciencia — lo correcto para un rival
+     * cualquiera; esto es para un antagonista central de la historia.
+     */
+    finalSiPierde?: { title: string; text: string | string[] };
   };
   dano?: { amount: number; cause: string };
   tiempo?: { minutes: number; reason: string };

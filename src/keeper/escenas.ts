@@ -229,6 +229,7 @@ function aplicarEfecto(
       reason: efecto.iniciaCombate.reason ?? 'lo dispuso la escena',
       salida_pacifica: efecto.iniciaCombate.salidaPacifica,
       preparacion: efecto.iniciaCombate.preparacion,
+      final_si_pierde: efecto.iniciaCombate.finalSiPierde,
     });
   }
   if (efecto.combate) {

@@ -942,6 +942,19 @@ export interface ActiveCombat {
    * recurso de un solo uso.
    */
   preparacion?: { dice: number; motivo: string };
+  /**
+   * Qué pasa si el investigador PIERDE este combate —queda inconsciente o
+   * muere— antes de que el rival caiga. Sin esto, perder deja la pantalla
+   * genérica de muerte/inconsciencia (`App.tsx`), que es lo correcto para un
+   * rival cualquiera. Para un enfrentamiento central de la historia —un
+   * antagonista, no un obstáculo de paso—, la escena puede declarar acá qué
+   * hace el que gana con quien cae: se resuelve como un desenlace de
+   * verdad, con su propio título y texto, en el mismo turno en que el golpe
+   * lo tumba. Nace de Bernardo Díaz en El Vigésimo: perder esa pelea dejaba
+   * al investigador «inconsciente» sin que nada dijera qué hacía Bernardo
+   * con él. Reportado jugando.
+   */
+  finalSiPierde?: { title: string; text: string | string[] };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -263,39 +263,57 @@ export const AGUA_BLANCA_LOGICA: LogicaDeEscenas = [
     // incluida a propósito —Bernardo y el laberinto siguen sin aparecer acá;
     // esto es UN pariente suelto, no una confirmación de nada más grande.
     id: 'grieta-mas-alla',
-    resolver: () => ({
-      texto: [
-        'La grieta sigue más allá de donde llegan los tres cráneos. Metés el brazo hasta el codo, tanteando, y por un segundo tocás algo que no es tierra ni piedra.',
-        'Se mueve antes de que puedas sacar la mano. Sale de la grieta encorvado, más rápido de lo que un cuerpo así debería moverse, y te mira con unos ojos que ya viste esta mañana en la plaza.',
-      ],
-      combate: { accion: 'atacar', npcId: 'npc-cosa-grieta', armaId: 'desarmado' },
-      iniciaCombate: {
-        npcIds: ['npc-cosa-grieta'],
-        reason: 'Algo salió de la grieta cuando metiste el brazo más allá de los tres cráneos.',
-        salidaPacifica: {
-          npcId: 'npc-cosa-grieta',
-          pistaCalma: {
-            description: 'Retrocedió despacio, sin correr, hasta perderse otra vez en la grieta. No te siguió.',
-            kind: 'experiential',
-            source: 'la grieta del granero',
-            reliability: 'reliable',
-          },
-          consecuenciaDisparo: {
-            description: 'En el granero de Castronegro, el investigador le disparó a algo que salió de la grieta, en vez de dejarlo volver adentro.',
-            scope: 'world',
-            permanent: true,
-            worldReminder: 'Usó un arma de fuego contra algo que no llegó a identificar. No es lo mismo que espantarlo con las manos.',
-          },
+    // `npc-cosa-grieta` nace con `present: false` a propósito: es el único
+    // reveal de la aventura y tiene que aparecer ACÁ, no desde el primer
+    // paso que se da en el granero. Antes tenía `present: true` desde la
+    // ficha del escenario, así que ya figuraba entre los presentes —y en el
+    // panel de rivales— apenas se entraba, antes de meter la mano en la
+    // grieta. Reportado jugando. Por eso el efecto va partido en dos: el
+    // `npc` que lo hace aparecer TIENE que aplicarse antes que `combate`
+    // (`aplicarEfecto` en `keeper/escenas.ts` resuelve `npc` después de
+    // `combate` dentro de un mismo efecto; en un arreglo, en cambio, cada
+    // elemento se aplica en orden, así que separarlos en dos alcanza).
+    resolver: () => [
+      {
+        texto: [
+          'La grieta sigue más allá de donde llegan los tres cráneos. Metés el brazo hasta el codo, tanteando, y por un segundo tocás algo que no es tierra ni piedra.',
+          'Se mueve antes de que puedas sacar la mano. Sale de la grieta encorvado, más rápido de lo que un cuerpo así debería moverse, y te mira con unos ojos que ya viste esta mañana en la plaza.',
+        ],
+        npc: {
+          id: 'npc-cosa-grieta', present: true,
+          cause: 'salió de la grieta cuando metiste el brazo más allá de los tres cráneos',
         },
       },
-      exposicion: { amount: 6, source: 'grieta:algo', cause: 'tocar algo en la oscuridad que después tuvo cara' },
-      consecuencia: {
-        description: 'En el granero de Castronegro, el investigador se cruzó cuerpo a cuerpo con algo que salió de la grieta —encorvado, dientes largos, ojos verdes— y no se quedó a preguntar qué era.',
-        scope: 'world',
-        permanent: true,
-        worldReminder: 'Sabe, de primera mano y no de oídas, que hay algo vivo debajo de Castronegro además de la gente que se ve caminar.',
+      {
+        combate: { accion: 'atacar', npcId: 'npc-cosa-grieta', armaId: 'desarmado' },
+        iniciaCombate: {
+          npcIds: ['npc-cosa-grieta'],
+          reason: 'Algo salió de la grieta cuando metiste el brazo más allá de los tres cráneos.',
+          salidaPacifica: {
+            npcId: 'npc-cosa-grieta',
+            pistaCalma: {
+              description: 'Retrocedió despacio, sin correr, hasta perderse otra vez en la grieta. No te siguió.',
+              kind: 'experiential',
+              source: 'la grieta del granero',
+              reliability: 'reliable',
+            },
+            consecuenciaDisparo: {
+              description: 'En el granero de Castronegro, el investigador le disparó a algo que salió de la grieta, en vez de dejarlo volver adentro.',
+              scope: 'world',
+              permanent: true,
+              worldReminder: 'Usó un arma de fuego contra algo que no llegó a identificar. No es lo mismo que espantarlo con las manos.',
+            },
+          },
+        },
+        exposicion: { amount: 6, source: 'grieta:algo', cause: 'tocar algo en la oscuridad que después tuvo cara' },
+        consecuencia: {
+          description: 'En el granero de Castronegro, el investigador se cruzó cuerpo a cuerpo con algo que salió de la grieta —encorvado, dientes largos, ojos verdes— y no se quedó a preguntar qué era.',
+          scope: 'world',
+          permanent: true,
+          worldReminder: 'Sabe, de primera mano y no de oídas, que hay algo vivo debajo de Castronegro además de la gente que se ve caminar.',
+        },
       },
-    }),
+    ],
   },
 
   // ══ EL MONOLITO ═══════════════════════════════════════════════════════════

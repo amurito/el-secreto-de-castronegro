@@ -1630,7 +1630,8 @@ export class Turn {
     }
     const salidaPacifica = raw.salida_pacifica as ActiveCombat['salidaPacifica'] | undefined;
     const preparacion = raw.preparacion as ActiveCombat['preparacion'] | undefined;
-    this.emit('COMBAT_STARTED', { npcIds, reason, salidaPacifica, preparacion });
+    const finalSiPierde = raw.final_si_pierde as ActiveCombat['finalSiPierde'] | undefined;
+    this.emit('COMBAT_STARTED', { npcIds, reason, salidaPacifica, preparacion, finalSiPierde });
     return { ok: true, message: `Empieza el combate contra ${npcIds.join(', ')}.` };
   }
 
@@ -1654,6 +1655,26 @@ export class Turn {
     const inv = this.investigator;
     if (inv.derived.hp <= 0 || inv.status !== 'alive') {
       this.emit('COMBAT_ENDED', { reason: 'investigador_caido', npcIds: ac.npcIds });
+      // Un antagonista central puede declarar qué hace si GANA él —ver
+      // `ActiveCombat.finalSiPierde`—. Sin esto, perder deja sólo la
+      // pantalla genérica de muerte/inconsciencia, que es lo correcto para
+      // un rival de paso. Reportado jugando: perder contra Bernardo Díaz en
+      // El Vigésimo dejaba al investigador "inconsciente" sin que nada
+      // dijera qué hacía Bernardo con él.
+      //
+      // SÓLO para quien queda inconsciente, no para quien muere: morir de un
+      // golpe (mitad o más de los PV máximos, p. 119) es un desenlace de por
+      // sí, distinto y ya bien contado (`App.tsx`, pantalla de muerte). El
+      // texto que declara la escena da por hecho que el investigador sigue
+      // vivo —«amanece en la vereda»—, y eso sería falso si en realidad
+      // murió. `toolReachEnding` ya rechaza un segundo final sin romper
+      // nada, así que esto no duplica si el golpe que cierra el combate
+      // llega después de otro final ya registrado.
+      if (ac.finalSiPierde && inv.status === 'unconscious') {
+        this.toolReachEnding({
+          ending_id: 'derrota', title: ac.finalSiPierde.title, text: ac.finalSiPierde.text,
+        });
+      }
       return;
     }
     const todosCaidos = ac.npcIds.every((id) => (this.state.npcs[id]?.combate?.hp ?? 0) <= 0);
@@ -2420,6 +2441,14 @@ export class Turn {
         this.emit('INVESTIGATOR_DIED', { investigatorId: inv.id, cause });
         extra = ' EL INVESTIGADOR HA MUERTO. La muerte es permanente: no la deshagas, no la suavices, no la conviertas en desmayo. Narrá el final de esta vida.';
       } else {
+        // Bug real, reportado jugando: acá se NARRABA "queda inconsciente"
+        // pero nunca se emitía el evento que cambia `status` — el
+        // investigador seguía figurando `alive`, con 0 PV, y el juego
+        // seguía ofreciéndole botones como si nada. Un combate cualquiera
+        // podía terminar así sin que nada lo cerrara. Ver `toolResolveAttack`
+        // → `cerrarCombateSiTerminado`, que sí revisa `status`, pero nunca
+        // llegaba a hacer nada porque `status` nunca cambiaba.
+        this.emit('INVESTIGATOR_UNCONSCIOUS', { investigatorId: inv.id, cause });
         extra = ' El investigador queda inconsciente.';
       }
     } else if (to > 0 && major) {
@@ -2443,6 +2472,15 @@ export class Turn {
         extra = ' Herida grave: el golpe fue de la mitad o más de sus PV máximos, pero la CON aguanta y sigue consciente.';
       }
     }
+    // Sin importar quién pidió el daño —un asalto de combate, una trampa, una
+    // escena—: si esto lo dejó fuera de juego mientras había un combate real
+    // activo, ese combate se cierra ACÁ, en el mismo punto donde cualquier
+    // camino que aplique daño de verdad pasa. Antes sólo lo llamaban
+    // `toolResolveAttack`/`toolResolveFlee`/etc. después de sí mismos, así
+    // que un daño aplicado por otra vía —como en la prueba de este mismo
+    // archivo— podía incapacitar al investigador y dejar el combate abierto,
+    // sin desenlace, para siempre. No-op si no hay combate activo.
+    this.cerrarCombateSiTerminado();
     return { ok: true, message: `Daño aplicado. PV ${from} → ${to} de ${inv.derived.maxHp}.${extra}` };
   }
 
