@@ -4457,6 +4457,10 @@
       "visible": {
         "op": "lleva",
         "item": "it-cera-limosna"
+      },
+      "hecha": {
+        "op": "narrado",
+        "contiene": "Dejás las velas y las monedas"
       }
     },
     {

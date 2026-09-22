@@ -99,6 +99,9 @@ function pesoDelJuicio(s: GameState) {
  * abre el camino del piedemonte (Acto III). Devuelve efectos para encadenar
  * detrás del efecto propio de cada argumento.
  */
+/** Un juicio puede mandarte preso (85–99), no quemarte de un golpe: la hoguera se gana de a poco, no en una tirada. */
+const sinQuemar = (s: GameState, d: number) => (d > 0 ? Math.min(d, Math.max(0, 99 - sospechaDe(s))) : d);
+
 function veredicto(s: GameState, delta: number) {
   const final = Math.max(0, Math.min(100, sospechaDe(s) + delta));
   const efectos: import('./escena.ts').EfectoEscena[] = [{
@@ -183,7 +186,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
       }
       return {
         texto: [...base, 'Algo en el bolsillo hace un ruido que no es de este siglo: un tic parejo, metálico, sin cuerda, que no se detiene. El soldado más cercano baja la vista, después la sube. No dice nada. Le avisa al jinete con los ojos.'],
-        sospecha: { amount: 20, cause: 'un soldado de la comitiva oyó un mecanismo que no debería sonar' },
+        sospecha: { amount: 15, cause: 'un soldado de la comitiva oyó un mecanismo que no debería sonar' },
       };
     },
   },
@@ -254,7 +257,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
         'Del reloj sale una explicación entera, con la respiración pesada de quien decide no volver a mentir: un resorte enrollado, una rueda que lo suelta de a poco, un fleje que marca el compás. Lo dice con palabras de otro siglo y el Comisario no lo interrumpe.',
         'Cuando termina, no hay reproche en la cara del Comisario. Hay algo peor: atención. Anota, con una letra pequeña, sin dejar de mirarlo.\n\n—Gracias. No lo entendí todo, pero lo entendí lo suficiente.',
       ],
-      sospecha: { amount: 20, cause: 'explicó un mecanismo que en 1710 no existe, con palabras que nadie de esta época usa' },
+      sospecha: { amount: 15, cause: 'explicó un mecanismo que en 1710 no existe, con palabras que nadie de esta época usa' },
       pistas: [{ description: 'El investigador le explicó al Comisario Albornoz cómo funciona un reloj de pulsera, y el Comisario lo anotó sin escandalizarse.', kind: 'testimonial', source: 'la cripta de Santo Domingo', reliability: 'reliable' }],
       npc: { id: 'npc-albornoz', attitudeDelta: 2, cause: 'valoró que le contara la verdad' },
     }),
@@ -404,7 +407,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
           'A mitad de camino el tiro se estrecha más de lo que parecía. Se queda trabado, con un brazo arriba y otro abajo, y el ruido de la ropa raspando la piedra baja por el hueco como un aviso.',
           'Arriba se oyen pasos. Una reja se abre. Lo bajan tirándole de los pies, con menos ceremonia que la primera vez, y esta vez el Comisario ni siquiera está presente para verlo.',
         ],
-        sospecha: { amount: 25, cause: 'lo sorprendieron intentando fugarse de la cripta' },
+        sospecha: { amount: 10, cause: 'lo sorprendieron intentando fugarse de la cripta' },
       };
     },
   },
@@ -614,7 +617,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
           'Desde los juncos se ve una hoguera chica y cinco hombres alrededor. Uno manda: un sargento mayor, al que llaman Ledesma. Alcanza a oír el nombre, y el tono, y después el ruido de una rama que se quiebra bajo su propio peso.',
           'Un perro levanta la cabeza. El sargento no se da vuelta todavía. Hace un gesto con la mano, corto.',
         ],
-        sospecha: { amount: 20, cause: 'la partida de la rastrillería lo vio entre los juncos' },
+        sospecha: { amount: 15, cause: 'la partida de la rastrillería lo vio entre los juncos' },
         pistas: [{ description: 'Un sargento mayor llamado Ledesma manda la partida de la rastrillería que sigue el rastro por la laguna somera.', kind: 'testimonial', source: 'la laguna somera', reliability: 'reliable' }],
       };
     },
@@ -710,7 +713,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
       ? { texto: ['Cruzás la plaza pegado a las paredes, con el paso de quien conoce el lugar, sin apurarte y sin mirar a los soldados. Un chico te mira más de la cuenta. Su madre le tapa los ojos.'] }
       : {
         texto: ['Cruzás la plaza pegado a las paredes, pero una mujer que sale de la iglesia te mira, te reconoce por el barro seco de la ropa y dice algo en voz baja a la que va a su lado. Un soldado gira la cabeza.'],
-        sospecha: { amount: 20, cause: 'lo reconocieron en la plaza, con la rastrillería todavía buscándolo' },
+        sospecha: { amount: 15, cause: 'lo reconocieron en la plaza, con la rastrillería todavía buscándolo' },
       },
   },
 
@@ -822,7 +825,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     },
     resolver: ({ tirada, estado }) => {
       const ok = Boolean(tirada?.exito);
-      const delta = ok ? -25 : 25;
+      const delta = sinQuemar(estado, ok ? -25 : 25);
       return [
         {
           texto: ok
@@ -851,7 +854,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     },
     resolver: ({ tirada, estado }) => {
       const ok = Boolean(tirada?.exito);
-      const delta = ok ? -40 : 35;
+      const delta = sinQuemar(estado, ok ? -40 : 35);
       return [
         ok
           ? {
@@ -875,10 +878,11 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     id: 'juicio-callar',
     resolver: ({ estado }) => [
       {
+        // (+10, con tope para que callar no queme)
         texto: ['Guardás silencio. Es una decisión que la sala lee de mil maneras y ninguna a tu favor. El Comisario no dice una palabra; deja que Videla llene el aire.\n\n—El reo elige no hablar. Que conste.'],
-        sospecha: { amount: 10, cause: 'callarse ante el Cabildo también es una respuesta' },
+        sospecha: { amount: sinQuemar(estado, 10), cause: 'callarse ante el Cabildo también es una respuesta' },
       },
-      ...veredicto(estado, 10),
+      ...veredicto(estado, sinQuemar(estado, 10)),
     ],
   },
 
@@ -998,7 +1002,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
       }
       : {
         texto: ['La caña se quiebra con un chasquido seco que en el silencio suena a disparo. Los dados se detienen en el pasillo. La puerta se abre sin prisa, y el carcelero entra con el gesto de quien esperaba esto desde el principio.'],
-        sospecha: { amount: 15, cause: 'fracasó al intentar fugarse de la cárcel del Cabildo' },
+        sospecha: { amount: 10, cause: 'fracasó al intentar fugarse de la cárcel del Cabildo' },
       },
   },
   {
@@ -1071,7 +1075,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
     id: 'entrar-fuego',
     resolver: () => ({
       texto: ['Pasás el real de cateadores mientras un matorral seco al otro lado del campamento se enciende de golpe, sin chispa ni pedernal a la vista. Los centinelas corren con las palas hacia el humo. Alguno se persigna antes de correr.'],
-      sospecha: { amount: 15, cause: 'un fuego que se encendió sin pedernal ante los centinelas del Cabildo' },
+      sospecha: { amount: 10, cause: 'un fuego que se encendió sin pedernal ante los centinelas del Cabildo' },
       consecuencia: { description: 'En 1710, el investigador pasó el real de cateadores distrayendo a los centinelas con un fuego que nadie supo explicar.', scope: 'scene', permanent: false, worldReminder: '' },
     }),
   },
@@ -1111,9 +1115,12 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
         consecuencia: { description: 'En 1710, el investigador abrió la boca de la labor forzando las cadenas y las vigas.', scope: 'scene', permanent: false, worldReminder: '' },
       }
       : {
-        texto: ['Una viga se te suelta de las manos y cae con un estrépito que se oye hasta el real. Alcanza a lastimarte el hombro antes de rodar. Desde abajo, alguien grita algo en voz baja.'],
+        texto: ['Una viga se te suelta de las manos y cae con un estrépito que se oye hasta el real. Alcanza a lastimarte el hombro antes de rodar. Desde abajo, alguien grita algo en voz baja, pero el hueco ya está abierto.'],
         dano: { amount: 1, cause: 'una viga de algarrobo le cayó sobre el hombro' },
         sospecha: { amount: 10, cause: 'el estrépito de las vigas se oyó desde el real' },
+        // Abre igual: forzarla mal es ruidoso y duele, no un callejón. Sin esto se reintentaba sin
+        // límite y cada intento suma sospecha (con Mecánica 15% la boca terminaba en la hoguera).
+        consecuencia: { description: 'En 1710, el investigador abrió la boca de la labor a los golpes, con estrépito: las cadenas cedieron, pero medio real lo oyó.', scope: 'scene', permanent: false, worldReminder: '' },
       },
   },
   {
@@ -1253,7 +1260,7 @@ export const EL_SANTO_OFICIO_DE_CUYO_LOGICA: LogicaDeEscenas = [
             : 'Raspás la rueda del encendedor y una llama chica, amarilla, aparece en el aire quieto. La Sombra se aparta de ella con un temblor de fastidio, no de miedo. Alcanza para abrir el paso, no para más.',
           'Se aparta lo bastante como para que el filón quede a tu alcance.',
         ],
-        sospecha: { amount: linterna ? 20 : 10, cause: linterna ? 'una luz blanca y fija, sin llama, delante del Comisario' : 'un fuego sin pedernal delante del Comisario' },
+        sospecha: { amount: linterna ? 10 : 5, cause: linterna ? 'una luz blanca y fija, sin llama, delante del Comisario' : 'un fuego sin pedernal delante del Comisario' },
         consecuencia: { description: 'En 1710, en el filón de la Labor Vieja, la Sombra del Socavón retrocedió ante la luz de 1930 que el investigador encendió.', scope: 'scene', permanent: false, worldReminder: '' },
       };
     },

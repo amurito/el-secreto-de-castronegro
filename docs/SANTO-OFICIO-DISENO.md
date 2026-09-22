@@ -287,3 +287,45 @@ verde con 14 aventuras. Lo que la auditoría del catálogo y el navegador encont
 - El mapa de campaña no ve los ganchos de Merced → esta aventura, porque `alba`
   los lee con un ayudante (`hayConsecuencia`) y no con el patrón que busca el
   generador. Es una limitación de la herramienta, no un hueco del juego.
+
+## Barrido de bugs post-registro (2026-09-21)
+
+Con la aventura ya en el catálogo, se corrió un barrido en tres capas antes de
+pedirle al usuario que la juegue:
+
+1. **Chequeos estáticos** (script ad-hoc, no permanente): todo fragmento que
+   una condición busca (`consecuencia`/`pista`/`narrado`) lo produce alguna
+   escena o tema; cada acción con escena propia dispara esa escena y ninguna
+   otra; sin `PENDIENTE`/`undefined`/`NaN` en el texto; ningún ítem o NPC
+   declarado y sin usar. Sin hallazgos (0 problemas).
+2. **Fuzz** (80 corridas al azar, mitad Iglesia mitad huarpe, hasta 450 pasos,
+   con las conversaciones y el combate resueltos): 0 softlocks, 0 excepciones,
+   visita los 27 lugares y 24/28 temas. Encontró:
+   - El panel de rivales (`Rivales` en `components.tsx`) mostraba un NPC de
+     combate presente en el lugar aunque **todavía no hubiera entrado en la
+     historia** (`present: false`): «Rastreador del Cabildo · ENTERO» aparecía
+     desde el primer turno. Mismo bug que ya se había corregido en el TEXTO
+     para el Pólipo de Merced, ahora en la interfaz — corregido para todas las
+     aventuras, no sólo ésta.
+   - Con Elena (Sigilo 20, Persuasión 40) casi toda partida terminaba en la
+     hoguera: las tiradas difíciles quedaban en 10-20%, y cada fallo cuesta
+     sospecha. Bajadas a regular (extrema→difícil), salvo Ocultismo/Geología.
+3. **Re-fuzz con el combate resuelto** (60 corridas): confirmó que sí hay
+   salidas siempre seguras (esperar a Ignacio en la cripta y en la cárcel no
+   suben nunca la sospecha) frente a las arriesgadas (forzar la ventilación,
+   fugarse), así que la hoguera sigue siendo evitable jugando con cuidado — lo
+   que el fuzz muere ahí es jugando al azar, no por falta de salida.
+   Encontrado y corregido en la misma pasada:
+   - Los veredictos del juicio (`juicio-defensa`/`juicio-acusar`/`juicio-callar`)
+     podían saltar de golpe a 100 (hoguera) con la sospecha ya alta en 95;
+     ahora un solo veredicto no puede cruzar de menos de 100 a 100 (`sinQuemar`
+     en `santooficio.logica.ts`): la hoguera se gana de a poco.
+   - `abrir-forzando` (la boca de la labor) no abría si la tirada fallaba, y se
+     podía reintentar sin límite sumando sospecha cada vez; ahora abre también
+     al fallar (con costo, sin bloquear).
+   - Varios golpes de sospecha por fallo bajados de 20-25 a 10-15, para que un
+     mal comienzo (Sigilo bajo en el kit de 1930) no encadene directo a preso.
+
+**Antes del despliegue de esta pasada, el usuario dijo que la va a jugar él
+mismo.** No se hizo verificación manual en el navegador de las dos aperturas
+completas de punta a punta: eso queda para su partida real.

@@ -83,7 +83,7 @@ async function main() {
   check('contestar la 1 esconde sus dos respuestas', !tras1.includes('q1-flandes') && !tras1.includes('q1-franco'));
   check('y abre la 2', tras1.includes('q2-signos') && tras1.includes('q2-nativos'));
   const s1 = sosp(s);
-  check('la respuesta franca sube la sospecha 20 (sin tirada de por medio)', s1 === base0 + 20, `${base0} → ${s1}`);
+  check('la respuesta franca sube la sospecha 15 (sin tirada de por medio)', s1 === base0 + 15, `${base0} → ${s1}`);
   s = await jugar(id, 'Digo que lo aprendi de los indigenas');
   check('la 2b suma 10', sosp(s) === s1 + 10, String(sosp(s)));
   check('deja consecuencia de campaña sobre los huarpes', s.consequences.some((c) => c.description.includes('aprendió lo que sabe de los indios de las lagunas')));
@@ -429,7 +429,7 @@ async function main() {
     check('el fugitivo que llega a la plaza puede intentar cruzarla sin que lo reconozcan', ids(s).includes('cruzar-la-plaza'));
     const a0 = sosp(s);
     s = await pulsar(id, 'cruzar-la-plaza');
-    check('cruzarla no baja la sospecha (queda igual o sube 20)', sosp(s) === a0 || sosp(s) === a0 + 20, a0 + ' → ' + sosp(s));
+    check('cruzarla no baja la sospecha (queda igual o sube 15)', sosp(s) === a0 || sosp(s) === a0 + 15, a0 + ' → ' + sosp(s));
     check('y no se repite', !ids(s).includes('cruzar-la-plaza'));
   }
   {
@@ -483,7 +483,7 @@ async function main() {
     check('y la boca no se ve hasta pasar el real', !r.includes('ir:labor-bocamina'));
     const f0 = sosp(s);
     s = await pulsar(id, 'entrar-fuego');
-    check('el fuego sin pedernal cuesta 15 de sospecha y abre el camino', sosp(s) === f0 + 15 && ids(s).includes('ir:labor-bocamina'), f0 + ' → ' + sosp(s));
+    check('el fuego sin pedernal cuesta 10 de sospecha y abre el camino', sosp(s) === f0 + 10 && ids(s).includes('ir:labor-bocamina'), f0 + ' → ' + sosp(s));
     s = await camino(id, 'labor-bocamina');
     check('en la boca: forzar o abrir con pólvora, y el conducto siempre; el socavón no', ids(s).includes('abrir-forzando') && ids(s).includes('abrir-con-polvora') && ids(s).includes('ir:labor-ventilacion') && !ids(s).includes('ir:labor-socavon'));
     s = await pulsar(id, 'abrir-con-polvora');
@@ -544,7 +544,7 @@ async function main() {
     check('mirarlo despierta a la Sombra: encandilar o enfrentar', ids(s).includes('encandilar-a-la-sombra') && ids(s).includes('enfrentar-a-la-sombra'));
     const l0 = sosp(s);
     s = await pulsar(id, 'encandilar-a-la-sombra');
-    check('la luz de 1930 aparta a la Sombra pero la sospecha sube (10 o 20)', (sosp(s) === l0 + 10 || sosp(s) === l0 + 20) && s.consequences.some((c) => c.description.includes('la Sombra del Socavón retrocedió ante la luz')), l0 + ' → ' + sosp(s));
+    check('la luz de 1930 aparta a la Sombra pero la sospecha sube (5 o 10)', (sosp(s) === l0 + 5 || sosp(s) === l0 + 10) && s.consequences.some((c) => c.description.includes('la Sombra del Socavón retrocedió ante la luz')), l0 + ' → ' + sosp(s));
     check('resuelta la Sombra se puede extraer la plata', ids(s).includes('extraer-la-plata'));
     s = await pulsar(id, 'extraer-la-plata');
     check('la plata (limpia o impura) queda en el inventario', s.items['it-plata-nativa']?.owner === s.activeInvestigator && s.consequences.some((c) => c.description.includes('extrajo la plata del filón')));
